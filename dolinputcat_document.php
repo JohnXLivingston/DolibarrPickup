@@ -37,130 +37,132 @@ if (! $res && file_exists("../../main.inc.php")) $res=@include "../../main.inc.p
 if (! $res && file_exists("../../../main.inc.php")) $res=@include "../../../main.inc.php";
 if (! $res) die("Include of main fails");
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-dol_include_once('/collecte/class/dolinputcat.class.php');
-dol_include_once('/collecte/lib/collecte_dolinputcat.lib.php');
+accessforbidden();
 
-// Load translation files required by the page
-$langs->loadLangs(array("collecte@collecte","companies","other","mails"));
+// require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+// require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+// require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+// require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+// dol_include_once('/collecte/class/dolinputcat.class.php');
+// dol_include_once('/collecte/lib/collecte_dolinputcat.lib.php');
 
-
-$action=GETPOST('action', 'aZ09');
-$confirm=GETPOST('confirm');
-$id=(GETPOST('socid', 'int') ? GETPOST('socid', 'int') : GETPOST('id', 'int'));
-$ref = GETPOST('ref', 'alpha');
-
-// Security check - Protection if external user
-//if ($user->societe_id > 0) access_forbidden();
-//if ($user->societe_id > 0) $socid = $user->societe_id;
-//$result = restrictedArea($user, 'collecte', $id);
-
-// Get parameters
-$sortfield = GETPOST("sortfield", 'alpha');
-$sortorder = GETPOST("sortorder", 'alpha');
-$page = GETPOST("page", 'int');
-if (empty($page) || $page == -1) { $page = 0; }     // If $page is not defined, or '' or -1
-$offset = $conf->liste_limit * $page;
-$pageprev = $page - 1;
-$pagenext = $page + 1;
-if (! $sortorder) $sortorder="ASC";
-if (! $sortfield) $sortfield="name";
-//if (! $sortfield) $sortfield="position_name";
-
-// Initialize technical objects
-$object=new Dolinputcat($db);
-$extrafields = new ExtraFields($db);
-$diroutputmassaction=$conf->collecte->dir_output . '/temp/massgeneration/'.$user->id;
-$hookmanager->initHooks(array('dolinputcatdocument','globalcard'));     // Note that conf->hooks_modules contains array
-// Fetch optionals attributes and labels
-$extralabels = $extrafields->fetch_name_optionals_label('dolinputcat');
-
-// Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php';  // Must be include, not include_once  // Must be include, not include_once. Include fetch and fetch_thirdparty but not fetch_optionals
-
-//if ($id > 0 || ! empty($ref)) $upload_dir = $conf->collecte->multidir_output[$object->entity?$object->entity:1] . "/dolinputcat/" . dol_sanitizeFileName($object->id);
-if ($id > 0 || ! empty($ref)) $upload_dir = $conf->collecte->multidir_output[$object->entity?$object->entity:1] . "/dolinputcat/" . dol_sanitizeFileName($object->ref);
+// // Load translation files required by the page
+// $langs->loadLangs(array("collecte@collecte","companies","other","mails"));
 
 
-/*
- * Actions
- */
+// $action=GETPOST('action', 'aZ09');
+// $confirm=GETPOST('confirm');
+// $id=(GETPOST('socid', 'int') ? GETPOST('socid', 'int') : GETPOST('id', 'int'));
+// $ref = GETPOST('ref', 'alpha');
 
-include_once DOL_DOCUMENT_ROOT . '/core/actions_linkedfiles.inc.php';
+// // Security check - Protection if external user
+// //if ($user->societe_id > 0) access_forbidden();
+// //if ($user->societe_id > 0) $socid = $user->societe_id;
+// //$result = restrictedArea($user, 'collecte', $id);
+
+// // Get parameters
+// $sortfield = GETPOST("sortfield", 'alpha');
+// $sortorder = GETPOST("sortorder", 'alpha');
+// $page = GETPOST("page", 'int');
+// if (empty($page) || $page == -1) { $page = 0; }     // If $page is not defined, or '' or -1
+// $offset = $conf->liste_limit * $page;
+// $pageprev = $page - 1;
+// $pagenext = $page + 1;
+// if (! $sortorder) $sortorder="ASC";
+// if (! $sortfield) $sortfield="name";
+// //if (! $sortfield) $sortfield="position_name";
+
+// // Initialize technical objects
+// $object=new Dolinputcat($db);
+// $extrafields = new ExtraFields($db);
+// $diroutputmassaction=$conf->collecte->dir_output . '/temp/massgeneration/'.$user->id;
+// $hookmanager->initHooks(array('dolinputcatdocument','globalcard'));     // Note that conf->hooks_modules contains array
+// // Fetch optionals attributes and labels
+// $extralabels = $extrafields->fetch_name_optionals_label('dolinputcat');
+
+// // Load object
+// include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php';  // Must be include, not include_once  // Must be include, not include_once. Include fetch and fetch_thirdparty but not fetch_optionals
+
+// //if ($id > 0 || ! empty($ref)) $upload_dir = $conf->collecte->multidir_output[$object->entity?$object->entity:1] . "/dolinputcat/" . dol_sanitizeFileName($object->id);
+// if ($id > 0 || ! empty($ref)) $upload_dir = $conf->collecte->multidir_output[$object->entity?$object->entity:1] . "/dolinputcat/" . dol_sanitizeFileName($object->ref);
 
 
-/*
- * View
- */
+// /*
+//  * Actions
+//  */
 
-$form = new Form($db);
-
-$title=$langs->trans("Dolinputcat").' - '.$langs->trans("Files");
-$help_url='';
-//$help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('', $title, $help_url);
-
-if ($object->id)
-{
-	/*
-	 * Show tabs
-	 */
-	$head = dolinputcatPrepareHead($object);
-
-	dol_fiche_head($head, 'document', $langs->trans("Dolinputcat"), -1, $object->picto);
+// include_once DOL_DOCUMENT_ROOT . '/core/actions_linkedfiles.inc.php';
 
 
-	// Build file list
-	$filearray=dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', $sortfield, (strtolower($sortorder)=='desc'?SORT_DESC:SORT_ASC), 1);
-	$totalsize=0;
-	foreach($filearray as $key => $file)
-	{
-		$totalsize+=$file['size'];
-	}
+// /*
+//  * View
+//  */
 
-	// Object card
-	// ------------------------------------------------------------
-	$linkback = '<a href="' .dol_buildpath('/collecte/dolinputcat_list.php', 1) . '?restore_lastsearch_values=1' . (! empty($socid) ? '&socid=' . $socid : '') . '">' . $langs->trans("BackToList") . '</a>';
+// $form = new Form($db);
 
-	dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
+// $title=$langs->trans("Dolinputcat").' - '.$langs->trans("Files");
+// $help_url='';
+// //$help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
+// llxHeader('', $title, $help_url);
 
-    print '<div class="fichecenter">';
+// if ($object->id)
+// {
+// 	/*
+// 	 * Show tabs
+// 	 */
+// 	$head = dolinputcatPrepareHead($object);
 
-    print '<div class="underbanner clearboth"></div>';
-	print '<table class="border centpercent">';
+// 	dol_fiche_head($head, 'document', $langs->trans("Dolinputcat"), -1, $object->picto);
 
-	// Number of files
-	print '<tr><td class="titlefield">'.$langs->trans("NbOfAttachedFiles").'</td><td colspan="3">'.count($filearray).'</td></tr>';
 
-	// Total size
-	print '<tr><td>'.$langs->trans("TotalSizeOfAttachedFiles").'</td><td colspan="3">'.$totalsize.' '.$langs->trans("bytes").'</td></tr>';
+// 	// Build file list
+// 	$filearray=dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', $sortfield, (strtolower($sortorder)=='desc'?SORT_DESC:SORT_ASC), 1);
+// 	$totalsize=0;
+// 	foreach($filearray as $key => $file)
+// 	{
+// 		$totalsize+=$file['size'];
+// 	}
 
-	print '</table>';
+// 	// Object card
+// 	// ------------------------------------------------------------
+// 	$linkback = '<a href="' .dol_buildpath('/collecte/dolinputcat_list.php', 1) . '?restore_lastsearch_values=1' . (! empty($socid) ? '&socid=' . $socid : '') . '">' . $langs->trans("BackToList") . '</a>';
 
-	print '</div>';
+// 	dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
 
-	dol_fiche_end();
+//     print '<div class="fichecenter">';
 
-	$modulepart = 'collecte';
-	//$permission = $user->rights->collecte->create;
-	$permission = 1;
-	//$permtoedit = $user->rights->collecte->create;
-	$permtoedit = 1;
-	$param = '&id=' . $object->id;
+//     print '<div class="underbanner clearboth"></div>';
+// 	print '<table class="border centpercent">';
 
-	//$relativepathwithnofile='dolinputcat/' . dol_sanitizeFileName($object->id).'/';
-	$relativepathwithnofile='dolinputcat/' . dol_sanitizeFileName($object->ref).'/';
+// 	// Number of files
+// 	print '<tr><td class="titlefield">'.$langs->trans("NbOfAttachedFiles").'</td><td colspan="3">'.count($filearray).'</td></tr>';
 
-	include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_post_headers.tpl.php';
-}
-else
-{
-	accessforbidden('', 0, 1);
-}
+// 	// Total size
+// 	print '<tr><td>'.$langs->trans("TotalSizeOfAttachedFiles").'</td><td colspan="3">'.$totalsize.' '.$langs->trans("bytes").'</td></tr>';
 
-// End of page
-llxFooter();
-$db->close();
+// 	print '</table>';
+
+// 	print '</div>';
+
+// 	dol_fiche_end();
+
+// 	$modulepart = 'collecte';
+// 	//$permission = $user->rights->collecte->create;
+// 	$permission = 1;
+// 	//$permtoedit = $user->rights->collecte->create;
+// 	$permtoedit = 1;
+// 	$param = '&id=' . $object->id;
+
+// 	//$relativepathwithnofile='dolinputcat/' . dol_sanitizeFileName($object->id).'/';
+// 	$relativepathwithnofile='dolinputcat/' . dol_sanitizeFileName($object->ref).'/';
+
+// 	include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_post_headers.tpl.php';
+// }
+// else
+// {
+// 	accessforbidden('', 0, 1);
+// }
+
+// // End of page
+// llxFooter();
+// $db->close();
