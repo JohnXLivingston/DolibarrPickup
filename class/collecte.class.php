@@ -540,7 +540,7 @@ class Collecte extends CommonObject
 			//$langs->load("collecte");
 			$this->labelstatus[self::STATUS_DRAFT] = $langs->trans('Draft');
 			$this->labelstatus[self::STATUS_VALIDATED] = $langs->trans('Enabled');
-			$this->labelstatus[self::STATUS_CANCELED] = $langs->trans('Disabled');
+			$this->labelstatus[self::STATUS_DISABLED] = $langs->trans('Disabled');
 		}
 
 		if ($mode == 0)
