@@ -89,8 +89,7 @@ class Dolinputcat extends CommonObject
 	 */
 	public $fields=array(
 		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>1, 'visible'=>-1, 'position'=>1, 'notnull'=>1, 'index'=>1, 'comment'=>"Id",),
-		//'fk_category' => array('type'=>'integer:Categorie:categories/class/categorie.class.php', 'label'=>'Category', 'enabled'=>1, 'visible'=>1, 'position'=>2, 'notnull'=>1, 'index'=>1, 'foreignkey'=>'categories.rowid',),
-		'fk_category' => array('type'=>'sellist:categorie:label:rowid:fk_parent|fk_parent:type=\'0\'', 'label'=>'Category', 'enabled'=>1, 'visible'=>1, 'position'=>2, 'notnull'=>1, 'index'=>1, 'foreignkey'=>'categories.rowid',),
+		'fk_category' => array('type'=>'integer:Categorie:categories/class/categorie.class.php', 'label'=>'Category', 'enabled'=>1, 'visible'=>2, 'position'=>2, 'notnull'=>1, 'index'=>1, 'foreignkey'=>'categories.rowid',),
 		'active' => array('type'=>'boolean', 'label'=>'Actif', 'enabled'=>1, 'visible'=>1, 'position'=>61, 'notnull'=>1, 'default'=>'1', 'index'=>1, 'comment'=>"Is this category used in dolinput",),
 		'form' => array('type'=>'varchar(255)', 'label'=>'Formulaire', 'enabled'=>1, 'visible'=>1, 'position'=>62, 'notnull'=>-1, 'comment'=>"The form name for dolinput",),
 		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>1, 'visible'=>-2, 'position'=>500, 'notnull'=>1,),
