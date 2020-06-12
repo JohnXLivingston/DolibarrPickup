@@ -153,8 +153,9 @@ class modCollecte extends DolibarrModules
 
         // Array to add new pages in new tabs
         $this->tabs = array();
+        $this->tabs[] = array('data' => 'categories_product:+dolinput:TitleDolinput:collecte@collecte:$user->rights->collecte->configure:/collecte/tabs/categoriesdolinput.php?id=__ID__');
         // Example:
-        // $this->tabs[] = array('data'=>'objecttype:+tabname1:Title1:mylangfile@collecte:$user->rights->collecte->read:/collecte/mynewtab1.php?id=__ID__');  					// To add a new tab identified by code tabname1
+        // $this->tabs[] = array('data'=>'product:+tabname1:Title1:mylangfile@collecte:$user->rights->collecte->read:/collecte/mynewtab1.php?id=__ID__');  					// To add a new tab identified by code tabname1
         // $this->tabs[] = array('data'=>'objecttype:+tabname2:SUBSTITUTION_Title2:mylangfile@collecte:$user->rights->othermodule->read:/collecte/mynewtab2.php?id=__ID__',  	// To add another new tab identified by code tabname2. Label will be result of calling all substitution functions on 'Title2' key.
         // $this->tabs[] = array('data'=>'objecttype:-tabname:NU:conditiontoremove');                                                     										// To remove an existing tab identified by code tabname
         //
@@ -257,6 +258,11 @@ class modCollecte extends DolibarrModules
         $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
         $this->rights[$r][1] = 'Delete objects of Collecte';	// Permission label
         $this->rights[$r][4] = 'delete';				// In php code, permission will be checked by test if ($user->rights->collecte->level1->level2)
+        $this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->collecte->level1->level2)
+        $r++;
+        $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
+        $this->rights[$r][1] = 'Configure dolinput';	// Permission label
+        $this->rights[$r][4] = 'configure';				// In php code, permission will be checked by test if ($user->rights->collecte->level1->level2)
         $this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->collecte->level1->level2)
         $r++;
         /* END MODULEBUILDER PERMISSIONS */
