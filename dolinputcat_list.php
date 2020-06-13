@@ -106,14 +106,20 @@ foreach ($fulltree as $key => $val)
 	$cat->fetch($val['id']);
 	$allways = $cat->get_all_ways();
 
-	$dolinputcats = $object->fetchAll('', '', 1, 0, ['t.fk_category='.$object->db->escape($cat->id)]);
-	if ($dolinputcats < 0)
+	// $dolinputcats = $object->fetchAll('', '', 1, 0, ['customsql' => 't.fk_category='.$object->db->escape($cat->id)]);
+	// if ($dolinputcats < 0)
+	// {
+	// 	dol_print_error($db);
+	// 	exit;
+	// }
+	// $dolinputcat = count($dolinputcats) > 0 ? $dolinputcats[0] : 0;
+	
+	$dolinputcat = new Dolinputcat($db);
+	if ($dolinputcat->fetchByCategory($cat->id) < 0)
 	{
 		dol_print_error($db);
 		exit;
 	}
-
-	$dolinputcat = count($dolinputcats) > 0 ? $dolinputcats[0] : 0;
 
 	foreach ($allways as $way)
 	{
@@ -132,11 +138,26 @@ foreach ($fulltree as $key => $val)
 		print '</a>';
 		// print '</span>';
 		print '</td>';
-		print '<td><input type="checkbox" disabled '.($dolinputcat && $dolinputcat->active ? 'checked' : '').'</td>';
+		print '<td><input type="checkbox" disabled="disabled" '.($dolinputcat && $dolinputcat->active ? 'checked="checked"' : '').'></td>';
 		print '<td>';
 		if ($dolinputcat)
 		{
-			print $dolinputcat->form;
+			if (!$dolinputcat->active)
+			{
+				print '<span style="color: grey">';
+			}
+			if (empty($dolinputcat->form) && $dolinputcat->active)
+			{
+				print '-';
+			}
+			else
+			{
+				print $dolinputcat->form;
+			}
+			if (!$dolinputcat->active)
+			{
+				print '</span>';
+			}
 		}
 		print '</td>';
 		print '</tr>';

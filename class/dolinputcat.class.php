@@ -297,6 +297,13 @@ class Dolinputcat extends CommonObject
 		return $result;
 	}
 
+	public function fetchByCategory($cat_id)
+	{
+		$result = $this->fetchCommon(null, null, ' and fk_category='.$this->db->escape($cat_id));
+		if ($result > 0 && ! empty($this->table_element_line)) $this->fetchLines();
+		return $result;
+	}
+
 	/**
 	 * Load object lines in memory from the database
 	 *
