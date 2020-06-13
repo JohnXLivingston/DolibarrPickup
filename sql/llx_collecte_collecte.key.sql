@@ -13,6 +13,8 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see http://www.gnu.org/licenses/.
 
+-- NB : je met ça là... module builder bugué... il oublie le llx_ devant les REFERENCES
+ALTER TABLE llx_collecte_collecte ADD CONSTRAINT llx_collecte_collecte_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 
 -- BEGIN MODULEBUILDER INDEXES
 ALTER TABLE llx_collecte_collecte ADD INDEX idx_collecte_collecte_rowid (rowid);

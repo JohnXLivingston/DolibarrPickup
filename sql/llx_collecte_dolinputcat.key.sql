@@ -13,6 +13,9 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see http://www.gnu.org/licenses/.
 
+-- NB : je met ça là... module builder bugué... il oublie le llx_ devant les REFERENCES
+ALTER TABLE llx_collecte_dolinputcat ADD CONSTRAINT llx_collecte_dolinputcat_fk_category FOREIGN KEY (fk_category) REFERENCES llx_categorie(rowid);
+ALTER TABLE llx_collecte_dolinputcat ADD CONSTRAINT llx_collecte_dolinputcat_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 
 -- BEGIN MODULEBUILDER INDEXES
 ALTER TABLE llx_collecte_dolinputcat ADD INDEX idx_collecte_dolinputcat_rowid (rowid);
@@ -21,6 +24,9 @@ ALTER TABLE llx_collecte_dolinputcat ADD CONSTRAINT llx_collecte_dolinputcat_fk_
 ALTER TABLE llx_collecte_dolinputcat ADD INDEX idx_collecte_dolinputcat_active (active);
 ALTER TABLE llx_collecte_dolinputcat ADD CONSTRAINT llx_collecte_dolinputcat_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES user(rowid);
 -- END MODULEBUILDER INDEXES
+
+
+ALTER TABLE llx_collecte_dolinputcat ADD UNIQUE INDEX uk_collecte_dolinputcat_fk_category (fk_category);
 
 --ALTER TABLE llx_collecte_dolinputcat ADD UNIQUE INDEX uk_collecte_dolinputcat_fieldxy(fieldx, fieldy);
 
