@@ -17,12 +17,14 @@ if (! $res) die("Include of main fails");
 
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/custom/collecte/class/dolinputcat.class.php';
+require_once DOL_DOCUMENT_ROOT.'/custom/dolinput/lib/dolinput.lib.php';
 
 $langs->loadlangs(array('categories'));
 
 $id=GETPOST('id', 'int');
 $type = Categorie::TYPE_PRODUCT;
-
+$action = GETPOST('action', 'aZ09');
 $backtopage = GETPOST('backto', 'alpha');
 
 if ($id == "")
@@ -40,13 +42,128 @@ if (!$user->rights->collecte->configure) {
 $result = restrictedArea($user, 'categorie', $id, '&category');
 
 $object = new Categorie($db);
+$dolinputcat = new Dolinputcat($db);
 if ($id > 0)
 {
-	$result = $object->fetch($id);
+  $result = $object->fetch($id);
+  if ($result < 0) {
+    dol_print_error($db);
+    exit;
+  }
+  if ($dolinputcat->fetchByCategory($object->id) < 0)
+	{
+		dol_print_error($db);
+		exit;
+	}
+}
+else
+{
+  dol_print_error('', 'Invalid parameter id');
+  exit();
 }
 
 $type=$object->type;
 if (is_numeric($type)) $type=Categorie::$MAP_ID_TO_CODE[$type];	// For backward compatibility
+
+$common_uri = $_SERVER["PHP_SELF"].'?id='.$object->id.'&';
+if ($object->socid)
+{
+  $common_uri.= 'socid='.$object->socid.'&';
+}
+if ($backtopage === 'dolinputcat_list') {
+  $common_uri.= 'backto=dolinputcat_list&';
+}
+
+/*
+ * Actions
+ */
+
+if ($action === 'activate')
+{
+  if (!$dolinputcat->id)
+  {
+    $dc = new Dolinputcat($db);
+    $dc->fk_category = $object->id;
+    $dc->active = 1;
+    $new_id = $dc->create($user);
+    if (!$new_id || $new_id <= 0)
+    {
+      dol_print_error($db);
+		  exit;
+    }
+
+    if ($dc->fetch($new_id) <= 0)
+    {
+      dol_print_error($db);
+		  exit;
+    }
+    $dolinputcat = $dc;
+  }
+  else
+  {
+    $dolinputcat->active = 1;
+    if ($dolinputcat->update($user) < 0)
+    {
+      dol_print_error($db);
+		  exit;
+    }
+
+    // No need to fetch again.
+  }
+}
+elseif ($action === 'unactivate')
+{
+  if ($dolinputcat->id)
+  {
+    $dolinputcat->active = 0;
+    if ($dolinputcat->update($user) < 0)
+    {
+      dol_print_error($db);
+		  exit;
+    }
+
+    // No need to fetch again.
+  }
+}
+elseif ($action === 'delete')
+{
+  require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+  $form = new Form($db);
+  print $form->formconfirm($common_uri, $langs->trans('Delete'), $langs->trans('ConfirmDelete'), 'confirm_delete');
+}
+elseif ($action === 'confirm_delete')
+{
+  if ($dolinputcat->id)
+  {
+    if ($dolinputcat->delete($user) < 0)
+    {
+      dol_print_error($db);
+		  exit;
+    }
+    $dolinputcat = new Dolinputcat($db);
+  }
+}
+elseif ($action === 'change_form')
+{
+  $new_form = GETPOST('form', 'alpha');
+  $forms = dolinputListProductForms();
+  if (empty($new_form) || in_array($new_form, $forms))
+  {
+    $dolinputcat->form = empty($new_form) ? null : $new_form;
+    if ($dolinputcat->update($user) < 0)
+    {
+      dol_print_error($db);
+		  exit;
+    }
+
+    // No need to fetch again.
+  }
+  else
+  {
+    dol_print_error('', 'Invalid parameter form');
+    exit();
+  }
+}
 
 /*
  * View
@@ -76,7 +193,7 @@ if ($object->id)
   $object->ref = $object->label;
   // $object->next_prev_filter=" type = ".$object->type;
 	$morehtmlref='<br><div class="refidno"><a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type.'">'.$langs->trans("Root").'</a> >> ';
-	$ways = $object->print_all_ways(" &gt;&gt; ", '', 1);
+	$ways = $object->print_all_ways(' &gt;&gt; ', '', 1);
 	foreach ($ways as $way)
 	{
 	    $morehtmlref.=$way."<br>\n";
@@ -92,9 +209,38 @@ if ($object->id)
 
   print '<div class="fichecenter">';
   print '<div class="underbanner clearboth"></div>';
-  print '<table width="100%" class="border">';
+  
+  $forms = dolinputListProductForms();
 
-  print '</table>';
+  if ($dolinputcat->id)
+  {
+    print '<form method="POST" action="'.$common_uri.'">';
+    print '<input type="hidden" name="action" value="change_form">';
+    print '<table width="100%" class="border">';
+    print '<tr><td class="titlefield notopnoleft">';
+    print 'Formulaire à utiliser dans Dolinput';
+    print '</td><td>';
+    ?>
+      <select name="form">
+        <option value="" <?php if (empty($dolinputcat->form)) print 'selected="selected"'; ?>>Formulaire par defaut</option>
+        <?php
+        foreach ($forms as $form) {
+          print '<option value="'.htmlspecialchars($form).'" ';
+          if ($dolinputcat->form === $form)
+          {
+            print ' selected="selected" ';
+          }
+          print '>'.htmlspecialchars($form).'</option>';
+        }
+        ?>
+      </select>
+      <input type="submit" value="Enregistrer">
+    <?php
+    print '</td></tr>';
+    print '</table>';
+    print '</form>';
+  }
+
   print '</div>';
 
   dol_fiche_end();
@@ -105,13 +251,37 @@ if ($object->id)
 
   print "<div class='tabsAction'>\n";
 
-  // if ($user->rights->collecte->configure)
-  // {
+  if ($user->rights->collecte->configure)
+  {
+    if (!$dolinputcat->id || !$dolinputcat->active)
+    {
+      print '<form method="POST" action="'.$common_uri.'">';
+      print '<input type="hidden" name="action" value="activate">';
+      print '<input type="submit" value="Utiliser dans Dolinput" >';
+      print '</form>';
+    }
+    else
+    {
+      print '<form method="POST" action="'.$common_uri.'">';
+      print '<input type="hidden" name="action" value="unactivate">';
+      print '<input type="submit" value="Désactiver dans Dolinput" >';
+      print '</form>';
+
+      print '<form method="POST" action="'.$common_uri.'">';
+      print '<input type="hidden" name="action" value="delete">';
+      print '<input type="submit" value="Supprimer" >';
+      print '</form>';
+    }
   //   // $socid = ($object->socid ? "&amp;socid=".$object->socid : "");
   //   // print "<a class='butAction' href='edit.php?id=".$object->id.$socid."&amp;type=".$type."'>".$langs->trans("Modify")."</a>";
-  // }
+  }
 
   print "</div>";
+
+  if (!$dolinputcat->id)
+  {
+    print '<div class="opacitymedium">Ce tag n\'est actuellement pas utilisé dans Dolinput.</div>';
+  }
 }
 else
 {

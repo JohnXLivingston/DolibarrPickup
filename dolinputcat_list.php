@@ -138,9 +138,9 @@ foreach ($fulltree as $key => $val)
 		print '</a>';
 		// print '</span>';
 		print '</td>';
-		print '<td><input type="checkbox" disabled="disabled" '.($dolinputcat && $dolinputcat->active ? 'checked="checked"' : '').'></td>';
+		print '<td><input type="checkbox" disabled="disabled" '.($dolinputcat->id && $dolinputcat->active ? 'checked="checked"' : '').'></td>';
 		print '<td>';
-		if ($dolinputcat)
+		if ($dolinputcat->id)
 		{
 			if (!$dolinputcat->active)
 			{
