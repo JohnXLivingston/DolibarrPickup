@@ -23,6 +23,8 @@ $langs->loadlangs(array('categories'));
 $id=GETPOST('id', 'int');
 $type = Categorie::TYPE_PRODUCT;
 
+$backtopage = GETPOST('backto', 'alpha');
+
 if ($id == "")
 {
     dol_print_error('', 'Missing parameter id');
@@ -42,6 +44,9 @@ if ($id > 0)
 {
 	$result = $object->fetch($id);
 }
+
+$type=$object->type;
+if (is_numeric($type)) $type=Categorie::$MAP_ID_TO_CODE[$type];	// For backward compatibility
 
 /*
  * View
@@ -65,9 +70,11 @@ if ($object->id)
 
   dol_fiche_head($head, 'dolinput', $title, -1, 'category');
 
-  $linkback = '<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type.'">'.$langs->trans("BackToList").'</a>';
+  if ($backtopage === 'dolinputcat_list') $linkback = '<a href="'.DOL_URL_ROOT.'/custom/collecte/dolinputcat_list.php">'.$langs->trans("BackToList").'</a>';
+  else $linkback = '<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type.'">'.$langs->trans("BackToList").'</a>';
 
-	$object->ref = $object->label;
+  $object->ref = $object->label;
+  // $object->next_prev_filter=" type = ".$object->type;
 	$morehtmlref='<br><div class="refidno"><a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type.'">'.$langs->trans("Root").'</a> >> ';
 	$ways = $object->print_all_ways(" &gt;&gt; ", '', 1);
 	foreach ($ways as $way)
@@ -76,7 +83,10 @@ if ($object->id)
 	}
 	$morehtmlref.='</div>';
 
-  dol_banner_tab($object, 'ref', $linkback, ($user->societe_id?0:1), 'ref', 'ref', $morehtmlref, '', 0, '', '', 1);
+  // dol_banner_tab($object, 'ref', $linkback, ($user->societe_id?0:1), 'ref', 'ref', $morehtmlref, '', 0, '', '', 1);
+  // dol_banner_tab($object, 'id', $linkback, ($user->societe_id?0:1), '', '', $morehtmlref, '', 0, '', '', 1);
+  // dol_banner_tab($object, 'id', $linkback, ($user->societe_id?0:1), 'rowid', 'id', $morehtmlref, '', 0, '', '', 1);
+  dol_banner_tab($object, 'id', $linkback, 0, '', '', $morehtmlref, '', 0, '', '', 1);
   
   print '<br>';
 
@@ -102,6 +112,10 @@ if ($object->id)
   // }
 
   print "</div>";
+}
+else
+{
+    print $langs->trans("ErrorUnknown");
 }
 
 // End of page
