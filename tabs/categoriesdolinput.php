@@ -143,13 +143,15 @@ elseif ($action === 'confirm_delete')
     $dolinputcat = new Dolinputcat($db);
   }
 }
-elseif ($action === 'change_form')
+elseif ($action === 'edit')
 {
   $new_form = GETPOST('form', 'alpha');
+  $new_notes = GETPOST('notes', 'nohtml');
   $forms = dolinputListProductForms();
   if (empty($new_form) || in_array($new_form, $forms))
   {
     $dolinputcat->form = empty($new_form) ? null : $new_form;
+    $dolinputcat->notes = empty($new_notes) || $new_notes === '' ? null : $new_notes;
     if ($dolinputcat->update($user) < 0)
     {
       dol_print_error($db);
@@ -215,29 +217,46 @@ if ($object->id)
   if ($dolinputcat->id)
   {
     print '<form method="POST" action="'.$common_uri.'">';
-    print '<input type="hidden" name="action" value="change_form">';
-    print '<table width="100%" class="border">';
-    print '<tr><td class="titlefield notopnoleft">';
-    print 'Formulaire à utiliser dans Dolinput';
-    print '</td><td>';
     ?>
-      <select name="form">
-        <option value="" <?php if (empty($dolinputcat->form)) print 'selected="selected"'; ?>>Formulaire par defaut</option>
-        <?php
-        foreach ($forms as $form) {
-          print '<option value="'.htmlspecialchars($form).'" ';
-          if ($dolinputcat->form === $form)
-          {
-            print ' selected="selected" ';
-          }
-          print '>'.htmlspecialchars($form).'</option>';
-        }
-        ?>
-      </select>
-      <input type="submit" value="Enregistrer">
+      <input type="hidden" name="action" value="edit">
+      <table width="100%" class="border">
+        <tr>
+          <td class="titlefield notopnoleft">
+            Formulaire à utiliser dans Dolinput
+          </td>
+          <td>
+            <select name="form">
+              <option value="" <?php if (empty($dolinputcat->form)) print 'selected="selected"'; ?>>Formulaire par defaut</option>
+              <?php
+              foreach ($forms as $form) {
+                print '<option value="'.htmlspecialchars($form).'" ';
+                if ($dolinputcat->form === $form)
+                {
+                  print ' selected="selected" ';
+                }
+                print '>'.htmlspecialchars($form).'</option>';
+              }
+              ?>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="titlefield notopnoleft">
+            Notes à afficher dans Dolinput à coté du champs «Description du produit»
+          </td>
+          <td>
+              <textarea name="notes"><?php print htmlspecialchars($dolinputcat->notes) ?></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td class="titlefield notopnoleft">
+          </td>
+          <td>
+            <input type="submit" value="Enregistrer">
+          </td>
+        </tr>
+      <table>
     <?php
-    print '</td></tr>';
-    print '</table>';
     print '</form>';
   }
 

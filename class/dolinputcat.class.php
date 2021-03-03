@@ -88,15 +88,16 @@ class Dolinputcat extends CommonObject
 	 * @var array  Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
 	 */
 	public $fields=array(
-		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>1, 'visible'=>-1, 'position'=>1, 'notnull'=>1, 'index'=>1, 'comment'=>"Id",),
-		'fk_category' => array('type'=>'integer:Categorie:categories/class/categorie.class.php', 'label'=>'Category', 'enabled'=>1, 'visible'=>2, 'position'=>2, 'notnull'=>1, 'index'=>1, 'foreignkey'=>'categories.rowid',),
-		'active' => array('type'=>'boolean', 'label'=>'Actif', 'enabled'=>1, 'visible'=>1, 'position'=>61, 'notnull'=>1, 'default'=>'1', 'index'=>1, 'comment'=>"Is this category used in dolinput",),
-		'form' => array('type'=>'varchar(255)', 'label'=>'Formulaire', 'enabled'=>1, 'visible'=>1, 'position'=>62, 'notnull'=>-1, 'comment'=>"The form name for dolinput",),
-		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>1, 'visible'=>-2, 'position'=>500, 'notnull'=>1,),
-		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>1, 'visible'=>-2, 'position'=>501, 'notnull'=>-1,),
-		'fk_user_creat' => array('type'=>'integer', 'label'=>'UserAuthor', 'enabled'=>1, 'visible'=>-2, 'position'=>510, 'notnull'=>1, 'foreignkey'=>'user.rowid',),
-		'fk_user_modif' => array('type'=>'integer', 'label'=>'UserModif', 'enabled'=>1, 'visible'=>-2, 'position'=>511, 'notnull'=>-1,),
-		'import_key' => array('type'=>'varchar(14)', 'label'=>'ImportId', 'enabled'=>1, 'visible'=>-2, 'position'=>1000, 'notnull'=>-1,),
+		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>'1', 'position'=>1, 'notnull'=>1, 'visible'=>0, 'index'=>1, 'comment'=>"Id"),
+		'fk_category' => array('type'=>'integer:Categorie:categories/class/categorie.class.php', 'label'=>'Category', 'enabled'=>'1', 'position'=>2, 'notnull'=>1, 'visible'=>2, 'index'=>1, 'foreignkey'=>'categories.rowid',),
+		'active' => array('type'=>'boolean', 'label'=>'Actif', 'enabled'=>'1', 'position'=>61, 'notnull'=>1, 'visible'=>1, 'default'=>'1', 'index'=>1, 'comment'=>"Is this category used in dolinput"),
+		'form' => array('type'=>'varchar(255)', 'label'=>'Formulaire', 'enabled'=>'1', 'position'=>62, 'notnull'=>-1, 'visible'=>1, 'comment'=>"The form name for dolinput"),
+		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>'1', 'position'=>500, 'notnull'=>1, 'visible'=>-2,),
+		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>-1, 'visible'=>-2,),
+		'fk_user_creat' => array('type'=>'integer', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>510, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
+		'fk_user_modif' => array('type'=>'integer', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>511, 'notnull'=>-1, 'visible'=>-2,),
+		'import_key' => array('type'=>'varchar(14)', 'label'=>'ImportId', 'enabled'=>'1', 'position'=>1000, 'notnull'=>-1, 'visible'=>-2,),
+		'notes' => array('type'=>'text', 'label'=>'Notes', 'enabled'=>'1', 'position'=>63, 'notnull'=>0, 'visible'=>-1, 'comment'=>"Additional notes for the mobile application"),
 	);
 	public $rowid;
 	public $fk_category;
@@ -107,6 +108,7 @@ class Dolinputcat extends CommonObject
 	public $fk_user_creat;
 	public $fk_user_modif;
 	public $import_key;
+	public $notes;
 	// END MODULEBUILDER PROPERTIES
 
 
