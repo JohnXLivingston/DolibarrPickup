@@ -21,7 +21,7 @@ ALTER TABLE llx_collecte_collecte ADD INDEX idx_collecte_collecte_rowid (rowid);
 ALTER TABLE llx_collecte_collecte ADD INDEX idx_collecte_collecte_ref (ref);
 ALTER TABLE llx_collecte_collecte ADD INDEX idx_collecte_collecte_fk_soc (fk_soc);
 ALTER TABLE llx_collecte_collecte ADD INDEX idx_collecte_collecte_date_collecte (date_collecte);
-ALTER TABLE llx_collecte_collecte ADD CONSTRAINT llx_collecte_collecte_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES user(rowid);
+ALTER TABLE llx_collecte_collecte ADD CONSTRAINT llx_collecte_collecte_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 ALTER TABLE llx_collecte_collecte ADD INDEX idx_collecte_collecte_status (status);
 -- END MODULEBUILDER INDEXES
 
