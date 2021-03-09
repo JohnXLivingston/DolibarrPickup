@@ -123,17 +123,17 @@ class Collecte extends CommonObject
 	/**
 	 * @var int    Name of subtable line
 	 */
-	//public $table_element_line = 'collecte_collecteline';
+	public $table_element_line = 'collecte_collecteline';
 
 	/**
 	 * @var int    Field with ID of parent key if this field has a parent
 	 */
-	//public $fk_element = 'fk_collecte';
+	public $fk_element = 'fk_collecte';
 
 	/**
 	 * @var int    Name of subtable class that manage subtable lines
 	 */
-	//public $class_element_line = 'Collecteline';
+	public $class_element_line = 'Collecteline';
 
 	/**
 	 * @var array	List of child tables. To test if we can delete object.
@@ -144,11 +144,12 @@ class Collecte extends CommonObject
 	 * @var array	List of child tables. To know object to delete on cascade.
 	 */
 	//protected $childtablesoncascade=array('collecte_collectedet');
+	protected $childtablesoncascade = array('collecte_collecteline');
 
 	/**
 	 * @var CollecteLine[]     Array of subtable lines
 	 */
-	//public $lines = array();
+	public $lines = array();
 
 
 
@@ -726,13 +727,4 @@ class Collecte extends CommonObject
 
 		return $error;
 	}
-}
-
-/**
- * Class CollecteLine. You can also remove this and generate a CRUD class for lines objects.
- */
-class CollecteLine
-{
-	// To complete with content of an object CollecteLine
-	// We should have a field rowid, fk_collecte and rank
 }
