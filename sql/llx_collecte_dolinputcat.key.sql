@@ -20,9 +20,9 @@ ALTER TABLE llx_collecte_dolinputcat ADD CONSTRAINT llx_collecte_dolinputcat_fk_
 -- BEGIN MODULEBUILDER INDEXES
 ALTER TABLE llx_collecte_dolinputcat ADD INDEX idx_collecte_dolinputcat_rowid (rowid);
 ALTER TABLE llx_collecte_dolinputcat ADD INDEX idx_collecte_dolinputcat_fk_category (fk_category);
-ALTER TABLE llx_collecte_dolinputcat ADD CONSTRAINT llx_collecte_dolinputcat_fk_category FOREIGN KEY (fk_category) REFERENCES categories(rowid);
+ALTER TABLE llx_collecte_dolinputcat ADD CONSTRAINT llx_collecte_dolinputcat_fk_category FOREIGN KEY (fk_category) REFERENCES llx_categories(rowid);
 ALTER TABLE llx_collecte_dolinputcat ADD INDEX idx_collecte_dolinputcat_active (active);
-ALTER TABLE llx_collecte_dolinputcat ADD CONSTRAINT llx_collecte_dolinputcat_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES user(rowid);
+ALTER TABLE llx_collecte_dolinputcat ADD CONSTRAINT llx_collecte_dolinputcat_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 -- END MODULEBUILDER INDEXES
 
 
