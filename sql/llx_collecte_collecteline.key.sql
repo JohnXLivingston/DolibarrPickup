@@ -11,7 +11,8 @@
 -- GNU General Public License for more details.
 --
 -- You should have received a copy of the GNU General Public License
--- along with this program.  If not, see http://www.gnu.org/licenses/.
+-- along with this program.  If not, see https://www.gnu.org/licenses/.
+
 
 -- BEGIN MODULEBUILDER INDEXES
 ALTER TABLE llx_collecte_collecteline ADD INDEX idx_collecte_collecteline_rowid (rowid);
@@ -20,3 +21,8 @@ ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecte_fk_co
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecte_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecte_fk_user_modif FOREIGN KEY (fk_user_modif) REFERENCES llx_user(rowid);
 -- END MODULEBUILDER INDEXES
+
+--ALTER TABLE llx_collecte_collecteline ADD UNIQUE INDEX uk_collecte_collecteline_fieldxy(fieldx, fieldy);
+
+--ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_field FOREIGN KEY (fk_field) REFERENCES llx_collecte_myotherobject(rowid);
+

@@ -26,6 +26,7 @@
 require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
 //require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
 //require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
+dol_include_once('/collecte/class/collecteline.class.php');
 
 /**
  * Class for Collecte
