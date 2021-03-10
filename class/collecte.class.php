@@ -112,7 +112,6 @@ class Collecte extends CommonObject
 	public $tms;
 	public $fk_user_creat;
 	public $fk_user_modif;
-	public $import_key;
 	public $status;
 	public $fk_entrepot;
 	// END MODULEBUILDER PROPERTIES

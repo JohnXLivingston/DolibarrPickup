@@ -21,7 +21,8 @@ CREATE TABLE llx_collecte_collecteline(
 	ref varchar(128) NOT NULL, 
 	label varchar(255), 
 	description text, 
-	date_creation datetime NOT NULL, 
+	qty integer DEFAULT 1 NOT NULL, 
+	weight double(24,8) NOT NULL, 
 	tms timestamp NOT NULL, 
 	fk_user_creat integer NOT NULL, 
 	fk_user_modif integer

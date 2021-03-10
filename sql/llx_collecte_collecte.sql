@@ -26,7 +26,6 @@ CREATE TABLE llx_collecte_collecte(
 	tms timestamp, 
 	fk_user_creat integer NOT NULL, 
 	fk_user_modif integer, 
-	import_key varchar(14), 
 	status integer NOT NULL, 
 	fk_entrepot integer NOT NULL
 	-- END MODULEBUILDER FIELDS
