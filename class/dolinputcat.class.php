@@ -650,7 +650,7 @@ class Dolinputcat extends CommonObject
 	    $this->lines=array();
 
 	    $objectline = new DolinputcatLine($this->db);
-	    $result = $objectline->fetchAll('ASC', 'rank', 0, 0, array('customsql'=>'fk_dolinputcat = '.$this->id));
+	    $result = $objectline->fetchAll('ASC', 'position', 0, 0, array('customsql'=>'fk_dolinputcat = '.$this->id));
 
 	    if (is_numeric($result))
 	    {
@@ -735,5 +735,5 @@ class Dolinputcat extends CommonObject
 class DolinputcatLine
 {
 	// To complete with content of an object DolinputcatLine
-	// We should have a field rowid, fk_dolinputcat and rank
+	// We should have a field rowid, fk_dolinputcat and position
 }

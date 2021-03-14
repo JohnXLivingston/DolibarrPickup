@@ -18,13 +18,16 @@ CREATE TABLE llx_collecte_collecteline(
 	-- BEGIN MODULEBUILDER FIELDS
 	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
 	fk_collecte integer NOT NULL, 
+	fk_product integer NOT NULL, 
 	ref varchar(128) NOT NULL, 
 	label varchar(255), 
 	description text, 
 	qty integer DEFAULT 1 NOT NULL, 
 	weight double(24,8) NOT NULL, 
+	weight_units integer NOT NULL, 
 	tms timestamp NOT NULL, 
 	fk_user_creat integer NOT NULL, 
-	fk_user_modif integer
+	fk_user_modif integer, 
+	position integer NOT NULL
 	-- END MODULEBUILDER FIELDS
 ) ENGINE=innodb;

@@ -2,7 +2,7 @@
 /* Copyright (C) 2004-2018  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2018-2019  Nicolas ZABOURI         <info@inovea-conseil.com>
  * Copyright (C) 2019       Frédéric France         <frederic.france@netlogic.fr>
- * Copyright (C) 2020 Bobby Van de Bruck <bobby@ressourcerieduspectacle.fr>
+ * Copyright (C) 2021		Jonathan Dollé		<license@jonathandolle.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ class modCollecte extends DolibarrModules
             // Set this to 1 if module has its own menus handler directory (core/menus)
             'menus' => 0,
             // Set this to 1 if module overwrite template dir (core/tpl)
-            'tpl' => 0,
+            'tpl' => 1,
             // Set this to 1 if module has its own barcode directory (core/modules/barcode)
             'barcode' => 0,
             // Set this to 1 if module has its own models directory (core/modules/xxx)

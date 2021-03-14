@@ -649,7 +649,7 @@ class Collecte extends CommonObject
 	    $this->lines=array();
 
 	    $objectline = new CollecteLine($this->db);
-	    $result = $objectline->fetchAll('ASC', 'rank', 0, 0, array('customsql'=>'fk_collecte = '.$this->id));
+	    $result = $objectline->fetchAll('ASC', 'position', 0, 0, array('customsql'=>'fk_collecte = '.$this->id));
 
 	    if (is_numeric($result))
 	    {

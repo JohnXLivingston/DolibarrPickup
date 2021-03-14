@@ -25,7 +25,7 @@
 // Put here all includes required by your class file
 require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
 //require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
-//require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
 
 /**
  * Class for Collecteline
@@ -96,25 +96,31 @@ class Collecteline extends CommonObject
 	public $fields=array(
 		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>'1', 'position'=>1, 'notnull'=>1, 'visible'=>0, 'index'=>1, 'comment'=>"Id"),
 		'fk_collecte' => array('type'=>'integer:Collecte:custom/collecte/class/collecte.class.php', 'label'=>'Collecte', 'enabled'=>'1', 'position'=>15, 'notnull'=>1, 'visible'=>-1, 'index'=>1, 'foreignkey'=>'collecte_collecte.rowid',),
+		'fk_product' => array('type'=>'integer:Product:product/class/product.class.php', 'label'=>'Product', 'enabled'=>'1', 'position'=>32, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'foreignkey'=>'product.rowid',),
 		'ref' => array('type'=>'varchar(128)', 'label'=>'Ref', 'enabled'=>'1', 'position'=>20, 'notnull'=>1, 'visible'=>-1, 'index'=>1, 'showoncombobox'=>'1',),
 		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>25, 'notnull'=>0, 'visible'=>-1,),
 		'description' => array('type'=>'text', 'label'=>'Description', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>-1,),
 		'qty' => array('type'=>'integer', 'label'=>'Quantité', 'enabled'=>'1', 'position'=>45, 'notnull'=>1, 'visible'=>1, 'default'=>'1', 'isameasure'=>'1', 'css'=>'maxwidth75imp',),
 		'weight' => array('type'=>'double(24,8)', 'label'=>'Poids', 'enabled'=>'1', 'position'=>100, 'notnull'=>1, 'visible'=>1, 'isameasure'=>'1',),
+		'weight_units' => array('type'=>'integer', 'label'=>'Unité', 'enabled'=>'1', 'position'=>101, 'notnull'=>1, 'visible'=>1, 'default'=>'0',),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>140, 'notnull'=>1, 'visible'=>-1,),
 		'fk_user_creat' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>45, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'fk_user_modif' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>50, 'notnull'=>-1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
+		'position' => array('type'=>'integer', 'label'=>'Rank', 'enabled'=>'1', 'position'=>200, 'notnull'=>1, 'visible'=>0,),
 	);
 	public $rowid;
 	public $fk_collecte;
+	public $fk_product;
 	public $ref;
 	public $label;
 	public $description;
 	public $qty;
 	public $weight;
+	public $weight_units;
 	public $tms;
 	public $fk_user_creat;
 	public $fk_user_modif;
+	public $position;
 	// END MODULEBUILDER PROPERTIES
 
 
