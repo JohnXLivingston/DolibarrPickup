@@ -141,11 +141,11 @@ if (empty($reshook))
     // Actions when printing a doc from card
     include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
 
-    // Actions to send emails
-    $trigger_name='COLLECTE_SENTBYMAIL';
-    $autocopy='MAIN_MAIL_AUTOCOPY_COLLECTE_TO';
-    $trackid='collecte'.$object->id;
-    include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+    // // Actions to send emails
+    // $trigger_name='COLLECTE_SENTBYMAIL';
+    // $autocopy='MAIN_MAIL_AUTOCOPY_COLLECTE_TO';
+    // $trackid='collecte'.$object->id;
+    // include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 }
 
 
@@ -431,7 +431,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
     	if (empty($reshook))
     	{
     	    // Send
-            print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&action=presend&mode=init#formmailbeforetitle">' . $langs->trans('SendMail') . '</a>'."\n";
+          //  print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&action=presend&mode=init#formmailbeforetitle">' . $langs->trans('SendMail') . '</a>'."\n";
 
             // Modify
     		if (! empty($user->rights->collecte->write))
