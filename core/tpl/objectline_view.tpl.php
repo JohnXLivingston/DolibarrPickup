@@ -20,10 +20,10 @@
  * $langs
  * $dateSelector
  * $forceall (0 by default, 1 for supplier invoices/orders)
- * $element     (used to test $user->rights->$element->creer)
- * $permtoedit  (used to replace test $user->rights->$element->creer)
+ * $element     (used to test $user->rights->$element->write)
+ * $permtoedit  (used to replace test $user->rights->$element->write)
  * $usemargins (0 to disable all margins columns, 1 to show according to margin setup)
- * $object_rights->creer initialized from = $object->getRights()
+ * $object_rights->write initialized from = $object->getRights()
  * $disableedit, $disablemove, $disableremove
  *
  * $text, $description, $line
@@ -83,7 +83,7 @@ $coldisplay = 0; ?>
 
 <?php
 
-  if ($this->statut == 0 && ($object_rights->creer) && $action != 'selectlines') {
+  if ($this->statut == 0 && ($object_rights->write) && $action != 'selectlines') {
     print '<td class="linecoledit center">';
     $coldisplay++;
     if (($line->info_bits & 2) == 2 || !empty($disableedit)) {
