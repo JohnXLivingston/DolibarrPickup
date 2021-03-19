@@ -18,11 +18,8 @@
  * $object (invoice, order, ...)
  * $conf
  * $langs
- * $dateSelector
- * $forceall (0 by default, 1 for supplier invoices/orders)
  * $element     (used to test $user->rights->$element->write)
  * $permtoedit  (used to replace test $user->rights->$element->write)
- * $usemargins (0 to disable all margins columns, 1 to show according to margin setup)
  * $object_rights->write initialized from = $object->getRights()
  * $disableedit, $disablemove, $disableremove
  *
@@ -37,12 +34,8 @@ if (empty($object) || !is_object($object))
 }
 
 global $mysoc;
-global $forceall;
 
 $usemargins = 0;
-
-if (empty($dateSelector)) $dateSelector = 0;
-if (empty($forceall)) $forceall = 0;
 
 // add html5 elements
 $domData  = ' data-element="'.$line->element.'"';
