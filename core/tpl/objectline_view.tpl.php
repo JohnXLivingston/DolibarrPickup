@@ -51,7 +51,7 @@ $domData .= ' data-qty="'.$line->qty.'"';
 
 
 $coldisplay = 0; ?>
-<!-- BEGIN PHP TEMPLATE collecteobjectline_view.tpl.php -->
+<!-- BEGIN PHP TEMPLATE collecte/objectline_view.tpl.php -->
 <tr  id="row-<?php print $line->id?>" class="drag drop oddeven" <?php print $domData; ?> >
 <?php if (!empty($conf->global->MAIN_VIEW_LINE_NUMBER)) { ?>
 	<td class="linecolnum center"><?php $coldisplay++; ?><?php print ($i + 1); ?></td>
