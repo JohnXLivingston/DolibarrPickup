@@ -27,6 +27,8 @@ CREATE TABLE llx_collecte_collecte(
 	fk_user_creat integer NOT NULL, 
 	fk_user_modif integer, 
 	status integer NOT NULL, 
-	fk_entrepot integer NOT NULL
+	fk_entrepot integer NOT NULL, 
+	note_public text, 
+	note_private text
 	-- END MODULEBUILDER FIELDS
 ) ENGINE=innodb;

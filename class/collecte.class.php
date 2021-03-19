@@ -101,6 +101,8 @@ class Collecte extends CommonObject
 		'fk_user_modif' => array('type'=>'integer', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>511, 'notnull'=>-1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'status' => array('type'=>'integer', 'label'=>'Status', 'enabled'=>'1', 'position'=>1000, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'arrayofkeyval'=>array('0'=>'Brouillon', '1'=>'Actif', '9'=>'Annul&eacute;'),),
 		'fk_entrepot' => array('type'=>'integer:Entrepot:product/stock/class/entrepot.class.php', 'label'=>'Entrepôt', 'enabled'=>'1', 'position'=>40, 'notnull'=>1, 'visible'=>1,),
+		'note_public' => array('type'=>'html', 'label'=>'NotePublic', 'enabled'=>'1', 'position'=>161, 'notnull'=>-1, 'visible'=>-2,),
+		'note_private' => array('type'=>'html', 'label'=>'NotePrivate', 'enabled'=>'1', 'position'=>162, 'notnull'=>-1, 'visible'=>-2,),
 	);
 	public $rowid;
 	public $ref;
@@ -114,6 +116,8 @@ class Collecte extends CommonObject
 	public $fk_user_modif;
 	public $status;
 	public $fk_entrepot;
+	public $note_public;
+	public $note_private;
 	// END MODULEBUILDER PROPERTIES
 
 
