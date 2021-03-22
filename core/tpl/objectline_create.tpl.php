@@ -60,7 +60,7 @@ if (!empty($conf->product->enabled))
 	$filtertype = '0'; // product
 
 	$statustoshow = -1; // all products
-	$form->select_produits(GETPOST('idprod', 'int'), 'productid', $filtertype, $conf->product->limit_size, null, $statustoshow);
+	$form->select_produits(GETPOST('idprod', 'int'), 'idprod', $filtertype, $conf->product->limit_size, null, $statustoshow);
 
 	echo '</span>';
 }
@@ -71,14 +71,17 @@ $coldisplay++;
 print '<td class="bordertop nobottom linecolqty right"><input type="text" size="2" name="qty" id="qty" class="flat right" value="'.(GETPOSTISSET("qty") ? GETPOST("qty", 'alpha', 2) : 1).'">';
 print '</td>';
 
-if ($conf->global->PRODUCT_USE_UNITS) // TODO: necessary?
-{
-    $coldisplay++;
-	print '<td class="nobottom linecoluseunit left">';
-	print $form->selectUnits($line->fk_unit, "units");
-	print '</td>';
-}
+// if ($conf->global->PRODUCT_USE_UNITS) // TODO: necessary?
+// {
+//     $coldisplay++;
+// 	print '<td class="nobottom linecoluseunit left">';
+// 	print $form->selectUnits($line->fk_unit, "units");
+// 	print '</td>';
+// }
 
+$coldisplay++;
+print '<td class="bordertop nobottom right"><input type="text" size="2" name="weight" id="weight" class="flat right" value="'.(GETPOSTISSET("weight") ? GETPOST("weight", 'float') : 0).'">';
+print '</td>';
 
 $coldisplay += $colspan;
 print '<td class="bordertop nobottom linecoledit center valignmiddle" colspan="'.$colspan.'">';

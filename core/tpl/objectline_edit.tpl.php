@@ -47,8 +47,7 @@ $coldisplay++;
 	<div id="line_<?php echo $line->id; ?>"></div>
 
 	<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
-  <input type="hidden" id="collecte_id" name="collecteid" value="<?php echo (!empty($line->fk_collecte) ? $line->fk_collecte : 0); ?>" />
-	<input type="hidden" id="product_id" name="productid" value="<?php echo (!empty($line->fk_product) ? $line->fk_product : 0); ?>" />
+	<input type="hidden" id="product_id" name="idprod" value="<?php echo (!empty($line->fk_product) ? $line->fk_product : 0); ?>" />
 
 	<?php if ($line->fk_product > 0) { ?>
 		<a href="<?php echo DOL_URL_ROOT.'/product/card.php?id='.$line->fk_product; ?>">
@@ -67,11 +66,12 @@ $coldisplay++;
 	<?php }	?>
 
 	<?php
-	if (is_object($hookmanager))
+	if (is_object($hookmanager)) // TODO: necessary ?
 	{
 		$fk_parent_line = (GETPOST('fk_parent_line') ? GETPOST('fk_parent_line') : $line->fk_parent_line);
-	    $parameters = array('line'=>$line, 'fk_parent_line'=>$fk_parent_line, 'var'=>$var, 'dateSelector'=>$dateSelector, 'seller'=>$seller, 'buyer'=>$buyer);
-	    $reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $this, $action);
+		// FIXME: there is no $dateSelector in this file. Nor $seller or $buyer.
+		$parameters = array('line'=>$line, 'fk_parent_line'=>$fk_parent_line, 'var'=>$var, 'dateSelector'=>$dateSelector, 'seller'=>$seller, 'buyer'=>$buyer);
+		$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $this, $action);
 	}
 
 	// Do not allow editing during a situation cycle
@@ -95,20 +95,26 @@ $coldisplay++;
 	<td class="right">
 	<?php $coldisplay++;
 		print '<input size="3" type="text" class="flat right" name="qty" id="qty" value="'.$line->qty.'"';
-		if ($line->fk_prev_id != null) print ' readonly';
+		if ($line->fk_prev_id != null) print ' readonly'; // FIXME: necessary?
 		print '>';
 	?>
 	</td>
 
 	<?php
-	if ($conf->global->PRODUCT_USE_UNITS) // FIXME: necessary?
-	{
-	    $coldisplay++;
-		print '<td class="left">';
-		print $form->selectUnits($line->fk_unit, "units");
-		print '</td>';
-	}
+	// if ($conf->global->PRODUCT_USE_UNITS) // FIXME: necessary?
+	// {
+	//     $coldisplay++;
+	// 	print '<td class="left">';
+	// 	print $form->selectUnits($line->fk_unit, "units");
+	// 	print '</td>';
+	// }
 	?>
+
+	<td class="right">
+	<?php $coldisplay++;
+		print '<input size="3" type="text" class="flat right" name="weight" id="weight" value="'.$line->weight.'">';
+	?>
+	</td>
 
 	<!-- colspan for this td because it replace total_ht+3 td for buttons+... -->
 	<td class="center valignmiddle" colspan="<?php echo $colspan; ?>"><?php $coldisplay += $colspan; ?>

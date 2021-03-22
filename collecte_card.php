@@ -60,6 +60,7 @@ if (! $res) die("Include of main fails");
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 dol_include_once('/collecte/class/collecte.class.php');
+dol_include_once('/collecte/class/collecteline.class.php');
 dol_include_once('/collecte/lib/collecte_collecte.lib.php');
 
 // Load translation files required by the page
@@ -122,30 +123,77 @@ if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'e
 
 if (empty($reshook))
 {
-    $error=0;
+	$langs->load('errors');
+	$error = 0;
 
-    $permissiontodelete = $user->rights->collecte->delete || ($permissiontoadd && $object->status == 0);
-    $backurlforlist = dol_buildpath('/collecte/collecte_list.php', 1);
-    if (empty($backtopage)) {
-        if (empty($id)) $backtopage = $backurlforlist;
-        else $backtopage = dol_buildpath('/collecte/collecte_card.php', 1).'?id='.($id > 0 ? $id : '__ID__');
-    }
-    $triggermodname = 'COLLECTE_COLLECTE_MODIFY';	// Name of trigger action code to execute when we modify record
+	$permissiontodelete = $user->rights->collecte->delete || ($permissiontoadd && $object->status == 0);
+	$backurlforlist = dol_buildpath('/collecte/collecte_list.php', 1);
+	if (empty($backtopage)) {
+			if (empty($id)) $backtopage = $backurlforlist;
+			else $backtopage = dol_buildpath('/collecte/collecte_card.php', 1).'?id='.($id > 0 ? $id : '__ID__');
+	}
+	$triggermodname = 'COLLECTE_COLLECTE_MODIFY';	// Name of trigger action code to execute when we modify record
 
-    // Actions cancel, add, update, delete or clone
-    include DOL_DOCUMENT_ROOT.'/core/actions_addupdatedelete.inc.php';
+	// Actions cancel, add, update, delete or clone
+	include DOL_DOCUMENT_ROOT.'/core/actions_addupdatedelete.inc.php';
 
-    // Actions when linking object each other
-    include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';
+	// Actions when linking object each other
+	include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';
 
-    // Actions when printing a doc from card
-    include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+	// Actions when printing a doc from card
+	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
 
-    // // Actions to send emails
-    // $trigger_name='COLLECTE_SENTBYMAIL';
-    // $autocopy='MAIN_MAIL_AUTOCOPY_COLLECTE_TO';
-    // $trackid='collecte'.$object->id;
-    // include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+	// // Actions to send emails
+	// $trigger_name='COLLECTE_SENTBYMAIL';
+	// $autocopy='MAIN_MAIL_AUTOCOPY_COLLECTE_TO';
+	// $trackid='collecte'.$object->id;
+	// include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+
+	// Action addline
+	if ($action == 'addline' && $permissiontoadd && !empty($object->id)) {
+		$idprod = GETPOST('idprod', 'int');
+		$qty = price2num(GETPOST('qty', 'int'));
+		$line_desc = GETPOST('product_desc');
+		$weight = GETPOST('weight', 'float');
+		$weight_units = 0; // FIXME: is that correct?
+
+		if ($qty == '') {
+			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')), null, 'errors');
+			$error++;
+		}
+		if ($weight == '') {
+			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Weight')), null, 'errors');
+			$error++;
+		}
+		if (!($idprod > 0)) {
+			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Product')), null, 'errors');
+			$error++;
+		}
+
+		if (!$error) {
+			$line = new Collecteline($db);
+			$line->fk_collecte = $object->id;
+			$line->fk_product = $idprod;
+			$line->description = $line_desc;
+			$line->weight = $weight;
+			$line->weight_units = $weight_units;
+
+			$line->position = $object->line_max(0) + 1;
+
+			$result = $line->create($user);
+			if ($result <= 0) {
+				setEventMessages($line->error, $line->errors, 'errors');
+				$action = '';
+			} else {
+				unset($_POST['idprod']);
+				unset($_POST['qty']);
+				unset($_POST['product_desc']);
+				unset($_POST['weight']);
+
+				$object->fetchLines();
+			}
+		}
+	}
 }
 
 
@@ -403,7 +451,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 			if ($action != 'editline')
 			{
 				// Add products/services form
-				$object->formAddObjectLine(1, $mysoc, $soc);
+				$object->formAddObjectLine(1, $mysoc, null);
 
 				$parameters = array();
 				$reshook = $hookmanager->executeHooks('formAddObjectLine', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
