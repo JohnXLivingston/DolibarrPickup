@@ -27,70 +27,56 @@ if (empty($object) || !is_object($object)) {
 }
 
 
-global $forcetoshowtitlelines;
+global $forcetoshowtitlelines; // TODO: necessary?
 
 // Define colspan for the button 'Add'
 $colspan = 3; // Col col edit + col delete + move button
 
-// Lines for extrafield
-$objectline = new Collecteline($this->db);
+$line = new Collecteline($this->db);
 
 print "<!-- BEGIN PHP TEMPLATE collecte/objectline_create.tpl.php -->\n";
 
 $nolinesbefore = (count($this->lines) == 0 || $forcetoshowtitlelines);
 if ($nolinesbefore) {
-    // TODO: print title line.
+    // TODO: print title line, or always display the objectline_view template (even when no lines).
 }
-print '<tr class="pair nodrag nodrop nohoverpair'.(($nolinesbefore) ? '' : ' liste_titre_create').'">';
+
 $coldisplay = 0;
+?>
 
-// Adds a line numbering column
-if (!empty($conf->global->MAIN_VIEW_LINE_NUMBER)) {
-    $coldisplay++;
-    echo '<td class="bordertop nobottom linecolnum center"></td>';
-}
+<tr class="pair nodrag nodrop nohoverpair <?php print (($nolinesbefore) ? '' : ' liste_titre_create'); ?>">
+	<td class="bordertop nobottom linecoldescription minwidth500imp">
+		<?php $coldisplay++; ?>
+		<span class="prod_entry_mode_predef">
+		<?php
+			$filtertype = '0'; // product
 
-$coldisplay++;
-print '<td class="bordertop nobottom linecoldescription minwidth500imp">';
+			$statustoshow = -1; // all products
+			$form->select_produits(GETPOST('idprod', 'int'), 'idprod', $filtertype, $conf->product->limit_size, null, $statustoshow);		
+		?>
+		</span>
+	</td>
+	<td class="bordertop nobottom right">
+		<?php $coldisplay++;
+			print $line->showInputField(null, 'qty', GETPOSTISSET("qty") ? GETPOST('qty', 'int') : 1);
+		?>
+	</td>
+	<td class="bordertop nobottom right">
+		<?php $coldisplay++;
+			print $line->showInputField(null, 'weight', GETPOSTISSET("weight") ? GETPOST('weight', 'float') : 0);
+		?>
+	</td>
 
-// Predefined product/service
-if (!empty($conf->product->enabled))
-{
-	echo '<span class="prod_entry_mode_predef">';
-	$filtertype = '0'; // product
+	<!-- colspan for this td because it replace total_ht+3 td for buttons+... -->
+	<td class="bordertop nobottom linecoledit center valignmiddle" colspan="<?php echo $colspan; ?>">
+		<?php $coldisplay += $colspan; ?>
+		<input type="submit" class="button" value="<?php echo $langs->trans("Add"); ?>" name="addline" id="addline">
+	</td>
+</tr>
 
-	$statustoshow = -1; // all products
-	$form->select_produits(GETPOST('idprod', 'int'), 'idprod', $filtertype, $conf->product->limit_size, null, $statustoshow);
-
-	echo '</span>';
-}
-
-
-
-$coldisplay++;
-print '<td class="bordertop nobottom linecolqty right"><input type="text" size="2" name="qty" id="qty" class="flat right" value="'.(GETPOSTISSET("qty") ? GETPOST("qty", 'alpha', 2) : 1).'">';
-print '</td>';
-
-// if ($conf->global->PRODUCT_USE_UNITS) // TODO: necessary?
-// {
-//     $coldisplay++;
-// 	print '<td class="nobottom linecoluseunit left">';
-// 	print $form->selectUnits($line->fk_unit, "units");
-// 	print '</td>';
-// }
-
-$coldisplay++;
-print '<td class="bordertop nobottom right"><input type="text" size="2" name="weight" id="weight" class="flat right" value="'.(GETPOSTISSET("weight") ? GETPOST("weight", 'float') : 0).'">';
-print '</td>';
-
-$coldisplay += $colspan;
-print '<td class="bordertop nobottom linecoledit center valignmiddle" colspan="'.$colspan.'">';
-print '<input type="submit" class="button" value="'.$langs->trans('Add').'" name="addline" id="addline">';
-print '</td>';
-print '</tr>';
-
-if (is_object($objectline)) {
-	print $objectline->showOptionals($extrafields, 'edit', array('style'=>$bcnd[$var], 'colspan'=>$coldisplay), '', '', 1);
+<?php
+if (!empty($extrafields)) {
+	print $line->showOptionals($extrafields, 'edit', array('class'=>'tredited', 'colspan'=>$coldisplay), '', '', 1);
 }
 ?>
 

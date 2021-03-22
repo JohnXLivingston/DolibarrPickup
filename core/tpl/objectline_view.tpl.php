@@ -45,11 +45,7 @@ $domData .= ' data-qty="'.$line->qty.'"';
 
 $coldisplay = 0; ?>
 <!-- BEGIN PHP TEMPLATE collecte/objectline_view.tpl.php -->
-<tr  id="row-<?php print $line->id?>" class="drag drop oddeven" <?php print $domData; ?> >
-<?php if (!empty($conf->global->MAIN_VIEW_LINE_NUMBER)) { ?>
-	<td class="linecolnum center"><?php $coldisplay++; ?><?php print ($i + 1); ?></td>
-<?php } ?>
-
+<tr id="row-<?php print $line->id?>" class="drag drop oddeven" <?php print $domData; ?> >
 	<td class="linecoldescription minwidth300imp"><?php $coldisplay++; ?>
     <div id="line_<?php print $line->id; ?>"></div>
     <?php
@@ -65,69 +61,66 @@ $coldisplay = 0; ?>
       }
     ?>
   </td>
-	<td class="linecolqty nowrap right"><?php $coldisplay++; ?>
+	<td class="nowrap right">
+    <?php $coldisplay++; ?>
     <?php
 	    print price($line->qty, 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
     ?>
   </td>
-  <td><?php $coldisplay++; ?>
-      <?php print $line->weight . ' ' . measuringUnitString(0, "weight", $line->weight_units); ?>
+  <td class="nowrap right">
+    <?php $coldisplay++; ?>
+    <?php print $line->weight . ' ' . measuringUnitString(0, "weight", $line->weight_units); ?>
   </td>
 
-<?php
-
-  if ($this->statut == 0 && ($object_rights->write) && $action != 'selectlines') {
-    print '<td class="linecoledit center">';
-    $coldisplay++;
-    if (($line->info_bits & 2) == 2 || !empty($disableedit)) {
-    } else { ?>
-      <a class="editfielda reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=editline&amp;lineid='.$line->id.'#line_'.$line->id; ?>">
-      <?php print img_edit().'</a>';
-    }
-    print '</td>';
-
-    print '<td class="linecoldelete center">';
-    $coldisplay++;
-    if (($line->fk_prev_id == null) && empty($disableremove)) { //La suppression n'est autorisée que si il n'y a pas de ligne dans une précédente situation
-      print '<a class="reposition" href="'.$_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=ask_deleteline&amp;lineid='.$line->id.'">';
-      print img_delete();
-      print '</a>';
-    }
-    print '</td>';
-
-    if ($num > 1 && $conf->browser->layout != 'phone' && ($this->situation_counter == 1 || !$this->situation_cycle_ref) && empty($disablemove)) {
-      print '<td class="linecolmove tdlineupdown center">';
-      $coldisplay++;
-      if ($i > 0) { ?>
-        <a class="lineupdown" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=up&amp;rowid='.$line->id; ?>">
-        <?php print img_up('default', 0, 'imgupforline'); ?>
+  <?php if ($this->statut == 0 && ($object_rights->write) && $action != 'selectlines') { ?>
+    <td class="linecoledit center">
+      <?php $coldisplay++; ?>
+      <?php if (empty($disableedit)) { ?>
+        <a class="editfielda reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=editline&amp;lineid='.$line->id.'#line_'.$line->id; ?>">
+          <?php print img_edit(); ?>
         </a>
-      <?php }
-      if ($i < $num - 1) { ?>
-        <a class="lineupdown" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=down&amp;rowid='.$line->id; ?>">
-        <?php print img_down('default', 0, 'imgdownforline'); ?>
+      <?php } ?>
+    </td>
+    <td class="linecoldelete center">
+      <?php $coldisplay++; ?>
+      <?php if (empty($disableremove)) { ?>
+        <a class="reposition"
+          href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=ask_deleteline&amp;lineid='.$line->id; ?>"
+        >
+          <?php print img_delete(); ?>
         </a>
-      <?php }
-      print '</td>';
-      } else {
-      print '<td '.(($conf->browser->layout != 'phone' && empty($disablemove)) ? ' class="linecolmove tdlineupdown center"' : ' class="linecolmove center"').'></td>';
-      $coldisplay++;
-    }
-  } else {
-    print '<td colspan="3"></td>';
-    $coldisplay = $coldisplay + 3;
-  }
+      <?php } ?>
+    </td>
+    <td class="linecolmove tdlineupdown center">
+      <?php $coldisplay++; ?>
+      <?php if (empty($disableremove)) { ?>
+        <?php if ($i > 0) { ?>
+          <a class="lineupdown" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=up&amp;rowid='.$line->id; ?>">
+          <?php print img_up('default', 0, 'imgupforline'); ?>
+          </a>
+        <?php } ?>
+        <?php if ($i < $num - 1) { ?>
+          <a class="lineupdown" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=down&amp;rowid='.$line->id; ?>">
+          <?php print img_down('default', 0, 'imgdownforline'); ?>
+          </a>
+        <?php } ?>
+      <?php } ?>
+    </td>
+  <?php } else { ?>
+    <?php $coldisplay = $coldisplay + 3; ?>
+    <td colspan="3"></td>
+  <?php } ?>
 
-  if ($action == 'selectlines') { ?>
+  <?php if ($action == 'selectlines') { ?>
     <td class="linecolcheck center"><input type="checkbox" class="linecheckbox" name="line_checkbox[<?php print $i + 1; ?>]" value="<?php print $line->id; ?>" ></td>
-  <?php }
+  <?php } ?>
+</tr>
 
-print "</tr>\n";
-
+<?php
 //Line extrafield
 if (!empty($extrafields))
 {
 	print $line->showOptionals($extrafields, 'view', array('style'=>'class="drag drop oddeven"', 'colspan'=>$coldisplay), '', '', 1);
 }
-
-print "<!-- END PHP TEMPLATE collecte/objectline_view.tpl.php -->\n";
+?>
+<!-- END PHP TEMPLATE collecte/objectline_view.tpl.php -->

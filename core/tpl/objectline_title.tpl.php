@@ -36,38 +36,35 @@ if (empty($object) || !is_object($object))
 
 print "<!-- BEGIN PHP TEMPLATE collecte/objectline_title.tpl.php -->\n";
 
-// Title line
-print "<thead>\n";
+?>
+<thead>
+	<tr class="liste_titre nodrag nodrop">
+		<td class="linecoldescription">
+			<?php print $langs->trans('Description'); ?>
+		</td>
+		<td class="right">
+			<?php print $langs->trans('Qty'); ?>
+		</td>
+		<td class="right">
+			<?php print $langs->trans('Weight'); ?>
+		</td>
+		<td class="linecoledit"></td><?php // No width to allow autodim ?>
+		<td class="linecoldelete" style="width: 10px"></td>
+		<td class="linecolmove" style="width: 10px"></td>
+		<?php if ($action == 'selectlines') { ?>
+			<td class="linecolcheckall center">
+				<input type="checkbox" class="linecheckboxtoggle" />
+				<script>
+					$(document).ready(function() {
+						$(".linecheckboxtoggle").click(function() {
+							var checkBoxes = $(".linecheckbox");
+							checkBoxes.prop("checked", this.checked);
+						})
+					});
+				</script>
+			</td>
+		<?php } ?>
+	</tr>
+</thead>
 
-print '<tr class="liste_titre nodrag nodrop">';
-
-// Adds a line numbering column
-if (!empty($conf->global->MAIN_VIEW_LINE_NUMBER)) print '<td class="linecolnum center">&nbsp;</td>';
-
-// Description
-print '<td class="linecoldescription">'.$langs->trans('Description').'</td>';
-
-// Qty
-print '<td class="linecolqty right">'.$langs->trans('Qty').'</td>';
-
-// Weight
-print '<td>'.$langs->trans('Weight').'</td>';
-
-print '<td class="linecoledit"></td>'; // No width to allow autodim
-
-print '<td class="linecoldelete" style="width: 10px"></td>';
-
-print '<td class="linecolmove" style="width: 10px"></td>';
-
-if ($action == 'selectlines')
-{
-	print '<td class="linecolcheckall center">';
-	print '<input type="checkbox" class="linecheckboxtoggle" />';
-	print '<script>$(document).ready(function() {$(".linecheckboxtoggle").click(function() {var checkBoxes = $(".linecheckbox");checkBoxes.prop("checked", this.checked);})});</script>';
-	print '</td>';
-}
-
-print "</tr>\n";
-print "</thead>\n";
-
-print "<!-- END PHP TEMPLATE collecte/objectline_title.tpl.php -->\n";
+<!-- END PHP TEMPLATE collecte/objectline_title.tpl.php -->
