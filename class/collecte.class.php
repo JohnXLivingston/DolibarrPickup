@@ -730,4 +730,30 @@ class Collecte extends CommonObject
 
 		return $error;
 	}
+
+
+
+	public function initCollecteLine($idprod, $qty = 1, $description = '') {
+		global $db;
+
+		$line = new CollecteLine($db);
+		$line->fk_collecte = $this->id;
+		$line->fk_product = $idprod;
+		$line->description = $description;
+		$line->qty = $qty;
+
+		$product = new Product($db);
+		if ($product->fetch($idprod) <= 0) {
+			dol_syslog(__METHOD__ . ' ' . 'Product '.$idprod.' not found', LOG_ERR);
+		} else {
+			$line->ref = $product->ref;
+			$line->label = $product->label;
+			$line->weight = $qty * $product->weight;
+			$line->weight_units = $product->weight_units;
+		}
+
+		$line->position = $this->line_max(0) + 1;
+
+		return $line;
+	}
 }

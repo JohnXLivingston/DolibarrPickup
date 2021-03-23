@@ -62,9 +62,7 @@ $coldisplay = 0;
 		?>
 	</td>
 	<td class="bordertop nobottom right">
-		<?php $coldisplay++;
-			print $line->showInputField(null, 'weight', GETPOSTISSET("weight") ? GETPOST('weight', 'float') : 0);
-		?>
+		<?php $coldisplay++; ?>
 	</td>
 
 	<!-- colspan for this td because it replace total_ht+3 td for buttons+... -->

@@ -154,15 +154,9 @@ if (empty($reshook))
 		$idprod = GETPOST('idprod', 'int');
 		$qty = price2num(GETPOST('qty', 'int'));
 		$line_desc = GETPOST('product_desc');
-		$weight = GETPOST('weight', 'float');
-		$weight_units = 0; // FIXME: is that correct?
 
 		if ($qty == '') {
 			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')), null, 'errors');
-			$error++;
-		}
-		if ($weight == '') {
-			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Weight')), null, 'errors');
 			$error++;
 		}
 		if (!($idprod > 0)) {
@@ -177,18 +171,7 @@ if (empty($reshook))
 		}
 
 		if (!$error) {
-			$line = new CollecteLine($db);
-			$line->fk_collecte = $object->id;
-			$line->fk_product = $idprod;
-			$line->description = $line_desc;
-			$line->weight = $weight;
-			$line->weight_units = $weight_units;
-
-			$line->ref = $line_product->ref;
-			$line->label = $line_product->label;
-
-			$line->position = $object->line_max(0) + 1;
-
+			$line = $object->initCollecteLine($idprod, $qty, $line_desc);
 			$result = $line->create($user);
 			if ($result <= 0) {
 				setEventMessages($line->error, $line->errors, 'errors');
@@ -197,7 +180,6 @@ if (empty($reshook))
 				unset($_POST['idprod']);
 				unset($_POST['qty']);
 				unset($_POST['product_desc']);
-				unset($_POST['weight']);
 
 				$object->fetchLines();
 			}
