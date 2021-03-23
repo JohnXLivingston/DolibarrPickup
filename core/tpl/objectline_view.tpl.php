@@ -85,7 +85,7 @@ $coldisplay = 0; ?>
       <?php $coldisplay++; ?>
       <?php if (empty($disableremove)) { ?>
         <a class="reposition"
-          href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=ask_deleteline&amp;lineid='.$line->id; ?>"
+          href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=deleteline&amp;lineid='.$line->id; ?>"
         >
           <?php print img_delete(); ?>
         </a>

@@ -74,7 +74,7 @@ $confirm    = GETPOST('confirm', 'alpha');
 $cancel     = GETPOST('cancel', 'aZ09');
 $contextpage= GETPOST('contextpage', 'aZ')?GETPOST('contextpage', 'aZ'):'collectecard';   // To manage different context of search
 $backtopage = GETPOST('backtopage', 'alpha');
-//$lineid   = GETPOST('lineid', 'int');
+$lineid   = GETPOST('lineid', 'int');
 
 // Initialize technical objects
 $object=new Collecte($db);
