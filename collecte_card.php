@@ -170,6 +170,12 @@ if (empty($reshook))
 			$error++;
 		}
 
+		$line_product = new Product($db);
+		if ($line_product->fetch($idprod) <= 0) {
+			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Product')), null, 'errors');
+			$error++;
+		}
+
 		if (!$error) {
 			$line = new CollecteLine($db);
 			$line->fk_collecte = $object->id;
@@ -177,6 +183,9 @@ if (empty($reshook))
 			$line->description = $line_desc;
 			$line->weight = $weight;
 			$line->weight_units = $weight_units;
+
+			$line->ref = $line_product->ref;
+			$line->label = $line_product->label;
 
 			$line->position = $object->line_max(0) + 1;
 
