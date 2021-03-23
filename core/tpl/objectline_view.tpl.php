@@ -51,7 +51,7 @@ $coldisplay = 0; ?>
     <?php
       if ($line->fk_product > 0)
       {
-        print $form->textwithtooltip($text, $description, 3, '', '', $i, 0, (!empty($line->fk_parent_line) ?img_picto('', 'rightarrow') : ''));
+        print $form->textwithtooltip($text, $description, 3, '', '', $i, 0, '');
       }
 
       // Add description in form
