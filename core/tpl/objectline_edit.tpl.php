@@ -60,13 +60,13 @@ $coldisplay = 0;
 		<?php }	?>
 
 		<?php
-			if (is_object($hookmanager)) // TODO: necessary ?
-			{
-				$fk_parent_line = (GETPOST('fk_parent_line') ? GETPOST('fk_parent_line') : $line->fk_parent_line);
-				// FIXME: there is no $dateSelector in this file. Nor $seller or $buyer.
-				$parameters = array('line'=>$line, 'fk_parent_line'=>$fk_parent_line, 'var'=>$var, 'dateSelector'=>$dateSelector, 'seller'=>$seller, 'buyer'=>$buyer);
-				$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $this, $action);
-			}
+			// if (is_object($hookmanager)) // TODO: necessary ?
+			// {
+			// 	$fk_parent_line = (GETPOST('fk_parent_line') ? GETPOST('fk_parent_line') : $line->fk_parent_line);
+			// 	// FIXME: there is no $dateSelector in this file. Nor $seller or $buyer.
+			// 	$parameters = array('line'=>$line, 'fk_parent_line'=>$fk_parent_line, 'var'=>$var, 'dateSelector'=>$dateSelector, 'seller'=>$seller, 'buyer'=>$buyer);
+			// 	$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $this, $action);
+			// }
 
 			print $line->showInputField(null, 'description', GETPOSTISSET("description") ? GETPOST('description', 'none') : $line->description);
 		?>
