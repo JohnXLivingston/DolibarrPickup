@@ -19,7 +19,7 @@
 /**
  * \file        class/collecteline.class.php
  * \ingroup     collecte
- * \brief       This file is a CRUD class file for Collecteline (Create/Read/Update/Delete)
+ * \brief       This file is a CRUD class file for CollecteLine (Create/Read/Update/Delete)
  */
 
 // Put here all includes required by your class file
@@ -28,9 +28,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
 require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
 
 /**
- * Class for Collecteline
+ * Class for CollecteLine
  */
-class Collecteline extends CommonObjectLine
+class CollecteLine extends CommonObjectLine
 {
 	/**
 	 * @var string ID to identify managed object.

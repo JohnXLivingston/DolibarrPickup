@@ -32,7 +32,7 @@ global $forcetoshowtitlelines; // TODO: necessary?
 // Define colspan for the button 'Add'
 $colspan = 2; // Col col edit + col delete
 
-$line = new Collecteline($this->db);
+$line = new CollecteLine($this->db);
 
 print "<!-- BEGIN PHP TEMPLATE collecte/objectline_create.tpl.php -->\n";
 

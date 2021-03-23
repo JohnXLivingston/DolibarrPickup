@@ -171,7 +171,7 @@ if (empty($reshook))
 		}
 
 		if (!$error) {
-			$line = new Collecteline($db);
+			$line = new CollecteLine($db);
 			$line->fk_collecte = $object->id;
 			$line->fk_product = $idprod;
 			$line->description = $line_desc;

@@ -136,7 +136,7 @@ class Collecte extends CommonObject
 	/**
 	 * @var int    Name of subtable class that manage subtable lines
 	 */
-	public $class_element_line = 'Collecteline';
+	public $class_element_line = 'CollecteLine';
 
 	/**
 	 * @var array	List of child tables. To test if we can delete object.
