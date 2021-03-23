@@ -19,6 +19,7 @@ CREATE TABLE llx_collecte_collecteline(
 	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
 	fk_collecte integer NOT NULL, 
 	fk_product integer NOT NULL, 
+	label varchar(255), 
 	description text, 
 	qty integer DEFAULT 1 NOT NULL, 
 	weight double(24,8) NOT NULL, 
