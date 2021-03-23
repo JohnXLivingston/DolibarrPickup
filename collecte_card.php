@@ -151,6 +151,9 @@ if (empty($reshook))
 
 	// Action addline
 	if ($action == 'addline' && $permissiontoadd && !empty($object->id)) {
+		$langs->load('errors');
+		$error = 0;
+
 		$idprod = GETPOST('idprod', 'int');
 		$qty = price2num(GETPOST('qty', 'int'));
 		$line_desc = GETPOST('product_desc');
@@ -160,12 +163,6 @@ if (empty($reshook))
 			$error++;
 		}
 		if (!($idprod > 0)) {
-			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Product')), null, 'errors');
-			$error++;
-		}
-
-		$line_product = new Product($db);
-		if ($line_product->fetch($idprod) <= 0) {
 			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Product')), null, 'errors');
 			$error++;
 		}
@@ -182,6 +179,52 @@ if (empty($reshook))
 				unset($_POST['product_desc']);
 
 				$object->fetchLines();
+			}
+		}
+	}
+
+	// Action updateline
+	if ($action == 'updateline' && $permissiontoadd && !empty($object->id)) {
+		$langs->load('errors');
+		$error = 0;
+
+		$line_desc = GETPOST('product_desc');
+		$qty = price2num(GETPOST('qty', 'int'));
+		$weight = GETPOST('weight', 'float');
+		$weight_units = GETPOST('weight_units', 'int');
+
+		if ($qty == '') {
+			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')), null, 'errors');
+			$error++;
+		}
+		if ($weight == '') {
+			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Weight')), null, 'errors');
+			$error++;
+		}
+
+		if (!$error) {
+			$line = new CollecteLine($db);
+			if ($line->fetch($lineid) <= 0) {
+				setEventMessages($line->error, $line->errors, 'errors');
+				$action = 'editline';
+			} else {
+				$line->qty = $qty;
+				$line->description = $line_desc;
+				$line->weight = $weight;
+				$line->weight_units = $weight_units;
+
+				$result = $line->update($user);
+				if ($result <= 0) {
+					setEventMessages($line->error, $line->errors, 'errors');
+					$action = 'editline';
+				} else {
+					unset($_POST['qty']);
+					unset($_POST['weight']);
+					unset($_POST['weight_units']);
+					unset($_POST['product_desc']);
+
+					$object->fetchLines();
+				}
 			}
 		}
 	}
