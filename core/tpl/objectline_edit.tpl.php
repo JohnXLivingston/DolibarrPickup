@@ -30,7 +30,7 @@ if (empty($object) || !is_object($object))
 
 
 // Define colspan for the button 'Add'
-$colspan = 3; // Col col edit + col delete + move button
+$colspan = 2; // Col col edit + col delete
 
 print "<!-- BEGIN PHP TEMPLATE collecte/objectline_edit.tpl.php -->\n";
 

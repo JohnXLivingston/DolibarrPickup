@@ -50,7 +50,6 @@ print "<!-- BEGIN PHP TEMPLATE collecte/objectline_title.tpl.php -->\n";
 		</td>
 		<td class="linecoledit"></td><?php // No width to allow autodim ?>
 		<td class="linecoldelete" style="width: 10px"></td>
-		<td class="linecolmove" style="width: 10px"></td>
 		<?php if ($action == 'selectlines') { ?>
 			<td class="linecolcheckall center">
 				<input type="checkbox" class="linecheckboxtoggle" />

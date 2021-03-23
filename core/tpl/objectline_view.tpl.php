@@ -21,7 +21,7 @@
  * $element     (used to test $user->rights->$element->write)
  * $permtoedit  (used to replace test $user->rights->$element->write)
  * $object_rights->write initialized from = $object->getRights()
- * $disableedit, $disablemove, $disableremove
+ * $disableedit, $disablemove (not used for now because of bugs in dolibarr), $disableremove
  *
  * $text, $description, $line
  */
@@ -91,24 +91,9 @@ $coldisplay = 0; ?>
         </a>
       <?php } ?>
     </td>
-    <td class="linecolmove tdlineupdown center">
-      <?php $coldisplay++; ?>
-      <?php if (empty($disableremove)) { ?>
-        <?php if ($i > 0) { ?>
-          <a class="lineupdown" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=up&amp;rowid='.$line->id; ?>">
-          <?php print img_up('default', 0, 'imgupforline'); ?>
-          </a>
-        <?php } ?>
-        <?php if ($i < $num - 1) { ?>
-          <a class="lineupdown" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=down&amp;rowid='.$line->id; ?>">
-          <?php print img_down('default', 0, 'imgdownforline'); ?>
-          </a>
-        <?php } ?>
-      <?php } ?>
-    </td>
   <?php } else { ?>
-    <?php $coldisplay = $coldisplay + 3; ?>
-    <td colspan="3"></td>
+    <?php $coldisplay = $coldisplay + 2; ?>
+    <td colspan="2"></td>
   <?php } ?>
 
   <?php if ($action == 'selectlines') { ?>
