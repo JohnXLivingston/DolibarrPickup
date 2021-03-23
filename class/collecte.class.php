@@ -747,8 +747,14 @@ class Collecte extends CommonObject
 		} else {
 			$line->ref = $product->ref;
 			$line->label = $product->label;
-			$line->weight = $qty * $product->weight;
-			$line->weight_units = $product->weight_units;
+			// FIXME: this code is temporary, because I dont know how to handle weight_units.
+			// So I only accept 0 or empty.
+			if (!empty($product->weight) && empty($product->weight_units) || $product->weight_units == 0) {
+				$line->weight = $qty * $product->weight;
+			} else {
+				$line->weight = 0;
+			}
+			$line->weight_units = 0;
 		}
 
 		$line->position = $this->line_max(0) + 1;

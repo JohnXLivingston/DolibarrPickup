@@ -189,7 +189,7 @@ if (empty($reshook))
 		$line_desc = GETPOST('description', 'nohtml');
 		$qty = price2num(GETPOST('qty', 'int'));
 		$weight = GETPOST('weight', 'float');
-		$weight_units = GETPOST('weight_units', 'int');
+		// $weight_units = GETPOST('weight_units', 'int');
 
 		if ($qty == '') {
 			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')), null, 'errors');
@@ -209,7 +209,7 @@ if (empty($reshook))
 				$line->qty = $qty;
 				$line->description = $line_desc;
 				$line->weight = $weight;
-				$line->weight_units = $weight_units;
+				// $line->weight_units = $weight_units;
 
 				$result = $line->update($user);
 				if ($result <= 0) {
@@ -218,7 +218,7 @@ if (empty($reshook))
 				} else {
 					unset($_POST['qty']);
 					unset($_POST['weight']);
-					unset($_POST['weight_units']);
+					// unset($_POST['weight_units']);
 					unset($_POST['description']);
 
 					$object->fetchLines();
