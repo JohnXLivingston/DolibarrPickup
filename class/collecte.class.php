@@ -733,13 +733,12 @@ class Collecte extends CommonObject
 
 
 
-	public function initCollecteLine($idprod, $qty = 1, $description = '') {
+	public function initCollecteLine($idprod, $qty = 1) {
 		global $db;
 
 		$line = new CollecteLine($db);
 		$line->fk_collecte = $this->id;
 		$line->fk_product = $idprod;
-		$line->description = $description;
 		$line->qty = $qty;
 
 		$product = new Product($db);

@@ -68,21 +68,7 @@ $coldisplay = 0;
 				$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $this, $action);
 			}
 
-			// Do not allow editing during a situation cycle
-			if ($line->fk_prev_id == null) // TODO: necessary?
-			{
-				// editor wysiwyg
-				require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-				$nbrows = ROWS_2;
-				if (!empty($conf->global->MAIN_INPUT_DESC_HEIGHT)) $nbrows = $conf->global->MAIN_INPUT_DESC_HEIGHT;
-				$enable = (isset($conf->global->FCKEDITOR_ENABLE_DETAILS) ? $conf->global->FCKEDITOR_ENABLE_DETAILS : 0);
-				$toolbarname = 'dolibarr_details';
-				if (!empty($conf->global->FCKEDITOR_ENABLE_DETAILS_FULL)) $toolbarname = 'dolibarr_notes';
-				$doleditor = new DolEditor('product_desc', $line->description, '', (empty($conf->global->MAIN_DOLEDITOR_HEIGHT) ? 164 : $conf->global->MAIN_DOLEDITOR_HEIGHT), $toolbarname, '', false, true, $enable, $nbrows, '98%');
-				$doleditor->Create();
-			} else {
-				print '<textarea id="product_desc" class="flat" name="product_desc" readonly style="width: 200px; height:80px;">'.$line->description.'</textarea>';
-			}
+			print $line->showInputField(null, 'description', GETPOSTISSET("description") ? GETPOST('description', 'none') : $line->description);
 		?>
 	</td>
 	<td class="right">

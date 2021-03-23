@@ -156,7 +156,6 @@ if (empty($reshook))
 
 		$idprod = GETPOST('idprod', 'int');
 		$qty = price2num(GETPOST('qty', 'int'));
-		$line_desc = GETPOST('product_desc');
 
 		if ($qty == '') {
 			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')), null, 'errors');
@@ -168,7 +167,7 @@ if (empty($reshook))
 		}
 
 		if (!$error) {
-			$line = $object->initCollecteLine($idprod, $qty, $line_desc);
+			$line = $object->initCollecteLine($idprod, $qty);
 			$result = $line->create($user);
 			if ($result <= 0) {
 				setEventMessages($line->error, $line->errors, 'errors');
@@ -176,7 +175,6 @@ if (empty($reshook))
 			} else {
 				unset($_POST['idprod']);
 				unset($_POST['qty']);
-				unset($_POST['product_desc']);
 
 				$object->fetchLines();
 			}
@@ -188,7 +186,7 @@ if (empty($reshook))
 		$langs->load('errors');
 		$error = 0;
 
-		$line_desc = GETPOST('product_desc');
+		$line_desc = GETPOST('description', 'nohtml');
 		$qty = price2num(GETPOST('qty', 'int'));
 		$weight = GETPOST('weight', 'float');
 		$weight_units = GETPOST('weight_units', 'int');
@@ -221,7 +219,7 @@ if (empty($reshook))
 					unset($_POST['qty']);
 					unset($_POST['weight']);
 					unset($_POST['weight_units']);
-					unset($_POST['product_desc']);
+					unset($_POST['description']);
 
 					$object->fetchLines();
 				}
