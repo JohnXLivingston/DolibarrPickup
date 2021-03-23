@@ -48,6 +48,7 @@ $coldisplay = 0;
 			<?php
 			if ($line->product_type == 1) echo img_object($langs->trans('ShowService'), 'service');
 			else print img_object($langs->trans('ShowProduct'), 'product');
+			echo ' '.$line->ref;
 			?>
 			</a>
 			<?php
