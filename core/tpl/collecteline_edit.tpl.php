@@ -32,7 +32,7 @@ if (empty($object) || !is_object($object))
 // Define colspan for the button 'Add'
 $colspan = 2; // Col col edit + col delete
 
-print "<!-- BEGIN PHP TEMPLATE collecte/objectline_edit.tpl.php -->\n";
+print "<!-- BEGIN PHP TEMPLATE collecte/collecteline_edit.tpl.php -->\n";
 
 $coldisplay = 0;
 ?>
@@ -65,7 +65,7 @@ $coldisplay = 0;
 			// 	$fk_parent_line = (GETPOST('fk_parent_line') ? GETPOST('fk_parent_line') : $line->fk_parent_line);
 			// 	// FIXME: there is no $dateSelector in this file. Nor $seller or $buyer.
 			// 	$parameters = array('line'=>$line, 'fk_parent_line'=>$fk_parent_line, 'var'=>$var, 'dateSelector'=>$dateSelector, 'seller'=>$seller, 'buyer'=>$buyer);
-			// 	$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $this, $action);
+			// 	$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $object, $action);
 			// }
 
 			print $line->showInputField(null, 'description', GETPOSTISSET("description") ? GETPOST('description', 'none') : $line->description);
@@ -96,4 +96,4 @@ if (!empty($extrafields)) {
 }
 ?>
 
-<!-- END PHP TEMPLATE collecte/objectline_edit.tpl.php -->
+<!-- END PHP TEMPLATE collecte/collecteline_edit.tpl.php -->

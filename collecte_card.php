@@ -101,7 +101,7 @@ include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php';  // Must be inclu
 // Security check - Protection if external user
 //if ($user->societe_id > 0) access_forbidden();
 //if ($user->societe_id > 0) $socid = $user->societe_id;
-//$isdraft = (($object->statut == Collecte::STATUS_DRAFT) ? 1 : 0);
+//$isdraft = (($object->status == Collecte::STATUS_DRAFT) ? 1 : 0);
 //$result = restrictedArea($user, 'collecte', $object->id, '', '', 'fk_soc', 'rowid', $isdraft);
 
 $permissionnote=$user->rights->collecte->write;	// Used by the include of actions_setnotes.inc.php
@@ -149,6 +149,7 @@ if (empty($reshook))
 	// $trackid='collecte'.$object->id;
 	// include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 
+	// TODO: move to actions_collecte.class.php
 	// Action addline
 	if ($action == 'addline' && $permissiontoadd && !empty($object->id)) {
 		$langs->load('errors');
@@ -181,6 +182,7 @@ if (empty($reshook))
 		}
 	}
 
+	// TODO: move to actions_collecte.class.php
 	// Action updateline
 	if ($action == 'updateline' && $permissiontoadd && !empty($object->id)) {
 		$langs->load('errors');
@@ -326,7 +328,7 @@ if (($id || $ref) && $action == 'edit')
 // Part to show record
 if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'create')))
 {
-    $res = $object->fetch_optionals();
+  $res = $object->fetch_optionals();
 
 	$head = collectePrepareHead($object);
 	dol_fiche_head($head, 'card', $langs->trans("Collecte"), -1, $object->picto);
@@ -424,7 +426,6 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
 
-
 	print '<div class="fichecenter">';
 	print '<div class="fichehalfleft">';
 	print '<div class="underbanner clearboth"></div>';
@@ -482,10 +483,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		{
 			if ($action != 'editline')
 			{
-				// Add products/services form
-				$object->formAddObjectLine(1, $mysoc, null);
-
-				$parameters = array();
+				$parameters = array('table_element_line' => $object->table_element_line);
 				$reshook = $hookmanager->executeHooks('formAddObjectLine', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
 			}
 		}

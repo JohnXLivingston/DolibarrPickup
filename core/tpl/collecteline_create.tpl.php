@@ -15,6 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * Need to have following variables defined:
+ * $this (ActionsCollecte)
  * $object (collecte)
  * $conf
  * $langs
@@ -34,11 +35,11 @@ $colspan = 2; // Col col edit + col delete
 
 $line = new CollecteLine($this->db);
 
-print "<!-- BEGIN PHP TEMPLATE collecte/objectline_create.tpl.php -->\n";
+print "<!-- BEGIN PHP TEMPLATE collecte/collecteline_create.tpl.php -->\n";
 
-$nolinesbefore = (count($this->lines) == 0 || $forcetoshowtitlelines);
+$nolinesbefore = (count($object->lines) == 0 || $forcetoshowtitlelines);
 if ($nolinesbefore) {
-    // TODO: print title line, or always display the objectline_view template (even when no lines).
+    // TODO: print title line, or always display the collecteline_view template (even when no lines).
 }
 
 $coldisplay = 0;
@@ -78,4 +79,4 @@ if (!empty($extrafields)) {
 }
 ?>
 
-<!-- END PHP TEMPLATE collecte/objectline_create.tpl.php -->
+<!-- END PHP TEMPLATE collecte/collecteline_create.tpl.php -->

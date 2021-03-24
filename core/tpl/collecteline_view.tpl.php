@@ -15,11 +15,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * Need to have following variables defined:
- * $object (invoice, order, ...)
+ * $object (collecte)
  * $conf
- * $langs
- * $element     (used to test $user->rights->$element->write)
- * $permtoedit  (used to replace test $user->rights->$element->write)
+ * $form
  * $object_rights->write initialized from = $object->getRights()
  * $disableedit, $disablemove (not used for now because of bugs in dolibarr), $disableremove
  *
@@ -33,6 +31,8 @@ if (empty($object) || !is_object($object))
 	exit;
 }
 
+require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php'; // for measuringUnitString
+
 global $mysoc;
 
 $usemargins = 0;
@@ -44,7 +44,7 @@ $domData .= ' data-qty="'.$line->qty.'"';
 
 
 $coldisplay = 0; ?>
-<!-- BEGIN PHP TEMPLATE collecte/objectline_view.tpl.php -->
+<!-- BEGIN PHP TEMPLATE collecte/collecteline_view.tpl.php -->
 <tr id="row-<?php print $line->id?>" class="drag drop oddeven" <?php print $domData; ?> >
 	<td class="linecoldescription minwidth300imp"><?php $coldisplay++; ?>
     <div id="line_<?php print $line->id; ?>"></div>
@@ -72,11 +72,11 @@ $coldisplay = 0; ?>
     <?php print $line->weight . ' ' . measuringUnitString(0, "weight", $line->weight_units); ?>
   </td>
 
-  <?php if ($this->statut == 0 && ($object_rights->write) && $action != 'selectlines') { ?>
+  <?php if ($object->statut == 0 && ($object_rights->write) && $action != 'selectlines') { ?>
     <td class="linecoledit center">
       <?php $coldisplay++; ?>
       <?php if (empty($disableedit)) { ?>
-        <a class="editfielda reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=editline&amp;lineid='.$line->id.'#line_'.$line->id; ?>">
+        <a class="editfielda reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=editline&amp;lineid='.$line->id.'#line_'.$line->id; ?>">
           <?php print img_edit(); ?>
         </a>
       <?php } ?>
@@ -85,7 +85,7 @@ $coldisplay = 0; ?>
       <?php $coldisplay++; ?>
       <?php if (empty($disableremove)) { ?>
         <a class="reposition"
-          href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&amp;action=deleteline&amp;lineid='.$line->id; ?>"
+          href="<?php print $_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=deleteline&amp;lineid='.$line->id; ?>"
         >
           <?php print img_delete(); ?>
         </a>
@@ -108,4 +108,4 @@ if (!empty($extrafields))
 	print $line->showOptionals($extrafields, 'view', array('style'=>'class="drag drop oddeven"', 'colspan'=>$coldisplay), '', '', 1);
 }
 ?>
-<!-- END PHP TEMPLATE collecte/objectline_view.tpl.php -->
+<!-- END PHP TEMPLATE collecte/collecteline_view.tpl.php -->
