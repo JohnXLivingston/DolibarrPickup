@@ -55,4 +55,6 @@ TitleDolinput = Dolinput
 #
 CollecteLineIncludeInStock = Intégrer au stock
 ConfirmCollecteLineIncludeInStock = Êtes-vous sûr de vouloir intégrer ces produits au stock ?
+CollecteIncludeInStockOk = Produits intégrés au stock
+CollecteIncludeInStockMovementNotFoundError = Une erreur a eu lieu, le mouvement n'a pas été trouvé
 #

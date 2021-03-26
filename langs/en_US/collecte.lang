@@ -60,4 +60,6 @@ TitleDolinput = Dolinput
 #
 CollecteLineIncludeInStock = Insert in stock
 ConfirmCollecteLineIncludeInStock = Are you sure you want to insert products in stocks?
+CollecteIncludeInStockOk = Products where inserted in stock
+CollecteIncludeInStockMovementNotFoundError = An error occured. The movement was not found
 #

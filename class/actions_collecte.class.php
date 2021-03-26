@@ -93,6 +93,9 @@ class ActionsCollecte
 	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
 	 */
 	public function doActions($parameters, &$object, &$action, $hookmanager) {
+		if ($object->table_element != 'collecte_collecte') {
+			return 0;
+		}
 		global $db, $conf, $user, $langs;
 
 		$errors = array(); // Error counter
@@ -191,6 +194,53 @@ class ActionsCollecte
 			} else {
 				$action = '';
 			}
+		}
+
+		if ($action == 'confirm_includeinstock' && GETPOST('confirm') == 'yes' && $parameters['permissiontoadd']) {
+			$object->getLinesArray();
+			$nb_ok = 0;
+			$movement_label = empty($object->label) ? $object->ref : $object->ref . ' - ' . $object->label;
+			$inventorycode = dol_print_date(dol_now(), '%Y%m%d%H%M%S');
+
+			foreach ($object->lines as $line) {
+				if (empty($line->fk_stock_movement)) {
+					require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+					$product = new Product($db);
+					if ($product->fetch($line->fk_product) <= 0) {
+						setEventMessages($product->error, $product->errors, 'errors');
+						continue;
+					}
+
+					$result = $product->correct_stock($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, $inventorycode);
+					if ($result <= 0) {
+						setEventMessages($product->error, $product->errors, 'errors');
+					} else {
+						// Now we have to find the stock_movement.... because correct_stock does not return it.
+						require_once DOL_DOCUMENT_ROOT.'/product/stock/class/mouvementstock.class.php';
+						$stock_movement = new MouvementStock($db);
+						$sql = 'SELECT t.rowid FROM '.MAIN_DB_PREFIX.$stock_movement->table_element.' as t';
+						$sql.= " WHERE t.inventorycode = '".$db->escape($inventorycode)."'";
+						$sql.= " AND t.fk_product = '".$db->escape($line->fk_product)."'";
+						$sql.= " ORDER BY t.rowid DESC"; // if the same product is there multiple times, last inserted should be first.
+
+						$resql = $db->query($sql);
+        		if ($resql && $db->num_rows($resql) > 0) {
+              $obj = $this->db->fetch_object($resql);
+							$line->fk_stock_movement = $obj->rowid;
+							$line->update($user);
+						} else {
+							setEventMessages($langs->trans('CollecteIncludeInStockMovementNotFoundError'), null, 'errors');
+						}
+						$db->free($resql);
+					}
+				}
+			}
+
+			if ($nb_ok > 0 ) {
+				setEventMessages($langs->trans('CollecteIncludeInStockOk'), null, 'mesgs');
+			}
+			header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+			exit;
 		}
 
 		// /* print_r($parameters); print_r($object); echo "action: " . $action; */
