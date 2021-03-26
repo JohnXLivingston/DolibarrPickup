@@ -117,7 +117,11 @@ $permissiontoadd=$user->rights->collecte->write; // Used by the include of actio
  * Put here all code to do according to value of "action" parameter
  */
 
-$parameters=array();
+$parameters=array(
+	'permissiontoadd' => $permissiontoadd,
+	'permissionedit' => $permissionedit,
+	'lineid' => $lineid
+);
 $reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
@@ -148,86 +152,6 @@ if (empty($reshook))
 	// $autocopy='MAIN_MAIL_AUTOCOPY_COLLECTE_TO';
 	// $trackid='collecte'.$object->id;
 	// include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
-
-	// TODO: move to actions_collecte.class.php
-	// Action addline
-	if ($action == 'addline' && $permissiontoadd && !empty($object->id)) {
-		$langs->load('errors');
-		$error = 0;
-
-		$idprod = GETPOST('idprod', 'int');
-		$qty = price2num(GETPOST('qty', 'int'));
-
-		if ($qty == '') {
-			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')), null, 'errors');
-			$error++;
-		}
-		if (!($idprod > 0)) {
-			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Product')), null, 'errors');
-			$error++;
-		}
-
-		if (!$error) {
-			$line = $object->initCollecteLine($idprod, $qty);
-			$result = $line->create($user);
-			if ($result <= 0) {
-				setEventMessages($line->error, $line->errors, 'errors');
-				$action = '';
-			} else {
-				unset($_POST['idprod']);
-				unset($_POST['qty']);
-
-				$object->fetchLines();
-			}
-		}
-	}
-
-	// TODO: move to actions_collecte.class.php
-	// Action updateline
-	if ($action == 'updateline' && $permissiontoadd && !empty($object->id)) {
-		$langs->load('errors');
-		$error = 0;
-
-		$line_desc = GETPOST('description', 'nohtml');
-		$qty = price2num(GETPOST('qty', 'int'));
-		$weight = GETPOST('weight', 'float');
-		// $weight_units = GETPOST('weight_units', 'int');
-
-		if ($qty == '') {
-			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')), null, 'errors');
-			$error++;
-		}
-		if ($weight == '') {
-			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Weight')), null, 'errors');
-			$error++;
-		}
-
-		if (!$error) {
-			$line = new CollecteLine($db);
-			if ($line->fetch($lineid) <= 0) {
-				setEventMessages($line->error, $line->errors, 'errors');
-				$action = 'editline';
-			} else {
-				$line->qty = $qty;
-				$line->description = $line_desc;
-				$line->weight = $weight;
-				// $line->weight_units = $weight_units;
-
-				$result = $line->update($user);
-				if ($result <= 0) {
-					setEventMessages($line->error, $line->errors, 'errors');
-					$action = 'editline';
-				} else {
-					unset($_POST['qty']);
-					unset($_POST['weight']);
-					// unset($_POST['weight_units']);
-					unset($_POST['description']);
-
-					$object->fetchLines();
-				}
-			}
-		}
-	}
 }
 
 

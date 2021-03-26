@@ -92,11 +92,103 @@ class ActionsCollecte
 	 * @param   HookManager     $hookmanager    Hook manager propagated to allow calling another hook
 	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
 	 */
-	public function doActions($parameters, &$object, &$action, $hookmanager)
-	{
-		global $conf, $user, $langs;
+	public function doActions($parameters, &$object, &$action, $hookmanager) {
+		global $db, $conf, $user, $langs;
 
-		$error = 0; // Error counter
+		$errors = array(); // Error counter
+
+		// Action addline
+		if ($action == 'addline' && $parameters['permissiontoadd'] && !empty($object->id)) {
+			$langs->load('errors');
+
+			$idprod = GETPOST('idprod', 'int');
+			$qty = price2num(GETPOST('qty', 'int'));
+
+			if ($qty == '') {
+				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')));
+			}
+			if (!($idprod > 0)) {
+				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Product')));
+			}
+
+			if (!count($errors)) {
+				$line = $object->initCollecteLine($idprod, $qty);
+				$result = $line->create($user);
+				if ($result <= 0) {
+					if (!empty($line->error)) {
+						array_push($errors, $line->error);
+					}
+					if (!empty($line->errors)) {
+						$errors = array_merge($errors, $line->errors);
+					}
+				} else {
+					$action = '';
+					unset($_POST['idprod']);
+					unset($_POST['qty']);
+
+					$object->fetchLines();
+				}
+			}
+		}
+
+		// Action updateline
+		if ($action == 'updateline' && $parameters['permissiontoadd'] && !empty($object->id)) {
+			$langs->load('errors');
+
+			$lineid = $parameters['lineid'];
+
+			$line_desc = GETPOST('description', 'nohtml');
+			$qty = price2num(GETPOST('qty', 'int'));
+			$weight = GETPOST('weight', 'float');
+			// $weight_units = GETPOST('weight_units', 'int');
+
+			if ($qty == '') {
+				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')));
+			}
+			if ($weight == '') {
+				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Weight')));
+			}
+
+			if (!count($errors)) {
+				$line = new CollecteLine($db);
+				if ($line->fetch($lineid) <= 0) {
+					if (!empty($line->error)) {
+						array_push($errors, $line->error);
+					}
+					if (!empty($line->errors)) {
+						$errors = array_merge($errors, $line->errors);
+					}
+				} else {
+					$line->qty = $qty;
+					$line->description = $line_desc;
+					$line->weight = $weight;
+					// $line->weight_units = $weight_units;
+
+					$result = $line->update($user);
+					if ($result <= 0) {
+						if (!empty($line->error)) {
+							array_push($errors, $line->error);
+						}
+						if (!empty($line->errors)) {
+							$errors = array_merge($errors, $line->errors);
+						}
+					} else {
+						unset($_POST['qty']);
+						unset($_POST['weight']);
+						// unset($_POST['weight_units']);
+						unset($_POST['description']);
+
+						$object->fetchLines();
+					}
+				}
+			}
+
+			if (count($errors)) {
+				$action = 'editline';
+			} else {
+				$action = '';
+			}
+		}
 
 		// /* print_r($parameters); print_r($object); echo "action: " . $action; */
 		// if (in_array($parameters['currentcontext'], array('somecontext1', 'somecontext2')))	    // do something only for the context 'somecontext1' or 'somecontext2'
@@ -104,12 +196,12 @@ class ActionsCollecte
 		// 	// Do what you want here...
 		// 	// You can for example call global vars like $fieldstosearchall to overwrite them, or update database depending on $action and $_POST values.
 		// }
-		if (!$error) {
+		if (!count($errors)) {
 			$this->results = array();
 			$this->resprints = '';
 			return 0; // or return 1 to replace standard code
 		} else {
-			$this->errors[] = 'Error message';
+			$this->errors = $errors;
 			return -1;
 		}
 	}
