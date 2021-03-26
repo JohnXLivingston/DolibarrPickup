@@ -396,10 +396,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 			print '<table id="tablelines" class="noborder noshadow" width="100%">';
 		}
 
-		if (!empty($object->lines))
-		{
-			$object->printObjectLines($action, $mysoc, null, GETPOST('lineid', 'int'), 1);
-		}
+		$object->printObjectLines($action, $mysoc, null, GETPOST('lineid', 'int'), 1);
 
 		// Form to add new line
 		if ($object->status == 0 && $permissiontoadd && $action != 'selectlines')
