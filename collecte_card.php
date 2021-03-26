@@ -119,8 +119,7 @@ $permissiontoadd=$user->rights->collecte->write; // Used by the include of actio
 
 $parameters=array(
 	'permissiontoadd' => $permissiontoadd,
-	'permissionedit' => $permissionedit,
-	'lineid' => $lineid
+	'permissionedit' => $permissionedit
 );
 $reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');

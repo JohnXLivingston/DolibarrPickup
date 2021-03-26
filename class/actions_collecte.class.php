@@ -132,10 +132,13 @@ class ActionsCollecte
 		}
 
 		// Action updateline
+		if ($action == 'updateline' && !empty(GETPOST('cancel', 'aZ09'))) {
+			$action = '';
+		}
 		if ($action == 'updateline' && $parameters['permissiontoadd'] && !empty($object->id)) {
 			$langs->load('errors');
 
-			$lineid = $parameters['lineid'];
+			$lineid   = GETPOST('lineid', 'int');
 
 			$line_desc = GETPOST('description', 'nohtml');
 			$qty = price2num(GETPOST('qty', 'int'));
