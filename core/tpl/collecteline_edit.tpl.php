@@ -19,6 +19,8 @@
  * $line (collecteline)
  * $conf
  * $langs
+ * 
+ * $stock_movement if the line is already in stock
  */
 
 // Protection to avoid direct call of template
@@ -80,6 +82,10 @@ $coldisplay = 0;
 		<?php $coldisplay++;
 			print $line->showInputField(null, 'weight', GETPOSTISSET("weight") ? price2num(GETPOST('weight')) : $line->weight);
 		?>
+	</td>
+	<td class="">
+		<?php $coldisplay++; ?>
+		<?php if (! empty($stock_movement)) { print $stock_movement->getNomUrl(1); } ?>
 	</td>
 
 	<!-- colspan for this td because it replace total_ht+3 td for buttons+... -->

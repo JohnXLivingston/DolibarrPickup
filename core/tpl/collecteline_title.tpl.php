@@ -40,6 +40,9 @@ print "<!-- BEGIN PHP TEMPLATE collecte/collecteline_title.tpl.php -->\n";
 		<td class="right">
 			<?php print $langs->trans('Weight'); ?>
 		</td>
+		<td class="">
+			<?php print $langs->trans('StockMovement'); ?>
+		</td>
 		<td class="linecoledit"></td><?php // No width to allow autodim ?>
 		<td class="linecoldelete" style="width: 10px"></td>
 		<?php if ($action == 'selectlines') { ?>

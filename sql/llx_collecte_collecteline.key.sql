@@ -23,6 +23,7 @@ ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_f
 ALTER TABLE llx_collecte_collecteline ADD INDEX idx_collecte_collecteline_ref (ref);
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_user_modif FOREIGN KEY (fk_user_modif) REFERENCES llx_user(rowid);
+ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_stock_movement FOREIGN KEY (fk_stock_movement) REFERENCES llx_stock_mouvement(rowid);
 -- END MODULEBUILDER INDEXES
 
 ALTER TABLE llx_collecte_collecteline ADD INDEX idx_collecte_collecteline_fk_collecte_position (fk_collecte, position);

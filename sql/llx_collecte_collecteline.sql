@@ -28,6 +28,7 @@ CREATE TABLE llx_collecte_collecteline(
 	tms timestamp NOT NULL, 
 	fk_user_creat integer NOT NULL, 
 	fk_user_modif integer, 
-	position integer NOT NULL
+	position integer NOT NULL,
+	fk_stock_movement integer
 	-- END MODULEBUILDER FIELDS
 ) ENGINE=innodb;

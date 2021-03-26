@@ -22,6 +22,7 @@
  * $disableedit, $disablemove (not used for now because of bugs in dolibarr), $disableremove
  *
  * $text, $description, $line
+ * $stock_movement if the line is already in stock
  */
 
 // Protection to avoid direct call of template
@@ -70,6 +71,10 @@ $coldisplay = 0; ?>
   <td class="nowrap right">
     <?php $coldisplay++; ?>
     <?php print $line->weight . ' ' . measuringUnitString(0, "weight", $line->weight_units); ?>
+  </td>
+  <td class="nowrap">
+    <?php $coldisplay++; ?>
+    <?php if (! empty($stock_movement)) { print $stock_movement->getNomUrl(1); } ?>
   </td>
 
   <?php if ($object->statut == 0 && ($object_rights->write) && $action != 'selectlines') { ?>

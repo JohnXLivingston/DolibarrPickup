@@ -422,10 +422,18 @@ class ActionsCollecte
 		}
 		global $conf, $user, $langs, $object, $hookmanager, $extrafields;
 		global $form;
+		global $db;
 		$line = $parameters['line'];
 		$i = $parameters['i'];
 		$selected = $parameters['selected'];
 		$object_rights = $object->getRights();
+
+		$stock_movement = 0;
+		if ($line->fk_stock_movement) {
+			require_once DOL_DOCUMENT_ROOT.'/product/stock/class/mouvementstock.class.php';
+			$stock_movement = new MouvementStock($db);
+			$stock_movement->fetch($line->fk_stock_movement);
+		}
 
 		if ($object->status == 0 && $action == 'editline' && $selected == $line->id) {
 			$tpl = dol_buildpath('custom/collecte/core/tpl/collecteline_edit.tpl.php');

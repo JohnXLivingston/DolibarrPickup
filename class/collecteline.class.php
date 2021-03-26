@@ -102,6 +102,7 @@ class CollecteLine extends CommonObjectLine
 		'fk_user_creat' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>45, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'fk_user_modif' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>50, 'notnull'=>-1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'position' => array('type'=>'integer', 'label'=>'Rank', 'enabled'=>'1', 'position'=>200, 'notnull'=>1, 'visible'=>0,),
+		'fk_stock_movement' => array('type'=>'integer:MouvementStock:product/stock/class/mouvementstock.class.php', 'label'=>'StockMovement', 'enabled'=>'1', 'position'=>300, 'notnull'=>0, 'visible'=>5, 'index'=>1, 'foreignkey'=>'stock_mouvement.rowid',),
 	);
 	public $rowid;
 	public $fk_collecte;
@@ -116,6 +117,7 @@ class CollecteLine extends CommonObjectLine
 	public $fk_user_creat;
 	public $fk_user_modif;
 	public $position;
+	public $fk_stock_movement;
 	// END MODULEBUILDER PROPERTIES
 
 
