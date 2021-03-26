@@ -142,7 +142,7 @@ class ActionsCollecte
 
 			$line_desc = GETPOST('description', 'nohtml');
 			$qty = price2num(GETPOST('qty', 'int'));
-			$weight = GETPOST('weight', 'float');
+			$weight = price2num(GETPOST('weight'));
 			// $weight_units = GETPOST('weight_units', 'int');
 
 			if ($qty == '') {

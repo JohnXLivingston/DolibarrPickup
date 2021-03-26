@@ -78,7 +78,7 @@ $coldisplay = 0;
 	</td>
 	<td class="right">
 		<?php $coldisplay++;
-			print $line->showInputField(null, 'weight', GETPOSTISSET("weight") ? GETPOST('weight', 'float') : $line->weight);
+			print $line->showInputField(null, 'weight', GETPOSTISSET("weight") ? price2num(GETPOST('weight')) : $line->weight);
 		?>
 	</td>
 
