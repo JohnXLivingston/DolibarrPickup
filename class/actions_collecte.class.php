@@ -406,7 +406,7 @@ class ActionsCollecte
 		if ($parameters['table_element_line'] != 'collecte_collecteline') {
 			return 0;
 		}
-		global $conf, $user, $langs, $object, $hookmanager, $extrafields;
+		global $conf, $user, $langs, $hookmanager, $extrafields;
 		$tpl = dol_buildpath('custom/collecte/core/tpl/collecteline_title.tpl.php');
 		if (empty($conf->file->strict_mode)) {
 			@include $tpl;
@@ -420,7 +420,7 @@ class ActionsCollecte
 		if ($parameters['table_element_line'] != 'collecte_collecteline') {
 			return 0;
 		}
-		global $conf, $user, $langs, $object, $hookmanager, $extrafields;
+		global $conf, $user, $langs, $hookmanager, $extrafields;
 		global $form;
 		global $db;
 		$line = $parameters['line'];
@@ -475,13 +475,44 @@ class ActionsCollecte
 		if ($parameters['table_element_line'] != 'collecte_collecteline') {
 			return 0;
 		}
-		global $conf, $user, $langs, $object, $hookmanager, $extrafields;
+		global $conf, $user, $langs, $hookmanager, $extrafields;
 		global $form;
 		$tpl = dol_buildpath('custom/collecte/core/tpl/collecteline_create.tpl.php');
 		if (empty($conf->file->strict_mode)) {
 			@include $tpl;
 		} else {
 			include $tpl; // for debug
+		}
+		return 0;
+	}
+
+	public function addMoreActionsButtons($parameters, &$object, &$action) {
+		if ($object->table_element != 'collecte_collecte') {
+			return 0;
+		}
+		global $langs;
+		if ($object->status == Collecte::STATUS_VALIDATED) {
+			if (!empty($object->lines)) { // assuming lines were fetched before. If not, no button, thats not a problem.
+				// is there at least one line with no fk_stock_movement?
+				foreach ($object->lines as $line) {
+					if (empty($line->fk_stock_movement)) {
+						// display the button...
+						print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=includeinstock">'.$langs->trans("CollecteLineIncludeInStock").'</a>'."\n";
+						break;
+					}
+				}
+			}
+		}
+		return 0;
+	}
+
+	public function formConfirm($parameters, &$object, &$action) {
+		if ($object->table_element != 'collecte_collecte') {
+			return 0;
+		}
+		if ($action == 'includeinstock') {
+			global $form, $langs;
+			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('CollecteLineIncludeInStock'), $langs->trans('ConfirmCollecteLineIncludeInStock'), 'confirm_includeinstock', '', 0, 1);
 		}
 		return 0;
 	}

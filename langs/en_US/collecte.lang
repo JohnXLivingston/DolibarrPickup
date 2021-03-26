@@ -56,3 +56,8 @@ MyWidgetDescription = My widget description
 # Pour Dolinput
 # 
 TitleDolinput = Dolinput
+
+#
+CollecteLineIncludeInStock = Insert in stock
+ConfirmCollecteLineIncludeInStock = Are you sure you want to insert products in stocks?
+#

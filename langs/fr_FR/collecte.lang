@@ -51,3 +51,8 @@ MyWidgetDescription = Description de mon widget
 # Pour Dolinput
 # 
 TitleDolinput = Dolinput
+
+#
+CollecteLineIncludeInStock = Intégrer au stock
+ConfirmCollecteLineIncludeInStock = Êtes-vous sûr de vouloir intégrer ces produits au stock ?
+#
