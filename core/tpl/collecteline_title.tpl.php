@@ -41,7 +41,13 @@ print "<!-- BEGIN PHP TEMPLATE collecte/collecteline_title.tpl.php -->\n";
 			<?php print $langs->trans('Weight'); ?>
 		</td>
 		<td class="">
-			<?php print $langs->trans('StockMovement'); ?>
+			<?php if ($object->status == Collecte::STATUS_STOCK) { ?>
+				<a href="<?php print dol_buildpath('product/stock/movement_card.php', 1) ?>?id=<?php print $object->fk_entrepot ?>&search_inventorycode=<?php print urlencode($object->ref) ?>">
+					<?php print $langs->trans('StockMovement'); ?>
+				</a>
+			<?php } else { ?>
+				<?php print $langs->trans('StockMovement'); ?>
+			<?php } ?>
 		</td>
 		<td class="linecoledit"></td><?php // No width to allow autodim ?>
 		<td class="linecoldelete" style="width: 10px"></td>
