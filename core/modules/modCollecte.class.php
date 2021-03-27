@@ -245,7 +245,7 @@ class modCollecte extends DolibarrModules
         $this->rights = array();
         $r=0;
         // Add here entries to declare new permissions
-        /* BEGIN MODULEBUILDER PERMISSIONS */
+        /* BEGIN PERMISSIONS */
         $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
         $this->rights[$r][1] = 'Read objects of Collecte';	// Permission label
         $this->rights[$r][4] = 'read';				// In php code, permission will be checked by test if ($user->rights->collecte->level1->level2)
@@ -266,13 +266,13 @@ class modCollecte extends DolibarrModules
         $this->rights[$r][4] = 'configure';				// In php code, permission will be checked by test if ($user->rights->collecte->level1->level2)
         $this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->collecte->level1->level2)
         $r++;
-        /* END MODULEBUILDER PERMISSIONS */
+        /* END PERMISSIONS */
 
         // Main menu entries to add
         $this->menu = array();
         $r=0;
         // Add here entries to declare new menus
-        /* BEGIN MODULEBUILDER TOPMENU */
+        /* BEGIN TOPMENU */
         $this->menu[$r++]=array(
             'fk_menu'=>'',                          // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
             'type'=>'top',                          // This is a Top menu entry
@@ -287,38 +287,8 @@ class modCollecte extends DolibarrModules
             'target'=>'',
             'user'=>2,				                // 0=Menu for internal users, 1=external users, 2=both
         );
-        /* END MODULEBUILDER TOPMENU */
-        /* BEGIN MODULEBUILDER LEFTMENU COLLECTE
-        $this->menu[$r++]=array(
-            'fk_menu'=>'fk_mainmenu=collecte',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
-            'type'=>'left',			                // This is a Left menu entry
-            'titre'=>'List Collecte',
-            'mainmenu'=>'collecte',
-            'leftmenu'=>'collecte_collecte_list',
-            'url'=>'/collecte/collecte_list.php',
-            'langs'=>'collecte@collecte',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-            'position'=>1000+$r,
-            'enabled'=>'$conf->collecte->enabled',  // Define condition to show or hide menu entry. Use '$conf->collecte->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-            'perms'=>'1',			                // Use 'perms'=>'$user->rights->collecte->level1->level2' if you want your menu with a permission rules
-            'target'=>'',
-            'user'=>2,				                // 0=Menu for internal users, 1=external users, 2=both
-        );
-        $this->menu[$r++]=array(
-            'fk_menu'=>'fk_mainmenu=collecte,fk_leftmenu=collecte',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
-            'type'=>'left',			                // This is a Left menu entry
-            'titre'=>'New Collecte',
-            'mainmenu'=>'collecte',
-            'leftmenu'=>'collecte_collecte_new',
-            'url'=>'/collecte/collecte_page.php?action=create',
-            'langs'=>'collecte@collecte',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-            'position'=>1000+$r,
-            'enabled'=>'$conf->collecte->enabled',  // Define condition to show or hide menu entry. Use '$conf->collecte->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-            'perms'=>'1',			                // Use 'perms'=>'$user->rights->collecte->level1->level2' if you want your menu with a permission rules
-            'target'=>'',
-            'user'=>2,				                // 0=Menu for internal users, 1=external users, 2=both
-        );
-        */
-
+        /* END TOPMENU */
+        /* BEGIN LEFTMENU COLLECTE */
 		$this->menu[$r++]=array(
                 				'fk_menu'=>'fk_mainmenu=collecte',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 								'type'=>'left',			                // This is a Left menu entry
@@ -360,47 +330,7 @@ class modCollecte extends DolibarrModules
                                 'target'=>'',
                                 'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
         
-        /* END MODULEBUILDER LEFTMENU COLLECTE */
-
-        // Exports profiles provided by this module
-        $r=1;
-        /* BEGIN MODULEBUILDER EXPORT COLLECTE */
-        /*
-        $langs->load("collecte@collecte");
-        $this->export_code[$r]=$this->rights_class.'_'.$r;
-        $this->export_label[$r]='CollecteLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
-        $this->export_icon[$r]='collecte@collecte';
-        $keyforclass = 'Collecte'; $keyforclassfile='/mymobule/class/collecte.class.php'; $keyforelement='collecte';
-        include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
-        $keyforselect='collecte'; $keyforaliasextra='extra'; $keyforelement='collecte';
-        include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
-        //$this->export_dependencies_array[$r]=array('mysubobject'=>'ts.rowid', 't.myfield'=>array('t.myfield2','t.myfield3')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
-        $this->export_sql_start[$r]='SELECT DISTINCT ';
-        $this->export_sql_end[$r]  =' FROM '.MAIN_DB_PREFIX.'collecte as t';
-        $this->export_sql_end[$r] .=' WHERE 1 = 1';
-        $this->export_sql_end[$r] .=' AND t.entity IN ('.getEntity('collecte').')';
-        $r++; */
-        /* END MODULEBUILDER EXPORT COLLECTE */
-
-        // Imports profiles provided by this module
-        $r=1;
-        /* BEGIN MODULEBUILDER IMPORT COLLECTE */
-        /*
-         $langs->load("collecte@collecte");
-         $this->export_code[$r]=$this->rights_class.'_'.$r;
-         $this->export_label[$r]='CollecteLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
-         $this->export_icon[$r]='collecte@collecte';
-         $keyforclass = 'Collecte'; $keyforclassfile='/mymobule/class/collecte.class.php'; $keyforelement='collecte';
-         include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
-         $keyforselect='collecte'; $keyforaliasextra='extra'; $keyforelement='collecte';
-         include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
-         //$this->export_dependencies_array[$r]=array('mysubobject'=>'ts.rowid', 't.myfield'=>array('t.myfield2','t.myfield3')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
-         $this->export_sql_start[$r]='SELECT DISTINCT ';
-         $this->export_sql_end[$r]  =' FROM '.MAIN_DB_PREFIX.'collecte as t';
-         $this->export_sql_end[$r] .=' WHERE 1 = 1';
-         $this->export_sql_end[$r] .=' AND t.entity IN ('.getEntity('collecte').')';
-         $r++; */
-        /* END MODULEBUILDER IMPORT COLLECTE */
+        /* END LEFTMENU COLLECTE */
     }
 
     /**

@@ -15,7 +15,6 @@
 
 
 CREATE TABLE llx_collecte_dolinputcat(
-	-- BEGIN MODULEBUILDER FIELDS
 	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
 	fk_category integer NOT NULL, 
 	active boolean DEFAULT 1 NOT NULL, 
@@ -26,5 +25,4 @@ CREATE TABLE llx_collecte_dolinputcat(
 	fk_user_modif integer, 
 	import_key varchar(14), 
 	notes text
-	-- END MODULEBUILDER FIELDS
 ) ENGINE=innodb;

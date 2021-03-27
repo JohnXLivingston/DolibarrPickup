@@ -15,7 +15,6 @@
 
 
 CREATE TABLE llx_collecte_collecteline(
-	-- BEGIN MODULEBUILDER FIELDS
 	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
 	fk_collecte integer NOT NULL, 
 	fk_product integer NOT NULL, 
@@ -28,5 +27,4 @@ CREATE TABLE llx_collecte_collecteline(
 	fk_user_modif integer, 
 	position integer NOT NULL,
 	fk_stock_movement integer
-	-- END MODULEBUILDER FIELDS
 ) ENGINE=innodb;

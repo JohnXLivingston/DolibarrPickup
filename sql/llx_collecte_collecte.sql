@@ -15,7 +15,6 @@
 
 
 CREATE TABLE llx_collecte_collecte(
-	-- BEGIN MODULEBUILDER FIELDS
 	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
 	ref varchar(128) DEFAULT '(PROV)' NOT NULL, 
 	label varchar(255), 
@@ -30,5 +29,4 @@ CREATE TABLE llx_collecte_collecte(
 	fk_entrepot integer NOT NULL, 
 	note_public text, 
 	note_private text
-	-- END MODULEBUILDER FIELDS
 ) ENGINE=innodb;

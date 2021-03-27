@@ -14,7 +14,6 @@
 -- along with this program.  If not, see https://www.gnu.org/licenses/.
 
 
--- BEGIN MODULEBUILDER INDEXES
 ALTER TABLE llx_collecte_collecteline ADD INDEX idx_collecte_collecteline_rowid (rowid);
 ALTER TABLE llx_collecte_collecteline ADD INDEX idx_collecte_collecteline_fk_collecte (fk_collecte);
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_collecte FOREIGN KEY (fk_collecte) REFERENCES llx_collecte_collecte(rowid);
@@ -23,11 +22,6 @@ ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_f
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_user_modif FOREIGN KEY (fk_user_modif) REFERENCES llx_user(rowid);
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_stock_movement FOREIGN KEY (fk_stock_movement) REFERENCES llx_stock_mouvement(rowid);
--- END MODULEBUILDER INDEXES
 
 ALTER TABLE llx_collecte_collecteline ADD INDEX idx_collecte_collecteline_fk_collecte_position (fk_collecte, position);
-
---ALTER TABLE llx_collecte_collecteline ADD UNIQUE INDEX uk_collecte_collecteline_fieldxy(fieldx, fieldy);
-
---ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_field FOREIGN KEY (fk_field) REFERENCES llx_collecte_myotherobject(rowid);
 

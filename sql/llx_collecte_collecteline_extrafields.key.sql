@@ -14,6 +14,4 @@
 -- along with this program. If not, see https://www.gnu.org/licenses/.
 
 
--- BEGIN MODULEBUILDER INDEXES
 ALTER TABLE llx_collecte_collecteline_extrafields ADD INDEX idx_fk_object(fk_object);
--- END MODULEBUILDER INDEXES

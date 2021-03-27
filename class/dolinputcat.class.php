@@ -82,8 +82,6 @@ class Dolinputcat extends CommonObject
 	 *  'showoncombobox' if value of the field must be visible into the label of the combobox that list record
 	 *  'arraykeyval' to set list of value if type is a list of predefined values. For example: array("0"=>"Draft","1"=>"Active","-1"=>"Cancel")
 	 */
-
-	// BEGIN MODULEBUILDER PROPERTIES
 	/**
 	 * @var array  Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
 	 */
@@ -109,7 +107,6 @@ class Dolinputcat extends CommonObject
 	public $fk_user_modif;
 	public $import_key;
 	public $notes;
-	// END MODULEBUILDER PROPERTIES
 
 
 	// If this object has a subtable with lines

@@ -83,8 +83,6 @@ class CollecteLine extends CommonObjectLine
 	 *
 	 *  Note: To have value dynamic, you can set value to 0 in definition and edit the value on the fly into the constructor.
 	 */
-
-	// BEGIN MODULEBUILDER PROPERTIES
 	/**
 	 * @var array  Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
 	 */
@@ -114,7 +112,6 @@ class CollecteLine extends CommonObjectLine
 	public $fk_user_modif;
 	public $position;
 	public $fk_stock_movement;
-	// END MODULEBUILDER PROPERTIES
 
 
 	/**
