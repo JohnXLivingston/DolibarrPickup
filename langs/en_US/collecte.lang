@@ -22,6 +22,9 @@ ModuleCollecteName = Collecte
 # Module description 'ModuleCollecteDesc'
 ModuleCollecteDesc = Collecte description
 
+CollecteNumRefModelDesc = Return the collect reference
+CollecteStatusStock = Inserted in stock
+
 #
 # Menus
 #
@@ -61,8 +64,9 @@ MyWidgetDescription = My widget description
 TitleDolinput = Dolinput
 
 #
-CollecteLineIncludeInStock = Insert in stock
-ConfirmCollecteLineIncludeInStock = Are you sure you want to insert products in stocks?
+ConfirmCollecteActionValidate = Are you sure you want to validate this collect?
+CollecteActionIncludeInStock = Insert in stock
+ConfirmCollecteActionIncludeInStock = Are you sure you want to insert products in stocks?
 CollecteIncludeInStockOk = Products where inserted in stock
 CollecteIncludeInStockMovementNotFoundError = An error occured. The movement was not found
 #

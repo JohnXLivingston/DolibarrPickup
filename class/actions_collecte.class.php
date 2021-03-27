@@ -23,6 +23,8 @@
  * Put detailed description here.
  */
 
+require_once DOL_DOCUMENT_ROOT.'/custom/collecte/class/collecte.class.php';
+
 /**
  * Class ActionsCollecte
  */
@@ -196,11 +198,20 @@ class ActionsCollecte
 			}
 		}
 
-		if ($action == 'confirm_includeinstock' && GETPOST('confirm') == 'yes' && $parameters['permissiontoadd']) {
+		if ($action == 'confirm_validate' && GETPOST('confirm') == 'yes' && $parameters['permissionedit']) {
+			$object->status = Collecte::STATUS_VALIDATED;
+			if ($object->update($user) <= 0) {
+				setEventMessages($object->error, $object->errors, 'errors');
+			}
+			header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+			exit;
+		}
+
+		if ($action == 'confirm_includeinstock' && GETPOST('confirm') == 'yes' && $parameters['permissionedit']) {
 			$object->getLinesArray();
 			$nb_ok = 0;
 			$movement_label = empty($object->label) ? $object->ref : $object->ref . ' - ' . $object->label;
-			$inventorycode = dol_print_date(dol_now(), '%Y%m%d%H%M%S');
+			$inventorycode = $object->ref;
 
 			foreach ($object->lines as $line) {
 				if (empty($line->fk_stock_movement)) {
@@ -215,6 +226,8 @@ class ActionsCollecte
 					if ($result <= 0) {
 						setEventMessages($product->error, $product->errors, 'errors');
 					} else {
+						$nb_ok++;
+
 						// Now we have to find the stock_movement.... because correct_stock does not return it.
 						require_once DOL_DOCUMENT_ROOT.'/product/stock/class/mouvementstock.class.php';
 						$stock_movement = new MouvementStock($db);
@@ -233,6 +246,13 @@ class ActionsCollecte
 						}
 						$db->free($resql);
 					}
+				}
+			}
+
+			if ($nb_ok > 0) {
+				$object->status = Collecte::STATUS_STOCK;
+				if ($object->update($user) <= 0) {
+					setEventMessages($object->error, $object->errors, 'errors');
 				}
 			}
 
@@ -543,16 +563,15 @@ class ActionsCollecte
 			return 0;
 		}
 		global $langs;
-		if ($object->status == Collecte::STATUS_VALIDATED) {
+		$permissionedit = $parameters['permissionedit'];
+		if ($object->status == Collecte::STATUS_DRAFT && $permissionedit) {
 			if (!empty($object->lines)) { // assuming lines were fetched before. If not, no button, thats not a problem.
-				// is there at least one line with no fk_stock_movement?
-				foreach ($object->lines as $line) {
-					if (empty($line->fk_stock_movement)) {
-						// display the button...
-						print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=includeinstock">'.$langs->trans("CollecteLineIncludeInStock").'</a>'."\n";
-						break;
-					}
-				}
+				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=validate">'.$langs->trans("Validate").'</a>'."\n";
+			}
+		}
+		if ($object->status == Collecte::STATUS_VALIDATED && $permissionedit) {
+			if (!empty($object->lines)) { // assuming lines were fetched before. If not, no button, thats not a problem.
+				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=includeinstock">'.$langs->trans("CollecteActionIncludeInStock").'</a>'."\n";
 			}
 		}
 		return 0;
@@ -562,9 +581,13 @@ class ActionsCollecte
 		if ($object->table_element != 'collecte_collecte') {
 			return 0;
 		}
+		if ($action == 'validate') {
+			global $form, $langs;
+			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('Calidate'), $langs->trans('ConfirmCollecteActionValidate'), 'confirm_validate', '', 0, 1);
+		}
 		if ($action == 'includeinstock') {
 			global $form, $langs;
-			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('CollecteLineIncludeInStock'), $langs->trans('ConfirmCollecteLineIncludeInStock'), 'confirm_includeinstock', '', 0, 1);
+			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('CollecteActionIncludeInStock'), $langs->trans('ConfirmCollecteActionIncludeInStock'), 'confirm_includeinstock', '', 0, 1);
 		}
 		return 0;
 	}

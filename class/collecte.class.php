@@ -58,6 +58,7 @@ class Collecte extends CommonObject
 
 	const STATUS_DRAFT = 0;
 	const STATUS_VALIDATED = 1;
+	const STATUS_STOCK = 4;
 	const STATUS_DISABLED = 9;
 
 
@@ -94,7 +95,7 @@ class Collecte extends CommonObject
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>-1, 'visible'=>-2,),
 		'fk_user_creat' => array('type'=>'integer', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>510, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'fk_user_modif' => array('type'=>'integer', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>511, 'notnull'=>-1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
-		'status' => array('type'=>'integer', 'label'=>'Status', 'enabled'=>'1', 'position'=>1000, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'arrayofkeyval'=>array('0'=>'Brouillon', '1'=>'Actif', '9'=>'Annul&eacute;'),),
+		'status' => array('type'=>'integer', 'label'=>'Status', 'default' => 0, 'enabled'=>'1', 'position'=>1000, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'arrayofkeyval'=>array('0'=>'Brouillon', '1'=>'Actif', '5'=>'Stock', '9'=>'Annul&eacute;'), 'noteditable'=>1),
 		'fk_entrepot' => array('type'=>'integer:Entrepot:product/stock/class/entrepot.class.php', 'label'=>'Entrepôt', 'enabled'=>'1', 'position'=>40, 'notnull'=>1, 'visible'=>1,),
 		'note_public' => array('type'=>'html', 'label'=>'NotePublic', 'enabled'=>'1', 'position'=>161, 'notnull'=>-1, 'visible'=>-2,),
 		'note_private' => array('type'=>'html', 'label'=>'NotePrivate', 'enabled'=>'1', 'position'=>162, 'notnull'=>-1, 'visible'=>-2,),
@@ -194,6 +195,9 @@ class Collecte extends CommonObject
 	 */
 	public function create(User $user, $notrigger = false)
 	{
+		dol_include_once('/collecte/core/modules/collecte/modules_collecte.php');
+		$modele_num_ref = new ModeleNumRefCollecte();
+		$this->ref = $modele_num_ref->getNextValue($this);
 		return $this->createCommon($user, $notrigger);
 	}
 
@@ -536,9 +540,10 @@ class Collecte extends CommonObject
 		if (empty($this->labelstatus))
 		{
 			global $langs;
-			//$langs->load("collecte");
+			$langs->load("collecte");
 			$this->labelstatus[self::STATUS_DRAFT] = $langs->trans('Draft');
 			$this->labelstatus[self::STATUS_VALIDATED] = $langs->trans('Enabled');
+			$this->labelstatus[self::STATUS_STOCK] = $langs->trans('CollecteStatusStock');
 			$this->labelstatus[self::STATUS_DISABLED] = $langs->trans('Disabled');
 		}
 

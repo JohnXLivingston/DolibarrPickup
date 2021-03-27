@@ -22,6 +22,9 @@ ModuleCollecteName = Collecte
 # Module description 'ModuleCollecteDesc'
 ModuleCollecteDesc = Description de Collecte
 
+CollecteNumRefModelDesc = Retourne le numéro de collecte
+CollecteStatusStock = Intégrée dans le stock
+
 #
 # Menus
 #
@@ -60,8 +63,9 @@ MyWidgetDescription = Description de mon widget
 TitleDolinput = Dolinput
 
 #
-CollecteLineIncludeInStock = Intégrer au stock
-ConfirmCollecteLineIncludeInStock = Êtes-vous sûr de vouloir intégrer ces produits au stock ?
+ConfirmCollecteActionValidate = Êtes-vous sûr de vouloir valider cette collecte ?
+CollecteActionIncludeInStock = Intégrer au stock
+ConfirmCollecteActionIncludeInStock = Êtes-vous sûr de vouloir intégrer ces produits au stock ?
 CollecteIncludeInStockOk = Produits intégrés au stock
 CollecteIncludeInStockMovementNotFoundError = Une erreur a eu lieu, le mouvement n'a pas été trouvé
 #
