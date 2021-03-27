@@ -115,7 +115,7 @@ class modCollecte extends DolibarrModules
         // Data directories to create when module is enabled.
         // Example: this->dirs = array("/collecte/temp","/collecte/subdir");
         $this->dirs = array("/collecte/temp");
-        // Config pages. Put here list of php page, stored into collecte/admin directory, to use to setup module.
+        // Config pages. List of php page, stored into collecte/admin directory, to use to setup module.
         $this->config_page_url = array("setup.php@collecte");
         // Dependencies
         // A condition to hide module

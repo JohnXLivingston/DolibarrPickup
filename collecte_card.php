@@ -113,8 +113,6 @@ $permissiontoadd=$user->rights->collecte->write; // Used by the include of actio
 
 /*
  * Actions
- *
- * Put here all code to do according to value of "action" parameter
  */
 
 $parameters=array(
@@ -158,8 +156,6 @@ if (empty($reshook))
 
 /*
  * View
- *
- * Put here all code to build page
  */
 
 $form=new Form($db);
