@@ -54,8 +54,6 @@ $action = GETPOST('action', 'alpha');
 $backtopage = GETPOST('backtopage', 'alpha');
 
 $arrayofparameters=array(
-	'COLLECTE_MYPARAM1'=>array('css'=>'minwidth200','enabled'=>1),
-	'COLLECTE_MYPARAM2'=>array('css'=>'minwidth500','enabled'=>1)
 );
 
 

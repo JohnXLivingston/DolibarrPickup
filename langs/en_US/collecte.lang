@@ -28,10 +28,6 @@ ModuleCollecteDesc = Collecte description
 CollecteSetup = Collecte setup
 Settings = Settings
 CollecteSetupPage = Collecte setup page
-COLLECTE_MYPARAM1 = My param 1
-COLLECTE_MYPARAM1Tooltip = My param 1 tooltip
-COLLECTE_MYPARAM2=My param 2
-COLLECTE_MYPARAM2Tooltip=My param 2 tooltip
 
 
 #
