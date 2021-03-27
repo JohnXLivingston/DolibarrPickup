@@ -74,9 +74,9 @@ $now=dol_now();
 $form = new Form($db);
 $formfile = new FormFile($db);
 
-llxHeader("", $langs->trans("CollecteArea"));
+llxHeader("", $langs->trans("ModuleCollecteName"));
 
-print load_fiche_titre($langs->trans("CollecteArea"), '', 'collecte.png@collecte');
+print load_fiche_titre($langs->trans("ModuleCollecteName"), '', 'collecte.png@collecte');
 
 print '<div class="fichecenter"><div class="fichethirdleft">';
 

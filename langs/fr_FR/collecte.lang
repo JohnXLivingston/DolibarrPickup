@@ -23,6 +23,13 @@ ModuleCollecteName = Collecte
 ModuleCollecteDesc = Description de Collecte
 
 #
+# Menus
+#
+CollecteMenuList = Liste des collectes
+CollecteMenuTags = Configuration des tags
+CollecteNew = Nouvelle collecte
+
+#
 # Page d'administration
 #
 CollecteSetup = Configuration du module Collecte

@@ -23,6 +23,13 @@ ModuleCollecteName = Collecte
 ModuleCollecteDesc = Collecte description
 
 #
+# Menus
+#
+CollecteMenuList = Collects list
+CollecteMenuTags = Configure tags
+CollecteNew = New collect
+
+#
 # Admin page
 #
 CollecteSetup = Collecte setup

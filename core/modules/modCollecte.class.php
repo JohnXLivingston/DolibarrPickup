@@ -292,7 +292,7 @@ class modCollecte extends DolibarrModules
 		$this->menu[$r++]=array(
                 				'fk_menu'=>'fk_mainmenu=collecte',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 								'type'=>'left',			                // This is a Left menu entry
-								'titre'=>'List Collecte',
+								'titre'=>'CollecteMenuList',
 								'mainmenu'=>'collecte',
 								'leftmenu'=>'collecte_collecte',
 								'url'=>'/collecte/collecte_list.php',
@@ -305,7 +305,7 @@ class modCollecte extends DolibarrModules
 		$this->menu[$r++]=array(
                 				'fk_menu'=>'fk_mainmenu=collecte,fk_leftmenu=collecte_collecte',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 								'type'=>'left',			                // This is a Left menu entry
-								'titre'=>'New Collecte',
+								'titre'=>'CollecteNew',
 								'mainmenu'=>'collecte',
 								'leftmenu'=>'collecte_collecte',
 								'url'=>'/collecte/collecte_card.php?action=create',
@@ -318,7 +318,7 @@ class modCollecte extends DolibarrModules
         $this->menu[$r++]=array(
                                 'fk_menu'=>'fk_mainmenu=collecte',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
                                 'type'=>'left',			                // This is a Left menu entry
-                                'titre'=>'Configuration des tags',
+                                'titre'=>'CollecteMenuTags',
                                 'mainmenu'=>'collecte',
                                 'leftmenu'=>'collecte_collecte',
                                 'url'=>'/collecte/dolinputcat_list.php',
