@@ -92,8 +92,6 @@ class CollecteLine extends CommonObjectLine
 		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>'1', 'position'=>1, 'notnull'=>1, 'visible'=>0, 'index'=>1, 'comment'=>"Id"),
 		'fk_collecte' => array('type'=>'integer:Collecte:custom/collecte/class/collecte.class.php', 'label'=>'Collecte', 'enabled'=>'1', 'position'=>15, 'notnull'=>1, 'visible'=>-1, 'index'=>1, 'foreignkey'=>'collecte_collecte.rowid',),
 		'fk_product' => array('type'=>'integer:Product:product/class/product.class.php', 'label'=>'Product', 'enabled'=>'1', 'position'=>32, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'foreignkey'=>'product.rowid',),
-		'ref' => array('type'=>'varchar(128)', 'label'=>'Ref', 'enabled'=>'1', 'position'=>20, 'notnull'=>1, 'visible'=>-1, 'index'=>1, 'showoncombobox'=>'1',),
-		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>25, 'notnull'=>0, 'visible'=>-1,),
 		'description' => array('type'=>'text', 'label'=>'Description', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>-1,),
 		'qty' => array('type'=>'integer', 'label'=>'Quantité', 'enabled'=>'1', 'position'=>45, 'notnull'=>1, 'visible'=>1, 'default'=>'1', 'isameasure'=>'1', 'css'=>'maxwidth75imp',),
 		'weight' => array('type'=>'double(24,8)', 'label'=>'Poids', 'enabled'=>'1', 'position'=>100, 'notnull'=>1, 'visible'=>1, 'isameasure'=>'1',),
@@ -107,8 +105,6 @@ class CollecteLine extends CommonObjectLine
 	public $rowid;
 	public $fk_collecte;
 	public $fk_product;
-	public $ref;
-	public $label;
 	public $description;
 	public $qty;
 	public $weight;
@@ -182,12 +178,11 @@ class CollecteLine extends CommonObjectLine
 	 * Load object in memory from the database
 	 *
 	 * @param int    $id   Id object
-	 * @param string $ref  Ref
 	 * @return int         <0 if KO, 0 if not found, >0 if OK
 	 */
-	public function fetch($id, $ref = null)
+	public function fetch($id)
 	{
-		$result = $this->fetchCommon($id, $ref);
+		$result = $this->fetchCommon($id);
 		return $result;
 	}
 

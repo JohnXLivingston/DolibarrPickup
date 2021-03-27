@@ -485,15 +485,17 @@ class ActionsCollecte
 			$stock_movement->fetch($line->fk_stock_movement);
 		}
 
+		if ($line->fk_product > 0) {
+			$product_static = new Product($this->db);
+			$product_static->fetch($line->fk_product);
+			$product_text = $product_static->getNomUrl(1);
+		} else {
+			$product_text = '';
+		}
+		
 		if ($object->status == 0 && $action == 'editline' && $selected == $line->id) {
 			$tpl = dol_buildpath('custom/collecte/core/tpl/collecteline_edit.tpl.php');
 		} else if ($action != 'editline' || $selected != $line->id) {
-			$product_static = new Product($this->db);
-			$product_static->fetch($line->fk_product);
-
-			$text = $product_static->getNomUrl(1);
-			$description = $line->description;
-
 			if ($object->status != 0) {
 				$disableedit = 1;
 				$disableremove = 1;

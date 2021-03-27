@@ -19,6 +19,7 @@
  * $line (collecteline)
  * $conf
  * $langs
+ * $product_text
  * 
  * $stock_movement if the line is already in stock
  */
@@ -45,21 +46,10 @@ $coldisplay = 0;
 
 		<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
 
-		<?php if ($line->fk_product > 0) { ?>
-			<a href="<?php echo DOL_URL_ROOT.'/product/card.php?id='.$line->fk_product; ?>">
-			<?php
-			if ($line->product_type == 1) echo img_object($langs->trans('ShowService'), 'service');
-			else print img_object($langs->trans('ShowProduct'), 'product');
-			echo ' '.$line->ref;
-			?>
-			</a>
-			<?php
-			echo ' - '.nl2br($line->product_label);
-			?>
-
-			<br><br>
-
-		<?php }	?>
+		<?php if ($line->fk_product > 0) {
+      print $form->textwithtooltip($product_text, '', 3, '', '', $i, 0, '');
+			print '<br>';
+		}	?>
 
 		<?php
 			// if (is_object($hookmanager)) // TODO: necessary ?

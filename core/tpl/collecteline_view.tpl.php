@@ -21,7 +21,7 @@
  * $object_rights->write initialized from = $object->getRights()
  * $disableedit, $disablemove (not used for now because of bugs in dolibarr), $disableremove
  *
- * $text, $description, $line
+ * $product_text, $line
  * $stock_movement if the line is already in stock
  */
 
@@ -50,16 +50,12 @@ $coldisplay = 0; ?>
 	<td class="linecoldescription minwidth300imp"><?php $coldisplay++; ?>
     <div id="line_<?php print $line->id; ?>"></div>
     <?php
-      if ($line->fk_product > 0)
-      {
-        print $form->textwithtooltip($text, $description, 3, '', '', $i, 0, '');
+      if ($line->fk_product > 0) {
+        print $form->textwithtooltip($product_text, '', 3, '', '', $i, 0, '');
       }
 
-      // Add description in form
-      if ($line->fk_product > 0 && !empty($conf->global->PRODUIT_DESC_IN_FORM))
-      {
-        print (!empty($line->description) && $line->description != $line->product_label) ? '<br>'.dol_htmlentitiesbr($line->description) : '';
-      }
+      print '<br>';
+      print dol_htmlentitiesbr($line->description);
     ?>
   </td>
 	<td class="nowrap right">

@@ -20,7 +20,6 @@ ALTER TABLE llx_collecte_collecteline ADD INDEX idx_collecte_collecteline_fk_col
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_collecte FOREIGN KEY (fk_collecte) REFERENCES llx_collecte_collecte(rowid);
 ALTER TABLE llx_collecte_collecteline ADD INDEX idx_collecte_collecteline_fk_product (fk_product);
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_product FOREIGN KEY (fk_product) REFERENCES llx_product(rowid);
-ALTER TABLE llx_collecte_collecteline ADD INDEX idx_collecte_collecteline_ref (ref);
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_user_modif FOREIGN KEY (fk_user_modif) REFERENCES llx_user(rowid);
 ALTER TABLE llx_collecte_collecteline ADD CONSTRAINT llx_collecte_collecteline_fk_stock_movement FOREIGN KEY (fk_stock_movement) REFERENCES llx_stock_mouvement(rowid);

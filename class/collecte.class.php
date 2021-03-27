@@ -745,8 +745,6 @@ class Collecte extends CommonObject
 		if ($product->fetch($idprod) <= 0) {
 			dol_syslog(__METHOD__ . ' ' . 'Product '.$idprod.' not found', LOG_ERR);
 		} else {
-			$line->ref = $product->ref;
-			$line->label = $product->label;
 			// FIXME: this code is temporary, because I dont know how to handle weight_units.
 			// So I only accept 0 or empty.
 			if (!empty($product->weight) && empty($product->weight_units) || $product->weight_units == 0) {
