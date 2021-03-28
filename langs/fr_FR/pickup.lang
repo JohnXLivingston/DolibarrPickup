@@ -17,6 +17,7 @@
 # Générique
 #
 
+Pickup = Collecte
 # Module label 'ModulePickupName'
 ModulePickupName = Collecte
 # Module description 'ModulePickupDesc'

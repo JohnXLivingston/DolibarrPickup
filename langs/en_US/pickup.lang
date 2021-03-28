@@ -17,6 +17,7 @@
 # Generic
 #
 
+Pickup = Pickup
 # Module label 'ModulePickupName'
 ModulePickupName = Pickup
 # Module description 'ModulePickupDesc'
