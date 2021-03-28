@@ -1,10 +1,10 @@
-# COLLECTE FOR <a href="https://www.dolibarr.org">DOLIBARR ERP CRM</a>
+# PICKUP FOR <a href="https://www.dolibarr.org">DOLIBARR ERP CRM</a>
 
 ## Features
 Description...
 
 <!--
-![Screenshot collecte](img/screenshot_collecte.png?raw=true "Collecte"){imgmd}
+![Screenshot pickup](img/screenshot_pickup.png?raw=true "Pickup"){imgmd}
 -->
 
 Other modules are available on <a href="https://www.dolistore.com" target="_new">Dolistore.com</a>.
@@ -61,11 +61,11 @@ Note: If this screen tell you there is no custom directory, check your setup is 
         
 ### From a GIT repository
 
-- Clone the repository in ```$dolibarr_main_document_root_alt/collecte```
+- Clone the repository in ```$dolibarr_main_document_root_alt/pickup```
 
 ```sh
 cd ....../custom
-git clone git@github.com:gitlogin/collecte.git collecte
+git clone git@github.com:gitlogin/pickup.git pickup
 ```
 
 ### <a name="final_steps"></a>Final steps

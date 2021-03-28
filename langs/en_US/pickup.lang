@@ -1,0 +1,72 @@
+# Copyright (C) 2021		Jonathan Dollé		<license@jonathandolle.fr>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#
+# Generic
+#
+
+# Module label 'ModulePickupName'
+ModulePickupName = Pickup
+# Module description 'ModulePickupDesc'
+ModulePickupDesc = This module is meant to handle pickups
+
+PickupNumRefModelDesc = Return the pickup reference
+PickupStatusStock = Inserted in stock
+
+#
+# Menus
+#
+PickupMenuList = Pickups list
+PickupMenuTags = Configure tags
+PickupNew = New pickup
+
+#
+# Admin page
+#
+PickupSetup = Pickup setup
+Settings = Settings
+PickupSetupPage = Pickup setup page
+
+
+#
+# About page
+#
+About = About
+PickupAbout = About Pickup
+PickupAboutPage = Pickup about page
+
+#
+# Sample page
+#
+MyPageName = My page name
+
+#
+# Sample widget
+#
+MyWidget = My widget
+MyWidgetDescription = My widget description
+
+#
+# Pour Dolinput
+# 
+TitleDolinput = Dolinput
+
+#
+ConfirmPickupActionValidate = Are you sure you want to validate this pickup?
+PickupActionIncludeInStock = Insert in stock
+ConfirmPickupActionIncludeInStock = Are you sure you want to insert products in stocks?
+PickupIncludeInStockOk = Products where inserted in stock
+PickupIncludeInStockMovementNotFoundError = An error occured. The movement was not found
+#

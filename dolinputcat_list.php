@@ -18,7 +18,7 @@
 
 /**
  *   	\file       dolinputcat_list.php
- *		\ingroup    collecte
+ *		\ingroup    pickup
  *		\brief      List page for dolinputcat
  */
 
@@ -60,7 +60,7 @@ if (! $res) die("Include of main fails");
 // require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 // require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
-// load collecte libraries
+// load pickup libraries
 require_once __DIR__ . '/class/dolinputcat.class.php';
 
 // for other modules
@@ -68,7 +68,7 @@ require_once __DIR__ . '/class/dolinputcat.class.php';
 dol_include_once('/categories/class/categorie.class.php');
 
 // Load translation files required by the page
-$langs->loadLangs(array("collecte@collecte","other"));
+$langs->loadLangs(array("pickup@pickup","other"));
 
 $object = new Dolinputcat($db);
 $extrafields = new ExtraFields($db);
@@ -78,7 +78,7 @@ $hookmanager->initHooks(array('dolinputcatlist'));     // Note that conf->hooks_
 $extralabels = $extrafields->fetch_name_optionals_label('dolinputcat');	// Load $extrafields->attributes['dolinputcat']
 
 // Security check
-if (empty($conf->collecte->enabled)) accessforbidden('Module not enabled');
+if (empty($conf->pickup->enabled)) accessforbidden('Module not enabled');
 $socid=0;
 if ($user->societe_id > 0)	// Protection if external user
 {
@@ -133,7 +133,7 @@ foreach ($fulltree as $key => $val)
 		print '<tr class="oddeven">';
 		print '<td>';
 		// print '<span class="noborderoncategories" '.($cat->color?' style="background: #'.$cat->color.';"':' style="background: #aaa"').'>';
-		print '<a href="'.DOL_URL_ROOT.'/custom/collecte/tabs/categoriesdolinput.php?id='.$cat->id.'&backto=dolinputcat_list">';
+		print '<a href="'.DOL_URL_ROOT.'/custom/pickup/tabs/categoriesdolinput.php?id='.$cat->id.'&backto=dolinputcat_list">';
 		print $label;
 		print '</a>';
 		// print '</span>';

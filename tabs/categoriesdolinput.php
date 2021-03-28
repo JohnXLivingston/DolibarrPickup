@@ -17,7 +17,7 @@ if (! $res) die("Include of main fails");
 
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/custom/collecte/class/dolinputcat.class.php';
+require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/dolinputcat.class.php';
 require_once DOL_DOCUMENT_ROOT.'/custom/dolinput/lib/dolinput.lib.php';
 
 $langs->loadlangs(array('categories'));
@@ -34,7 +34,7 @@ if ($id == "")
 }
 
 // if ($user->societe_id) $socid=$user->societe_id;
-if (!$user->rights->collecte->configure) {
+if (!$user->rights->pickup->configure) {
   accessforbidden();
 }
 
@@ -189,7 +189,7 @@ if ($object->id)
 
   dol_fiche_head($head, 'dolinput', $title, -1, 'category');
 
-  if ($backtopage === 'dolinputcat_list') $linkback = '<a href="'.DOL_URL_ROOT.'/custom/collecte/dolinputcat_list.php">'.$langs->trans("BackToList").'</a>';
+  if ($backtopage === 'dolinputcat_list') $linkback = '<a href="'.DOL_URL_ROOT.'/custom/pickup/dolinputcat_list.php">'.$langs->trans("BackToList").'</a>';
   else $linkback = '<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type.'">'.$langs->trans("BackToList").'</a>';
 
   $object->ref = $object->label;
@@ -270,7 +270,7 @@ if ($object->id)
 
   print "<div class='tabsAction'>\n";
 
-  if ($user->rights->collecte->configure)
+  if ($user->rights->pickup->configure)
   {
     if (!$dolinputcat->id || !$dolinputcat->active)
     {

@@ -17,9 +17,9 @@
  */
 
 /**
- * \file    collecte/admin/setup.php
- * \ingroup collecte
- * \brief   Collecte setup page.
+ * \file    pickup/admin/setup.php
+ * \ingroup pickup
+ * \brief   Pickup setup page.
  */
 
 // Load Dolibarr environment
@@ -40,11 +40,11 @@ global $langs, $user;
 
 // Libraries
 require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
-require_once '../lib/collecte.lib.php';
+require_once '../lib/pickup.lib.php';
 //require_once "../class/myclass.class.php";
 
 // Translations
-$langs->loadLangs(array("admin", "collecte@collecte"));
+$langs->loadLangs(array("admin", "pickup@pickup"));
 
 // Access control
 if (! $user->admin) accessforbidden();
@@ -73,20 +73,20 @@ if ((float) DOL_VERSION >= 6)
  * View
  */
 
-$page_name = "CollecteSetup";
+$page_name = "PickupSetup";
 llxHeader('', $langs->trans($page_name));
 
 // Subheader
 $linkback = '<a href="'.($backtopage?$backtopage:DOL_URL_ROOT.'/admin/modules.php?restore_lastsearch_values=1').'">'.$langs->trans("BackToModuleList").'</a>';
 
-print load_fiche_titre($langs->trans($page_name), $linkback, 'object_collecte@collecte');
+print load_fiche_titre($langs->trans($page_name), $linkback, 'object_pickup@pickup');
 
 // Configuration header
-$head = collecteAdminPrepareHead();
-dol_fiche_head($head, 'settings', '', -1, "collecte@collecte");
+$head = pickupAdminPrepareHead();
+dol_fiche_head($head, 'settings', '', -1, "pickup@pickup");
 
 // Setup page goes here
-echo '<span class="opacitymedium">'.$langs->trans("CollecteSetupPage").'</span><br><br>';
+echo '<span class="opacitymedium">'.$langs->trans("PickupSetupPage").'</span><br><br>';
 
 
 if ($action == 'edit')

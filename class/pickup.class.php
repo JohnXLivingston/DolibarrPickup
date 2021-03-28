@@ -17,46 +17,48 @@
  */
 
 /**
- * \file        class/dolinputcat.class.php
+ * \file        class/pickup.class.php
  * \ingroup     pickup
- * \brief       This file is a CRUD class file for Dolinputcat (Create/Read/Update/Delete)
+ * \brief       This file is a CRUD class file for Pickup (Create/Read/Update/Delete)
  */
 
 require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
+dol_include_once('/pickup/class/pickupline.class.php');
 
 /**
- * Class for Dolinputcat
+ * Class for Pickup
  */
-class Dolinputcat extends CommonObject
+class Pickup extends CommonObject
 {
 	/**
 	 * @var string ID to identify managed object
 	 */
-	public $element = 'dolinputcat';
+	public $element = 'pickup';
 
 	/**
 	 * @var string Name of table without prefix where object is stored
 	 */
-	public $table_element = 'pickup_dolinputcat';
+	public $table_element = 'pickup_pickup';
 
 	/**
-	 * @var int  Does dolinputcat support multicompany module ? 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+	 * @var int  Does pickup support multicompany module ? 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 	 */
 	public $ismultientitymanaged = 0;
 
 	/**
-	 * @var int  Does dolinputcat support extrafields ? 0=No, 1=Yes
+	 * @var int  Does pickup support extrafields ? 0=No, 1=Yes
 	 */
 	public $isextrafieldmanaged = 1;
 
 	/**
-	 * @var string String with name of icon for dolinputcat. Must be the part after the 'object_' into object_dolinputcat.png
+	 * @var string String with name of icon for pickup. Must be the part after the 'object_' into object_pickup.png
 	 */
-	public $picto = 'dolinputcat@pickup';
+	public $picto = 'pickup@pickup';
 
 
 	const STATUS_DRAFT = 0;
 	const STATUS_VALIDATED = 1;
+	const STATUS_STOCK = 4;
 	const STATUS_DISABLED = 9;
 
 
@@ -84,44 +86,51 @@ class Dolinputcat extends CommonObject
 	 */
 	public $fields=array(
 		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>'1', 'position'=>1, 'notnull'=>1, 'visible'=>0, 'index'=>1, 'comment'=>"Id"),
-		'fk_category' => array('type'=>'integer:Categorie:categories/class/categorie.class.php', 'label'=>'Category', 'enabled'=>'1', 'position'=>2, 'notnull'=>1, 'visible'=>2, 'index'=>1, 'foreignkey'=>'categories.rowid',),
-		'active' => array('type'=>'boolean', 'label'=>'Actif', 'enabled'=>'1', 'position'=>61, 'notnull'=>1, 'visible'=>1, 'default'=>'1', 'index'=>1, 'comment'=>"Is this category used in dolinput"),
-		'form' => array('type'=>'varchar(255)', 'label'=>'Formulaire', 'enabled'=>'1', 'position'=>62, 'notnull'=>-1, 'visible'=>1, 'comment'=>"The form name for dolinput"),
+		'ref' => array('type'=>'varchar(128)', 'label'=>'Ref', 'enabled'=>'1', 'position'=>10, 'notnull'=>1, 'visible'=>1, 'default'=>'(PROV)', 'index'=>1, 'searchall'=>1, 'showoncombobox'=>'1', 'comment'=>"Reference of object"),
+		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>30, 'notnull'=>-1, 'visible'=>1, 'searchall'=>1, 'help'=>"Help text", 'showoncombobox'=>'1',),
+		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php', 'label'=>'Donneur', 'enabled'=>'1', 'position'=>50, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'help'=>"Donneur",),
+		'date_pickup' => array('type'=>'date', 'label'=>'Date', 'enabled'=>'1', 'position'=>55, 'notnull'=>1, 'visible'=>1, 'index'=>1,),
+		'description' => array('type'=>'text', 'label'=>'Description', 'enabled'=>'1', 'position'=>60, 'notnull'=>-1, 'visible'=>-1,),
 		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>'1', 'position'=>500, 'notnull'=>1, 'visible'=>-2,),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>-1, 'visible'=>-2,),
 		'fk_user_creat' => array('type'=>'integer', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>510, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
-		'fk_user_modif' => array('type'=>'integer', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>511, 'notnull'=>-1, 'visible'=>-2,),
-		'import_key' => array('type'=>'varchar(14)', 'label'=>'ImportId', 'enabled'=>'1', 'position'=>1000, 'notnull'=>-1, 'visible'=>-2,),
-		'notes' => array('type'=>'text', 'label'=>'Notes', 'enabled'=>'1', 'position'=>63, 'notnull'=>0, 'visible'=>-1, 'comment'=>"Additional notes for the mobile application"),
+		'fk_user_modif' => array('type'=>'integer', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>511, 'notnull'=>-1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
+		'status' => array('type'=>'integer', 'label'=>'Status', 'default' => 0, 'enabled'=>'1', 'position'=>1000, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'arrayofkeyval'=>array('0'=>'Brouillon', '1'=>'Actif', '5'=>'Stock', '9'=>'Annul&eacute;'), 'noteditable'=>1),
+		'fk_entrepot' => array('type'=>'integer:Entrepot:product/stock/class/entrepot.class.php', 'label'=>'Entrepôt', 'enabled'=>'1', 'position'=>40, 'notnull'=>1, 'visible'=>1,),
+		'note_public' => array('type'=>'html', 'label'=>'NotePublic', 'enabled'=>'1', 'position'=>161, 'notnull'=>-1, 'visible'=>-2,),
+		'note_private' => array('type'=>'html', 'label'=>'NotePrivate', 'enabled'=>'1', 'position'=>162, 'notnull'=>-1, 'visible'=>-2,),
 	);
 	public $rowid;
-	public $fk_category;
-	public $active;
-	public $form;
+	public $ref;
+	public $label;
+	public $fk_soc;
+	public $date_pickup;
+	public $description;
 	public $date_creation;
 	public $tms;
 	public $fk_user_creat;
 	public $fk_user_modif;
-	public $import_key;
-	public $notes;
-
+	public $status;
+	public $fk_entrepot;
+	public $note_public;
+	public $note_private;
 
 	// If this object has a subtable with lines
 
 	/**
 	 * @var int    Name of subtable line
 	 */
-	//public $table_element_line = 'pickup_dolinputcatline';
+	public $table_element_line = 'pickup_pickupline';
 
 	/**
 	 * @var int    Field with ID of parent key if this field has a parent
 	 */
-	//public $fk_element = 'fk_dolinputcat';
+	public $fk_element = 'fk_pickup';
 
 	/**
 	 * @var int    Name of subtable class that manage subtable lines
 	 */
-	//public $class_element_line = 'Dolinputcatline';
+	public $class_element_line = 'PickupLine';
 
 	/**
 	 * @var array	List of child tables. To test if we can delete object.
@@ -131,12 +140,13 @@ class Dolinputcat extends CommonObject
 	/**
 	 * @var array	List of child tables. To know object to delete on cascade.
 	 */
-	//protected $childtablesoncascade=array('pickup_dolinputcatdet');
+	//protected $childtablesoncascade=array('pickup_pickupdet');
+	protected $childtablesoncascade = array('pickup_pickupline');
 
 	/**
-	 * @var DolinputcatLine[]     Array of subtable lines
+	 * @var PickupLine[]     Array of subtable lines
 	 */
-	//public $lines = array();
+	public $lines = array();
 
 
 
@@ -185,6 +195,9 @@ class Dolinputcat extends CommonObject
 	 */
 	public function create(User $user, $notrigger = false)
 	{
+		dol_include_once('/pickup/core/modules/pickup/modules_pickup.php');
+		$modele_num_ref = new ModeleNumRefPickup();
+		$this->ref = $modele_num_ref->getNextValue($this);
 		return $this->createCommon($user, $notrigger);
 	}
 
@@ -289,13 +302,6 @@ class Dolinputcat extends CommonObject
 	public function fetch($id, $ref = null)
 	{
 		$result = $this->fetchCommon($id, $ref);
-		if ($result > 0 && ! empty($this->table_element_line)) $this->fetchLines();
-		return $result;
-	}
-
-	public function fetchByCategory($cat_id)
-	{
-		$result = $this->fetchCommon(null, null, ' and fk_category='.$this->db->escape($cat_id));
 		if ($result > 0 && ! empty($this->table_element_line)) $this->fetchLines();
 		return $result;
 	}
@@ -455,11 +461,11 @@ class Dolinputcat extends CommonObject
 
         $result = '';
 
-        $label = '<u>' . $langs->trans("Dolinputcat") . '</u>';
+        $label = '<u>' . $langs->trans("Pickup") . '</u>';
         $label.= '<br>';
         $label.= '<b>' . $langs->trans('Ref') . ':</b> ' . $this->ref;
 
-        $url = dol_buildpath('/pickup/dolinputcat_card.php', 1).'?id='.$this->id;
+        $url = dol_buildpath('/pickup/pickup_card.php', 1).'?id='.$this->id;
 
         if ($option != 'nolink')
         {
@@ -474,14 +480,14 @@ class Dolinputcat extends CommonObject
         {
             if (! empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
             {
-                $label=$langs->trans("ShowDolinputcat");
+                $label=$langs->trans("ShowPickup");
                 $linkclose.=' alt="'.dol_escape_htmltag($label, 1).'"';
             }
             $linkclose.=' title="'.dol_escape_htmltag($label, 1).'"';
             $linkclose.=' class="classfortooltip'.($morecss?' '.$morecss:'').'"';
 
             /*
-             $hookmanager->initHooks(array('dolinputcatdao'));
+             $hookmanager->initHooks(array('pickupdao'));
              $parameters=array('id'=>$this->id);
              $reshook=$hookmanager->executeHooks('getnomurltooltip',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
              if ($reshook > 0) $linkclose = $hookmanager->resPrint;
@@ -500,7 +506,7 @@ class Dolinputcat extends CommonObject
 		//if ($withpicto != 2) $result.=(($addlabel && $this->label) ? $sep . dol_trunc($this->label, ($addlabel > 1 ? $addlabel : 0)) : '');
 
 		global $action,$hookmanager;
-		$hookmanager->initHooks(array('dolinputcatdao'));
+		$hookmanager->initHooks(array('pickupdao'));
 		$parameters=array('id'=>$this->id, 'getnomurl'=>$result);
 		$reshook=$hookmanager->executeHooks('getNomUrl', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks
 		if ($reshook > 0) $result = $hookmanager->resPrint;
@@ -534,9 +540,10 @@ class Dolinputcat extends CommonObject
 		if (empty($this->labelstatus))
 		{
 			global $langs;
-			//$langs->load("pickup");
+			$langs->load("pickup");
 			$this->labelstatus[self::STATUS_DRAFT] = $langs->trans('Draft');
 			$this->labelstatus[self::STATUS_VALIDATED] = $langs->trans('Enabled');
+			$this->labelstatus[self::STATUS_STOCK] = $langs->trans('PickupStatusStock');
 			$this->labelstatus[self::STATUS_DISABLED] = $langs->trans('Disabled');
 		}
 
@@ -643,8 +650,8 @@ class Dolinputcat extends CommonObject
 	{
 	    $this->lines=array();
 
-	    $objectline = new DolinputcatLine($this->db);
-	    $result = $objectline->fetchAll('ASC', 'position', 0, 0, array('customsql'=>'fk_dolinputcat = '.$this->id));
+	    $objectline = new PickupLine($this->db);
+	    $result = $objectline->fetchAll('ASC', 'position', 0, 0, array('customsql'=>'fk_pickup = '.$this->id));
 
 	    if (is_numeric($result))
 	    {
@@ -682,8 +689,8 @@ class Dolinputcat extends CommonObject
 
 			if ($this->modelpdf) {
 				$modele = $this->modelpdf;
-			} elseif (! empty($conf->global->DOLINPUTCAT_ADDON_PDF)) {
-				$modele = $conf->global->DOLINPUTCAT_ADDON_PDF;
+			} elseif (! empty($conf->global->PICKUP_ADDON_PDF)) {
+				$modele = $conf->global->PICKUP_ADDON_PDF;
 			}
 		}
 
@@ -721,13 +728,33 @@ class Dolinputcat extends CommonObject
 
 		return $error;
 	}
-}
 
-/**
- * Class DolinputcatLine. You can also remove this and generate a CRUD class for lines objects.
- */
-class DolinputcatLine
-{
-	// To complete with content of an object DolinputcatLine
-	// We should have a field rowid, fk_dolinputcat and position
+
+
+	public function initPickupLine($idprod, $qty = 1) {
+		global $db;
+
+		$line = new PickupLine($db);
+		$line->fk_pickup = $this->id;
+		$line->fk_product = $idprod;
+		$line->qty = $qty;
+
+		$product = new Product($db);
+		if ($product->fetch($idprod) <= 0) {
+			dol_syslog(__METHOD__ . ' ' . 'Product '.$idprod.' not found', LOG_ERR);
+		} else {
+			// FIXME: this code is temporary, because I dont know how to handle weight_units.
+			// So I only accept 0 or empty.
+			if (!empty($product->weight) && empty($product->weight_units) || $product->weight_units == 0) {
+				$line->weight = $qty * $product->weight;
+			} else {
+				$line->weight = 0;
+			}
+			$line->weight_units = 0;
+		}
+
+		$line->position = $this->line_max(0) + 1;
+
+		return $line;
+	}
 }

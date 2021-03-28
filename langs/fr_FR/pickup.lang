@@ -1,0 +1,71 @@
+# Copyright (C) 2021		Jonathan Dollé		<license@jonathandolle.fr>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#
+# Générique
+#
+
+# Module label 'ModulePickupName'
+ModulePickupName = Collecte
+# Module description 'ModulePickupDesc'
+ModulePickupDesc = Ce module permet de gérer les collectes
+
+PickupNumRefModelDesc = Retourne le numéro de collecte
+PickupStatusStock = Intégrée dans le stock
+
+#
+# Menus
+#
+PickupMenuList = Liste des collectes
+PickupMenuTags = Configuration des tags
+PickupNew = Nouvelle collecte
+
+#
+# Page d'administration
+#
+PickupSetup = Configuration du module Collecte
+Settings = Réglages
+PickupSetupPage = Page de configuration du module Collecte
+
+#
+# Page À propos
+#
+About = À propos
+PickupAbout = À propos de Collecte
+PickupAboutPage = Page à propos de Collecte
+
+#
+# Page d'exemple
+#
+MyPageName = Nom de ma page
+
+#
+# Box d'exemple
+#
+MyWidget = Mon widget
+MyWidgetDescription = Description de mon widget
+
+#
+# Pour Dolinput
+# 
+TitleDolinput = Dolinput
+
+#
+ConfirmPickupActionValidate = Êtes-vous sûr de vouloir valider cette collecte ?
+PickupActionIncludeInStock = Intégrer au stock
+ConfirmPickupActionIncludeInStock = Êtes-vous sûr de vouloir intégrer ces produits au stock ?
+PickupIncludeInStockOk = Produits intégrés au stock
+PickupIncludeInStockMovementNotFoundError = Une erreur a eu lieu, le mouvement n'a pas été trouvé
+#

@@ -18,7 +18,7 @@
 
 /**
  *  \file       dolinputcat_document.php
- *  \ingroup    collecte
+ *  \ingroup    pickup
  *  \brief      Tab for documents linked to Dolinputcat
  */
 
@@ -43,11 +43,11 @@ accessforbidden();
 // require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 // require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
 // require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-// dol_include_once('/collecte/class/dolinputcat.class.php');
-// dol_include_once('/collecte/lib/collecte_dolinputcat.lib.php');
+// dol_include_once('/pickup/class/dolinputcat.class.php');
+// dol_include_once('/pickup/lib/pickup_dolinputcat.lib.php');
 
 // // Load translation files required by the page
-// $langs->loadLangs(array("collecte@collecte","companies","other","mails"));
+// $langs->loadLangs(array("pickup@pickup","companies","other","mails"));
 
 
 // $action=GETPOST('action', 'aZ09');
@@ -58,7 +58,7 @@ accessforbidden();
 // // Security check - Protection if external user
 // //if ($user->societe_id > 0) access_forbidden();
 // //if ($user->societe_id > 0) $socid = $user->societe_id;
-// //$result = restrictedArea($user, 'collecte', $id);
+// //$result = restrictedArea($user, 'pickup', $id);
 
 // // Get parameters
 // $sortfield = GETPOST("sortfield", 'alpha');
@@ -75,7 +75,7 @@ accessforbidden();
 // // Initialize technical objects
 // $object=new Dolinputcat($db);
 // $extrafields = new ExtraFields($db);
-// $diroutputmassaction=$conf->collecte->dir_output . '/temp/massgeneration/'.$user->id;
+// $diroutputmassaction=$conf->pickup->dir_output . '/temp/massgeneration/'.$user->id;
 // $hookmanager->initHooks(array('dolinputcatdocument','globalcard'));     // Note that conf->hooks_modules contains array
 // // Fetch optionals attributes and labels
 // $extralabels = $extrafields->fetch_name_optionals_label('dolinputcat');
@@ -83,8 +83,8 @@ accessforbidden();
 // // Load object
 // include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php';  // Must be include, not include_once  // Must be include, not include_once. Include fetch and fetch_thirdparty but not fetch_optionals
 
-// //if ($id > 0 || ! empty($ref)) $upload_dir = $conf->collecte->multidir_output[$object->entity?$object->entity:1] . "/dolinputcat/" . dol_sanitizeFileName($object->id);
-// if ($id > 0 || ! empty($ref)) $upload_dir = $conf->collecte->multidir_output[$object->entity?$object->entity:1] . "/dolinputcat/" . dol_sanitizeFileName($object->ref);
+// //if ($id > 0 || ! empty($ref)) $upload_dir = $conf->pickup->multidir_output[$object->entity?$object->entity:1] . "/dolinputcat/" . dol_sanitizeFileName($object->id);
+// if ($id > 0 || ! empty($ref)) $upload_dir = $conf->pickup->multidir_output[$object->entity?$object->entity:1] . "/dolinputcat/" . dol_sanitizeFileName($object->ref);
 
 
 // /*
@@ -125,7 +125,7 @@ accessforbidden();
 
 // 	// Object card
 // 	// ------------------------------------------------------------
-// 	$linkback = '<a href="' .dol_buildpath('/collecte/dolinputcat_list.php', 1) . '?restore_lastsearch_values=1' . (! empty($socid) ? '&socid=' . $socid : '') . '">' . $langs->trans("BackToList") . '</a>';
+// 	$linkback = '<a href="' .dol_buildpath('/pickup/dolinputcat_list.php', 1) . '?restore_lastsearch_values=1' . (! empty($socid) ? '&socid=' . $socid : '') . '">' . $langs->trans("BackToList") . '</a>';
 
 // 	dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
 
@@ -146,10 +146,10 @@ accessforbidden();
 
 // 	dol_fiche_end();
 
-// 	$modulepart = 'collecte';
-// 	//$permission = $user->rights->collecte->create;
+// 	$modulepart = 'pickup';
+// 	//$permission = $user->rights->pickup->create;
 // 	$permission = 1;
-// 	//$permtoedit = $user->rights->collecte->create;
+// 	//$permtoedit = $user->rights->pickup->create;
 // 	$permtoedit = 1;
 // 	$param = '&id=' . $object->id;
 
