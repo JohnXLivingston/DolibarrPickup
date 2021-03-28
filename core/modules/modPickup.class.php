@@ -61,10 +61,10 @@ class modPickup extends DolibarrModules
         $this->description = "Pickup Module";
         // Used only if file README.md and README-LL.md not found.
         $this->descriptionlong = "Pickup Module";
-        $this->editor_name = 'Editor name';
-        $this->editor_url = 'https://www.example.com';
+        $this->editor_name = 'Jonathan Dollé';
+        $this->editor_url = 'https://github.com/JohnXLivingston';
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '1.0';
+        $this->version = '0.1';
         // Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
 
