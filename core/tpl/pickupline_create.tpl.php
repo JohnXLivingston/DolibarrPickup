@@ -71,6 +71,9 @@ $coldisplay = 0;
 	<td class="bordertop nobottom">
 		<?php $coldisplay++; ?>
 	</td>
+	<td class="bordertop nobottom">
+		<?php $coldisplay++; ?>
+	</td>
 
 	<!-- colspan for this td because it replace total_ht+3 td for buttons+... -->
 	<td class="bordertop nobottom linecoledit center valignmiddle" colspan="<?php echo $colspan; ?>">

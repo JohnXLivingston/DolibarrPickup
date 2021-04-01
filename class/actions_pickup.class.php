@@ -500,6 +500,7 @@ class ActionsPickup
 		if ($line->fk_product > 0) {
 			$line_product = new Product($this->db);
 			$line_product->fetch($line->fk_product);
+			$line_product->fetch_optionals();
 		}
 		
 		if ($object->status == 0 && $action == 'editline' && $selected == $line->id) {

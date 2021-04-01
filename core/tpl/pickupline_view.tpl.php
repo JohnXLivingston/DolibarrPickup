@@ -24,6 +24,7 @@
  * $line (pickupline)
  * $line_product (product)
  * $stock_movement if the line is already in stock
+ * $extrafields, $extralabels
  */
 
 // Protection to avoid direct call of template
@@ -76,6 +77,16 @@ $coldisplay = 0; ?>
     <?php if (!empty($line_product) && !empty($line_product->weight)) {
       print ($line_product->weight * $line->qty) . ' ' . measuringUnitString(0, "weight", $line_product->weight_units);
     } ?>
+  </td>
+  <td class="nowrap">
+    <?php $coldisplay++; ?>
+    <?php
+      if (!empty($line_product) && $line_product->array_options['options_deee']) {
+        print $extrafields->showOutputField('type_deee', $line_product->array_options['options_type_deee'], '', $line_product->table_element);
+      } else {
+        print '-';
+      }
+    ?>
   </td>
   <td class="nowrap">
     <?php $coldisplay++; ?>

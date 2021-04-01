@@ -22,6 +22,7 @@
  * $line_product (product)
  * 
  * $stock_movement if the line is already in stock
+ * $extrafields, $extralabels
  */
 
 // Protection to avoid direct call of template
@@ -68,16 +69,32 @@ $coldisplay = 0;
 			print $line->showInputField(null, 'qty', GETPOSTISSET("qty") ? GETPOST('qty', 'int') : $line->qty);
 		?>
 	</td>
-	<td class="right">
-		<?php $coldisplay++; ?>
-	</td>
-	<td class="right">
-		<?php $coldisplay++; ?>
-	</td>
-	<td class="">
-		<?php $coldisplay++; ?>
-		<?php if (! empty($stock_movement)) { print $stock_movement->getNomUrl(1); } ?>
-	</td>
+	<td class="nowrap right">
+    <?php $coldisplay++; ?>
+    <?php if (!empty($line_product) && !empty($line_product->weight)) {
+      print $line_product->weight . ' ' . measuringUnitString(0, "weight", $line_product->weight_units);
+    } ?>
+  </td>
+  <td class="nowrap right">
+    <?php $coldisplay++; ?>
+    <?php if (!empty($line_product) && !empty($line_product->weight)) {
+      print ($line_product->weight * $line->qty) . ' ' . measuringUnitString(0, "weight", $line_product->weight_units);
+    } ?>
+  </td>
+  <td class="nowrap">
+    <?php $coldisplay++; ?>
+    <?php
+      if (!empty($line_product) && $line_product->array_options['options_deee']) {
+        print $extrafields->showOutputField('type_deee', $line_product->array_options['options_type_deee'], '', $line_product->table_element);
+      } else {
+        print '-';
+      }
+    ?>
+  </td>
+  <td class="nowrap">
+    <?php $coldisplay++; ?>
+    <?php if (! empty($stock_movement)) { print $stock_movement->getNomUrl(1); } ?>
+  </td>
 
 	<!-- colspan for this td because it replace total_ht+3 td for buttons+... -->
 	<td class="center valignmiddle" colspan="<?php echo $colspan; ?>">
