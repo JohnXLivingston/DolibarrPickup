@@ -19,7 +19,7 @@
  * $line (pickupline)
  * $conf
  * $langs
- * $product_text
+ * $line_product (product)
  * 
  * $stock_movement if the line is already in stock
  */
@@ -47,7 +47,7 @@ $coldisplay = 0;
 		<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
 
 		<?php if ($line->fk_product > 0) {
-      print $form->textwithtooltip($product_text, '', 3, '', '', $i, 0, '');
+      print $form->textwithtooltip($line_product->getNomUrl(1), '', 3, '', '', $i, 0, '');
 			print '<br>';
 		}	?>
 
@@ -69,9 +69,10 @@ $coldisplay = 0;
 		?>
 	</td>
 	<td class="right">
-		<?php $coldisplay++;
-			print $line->showInputField(null, 'weight', GETPOSTISSET("weight") ? price2num(GETPOST('weight')) : $line->weight);
-		?>
+		<?php $coldisplay++; ?>
+	</td>
+	<td class="right">
+		<?php $coldisplay++; ?>
 	</td>
 	<td class="">
 		<?php $coldisplay++; ?>

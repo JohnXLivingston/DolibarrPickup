@@ -65,6 +65,9 @@ $coldisplay = 0;
 	<td class="bordertop nobottom right">
 		<?php $coldisplay++; ?>
 	</td>
+	<td class="bordertop nobottom right">
+		<?php $coldisplay++; ?>
+	</td>
 	<td class="bordertop nobottom">
 		<?php $coldisplay++; ?>
 	</td>

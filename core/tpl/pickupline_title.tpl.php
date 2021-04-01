@@ -38,6 +38,9 @@ print "<!-- BEGIN PHP TEMPLATE pickup/pickupline_title.tpl.php -->\n";
 			<?php print $langs->trans('Qty'); ?>
 		</td>
 		<td class="right">
+			<?php print $langs->trans('ProductWeight'); ?>
+		</td>
+		<td class="right">
 			<?php print $langs->trans('Weight'); ?>
 		</td>
 		<td class="">

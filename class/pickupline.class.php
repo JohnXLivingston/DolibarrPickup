@@ -90,8 +90,6 @@ class PickupLine extends CommonObjectLine
 		'fk_product' => array('type'=>'integer:Product:product/class/product.class.php', 'label'=>'Product', 'enabled'=>'1', 'position'=>32, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'foreignkey'=>'product.rowid',),
 		'description' => array('type'=>'text', 'label'=>'Description', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>-1,),
 		'qty' => array('type'=>'integer', 'label'=>'Quantité', 'enabled'=>'1', 'position'=>45, 'notnull'=>1, 'visible'=>1, 'default'=>'1', 'isameasure'=>'1', 'css'=>'maxwidth75imp',),
-		'weight' => array('type'=>'double(24,8)', 'label'=>'Poids', 'enabled'=>'1', 'position'=>100, 'notnull'=>1, 'visible'=>1, 'isameasure'=>'1',),
-		'weight_units' => array('type'=>'integer', 'label'=>'Unité', 'enabled'=>'1', 'position'=>101, 'notnull'=>1, 'visible'=>1, 'default'=>'0',),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>140, 'notnull'=>1, 'visible'=>-1,),
 		'fk_user_creat' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>45, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'fk_user_modif' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>50, 'notnull'=>-1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
@@ -103,8 +101,6 @@ class PickupLine extends CommonObjectLine
 	public $fk_product;
 	public $description;
 	public $qty;
-	public $weight;
-	public $weight_units;
 	public $tms;
 	public $fk_user_creat;
 	public $fk_user_modif;

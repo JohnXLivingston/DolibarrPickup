@@ -147,14 +147,9 @@ class ActionsPickup
 
 			$line_desc = GETPOST('description', 'nohtml');
 			$qty = price2num(GETPOST('qty', 'int'));
-			$weight = price2num(GETPOST('weight'));
-			// $weight_units = GETPOST('weight_units', 'int');
 
 			if ($qty == '') {
 				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')));
-			}
-			if ($weight == '') {
-				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Weight')));
 			}
 
 			if (!count($errors)) {
@@ -169,8 +164,6 @@ class ActionsPickup
 				} else {
 					$line->qty = $qty;
 					$line->description = $line_desc;
-					$line->weight = $weight;
-					// $line->weight_units = $weight_units;
 
 					$result = $line->update($user);
 					if ($result <= 0) {
@@ -182,8 +175,6 @@ class ActionsPickup
 						}
 					} else {
 						unset($_POST['qty']);
-						unset($_POST['weight']);
-						// unset($_POST['weight_units']);
 						unset($_POST['description']);
 
 						$object->fetchLines();
@@ -497,6 +488,7 @@ class ActionsPickup
 		$i = $parameters['i'];
 		$selected = $parameters['selected'];
 		$object_rights = $object->getRights();
+		$line_product = 0;
 
 		$stock_movement = 0;
 		if ($line->fk_stock_movement) {
@@ -506,11 +498,8 @@ class ActionsPickup
 		}
 
 		if ($line->fk_product > 0) {
-			$product_static = new Product($this->db);
-			$product_static->fetch($line->fk_product);
-			$product_text = $product_static->getNomUrl(1);
-		} else {
-			$product_text = '';
+			$line_product = new Product($this->db);
+			$line_product->fetch($line->fk_product);
 		}
 		
 		if ($object->status == 0 && $action == 'editline' && $selected == $line->id) {

@@ -738,21 +738,6 @@ class Pickup extends CommonObject
 		$line->fk_pickup = $this->id;
 		$line->fk_product = $idprod;
 		$line->qty = $qty;
-
-		$product = new Product($db);
-		if ($product->fetch($idprod) <= 0) {
-			dol_syslog(__METHOD__ . ' ' . 'Product '.$idprod.' not found', LOG_ERR);
-		} else {
-			// FIXME: this code is temporary, because I dont know how to handle weight_units.
-			// So I only accept 0 or empty.
-			if (!empty($product->weight) && empty($product->weight_units) || $product->weight_units == 0) {
-				$line->weight = $qty * $product->weight;
-			} else {
-				$line->weight = 0;
-			}
-			$line->weight_units = 0;
-		}
-
 		$line->position = $this->line_max(0) + 1;
 
 		return $line;

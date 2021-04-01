@@ -20,8 +20,6 @@ CREATE TABLE llx_pickup_pickupline(
 	fk_product integer NOT NULL, 
 	description text, 
 	qty integer DEFAULT 1 NOT NULL, 
-	weight double(24,8) NOT NULL, 
-	weight_units integer NOT NULL, 
 	tms timestamp NOT NULL, 
 	fk_user_creat integer NOT NULL, 
 	fk_user_modif integer, 

@@ -21,7 +21,8 @@
  * $object_rights->write initialized from = $object->getRights()
  * $disableedit, $disablemove (not used for now because of bugs in dolibarr), $disableremove
  *
- * $product_text, $line
+ * $line (pickupline)
+ * $line_product (product)
  * $stock_movement if the line is already in stock
  */
 
@@ -51,7 +52,7 @@ $coldisplay = 0; ?>
     <div id="line_<?php print $line->id; ?>"></div>
     <?php
       if ($line->fk_product > 0) {
-        print $form->textwithtooltip($product_text, '', 3, '', '', $i, 0, '');
+        print $form->textwithtooltip($line_product->getNomUrl(1), '', 3, '', '', $i, 0, '');
       }
 
       print '<br>';
@@ -66,7 +67,15 @@ $coldisplay = 0; ?>
   </td>
   <td class="nowrap right">
     <?php $coldisplay++; ?>
-    <?php print $line->weight . ' ' . measuringUnitString(0, "weight", $line->weight_units); ?>
+    <?php if (!empty($line_product) && !empty($line_product->weight)) {
+      print $line_product->weight . ' ' . measuringUnitString(0, "weight", $line_product->weight_units);
+    } ?>
+  </td>
+  <td class="nowrap right">
+    <?php $coldisplay++; ?>
+    <?php if (!empty($line_product) && !empty($line_product->weight)) {
+      print ($line_product->weight * $line->qty) . ' ' . measuringUnitString(0, "weight", $line_product->weight_units);
+    } ?>
   </td>
   <td class="nowrap">
     <?php $coldisplay++; ?>
