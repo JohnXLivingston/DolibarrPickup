@@ -753,6 +753,33 @@ class Pickup extends CommonObject
 
 
 
+	public function canEditPickup() {
+		global $user;
+
+		$pickup_rights = $this->getRights();
+
+		if ($this->status == Pickup::STATUS_DRAFT) {
+			if ($pickup_rights->create) {
+				// only if it is mine...
+				if ($this->fk_user_creat == $user->id) {
+					return 1;
+				}
+				// or if it is not saved yet
+				if (empty($this->id)) {
+					return 1;
+				}
+			}
+			if ($pickup_rights->write) return 1;
+		} else if ($this->status == Pickup::STATUS_VALIDATED) {
+			if ($pickup_rights->write) return 1;
+		} else if ($this->status == Pickup::STATUS_STOCK) {
+			if ($pickup_rights->write) return 1;
+		} else if ($this->status == Pickup::STATUS_DISABLED) {
+
+		}
+		return 0;
+	}
+	
 	public function initPickupLine($fk_product, $qty = 1) {
 		global $db;
 

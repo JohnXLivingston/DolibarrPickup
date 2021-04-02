@@ -148,7 +148,7 @@ if ($object->id)
 	//$permission = $user->rights->pickup->create;
 	$permission = 1;
 	//$permtoedit = $user->rights->pickup->create;
-	$permtoedit = 1;
+	$permtoedit = $object->canEditPickup();
 	$param = '&id=' . $object->id;
 
 	//$relativepathwithnofile='pickup/' . dol_sanitizeFileName($object->id).'/';

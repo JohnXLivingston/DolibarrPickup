@@ -104,12 +104,17 @@ if ($user->societe_id > 0) access_forbidden();
 $isdraft = (($object->status == Pickup::STATUS_DRAFT) ? 1 : 0);
 $result = restrictedArea($user, 'pickup', $object->id, '', '', 'fk_soc', 'rowid', $isdraft);
 
-$permissionnote=$user->rights->pickup->write;	// Used by the include of actions_setnotes.inc.php
-$permissiondellink=$user->rights->pickup->write;	// Used by the include of actions_dellink.inc.php
-$permissionedit=$user->rights->pickup->write; // Used by the include of actions_lineupdown.inc.php
-$permissiontoadd=$user->rights->pickup->write; // Used by the include of actions_addupdatedelete.inc.php
+$permissionnote = 0;
+$permissiondellink = 0;
+$permissionedit = 0;
+$permissiontoadd = 0;
 
-
+if ($object->canEditPickup()) {
+	$permissionnote = 1;	// Used by the include of actions_setnotes.inc.php
+	$permissiondellink = 1;	// Used by the include of actions_dellink.inc.php
+	$permissionedit = 1; // Used by the include of actions_lineupdown.inc.php
+	$permissiontoadd = 1; // Used by the include of actions_addupdatedelete.inc.php
+}
 
 /*
  * Actions
@@ -117,7 +122,7 @@ $permissiontoadd=$user->rights->pickup->write; // Used by the include of actions
 
 $parameters=array(
 	'permissiontoadd' => $permissiontoadd,
-	'permissionedit' => $permissionedit
+	'permissionedit' => $permissionedit,
 );
 $reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
@@ -127,7 +132,7 @@ if (empty($reshook))
 	$langs->load('errors');
 	$error = 0;
 
-	$permissiontodelete = $user->rights->pickup->delete || ($permissiontoadd && $object->status == 0);
+	$permissiontodelete = $user->rights->pickup->delete;
 	$backurlforlist = dol_buildpath('/pickup/pickup_list.php', 1);
 	if (empty($backtopage) || ($cancel && empty($id))) {
 		if (empty($backtopage) || ($cancel && strpos($backtopage, '__ID__'))) {
@@ -389,7 +394,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		}
 
 		print '<div class="div-table-responsive-no-min">';
-		if (!empty($object->lines) || ($object->status == $object::STATUS_DRAFT && $permissiontoadd && $action != 'selectlines' && $action != 'editline'))
+		if (!empty($object->lines) || ($object->status == $object::STATUS_DRAFT && $permissionedit && $action != 'selectlines' && $action != 'editline'))
 		{
 			print '<table id="tablelines" class="noborder noshadow" width="100%">';
 		}
@@ -397,7 +402,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		$object->printObjectLines($action, $mysoc, null, GETPOST('lineid', 'int'), 1);
 
 		// Form to add new line
-		if ($object->status == 0 && $permissiontoadd && $action != 'selectlines')
+		if ($object->status == Pickup::STATUS_DRAFT && $permissionedit && $action != 'selectlines')
 		{
 			if ($action != 'editline')
 			{
@@ -406,7 +411,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 			}
 		}
 
-		if (!empty($object->lines) || ($object->status == $object::STATUS_DRAFT && $permissiontoadd && $action != 'selectlines' && $action != 'editline'))
+		if (!empty($object->lines) || ($object->status == Pickup::STATUS_DRAFT && $permissionedit && $action != 'selectlines' && $action != 'editline'))
 		{
 			print '</table>';
 		}
@@ -462,8 +467,8 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
     		}
     		*/
 
-				// Delete (need delete permission, or if draft, just need create/modify permission)
-     		if (! empty($user->rights->pickup->delete) || (! empty($object->fields['status']) && $object->status == $object::STATUS_DRAFT && ! empty($user->rights->pickup->write)))
+				// Delete (need delete permission
+     		if (! empty($user->rights->pickup->delete))
     		{
     			print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=delete">'.$langs->trans('Delete').'</a>'."\n";
     		}

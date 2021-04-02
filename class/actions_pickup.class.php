@@ -101,9 +101,10 @@ class ActionsPickup
 		global $db, $conf, $user, $langs;
 
 		$errors = array(); // Error counter
+		$pickup_rights = $object->getRights();
 
 		// Action addline
-		if ($action == 'addline' && $parameters['permissiontoadd'] && !empty($object->id)) {
+		if ($action == 'addline' && $parameters['permissionedit'] && !empty($object->id)) {
 			$langs->load('errors');
 
 			$fk_product = GETPOST('fk_product', 'int');
@@ -140,7 +141,7 @@ class ActionsPickup
 		if ($action == 'updateline' && !empty(GETPOST('cancel', 'aZ09'))) {
 			$action = '';
 		}
-		if ($action == 'updateline' && $parameters['permissiontoadd'] && !empty($object->id)) {
+		if ($action == 'updateline' && $parameters['permissionedit'] && !empty($object->id)) {
 			$langs->load('errors');
 
 			$lineid   = GETPOST('lineid', 'int');
@@ -189,7 +190,7 @@ class ActionsPickup
 			}
 		}
 
-		if ($action == 'confirm_validate' && GETPOST('confirm') == 'yes' && $parameters['permissionedit']) {
+		if ($action == 'confirm_validate' && GETPOST('confirm') == 'yes' && $pickup_rights->workflow->validate) {
 			$object->status = Pickup::STATUS_VALIDATED;
 			if ($object->update($user) <= 0) {
 				setEventMessages($object->error, $object->errors, 'errors');
@@ -198,7 +199,7 @@ class ActionsPickup
 			exit;
 		}
 
-		if ($action == 'confirm_includeinstock' && GETPOST('confirm') == 'yes' && $parameters['permissionedit']) {
+		if ($action == 'confirm_includeinstock' && GETPOST('confirm') == 'yes' && $pickup_rights->workflow->stock) {
 			$object->getLinesArray();
 			$nb_ok = 0;
 			$movement_label = empty($object->label) ? $object->ref : $object->ref . ' - ' . $object->label;
@@ -487,7 +488,6 @@ class ActionsPickup
 		$line = $parameters['line'];
 		$i = $parameters['i'];
 		$selected = $parameters['selected'];
-		$object_rights = $object->getRights();
 		$line_product = 0;
 
 		$stock_movement = 0;
@@ -553,13 +553,13 @@ class ActionsPickup
 			return 0;
 		}
 		global $langs;
-		$permissionedit = $parameters['permissionedit'];
-		if ($object->status == Pickup::STATUS_DRAFT && $permissionedit) {
+		$pickup_rights = $object->getRights();
+		if ($object->status == Pickup::STATUS_DRAFT && $pickup_rights->workflow->validate) {
 			if (!empty($object->lines)) { // assuming lines were fetched before. If not, no button, thats not a problem.
 				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=validate">'.$langs->trans("Validate").'</a>'."\n";
 			}
 		}
-		if ($object->status == Pickup::STATUS_VALIDATED && $permissionedit) {
+		if ($object->status == Pickup::STATUS_VALIDATED && $pickup_rights->workflow->stock) {
 			if (!empty($object->lines)) { // assuming lines were fetched before. If not, no button, thats not a problem.
 				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=includeinstock">'.$langs->trans("PickupActionIncludeInStock").'</a>'."\n";
 			}

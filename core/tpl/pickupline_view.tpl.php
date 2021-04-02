@@ -18,7 +18,6 @@
  * $object (pickup)
  * $conf
  * $form
- * $object_rights->write initialized from = $object->getRights()
  * $disableedit, $disablemove (not used for now because of bugs in dolibarr), $disableremove
  *
  * $line (pickupline)
@@ -93,7 +92,7 @@ $coldisplay = 0; ?>
     <?php if (! empty($stock_movement)) { print $stock_movement->getNomUrl(1); } ?>
   </td>
 
-  <?php if ($object->statut == 0 && ($object_rights->write) && $action != 'selectlines') { ?>
+  <?php if ($object->statut == $object::STATUS_DRAFT && $object->canEditPickup() && $action != 'selectlines') { ?>
     <td class="linecoledit center">
       <?php $coldisplay++; ?>
       <?php if (empty($disableedit)) { ?>

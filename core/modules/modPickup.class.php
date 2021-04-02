@@ -252,12 +252,17 @@ class modPickup extends DolibarrModules
         $this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $r++;
         $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
-        $this->rights[$r][1] = 'Create/Update objects of Pickup';	// Permission label
+        $this->rights[$r][1] = 'Create Pickups';	// Permission label
+        $this->rights[$r][4] = 'create';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
+        $this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
+        $r++;
+        $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
+        $this->rights[$r][1] = 'Create/Update all Pickups';	// Permission label
         $this->rights[$r][4] = 'write';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $r++;
         $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
-        $this->rights[$r][1] = 'Delete objects of Pickup';	// Permission label
+        $this->rights[$r][1] = 'Delete Pickups';	// Permission label
         $this->rights[$r][4] = 'delete';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $r++;
@@ -298,7 +303,7 @@ class modPickup extends DolibarrModules
             'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
             'position'=>1000+$r,
             'enabled'=>'$conf->pickup->enabled',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled.
-            'perms'=>'1',			                // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
+            'perms'=>'$user->rights->pickup->read',			                // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
             'target'=>'',
             'user'=>2,				                // 0=Menu for internal users, 1=external users, 2=both
         );
@@ -314,7 +319,7 @@ class modPickup extends DolibarrModules
 								'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 								'position'=>1100+$r,
 								'enabled'=>'$conf->pickup->enabled',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-								'perms'=>'1',			                // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
+								'perms'=>'$user->rights->pickup->read',			                // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
 								'target'=>'',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$this->menu[$r++]=array(
@@ -327,7 +332,7 @@ class modPickup extends DolibarrModules
 								'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 								'position'=>1100+$r,
 								'enabled'=>'$conf->pickup->enabled',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-								'perms'=>'1',			                // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
+								'perms'=>'$user->rights->pickup->create',			                // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
 								'target'=>'',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
         $this->menu[$r++]=array(
@@ -340,8 +345,7 @@ class modPickup extends DolibarrModules
                                 'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
                                 'position'=>1100+$r,
                                 'enabled'=>'$conf->pickup->enabled',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-                                //'perms'=>'$users->rights->pickup->configure',               // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
-                                'perms' => '1',
+                                'perms'=>'$users->rights->pickup->configure',               // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
                                 'target'=>'',
                                 'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
         
