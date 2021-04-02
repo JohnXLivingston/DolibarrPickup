@@ -53,7 +53,16 @@ if (! $user->admin) accessforbidden();
 $action = GETPOST('action', 'alpha');
 $backtopage = GETPOST('backtopage', 'alpha');
 
+if (GETPOSTISSET('fk_entrepot')) {
+	// This is a hack for the PICKUP_DEFAULT_STOCK field
+	if ($_POST['fk_entrepot'] == '-1') {
+		$_POST['fk_entrepot'] = '';
+	}
+	$_POST['PICKUP_DEFAULT_STOCK'] = $_POST['fk_entrepot'];
+}
+
 $arrayofparameters=array(
+	'PICKUP_DEFAULT_STOCK' => array('enabled'=>1),
 );
 
 
@@ -102,7 +111,15 @@ if ($action == 'edit')
 	{
 		print '<tr class="oddeven"><td>';
 		print $form->textwithpicto($langs->trans($key), $langs->trans($key.'Tooltip'));
-		print '</td><td><input name="'.$key.'"  class="flat '.(empty($val['css'])?'minwidth200':$val['css']).'" value="' . $conf->global->$key . '"></td></tr>';
+		print '</td><td>';
+		if ($key == 'PICKUP_DEFAULT_STOCK') {
+			dol_include_once('/pickup/class/pickup.class.php');
+			$pickup = new Pickup($db);
+			print $pickup->showInputField($pickup->fields['fk_entrepot'], 'fk_entrepot', $conf->global->$key);
+		} else {
+			print '<input name="'.$key.'"  class="flat '.(empty($val['css'])?'minwidth200':$val['css']).'" value="' . $conf->global->$key . '">';
+		}
+		print '</td></tr>';
 	}
 	print '</table>';
 
@@ -124,7 +141,18 @@ else
 		{
 			print '<tr class="oddeven"><td>';
 			print $form->textwithpicto($langs->trans($key), $langs->trans($key.'Tooltip'));
-			print '</td><td>' . $conf->global->$key . '</td></tr>';
+			print '</td><td>';
+			if ($key == 'PICKUP_DEFAULT_STOCK') {
+				if (!empty($conf->global->$key)) {
+					dol_include_once('/product/stock/class/entrepot.class.php');
+					$entrepot = new Entrepot($db);
+					$entrepot->fetch($conf->global->$key);
+					print $entrepot->getNomUrl(1);
+				}
+			} else {
+				print $conf->global->$key;
+			}
+			print '</td></tr>';
 		}
 
 		print '</table>';

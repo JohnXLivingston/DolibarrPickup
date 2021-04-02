@@ -193,6 +193,8 @@ if ($action == 'create')
 
 	print '<table class="border centpercent">'."\n";
 
+	// This is a hack.
+	$object->fields['fk_entrepot']['default'] = $conf->global->PICKUP_DEFAULT_STOCK;
 	// Common attributes
 	include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_add.tpl.php';
 

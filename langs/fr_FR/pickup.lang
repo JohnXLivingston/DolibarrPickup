@@ -26,6 +26,8 @@ ModulePickupDesc = Ce module permet de gérer les collectes
 PickupNumRefModelDesc = Retourne le numéro de collecte
 PickupStatusStock = Intégrée dans le stock
 
+PICKUP_DEFAULT_STOCK = Entrepôt par défaut
+
 #
 # Menus
 #

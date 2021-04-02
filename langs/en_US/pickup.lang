@@ -26,6 +26,8 @@ ModulePickupDesc = This module is meant to handle pickups
 PickupNumRefModelDesc = Return the pickup reference
 PickupStatusStock = Inserted in stock
 
+PICKUP_DEFAULT_STOCK = Default stock
+
 #
 # Menus
 #
