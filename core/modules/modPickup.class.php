@@ -267,12 +267,12 @@ class modPickup extends DolibarrModules
         $this->rights[$r][5] = 'validate';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $r++;
         $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
-        $this->rights[$r][1] = 'Validate';	// Permission label
+        $this->rights[$r][1] = 'Insert in stock';	// Permission label
         $this->rights[$r][4] = 'workflow';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $this->rights[$r][5] = 'stock';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $r++;
         $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
-        $this->rights[$r][1] = 'Validate';	// Permission label
+        $this->rights[$r][1] = 'Sign';	// Permission label
         $this->rights[$r][4] = 'workflow';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $this->rights[$r][5] = 'signed';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $r++;
