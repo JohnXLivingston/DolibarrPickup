@@ -104,7 +104,7 @@ $search_array_options = $extrafields->getOptionalsFromPost($object->table_elemen
 
 // Default sort order (if not yet defined by previous GETPOST)
 if (! $sortfield) {
-	$sortfield="t.date_pickup";
+	$sortfield="t.ref";
 	if (! $sortorder) $sortorder = "DESC";
 }
 if (! $sortorder) $sortorder="ASC";
