@@ -66,9 +66,9 @@ else
 $search_agenda_label=GETPOST('search_agenda_label');
 
 // Security check - Protection if external user
-//if ($user->societe_id > 0) access_forbidden();
+if ($user->societe_id > 0) access_forbidden();
 //if ($user->societe_id > 0) $socid = $user->societe_id;
-//$result = restrictedArea($user, 'pickup', $id);
+$result = restrictedArea($user, 'pickup', $id);
 
 $limit = GETPOST('limit', 'int')?GETPOST('limit', 'int'):$conf->liste_limit;
 $sortfield = GETPOST("sortfield", 'alpha');

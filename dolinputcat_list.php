@@ -85,6 +85,10 @@ if ($user->societe_id > 0)	// Protection if external user
 	//$socid = $user->societe_id;
 	accessforbidden();
 }
+if (!$user->rights->pickup->configure) {
+  accessforbidden();
+}
+
 
 
 $help_url='';

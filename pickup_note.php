@@ -59,9 +59,9 @@ $hookmanager->initHooks(array('pickupnote','globalcard'));     // Note that conf
 $extralabels = $extrafields->fetch_name_optionals_label('pickup');
 
 // Security check - Protection if external user
-//if ($user->societe_id > 0) access_forbidden();
+if ($user->societe_id > 0) access_forbidden();
 //if ($user->societe_id > 0) $socid = $user->societe_id;
-//$result = restrictedArea($user, 'pickup', $id);
+$result = restrictedArea($user, 'pickup', $id);
 
 // Load object
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php';  // Must be include, not include_once  // Must be include, not include_once. Include fetch and fetch_thirdparty but not fetch_optionals

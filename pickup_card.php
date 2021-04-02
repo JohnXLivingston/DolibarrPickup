@@ -99,10 +99,10 @@ if (empty($action) && empty($id) && empty($ref)) $action='view';
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php';  // Must be include, not include_once.
 
 // Security check - Protection if external user
-//if ($user->societe_id > 0) access_forbidden();
+if ($user->societe_id > 0) access_forbidden();
 //if ($user->societe_id > 0) $socid = $user->societe_id;
-//$isdraft = (($object->status == Pickup::STATUS_DRAFT) ? 1 : 0);
-//$result = restrictedArea($user, 'pickup', $object->id, '', '', 'fk_soc', 'rowid', $isdraft);
+$isdraft = (($object->status == Pickup::STATUS_DRAFT) ? 1 : 0);
+$result = restrictedArea($user, 'pickup', $object->id, '', '', 'fk_soc', 'rowid', $isdraft);
 
 $permissionnote=$user->rights->pickup->write;	// Used by the include of actions_setnotes.inc.php
 $permissiondellink=$user->rights->pickup->write;	// Used by the include of actions_dellink.inc.php

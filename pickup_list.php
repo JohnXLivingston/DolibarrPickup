@@ -117,7 +117,7 @@ if ($user->societe_id > 0)	// Protection if external user
 	//$socid = $user->societe_id;
 	accessforbidden();
 }
-//$result = restrictedArea($user, 'pickup', $id, '');
+$result = restrictedArea($user, 'pickup', $id, '');
 
 // Initialize array of search criterias
 $search_all=trim(GETPOST("search_all", 'alpha'));
