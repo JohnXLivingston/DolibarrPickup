@@ -50,7 +50,7 @@ class modPickup extends DolibarrModules
         $this->rights_class = 'pickup';
         // Family can be 'base' (core modules),'crm','financial','hr','projects','products','ecm','technic' (transverse modules),'interface' (link with external tools),'other','...'
         // It is used to group modules by family in module setup page
-        $this->family = "other";
+        $this->family = "products";
         // Module position in the family on 2 digits ('01', '10', '20', ...)
         $this->module_position = '90';
         // Gives the possibility for the module, to provide his own family info and position of this family (Overwrite $this->family and $this->module_position. Avoid this)
@@ -260,6 +260,21 @@ class modPickup extends DolibarrModules
         $this->rights[$r][1] = 'Delete objects of Pickup';	// Permission label
         $this->rights[$r][4] = 'delete';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
+        $r++;
+        $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
+        $this->rights[$r][1] = 'Validate';	// Permission label
+        $this->rights[$r][4] = 'workflow';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
+        $this->rights[$r][5] = 'validate';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
+        $r++;
+        $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
+        $this->rights[$r][1] = 'Validate';	// Permission label
+        $this->rights[$r][4] = 'workflow';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
+        $this->rights[$r][5] = 'stock';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
+        $r++;
+        $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
+        $this->rights[$r][1] = 'Validate';	// Permission label
+        $this->rights[$r][4] = 'workflow';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
+        $this->rights[$r][5] = 'signed';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $r++;
         $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
         $this->rights[$r][1] = 'Configure dolinput';	// Permission label
