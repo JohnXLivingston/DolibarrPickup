@@ -106,18 +106,18 @@ class ActionsPickup
 		if ($action == 'addline' && $parameters['permissiontoadd'] && !empty($object->id)) {
 			$langs->load('errors');
 
-			$idprod = GETPOST('idprod', 'int');
+			$fk_product = GETPOST('fk_product', 'int');
 			$qty = price2num(GETPOST('qty', 'int'));
 
 			if ($qty == '') {
 				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')));
 			}
-			if (!($idprod > 0)) {
+			if (!($fk_product > 0)) {
 				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Product')));
 			}
 
 			if (!count($errors)) {
-				$line = $object->initPickupLine($idprod, $qty);
+				$line = $object->initPickupLine($fk_product, $qty);
 				$result = $line->create($user);
 				if ($result <= 0) {
 					if (!empty($line->error)) {
@@ -128,7 +128,7 @@ class ActionsPickup
 					}
 				} else {
 					$action = '';
-					unset($_POST['idprod']);
+					unset($_POST['fk_product']);
 					unset($_POST['qty']);
 
 					$object->fetchLines();

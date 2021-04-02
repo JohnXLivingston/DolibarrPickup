@@ -50,10 +50,7 @@ $coldisplay = 0;
 		<?php $coldisplay++; ?>
 		<span class="prod_entry_mode_predef">
 		<?php
-			$filtertype = '0'; // product
-			$statustoshow = -1; // all products
-			// FIXME: should not lit products with tobatch=1
-			$form->select_produits(GETPOST('idprod', 'int'), 'idprod', $filtertype, $conf->product->limit_size, null, $statustoshow);		
+			print $line->showInputField(null, 'fk_product', GETPOSTISSET("fk_product") ? GETPOST('fk_product', 'int') : '');
 		?>
 		</span>
 	</td>

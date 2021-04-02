@@ -753,12 +753,12 @@ class Pickup extends CommonObject
 
 
 
-	public function initPickupLine($idprod, $qty = 1) {
+	public function initPickupLine($fk_product, $qty = 1) {
 		global $db;
 
 		$line = new PickupLine($db);
 		$line->fk_pickup = $this->id;
-		$line->fk_product = $idprod;
+		$line->fk_product = $fk_product;
 		$line->qty = $qty;
 		$line->position = $this->line_max(0) + 1;
 
