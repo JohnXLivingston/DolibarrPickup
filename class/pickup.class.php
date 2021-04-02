@@ -87,7 +87,7 @@ class Pickup extends CommonObject
 	public $fields=array(
 		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>'1', 'position'=>1, 'notnull'=>1, 'visible'=>0, 'index'=>1, 'comment'=>"Id"),
 		'ref' => array('type'=>'varchar(128)', 'label'=>'Ref', 'enabled'=>'1', 'position'=>10, 'notnull'=>1, 'visible'=>1, 'default'=>'(PROV)', 'index'=>1, 'searchall'=>1, 'showoncombobox'=>'1', 'comment'=>"Reference of object", 'noteditable' => 1),
-		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>30, 'notnull'=>-1, 'visible'=>1, 'searchall'=>1, 'help'=>"Help text", 'showoncombobox'=>'1',),
+		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>30, 'notnull'=>-1, 'visible'=>4, 'searchall'=>1, 'help'=>"Help text", 'showoncombobox'=>'1',),
 		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php', 'label'=>'Donneur', 'enabled'=>'1', 'position'=>50, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'help'=>"Donneur",),
 		'date_pickup' => array('type'=>'date', 'label'=>'Date', 'enabled'=>'1', 'position'=>55, 'notnull'=>1, 'visible'=>1, 'index'=>1,),
 		'description' => array('type'=>'text', 'label'=>'Description', 'enabled'=>'1', 'position'=>60, 'notnull'=>-1, 'visible'=>-1,),
@@ -164,6 +164,10 @@ class Pickup extends CommonObject
 		if (empty($conf->global->MAIN_SHOW_TECHNICAL_ID) && isset($this->fields['rowid'])) $this->fields['rowid']['visible']=0;
 		if (empty($conf->multicompany->enabled) && isset($this->fields['entity'])) $this->fields['entity']['enabled']=0;
 
+		if (!empty($conf->global->PICKUP_DEFAULT_STOCK)) {
+			$this->fields['fk_entrepot']['default'] = $conf->global->PICKUP_DEFAULT_STOCK;
+		}
+
 		// Unset fields that are disabled
 		foreach($this->fields as $key => $val)
 		{
@@ -195,9 +199,22 @@ class Pickup extends CommonObject
 	 */
 	public function create(User $user, $notrigger = false)
 	{
+		global $db;
+
 		dol_include_once('/pickup/core/modules/pickup/modules_pickup.php');
 		$modele_num_ref = new ModeleNumRefPickup();
 		$this->ref = $modele_num_ref->getNextValue($this);
+
+		if (empty($this->label)) {
+			$this->label = '';
+			if (!empty($this->fk_soc)) {
+				dol_include_once('societe/class/societe.class.php');
+				$societe = new Societe($db);
+				$societe->fetch($this->fk_soc);
+				$this->label .= $societe->name. ' ';
+			}
+			$this->label .= dol_print_date($this->date_pickup, '%d/%m/%Y');
+		}
 		return $this->createCommon($user, $notrigger);
 	}
 
