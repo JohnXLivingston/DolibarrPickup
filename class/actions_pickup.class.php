@@ -520,10 +520,10 @@ class ActionsPickup
 			$line_product->fetch_optionals();
 		}
 		
-		if ($object->status == 0 && $action == 'editline' && $selected == $line->id) {
+		if ($object->status == Pickup::STATUS_DRAFT && $action == 'editline' && $selected == $line->id) {
 			$tpl = dol_buildpath('custom/pickup/core/tpl/pickupline_edit.tpl.php');
 		} else if ($action != 'editline' || $selected != $line->id) {
-			if ($object->status != 0) {
+			if ($object->status != Pickup::STATUS_DRAFT) {
 				$disableedit = 1;
 				$disableremove = 1;
 			}
