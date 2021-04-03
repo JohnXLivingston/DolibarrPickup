@@ -18,6 +18,7 @@
 #
 
 Pickup = Pickup
+Pickups = Pickups
 # Module label 'ModulePickupName'
 ModulePickupName = Pickup
 # Module description 'ModulePickupDesc'

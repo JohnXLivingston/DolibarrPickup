@@ -18,6 +18,7 @@
 #
 
 Pickup = Collecte
+Pickups = Collectes
 # Module label 'ModulePickupName'
 ModulePickupName = Collecte
 # Module description 'ModulePickupDesc'
