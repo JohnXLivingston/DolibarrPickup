@@ -26,8 +26,8 @@ ModulePickupDesc = This module is meant to handle pickups
 PickupNumRefModelDesc = Return the pickup reference
 PickupStatusProcessing = Processing
 PickupStatusShortProcessing = Processing
-PickupStatusStock = Inserted in stock
-PickupStatusShortStock = In stock
+PickupStatusStock = Waiting signature
+PickupStatusShortStock = Waiting signature
 PickupStatusSigned = Signed
 
 PICKUP_DEFAULT_STOCK = Default stock
@@ -73,7 +73,7 @@ TitleDolinput = Dolinput
 #
 ConfirmPickupActionProcessing = Are you sure you want to process this pickup?
 PickupActionIncludeInStock = Insert in stock
-ConfirmPickupActionIncludeInStock = Are you sure you want to insert products in stocks?
+ConfirmPickupActionIncludeInStock = Are you sure you want to insert products in stocks and set the pickup as «waiting signature»?
 PickupIncludeInStockOk = Products where inserted in stock
 PickupIncludeInStockMovementNotFoundError = An error occured. The movement was not found
 PickupActionSign = Validate signature
