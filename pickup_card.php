@@ -527,7 +527,11 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 				'', // More param on http links
 				'', // Title to show on top of form. Example: '' (Default to "Documents") or 'none'
 				'', // Label on submit button
-				$langs->defaultlang // default lang
+				$langs->defaultlang, // default lang
+				'', // morepicto
+				$object,
+				0, // hide if empty
+				'remove_file', // remove action
 			);
 		}
 
