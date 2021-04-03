@@ -198,6 +198,14 @@ class ActionsPickup
 			header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
 			exit;
 		}
+		if ($action == 'confirm_settodraft' && GETPOST('confirm') == 'yes' && $pickup_rights->workflow->processing) {
+			$object->status = Pickup::STATUS_DRAFT;
+			if ($object->update($user) <= 0) {
+				setEventMessages($object->error, $object->errors, 'errors');
+			}
+			header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+			exit;
+		}
 
 		if ($action == 'confirm_includeinstock' && GETPOST('confirm') == 'yes' && $pickup_rights->workflow->stock) {
 			$object->getLinesArray();
@@ -573,6 +581,9 @@ class ActionsPickup
 				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=includeinstock">'.$langs->trans("PickupActionIncludeInStock").'</a>'."\n";
 			}
 		}
+		if ($object->status == Pickup::STATUS_PROCESSING && $pickup_rights->workflow->processing) {
+			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=settodraft">'.$langs->trans("SetToDraft").'</a>'."\n";
+		}
 		if ($object->status == Pickup::STATUS_STOCK && $pickup_rights->workflow->sign) {
 			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=sign">'.$langs->trans("PickupActionSign").'</a>'."\n";
 		}
@@ -585,7 +596,11 @@ class ActionsPickup
 		}
 		if ($action == 'processing') {
 			global $form, $langs;
-			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('Calidate'), $langs->trans('ConfirmPickupActionProcessing'), 'confirm_processing', '', 0, 1);
+			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('Processing'), $langs->trans('ConfirmPickupActionProcessing'), 'confirm_processing', '', 0, 1);
+		}
+		if ($action == 'settodraft') {
+			global $form, $langs;
+			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('TitleSetToDraft'), $langs->trans('ConfirmSetToDraft'), 'confirm_settodraft', '', 0, 1);
 		}
 		if ($action == 'includeinstock') {
 			global $form, $langs;
