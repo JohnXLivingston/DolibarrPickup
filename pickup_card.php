@@ -512,7 +512,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 			$delallowed = 0; // FIXME: buggy... should be: $permissiontoadd;
 			$model_pdf = 'standard_pickup';
 			print $formfile->showdocuments(
-				'pickup:Pickup',
+				'pickup', // FIXME: should be 'pickup:Pickup', but it does not work
 				$object->element.'/'.$objref,
 				$filedir,
 				$urlsource,
