@@ -39,7 +39,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 /**
  *	Class to build pickup documents with model Soleil
  */
-class pdf_pickup_soleil extends ModelePDFPickup
+class pdf_soleil extends ModelePDFPickup
 {
 	 /**
      * @var DoliDb Database handler

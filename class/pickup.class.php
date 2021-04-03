@@ -712,7 +712,7 @@ class Pickup extends CommonObject
 			}
 		}
 
-		$modelpath = "core/modules/pickup/doc/";
+		$modelpath = "/pickup/core/modules/pickup/doc/";
 
 		return $this->commonGenerateDocument($modelpath, $modele, $outputlangs, $hidedetails, $hidedesc, $hideref, $moreparams);
 	}
