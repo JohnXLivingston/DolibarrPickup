@@ -24,7 +24,11 @@ ModulePickupName = Collecte
 ModulePickupDesc = Ce module permet de gérer les collectes
 
 PickupNumRefModelDesc = Retourne le numéro de collecte
+PickupStatusProcessing = En cours de traitement
+PickupStatusShortProcessing = Traitement
 PickupStatusStock = Intégrée dans le stock
+PickupStatusShortStock = En stock
+PickupStatusSigned = Signée
 
 PICKUP_DEFAULT_STOCK = Entrepôt par défaut
 
@@ -66,9 +70,11 @@ MyWidgetDescription = Description de mon widget
 TitleDolinput = Dolinput
 
 #
-ConfirmPickupActionValidate = Êtes-vous sûr de vouloir valider cette collecte ?
+ConfirmPickupActionProcessing = Êtes-vous sûr de vouloir traiter cette collecte ?
 PickupActionIncludeInStock = Intégrer au stock
 ConfirmPickupActionIncludeInStock = Êtes-vous sûr de vouloir intégrer ces produits au stock ?
 PickupIncludeInStockOk = Produits intégrés au stock
 PickupIncludeInStockMovementNotFoundError = Une erreur a eu lieu, le mouvement n'a pas été trouvé
+PickupActionSign = Valider signature
+ConfirmPickupActionSign = Êtes-vous sûr de vouloir passer cette collecte en statut «signée»
 #

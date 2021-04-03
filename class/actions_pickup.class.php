@@ -190,8 +190,8 @@ class ActionsPickup
 			}
 		}
 
-		if ($action == 'confirm_validate' && GETPOST('confirm') == 'yes' && $pickup_rights->workflow->validate) {
-			$object->status = Pickup::STATUS_VALIDATED;
+		if ($action == 'confirm_processing' && GETPOST('confirm') == 'yes' && $pickup_rights->workflow->processing) {
+			$object->status = Pickup::STATUS_PROCESSING;
 			if ($object->update($user) <= 0) {
 				setEventMessages($object->error, $object->errors, 'errors');
 			}
@@ -250,6 +250,15 @@ class ActionsPickup
 
 			if ($nb_ok > 0 ) {
 				setEventMessages($langs->trans('PickupIncludeInStockOk'), null, 'mesgs');
+			}
+			header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+			exit;
+		}
+
+		if ($action == 'confirm_sign' && GETPOST('confirm') == 'yes' && $pickup_rights->workflow->sign) {
+			$object->status = Pickup::STATUS_SIGNED;
+			if ($object->update($user) <= 0) {
+				setEventMessages($object->error, $object->errors, 'errors');
 			}
 			header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
 			exit;
@@ -554,15 +563,18 @@ class ActionsPickup
 		}
 		global $langs;
 		$pickup_rights = $object->getRights();
-		if ($object->status == Pickup::STATUS_DRAFT && $pickup_rights->workflow->validate) {
+		if ($object->status == Pickup::STATUS_DRAFT && $pickup_rights->workflow->processing) {
 			if (!empty($object->lines)) { // assuming lines were fetched before. If not, no button, thats not a problem.
-				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=validate">'.$langs->trans("Validate").'</a>'."\n";
+				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=processing">'.$langs->trans("PickupStatusProcessing").'</a>'."\n";
 			}
 		}
-		if ($object->status == Pickup::STATUS_VALIDATED && $pickup_rights->workflow->stock) {
+		if ($object->status == Pickup::STATUS_PROCESSING && $pickup_rights->workflow->stock) {
 			if (!empty($object->lines)) { // assuming lines were fetched before. If not, no button, thats not a problem.
 				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=includeinstock">'.$langs->trans("PickupActionIncludeInStock").'</a>'."\n";
 			}
+		}
+		if ($object->status == Pickup::STATUS_STOCK && $pickup_rights->workflow->sign) {
+			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=sign">'.$langs->trans("PickupActionSign").'</a>'."\n";
 		}
 		return 0;
 	}
@@ -571,13 +583,17 @@ class ActionsPickup
 		if ($object->table_element != 'pickup_pickup') {
 			return 0;
 		}
-		if ($action == 'validate') {
+		if ($action == 'processing') {
 			global $form, $langs;
-			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('Calidate'), $langs->trans('ConfirmPickupActionValidate'), 'confirm_validate', '', 0, 1);
+			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('Calidate'), $langs->trans('ConfirmPickupActionProcessing'), 'confirm_processing', '', 0, 1);
 		}
 		if ($action == 'includeinstock') {
 			global $form, $langs;
 			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('PickupActionIncludeInStock'), $langs->trans('ConfirmPickupActionIncludeInStock'), 'confirm_includeinstock', '', 0, 1);
+		}
+		if ($action == 'sign') {
+			global $form, $langs;
+			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('PickupActionSign'), $langs->trans('ConfirmPickupActionSign'), 'confirm_sign', '', 0, 1);
 		}
 		return 0;
 	}
