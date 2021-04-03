@@ -18,7 +18,7 @@ if (! $res) die("Include of main fails");
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/dolinputcat.class.php';
-require_once DOL_DOCUMENT_ROOT.'/custom/dolinput/lib/dolinput.lib.php';
+// FIXME: should include: require_once DOL_DOCUMENT_ROOT.'/custom/dolinput/lib/dolinput.lib.php';
 
 $langs->loadlangs(array('categories'));
 
@@ -147,7 +147,7 @@ elseif ($action === 'edit')
 {
   $new_form = GETPOST('form', 'alpha');
   $new_notes = GETPOST('notes', 'nohtml');
-  $forms = dolinputListProductForms();
+  $forms = array(); // FIXME: should be dolinputListProductForms();
   if (empty($new_form) || in_array($new_form, $forms))
   {
     $dolinputcat->form = empty($new_form) ? null : $new_form;
@@ -212,7 +212,7 @@ if ($object->id)
   print '<div class="fichecenter">';
   print '<div class="underbanner clearboth"></div>';
   
-  $forms = dolinputListProductForms();
+  $forms = array(); // FIXME: should be dolinputListProductForms();
 
   if ($dolinputcat->id)
   {
