@@ -101,8 +101,8 @@ class Pickup extends CommonObject
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>-1, 'visible'=>-2,),
 		'fk_user_creat' => array('type'=>'integer', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>510, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'fk_user_modif' => array('type'=>'integer', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>511, 'notnull'=>-1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
-		'status' => array('
-			type'=>'integer', 'label'=>'Status', 'default' => Pickup::STATUS_DRAFT, 'enabled'=>'1',
+		'status' => array(
+			'type'=>'integer', 'label'=>'Status', 'default' => Pickup::STATUS_DRAFT, 'enabled'=>'1',
 			'position'=>1000, 'notnull'=>1, 'visible'=>1, 'index'=>1,
 			'arrayofkeyval'=>array(
 				Pickup::STATUS_DRAFT=>'Draft',
