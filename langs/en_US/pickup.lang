@@ -25,6 +25,7 @@ ModulePickupName = Pickup
 ModulePickupDesc = This module is meant to handle pickups
 
 PickupCard = Pickup
+PickupPdfTitle = Pickup receipt
 
 PickupNumRefModelDesc = Return the pickup reference
 PickupStatusProcessing = Processing

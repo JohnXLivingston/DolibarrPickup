@@ -300,7 +300,8 @@ class pdf_standard_pickup extends ModelePDFPickup
 	        } else {
 	            $objectref = dol_sanitizeFileName($object->ref);
 	            $dir = $conf->pickup->dir_output.'/pickup/'.$objectref;
-	            $file = $dir."/".$objectref.".pdf";
+							$pdffilename = dol_sanitizeFileName($langs->transnoentities("PickupPdfTitle").' '.$object->label);
+	            $file = $dir."/".$pdffilename.".pdf";
 	        }
 	        if (!file_exists($dir))
 	        {
@@ -355,10 +356,10 @@ class pdf_standard_pickup extends ModelePDFPickup
 	            $pdf->SetDrawColor(128, 128, 128);
 
 	            $pdf->SetTitle($outputlangs->convToOutputCharset($object->ref));
-	            $pdf->SetSubject($outputlangs->transnoentities("PickupCard"));
+	            $pdf->SetSubject($outputlangs->transnoentities("PickupPdfTitle"));
 	            $pdf->SetCreator("Dolibarr ".DOL_VERSION);
 	            $pdf->SetAuthor($outputlangs->convToOutputCharset($user->getFullName($outputlangs)));
-	            $pdf->SetKeyWords($outputlangs->convToOutputCharset($object->ref)." ".$outputlangs->transnoentities("PickupCard")." ".$outputlangs->convToOutputCharset($object->thirdparty->name));
+	            $pdf->SetKeyWords($outputlangs->convToOutputCharset($object->ref)." ".$outputlangs->transnoentities("PickupPdfTitle")." ".$outputlangs->convToOutputCharset($object->thirdparty->name));
 	            if (!empty($conf->global->MAIN_DISABLE_PDF_COMPRESSION)) $pdf->SetCompression(false);
 
 	            // Set certificate
@@ -954,10 +955,10 @@ class pdf_standard_pickup extends ModelePDFPickup
 		$pdf->SetFont('', 'B', $default_font_size + 3);
 		$pdf->SetXY($posx, $posy);
 		$pdf->SetTextColor(0, 0, 60);
-		$title = $outputlangs->transnoentities("PickupCard");
+		$title = $outputlangs->transnoentities("PickupPdfTitle");
 		if (!empty($conf->global->PDF_USE_ALSO_LANGUAGE_CODE) && is_object($outputlangsbis)) {
 			$title .= ' - ';
-			$title .= $outputlangsbis->transnoentities("PickupCard");
+			$title .= $outputlangsbis->transnoentities("PickupPdfTitle");
 		}
 		$pdf->MultiCell($w, 3, $title, '', 'R');
 
