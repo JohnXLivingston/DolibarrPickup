@@ -129,7 +129,14 @@ abstract class ModelePDFPickup extends CommonDocGenerator {
 	 *  @return	array						List of templates
 	 */
 	static function liste_modeles($db, $maxfilenamelength=0) {
-		$liste=array('soleil');
-		return $liste;
+		global $conf;
+
+		$type = 'pickup';
+		$list = array();
+
+		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		$list = getListOfModels($db, $type, $maxfilenamelength);
+
+		return $list;
 	}
 }

@@ -113,7 +113,7 @@ if ($object->canEditPickup()) {
 	$permissionnote = 1;	// Used by the include of actions_setnotes.inc.php
 	$permissiondellink = 1;	// Used by the include of actions_dellink.inc.php
 	$permissionedit = 1; // Used by the include of actions_lineupdown.inc.php
-	$permissiontoadd = 1; // Used by the include of actions_addupdatedelete.inc.php
+	$permissiontoadd = 1; // Used by the include of actions_addupdatedelete.inc.php and actions_builddoc.inc.php
 }
 
 /*
@@ -150,6 +150,9 @@ if (empty($reshook))
 
 	// Actions when printing a doc from card
 	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+
+	// Actions for pdf and attachments
+	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 
 	// // Actions to send emails
 	// $trigger_name='PICKUP_SENTBYMAIL';
@@ -503,7 +506,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 			$filedir = $conf->pickup->dir_output.'/'.$object->element.'/'.$objref;
 			$urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
 			$genallowed = $object->status == Pickup::STATUS_STOCK && $object->canEditPickup();
-			$delallowed = 0; // The action remove_file is missing. If we want to enable this, we have to add a handler.
+			$delallowed = $permissiontoadd;
 			$model_pdf = 'soleil';
 			print $formfile->showdocuments(
 				'pickup:Pickup',
