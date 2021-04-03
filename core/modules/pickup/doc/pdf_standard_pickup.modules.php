@@ -847,28 +847,28 @@ class pdf_standard_pickup extends ModelePDFPickup
 		$hidebottom = 0;
 		if ($hidetop) $hidetop = -1;
 
-		$currency = !empty($currency) ? $currency : $conf->currency;
+		// $currency = !empty($currency) ? $currency : $conf->currency;
 		$default_font_size = pdf_getPDFFontSize($outputlangs);
 
 		// Amount in (at tab_top - 1)
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetFont('', '', $default_font_size - 2);
 
-		if (empty($hidetop))
-		{
-			$titre = $outputlangs->transnoentities("AmountInCurrency", $outputlangs->transnoentitiesnoconv("Currency".$currency));
-			if (!empty($conf->global->PDF_USE_ALSO_LANGUAGE_CODE) && is_object($outputlangsbis)) {
-				$titre .= ' - '.$outputlangsbis->transnoentities("AmountInCurrency", $outputlangsbis->transnoentitiesnoconv("Currency".$currency));
-			}
+		// if (empty($hidetop))
+		// {
+		// 	$titre = $outputlangs->transnoentities("AmountInCurrency", $outputlangs->transnoentitiesnoconv("Currency".$currency));
+		// 	if (!empty($conf->global->PDF_USE_ALSO_LANGUAGE_CODE) && is_object($outputlangsbis)) {
+		// 		$titre .= ' - '.$outputlangsbis->transnoentities("AmountInCurrency", $outputlangsbis->transnoentitiesnoconv("Currency".$currency));
+		// 	}
 
-			$pdf->SetXY($this->page_largeur - $this->marge_droite - ($pdf->GetStringWidth($titre) + 3), $tab_top - 4);
-			$pdf->MultiCell(($pdf->GetStringWidth($titre) + 3), 2, $titre);
+		// 	$pdf->SetXY($this->page_largeur - $this->marge_droite - ($pdf->GetStringWidth($titre) + 3), $tab_top - 4);
+		// 	$pdf->MultiCell(($pdf->GetStringWidth($titre) + 3), 2, $titre);
 
-			//$conf->global->MAIN_PDF_TITLE_BACKGROUND_COLOR='230,230,230';
-			if (!empty($conf->global->MAIN_PDF_TITLE_BACKGROUND_COLOR)) {
-				$pdf->Rect($this->marge_gauche, $tab_top, $this->page_largeur - $this->marge_droite - $this->marge_gauche, $this->tabTitleHeight, 'F', null, explode(',', $conf->global->MAIN_PDF_TITLE_BACKGROUND_COLOR));
-			}
-		}
+		// 	//$conf->global->MAIN_PDF_TITLE_BACKGROUND_COLOR='230,230,230';
+		// 	if (!empty($conf->global->MAIN_PDF_TITLE_BACKGROUND_COLOR)) {
+		// 		$pdf->Rect($this->marge_gauche, $tab_top, $this->page_largeur - $this->marge_droite - $this->marge_gauche, $this->tabTitleHeight, 'F', null, explode(',', $conf->global->MAIN_PDF_TITLE_BACKGROUND_COLOR));
+		// 	}
+		// }
 
 		$pdf->SetDrawColor(128, 128, 128);
 		$pdf->SetFont('', '', $default_font_size - 1);
@@ -907,7 +907,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 		pdf_pagehead($pdf, $outputlangs, $this->page_hauteur);
 
 		// // Show Draft Watermark
-		// if ($object->statut == Pickup::STATUS_DRAFT && (!empty($conf->global->FACTURE_DRAFT_WATERMARK)))
+		// if ($object->status == Pickup::STATUS_DRAFT && (!empty($conf->global->FACTURE_DRAFT_WATERMARK)))
 		// {
 		// 	pdf_watermark($pdf, $outputlangs, $this->page_hauteur, $this->page_largeur, 'mm', $conf->global->FACTURE_DRAFT_WATERMARK);
 		// }
@@ -967,7 +967,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 		$pdf->SetXY($posx, $posy);
 		$pdf->SetTextColor(0, 0, 60);
 		$textref = $outputlangs->transnoentities("Ref")." : ".$outputlangs->convToOutputCharset($object->ref);
-		if ($object->statut == Pickup::STATUS_DRAFT)
+		if ($object->status == Pickup::STATUS_DRAFT)
 		{
 			$pdf->SetTextColor(128, 0, 0);
 			$textref .= ' - '.$outputlangs->transnoentities("NotValidated");
@@ -1017,7 +1017,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 		if (!empty($conf->global->PDF_USE_ALSO_LANGUAGE_CODE) && is_object($outputlangsbis)) {
 			$title .= ' - '.$outputlangsbis->transnoentities("Date");
 		}
-		$pdf->MultiCell($w, 3, $title." : ".dol_print_date($object->date, "day", false, $outputlangs), '', 'R');
+		$pdf->MultiCell($w, 3, $title." : ".dol_print_date($object->date_pickup, "day", false, $outputlangs), '', 'R');
 
 		if ($object->thirdparty->code_client)
 		{
