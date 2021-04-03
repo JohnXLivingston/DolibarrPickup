@@ -498,7 +498,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		print '<a name="builddoc"></a>'; // ancre
 
 		$includedocgeneration = 0;
-		if ($object->status == Pickup::STATUS_STOCK) {
+		if ($object->status == Pickup::STATUS_STOCK || $object->status == Pickup::STATUS_SIGNED) {
 			$includedocgeneration = 1;
 		}
 
