@@ -92,7 +92,7 @@ $coldisplay = 0; ?>
     <?php if (! empty($stock_movement)) { print $stock_movement->getNomUrl(1); } ?>
   </td>
 
-  <?php if ($object->statut == $object::STATUS_DRAFT && $object->canEditPickup() && $action != 'selectlines') { ?>
+  <?php if ($object->status == $object::STATUS_DRAFT && $object->canEditPickup() && $action != 'selectlines') { ?>
     <td class="linecoledit center">
       <?php $coldisplay++; ?>
       <?php if (empty($disableedit)) { ?>
