@@ -488,38 +488,62 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	if ($action != 'presend')
 	{
-	    print '<div class="fichecenter"><div class="fichehalfleft">';
-	    print '<a name="builddoc"></a>'; // ancre
+		print '<div class="fichecenter"><div class="fichehalfleft">';
+		print '<a name="builddoc"></a>'; // ancre
 
-	    // Documents
-	    /*$objref = dol_sanitizeFileName($object->ref);
-	    $relativepath = $comref . '/' . $comref . '.pdf';
-	    $filedir = $conf->pickup->dir_output . '/' . $objref;
-	    $urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
-	    $genallowed = $user->rights->pickup->read;	// If you can read, you can build the PDF to read content
-	    $delallowed = $user->rights->pickup->create;	// If you can create/edit, you can remove a file on card
-	    print $formfile->showdocuments('pickup', $objref, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf, 1, 0, 0, 28, 0, '', '', '', $soc->default_lang);
-		*/
+		$includedocgeneration = 0;
+		if ($object->status == Pickup::STATUS_STOCK) {
+			$includedocgeneration = 1;
+		}
 
-	    // Show links to link elements
-	    $linktoelem = $form->showLinkToObjectBlock($object, null, array('pickup'));
-	    $somethingshown = $form->showLinkedObjectBlock($object, $linktoelem);
+		// Documents
+		if ($includedocgeneration) {
+			$objref = dol_sanitizeFileName($object->ref);
+			$relativepath = $objref . '/' . $objref . '.pdf';
+			$filedir = $conf->pickup->dir_output.'/'.$object->element.'/'.$objref;
+			$urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
+			$genallowed = $object->status == Pickup::STATUS_STOCK && $object->canEditPickup();
+			$delallowed = 0; // The action remove_file is missing. If we want to enable this, we have to add a handler.
+			$model_pdf = 'soleil';
+			print $formfile->showdocuments(
+				'pickup:Pickup',
+				$object->element.'/'.$objref,
+				$filedir,
+				$urlsource,
+				$genallowed,
+				$delallowed,
+				$model_pdf, // default model
+				1, // allowgenifempty
+				0, // forcenomultilang
+				0, // iconPDF Deprecated
+				28, // notused
+				0, // noform (Do not output html form tags)
+				'', // More param on http links
+				'', // Title to show on top of form. Example: '' (Default to "Documents") or 'none'
+				'', // Label on submit button
+				$langs->defaultlang // default lang
+			);
+		}
+
+		// Show links to link elements
+		$linktoelem = $form->showLinkToObjectBlock($object, null, array('pickup'));
+		$somethingshown = $form->showLinkedObjectBlock($object, $linktoelem);
 
 
-	    print '</div><div class="fichehalfright"><div class="ficheaddleft">';
+		print '</div><div class="fichehalfright"><div class="ficheaddleft">';
 
-	    $MAXEVENT = 10;
+		$MAXEVENT = 10;
 
-	    $morehtmlright = '<a href="'.dol_buildpath('/pickup/pickup_agenda.php', 1).'?id='.$object->id.'">';
-	    $morehtmlright.= $langs->trans("SeeAll");
-	    $morehtmlright.= '</a>';
+		$morehtmlright = '<a href="'.dol_buildpath('/pickup/pickup_agenda.php', 1).'?id='.$object->id.'">';
+		$morehtmlright.= $langs->trans("SeeAll");
+		$morehtmlright.= '</a>';
 
-	    // List of actions on element
-	    include_once DOL_DOCUMENT_ROOT . '/core/class/html.formactions.class.php';
-	    $formactions = new FormActions($db);
-	    $somethingshown = $formactions->showactions($object, 'pickup', $socid, 1, '', $MAXEVENT, '', $morehtmlright);
+		// List of actions on element
+		include_once DOL_DOCUMENT_ROOT . '/core/class/html.formactions.class.php';
+		$formactions = new FormActions($db);
+		$somethingshown = $formactions->showactions($object, 'pickup', $socid, 1, '', $MAXEVENT, '', $morehtmlright);
 
-	    print '</div></div></div>';
+		print '</div></div></div>';
 	}
 
 	//Select mail models is same action as presend

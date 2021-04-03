@@ -15,6 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once DOL_DOCUMENT_ROOT."/core/class/commondocgenerator.class.php";
+
 class ModeleNumRefPickup {
   var $error='';
   var $version = '1.0.0';
@@ -115,5 +117,19 @@ class ModeleNumRefPickup {
 	function getVersion()
 	{
 		return $this->version;
+	}
+}
+
+abstract class ModelePDFPickup extends CommonDocGenerator {
+	/**
+	 *	Return list of active generation modules
+	 *
+	 *  @param	DoliDB	$db	 			Database handler
+	 *  @param  string	$maxfilenamelength  Max length of value to show
+	 *  @return	array						List of templates
+	 */
+	static function liste_modeles($db, $maxfilenamelength=0) {
+		$liste=array('soleil');
+		return $liste;
 	}
 }
