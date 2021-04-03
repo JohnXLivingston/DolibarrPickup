@@ -116,6 +116,9 @@ if ($object->canEditPickup()) {
 	$permissiontoadd = 1; // Used by the include of actions_addupdatedelete.inc.php and actions_builddoc.inc.php
 }
 
+if ($id > 0 || ! empty($ref)) $upload_dir = $conf->pickup->multidir_output[$object->entity?$object->entity:1] . "/pickup/" . dol_sanitizeFileName($object->ref);
+
+
 /*
  * Actions
  */
@@ -506,8 +509,8 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 			$filedir = $conf->pickup->dir_output.'/'.$object->element.'/'.$objref;
 			$urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
 			$genallowed = $object->status == Pickup::STATUS_STOCK && $object->canEditPickup();
-			$delallowed = $permissiontoadd;
-			$model_pdf = 'soleil';
+			$delallowed = 0; // FIXME: buggy... should be: $permissiontoadd;
+			$model_pdf = 'standard_pickup';
 			print $formfile->showdocuments(
 				'pickup:Pickup',
 				$object->element.'/'.$objref,

@@ -703,7 +703,7 @@ class Pickup extends CommonObject
 
 		if (! dol_strlen($modele)) {
 
-			$modele = 'soleil';
+			$modele = 'standard_pickup';
 
 			if ($this->modelpdf) {
 				$modele = $this->modelpdf;
@@ -712,7 +712,7 @@ class Pickup extends CommonObject
 			}
 		}
 
-		$modelpath = "/pickup/core/modules/pickup/doc/";
+		$modelpath = "core/modules/pickup/doc/";
 
 		return $this->commonGenerateDocument($modelpath, $modele, $outputlangs, $hidedetails, $hidedesc, $hideref, $moreparams);
 	}

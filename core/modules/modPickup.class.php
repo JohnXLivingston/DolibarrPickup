@@ -89,7 +89,7 @@ class modPickup extends DolibarrModules
             // Set this to 1 if module has its own barcode directory (core/modules/barcode)
             'barcode' => 0,
             // Set this to 1 if module has its own models directory (core/modules/xxx)
-            'models' => 0,
+            'models' => 1,
             // Set this to 1 if module has its own theme directory (theme)
             'theme' => 0,
             // Set this to relative path of css file if module has its own css file
@@ -376,7 +376,7 @@ class modPickup extends DolibarrModules
         //$result4=$extrafields->addExtraField('myattr4', "New Attr 4 label", 'select',  1,  3, 'thirdparty',   0, 1, '', array('options'=>array('code1'=>'Val1','code2'=>'Val2','code3'=>'Val3')), 1,'', 0, 0, '', '', 'pickup@pickup', '$conf->pickup->enabled');
         //$result5=$extrafields->addExtraField('myattr5', "New Attr 5 label", 'text',    1, 10, 'user',         0, 0, '', '', 1, '', 0, 0, '', '', 'pickup@pickup', '$conf->pickup->enabled');
 
-        $sql=array("INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('soleil','pickup',".$conf->entity." )");
+        $sql=array("INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('standard_pickup','pickup',".$conf->entity." )");
         return $this->_init($sql, $options);
     }
 

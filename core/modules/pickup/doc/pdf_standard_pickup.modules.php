@@ -24,9 +24,9 @@
  */
 
 /**
- *	\file       pickup/core/modules/pickup/doc/pdf_pickup_soleil.modules.php
+ *	\file       pickup/core/modules/pickup/doc/pdf_standard_pickup.modules.php
  *	\ingroup    pickup
- *	\brief      File of Class to build pickup documents with model Soleil
+ *	\brief      File of Class to build pickup documents
  */
 dol_include_once('/pickup/core/modules/pickup/modules_pickup.php');
 
@@ -37,9 +37,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 
 /**
- *	Class to build pickup documents with model Soleil
+ *	Class to build pickup documents with model
  */
-class pdf_soleil extends ModelePDFPickup
+class pdf_standard_pickup extends ModelePDFPickup
 {
 	 /**
      * @var DoliDb Database handler
@@ -124,7 +124,7 @@ class pdf_soleil extends ModelePDFPickup
 		global $conf, $langs, $mysoc;
 
 		$this->db = $db;
-		$this->name = 'soleil';
+		$this->name = 'standard';
 		$this->description = $langs->trans("DocumentModelStandardPDF");
 
 		// Page size for A4 format
