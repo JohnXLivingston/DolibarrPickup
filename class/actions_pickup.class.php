@@ -146,7 +146,7 @@ class ActionsPickup
 
 			$lineid   = GETPOST('lineid', 'int');
 
-			$line_desc = GETPOST('description', 'nohtml');
+			$line_desc = GETPOST('description', 'none');
 			$qty = price2num(GETPOST('qty', 'int'));
 
 			if ($qty == '') {
