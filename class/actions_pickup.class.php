@@ -585,6 +585,7 @@ class ActionsPickup
 			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=settodraft">'.$langs->trans("SetToDraft").'</a>'."\n";
 		}
 		if ($object->status == Pickup::STATUS_STOCK && $pickup_rights->workflow->sign) {
+			// FIXME: there must be at least one attachment...
 			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=sign">'.$langs->trans("PickupActionSign").'</a>'."\n";
 		}
 		return 0;
