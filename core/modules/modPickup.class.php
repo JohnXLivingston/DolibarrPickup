@@ -64,7 +64,7 @@ class modPickup extends DolibarrModules
         $this->editor_name = 'Jonathan Dollé';
         $this->editor_url = 'https://github.com/JohnXLivingston';
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '0.4';
+        $this->version = '0.5';
         // Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
 
@@ -377,7 +377,7 @@ class modPickup extends DolibarrModules
         //$result5=$extrafields->addExtraField('myattr5', "New Attr 5 label", 'text',    1, 10, 'user',         0, 0, '', '', 1, '', 0, 0, '', '', 'pickup@pickup', '$conf->pickup->enabled');
 
         $sql=array(
-            "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = 'standard_pickup' AND type = 'pickup AND entity = '".$conf->entity,
+            "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = 'standard_pickup' AND type = 'pickup' AND entity = ".$conf->entity,
             "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('standard_pickup','pickup',".$conf->entity." )"
         );
         return $this->_init($sql, $options);
