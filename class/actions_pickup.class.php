@@ -259,7 +259,7 @@ class ActionsPickup
 			if ($nb_ok > 0 ) {
 				setEventMessages($langs->trans('PickupIncludeInStockOk'), null, 'mesgs');
 			}
-			header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+			header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.'&action=builddoc');
 			exit;
 		}
 
