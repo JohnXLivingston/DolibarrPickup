@@ -131,7 +131,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 
 
 	/**
-	 * @var array of document table collumns
+	 * @var array of document table columns
 	 */
 	public $cols;
 
