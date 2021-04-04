@@ -634,7 +634,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 						if (!empty($currentProduct) && !empty($currentProduct->weight)) {
 							$weight = $currentProduct->weight . ' ' . measuringUnitString(0, "weight", $currentProduct->weight_units);
 						}
-						$this->printStdColumnContent($pdf, $curY, 'qty', $qty);
+						$this->printStdColumnContent($pdf, $curY, 'weight', $weight);
 						$nexY = max($pdf->GetY(), $nexY);
 					}
 					
