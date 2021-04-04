@@ -550,7 +550,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 				'', // morepicto
 				$object,
 				0, // hide if empty
-				'remove_file', // remove action
+				'remove_file' // remove action
 			);
 		}
 
