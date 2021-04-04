@@ -411,6 +411,40 @@ class ActionsPickup
 	// 	return $ret;
 	// }
 
+	public function pdf_writelinedesc($parameters, &$object, &$action) {
+		if ($object->table_element != 'pickup_pickup') {
+			return 0;
+		}
+
+		global $db;
+		$pdf = $parameters['pdf'];
+		$i = $parameters['i'];
+		$outputlangs = $parameters['outputlangs'];
+		$w = $parameters['w'];
+		$h = $parameters['h'];
+		$posx = $parameters['posx'];
+		$posy = $parameters['posy'];
+		$hideref = $parameters['hideref'];
+		$hidedesc = $parameters['hidedesc'];
+
+		$line = $object->lines[$i];
+		$text = '';
+
+		$product = new Product($db);
+		$product->fetch($line->fk_product);
+		$text.= $product->ref;
+
+		$text.= '<br>';
+		$text.= dol_htmlentitiesbr($line->description);
+
+		// Fix bug of some HTML editors that replace links <img src="http://localhostgit/viewimage.php?modulepart=medias&file=image/efd.png" into <img src="http://localhostgit/viewimage.php?modulepart=medias&amp;file=image/efd.png"
+		// We make the reverse, so PDF generation has the real URL.
+		$text = preg_replace('/(<img[^>]*src=")([^"]*)(&amp;)([^"]*")/', '\1\2&\4', $text, -1, $nbrep);
+
+		$pdf->writeHTMLCell($w, $h, $posx, $posy, $outputlangs->convToOutputCharset($text), 0, 1, false, true, 'J', true);
+		$this->resPrint = $text;
+		return 1;
+	}
 
 
 	// /**
