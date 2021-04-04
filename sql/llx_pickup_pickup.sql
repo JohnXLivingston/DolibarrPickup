@@ -29,5 +29,5 @@ CREATE TABLE llx_pickup_pickup(
 	fk_entrepot integer NOT NULL, 
 	note_public text, 
 	note_private text,
-	model_pdf varchar(255) DEFAULT NULL,
+	model_pdf varchar(255) DEFAULT NULL
 ) ENGINE=innodb;
