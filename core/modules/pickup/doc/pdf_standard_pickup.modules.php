@@ -125,12 +125,6 @@ class pdf_standard_pickup extends ModelePDFPickup
 	public $emetteur;
 	
 	/**
-	* @var bool Situation invoice type
-	*/
-	public $situationinvoice;
-	
-	
-	/**
 	* @var array of document table columns
 	*/
 	public $cols;
@@ -274,8 +268,6 @@ class pdf_standard_pickup extends ModelePDFPickup
 			}
 		}
 		*/
-		
-		//if (count($realpatharray) == 0) $this->posxpicture=$this->posxtva;
 		
 		if ($conf->pickup->dir_output.'/pickup')
 		{
