@@ -561,11 +561,11 @@ class pdf_standard_pickup extends ModelePDFPickup
 					}
 					
 					// Description of product line
-					if ($this->getColumnStatus('desc'))
+					if ($this->getColumnStatus('description'))
 					{
 						$pdf->startTransaction();
 						
-						$this->printColDescContent($pdf, $curY, 'desc', $object, $i, $outputlangs, $hideref, $hidedesc);
+						$this->printColDescContent($pdf, $curY, 'description', $object, $i, $outputlangs, $hideref, $hidedesc);
 						$pageposafter = $pdf->getPage();
 						
 						if ($pageposafter > $pageposbefore)	// There is a pagebreak
@@ -573,7 +573,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 							$pdf->rollbackTransaction(true);
 							$pdf->setPageOrientation('', 1, $heightforfooter); // The only function to edit the bottom margin of current page to set it.
 							
-							$this->printColDescContent($pdf, $curY, 'desc', $object, $i, $outputlangs, $hideref, $hidedesc);
+							$this->printColDescContent($pdf, $curY, 'description', $object, $i, $outputlangs, $hideref, $hidedesc);
 							
 							$pageposafter = $pdf->getPage();
 							$posyafter = $pdf->GetY();
@@ -1140,7 +1140,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 		$rank = 0; // do not use negative rank
 		$this->cols['description'] = array(
 			'rank' => $rank,
-			'width' => false, // only for desc
+			'width' => false, // only for description
 			'status' => true,
 			'title' => array(
 				'textkey' => 'Description', // use lang key is usefull in somme case with module
