@@ -164,17 +164,6 @@ class pdf_standard_pickup extends ModelePDFPickup
 		$this->marge_haute = isset($conf->global->MAIN_PDF_MARGIN_TOP) ? $conf->global->MAIN_PDF_MARGIN_TOP : 10;
 		$this->marge_basse = isset($conf->global->MAIN_PDF_MARGIN_BOTTOM) ? $conf->global->MAIN_PDF_MARGIN_BOTTOM : 10;
 		
-		$this->option_logo = 1; // Display logo
-		$this->option_tva = 0; // Manage the vat option FACTURE_TVAOPTION
-		$this->option_modereg = 0; // Display payment mode
-		$this->option_condreg = 0; // Display payment terms
-		$this->option_codeproduitservice = 0; // Display product-service code
-		$this->option_multilang = 1; // Available in several languages
-		$this->option_escompte = 0; // Displays if there has been a discount
-		$this->option_credit_note = 0; // Support credit notes
-		$this->option_freetext = 0; // Support add of a personalised text
-		$this->option_draft_watermark = 1; // Support add of a watermark on drafts
-		
 		// Get source company
 		$this->emetteur = $mysoc;
 		if (empty($this->emetteur->country_code)) $this->emetteur->country_code = substr($langs->defaultlang, -2); // By default, if was not defined
@@ -663,53 +652,6 @@ class pdf_standard_pickup extends ModelePDFPickup
 						'hidedetails' => $hidedetails
 					);
 					$reshook = $hookmanager->executeHooks('printPDFline', $parameters, $this); // Note that $object may have been modified by hook
-					
-					
-					// $sign = 1;
-					// // Collecte des totaux par valeur de tva dans $this->tva["taux"]=total_tva
-					// $prev_progress = $object->lines[$i]->get_prev_progress($object->id);
-					// if ($prev_progress > 0 && !empty($object->lines[$i]->situation_percent)) // Compute progress from previous situation
-					// {
-					// 	if ($conf->multicurrency->enabled && $object->multicurrency_tx != 1) $tvaligne = $sign * $object->lines[$i]->multicurrency_total_tva * ($object->lines[$i]->situation_percent - $prev_progress) / $object->lines[$i]->situation_percent;
-					// 	else $tvaligne = $sign * $object->lines[$i]->total_tva * ($object->lines[$i]->situation_percent - $prev_progress) / $object->lines[$i]->situation_percent;
-					// } else {
-					// 	if ($conf->multicurrency->enabled && $object->multicurrency_tx != 1) $tvaligne = $sign * $object->lines[$i]->multicurrency_total_tva;
-					// 	else $tvaligne = $sign * $object->lines[$i]->total_tva;
-					// }
-					
-					// $localtax1ligne = $object->lines[$i]->total_localtax1;
-					// $localtax2ligne = $object->lines[$i]->total_localtax2;
-					// $localtax1_rate = $object->lines[$i]->localtax1_tx;
-					// $localtax2_rate = $object->lines[$i]->localtax2_tx;
-					// $localtax1_type = $object->lines[$i]->localtax1_type;
-					// $localtax2_type = $object->lines[$i]->localtax2_type;
-					
-					// if ($object->remise_percent) $tvaligne -= ($tvaligne * $object->remise_percent) / 100;
-					// if ($object->remise_percent) $localtax1ligne -= ($localtax1ligne * $object->remise_percent) / 100;
-					// if ($object->remise_percent) $localtax2ligne -= ($localtax2ligne * $object->remise_percent) / 100;
-					
-					// $vatrate = (string) $object->lines[$i]->tva_tx;
-					
-					// // Retrieve type from database for backward compatibility with old records
-					// if ((!isset($localtax1_type) || $localtax1_type == '' || !isset($localtax2_type) || $localtax2_type == '') // if tax type not defined
-					// && (!empty($localtax1_rate) || !empty($localtax2_rate))) // and there is local tax
-					// {
-					// 	$localtaxtmp_array = getLocalTaxesFromRate($vatrate, 0, $object->thirdparty, $mysoc);
-					// 	$localtax1_type = $localtaxtmp_array[0];
-					// 	$localtax2_type = $localtaxtmp_array[2];
-					// }
-					
-					// // retrieve global local tax
-					// if ($localtax1_type && $localtax1ligne != 0) {
-					// 	$this->localtax1[$localtax1_type][$localtax1_rate] += $localtax1ligne;
-					// }
-					// if ($localtax2_type && $localtax2ligne != 0) {
-					// 	$this->localtax2[$localtax2_type][$localtax2_rate] += $localtax2ligne;
-					// }
-					
-					// if (($object->lines[$i]->info_bits & 0x01) == 0x01) $vatrate .= '*';
-					// if (!isset($this->tva[$vatrate])) 				$this->tva[$vatrate] = 0;
-					// $this->tva[$vatrate] += $tvaligne;
 					
 					$nexY = max($nexY, $posYAfterImage);
 					
