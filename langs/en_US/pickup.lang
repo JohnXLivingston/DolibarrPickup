@@ -26,6 +26,8 @@ ModulePickupDesc = This module is meant to handle pickups
 
 PickupCard = Pickup
 PickupPdfTitle = Pickup receipt
+PickupSignatureOfInternalContact = Name and signature of receiver
+PickupSignatureOfExternalContact = Name and signature of donnator
 
 PickupNumRefModelDesc = Return the pickup reference
 PickupStatusProcessing = Processing
