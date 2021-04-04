@@ -38,6 +38,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
 
+require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php'; // for measuringUnitString
 dol_include_once('/pickup/class/pickup.class.php');
 
 
@@ -520,6 +521,12 @@ class pdf_standard_pickup extends ModelePDFPickup
 				$pagenb = $pageposbeforeprintlines;
 				for ($i = 0; $i < $nblines; $i++)
 				{
+					$currentLine = $object->lines[$i];
+					$currentProduct = new Product($this->db);
+					if (!empty($currentLine->fk_product)) {
+						$currentProduct->fetch($currentLine->fk_product);
+					}
+
 					$curY = $nexY;
 					$pdf->SetFont('', '', $default_font_size - 1); // Into loop to work with multipage
 					$pdf->SetTextColor(0, 0, 0);
@@ -616,17 +623,27 @@ class pdf_standard_pickup extends ModelePDFPickup
 					// Enough for 6 chars
 					if ($this->getColumnStatus('qty'))
 					{
-						$qty = pdf_getlineqty($object, $i, $outputlangs, $hidedetails);
+						$qty = $currentLine->qty;
+						$this->printStdColumnContent($pdf, $curY, 'qty', $qty);
+						$nexY = max($pdf->GetY(), $nexY);
+					}
+
+					// Weight
+					if ($this->getColumnStatus('weight')) {
+						$weight = '';
+						if (!empty($currentProduct) && !empty($currentProduct->weight)) {
+							$weight = $currentProduct->weight . ' ' . measuringUnitString(0, "weight", $currentProduct->weight_units);
+						}
 						$this->printStdColumnContent($pdf, $curY, 'qty', $qty);
 						$nexY = max($pdf->GetY(), $nexY);
 					}
 					
 					// Extrafields
-					if (!empty($object->lines[$i]->array_options)) {
-						foreach ($object->lines[$i]->array_options as $extrafieldColKey => $extrafieldValue) {
+					if (!empty($currentLine->array_options)) {
+						foreach ($currentLine->array_options as $extrafieldColKey => $extrafieldValue) {
 							if ($this->getColumnStatus($extrafieldColKey))
 							{
-								$extrafieldValue = $this->getExtrafieldContent($object->lines[$i], $extrafieldColKey);
+								$extrafieldValue = $this->getExtrafieldContent($currentLine, $extrafieldColKey);
 								$this->printStdColumnContent($pdf, $curY, $extrafieldColKey, $extrafieldValue);
 								$nexY = max($pdf->GetY(), $nexY);
 							}
@@ -1184,6 +1201,17 @@ class pdf_standard_pickup extends ModelePDFPickup
 			'status' => true,
 			'title' => array(
 				'textkey' => 'Qty'
+			),
+			'border-left' => true, // add left line separator
+		);
+
+		$rank = $rank + 10;
+		$this->cols['weight'] = array(
+			'rank' => $rank,
+			'width' => 16, // in mm
+			'status' => true,
+			'title' => array(
+				'textkey' => 'Weight'
 			),
 			'border-left' => true, // add left line separator
 		);
