@@ -789,4 +789,52 @@ class Pickup extends CommonObject
 
 		return $line;
 	}
+
+	public function computeTotals() {
+		$result = array(
+			'qty' => 0,
+			'weights' => array(
+				0 => 0
+			)
+		);
+		if (empty($this->id)) {
+			return $result;
+		}
+
+		$sql = 'SELECT l.qty, p.weight, p.weight_units';
+		$sql.= ' FROM ' . MAIN_DB_PREFIX . $this->table_element_line. ' as l';
+		$sql.= ' , ' . MAIN_DB_PREFIX . 'product as p';
+		$sql.= ' WHERE';
+		$sql.= ' p.rowid = l.fk_product';
+		$sql.= ' AND l.fk_pickup = ' . $this->db->escape($this->id);
+
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			$num = $this->db->num_rows($resql);
+      $i = 0;
+			while ($i < $num) {
+			  $line = $this->db->fetch_object($resql);
+				if (!empty($line->qty)) {
+					$qty = (int) $line->qty;
+					$result['qty']+= (int) $line->qty;
+
+					if (!empty($line->weight)) {
+						$weight = (double) $line->weight;
+						$weight_units = (int) $line->weight_units;
+						if (!array_key_exists($weight_units, $result['weights'])) {
+							$result['weights'][$weight_units] = 0;
+						}
+						$result['weights'][$weight_units]+= $qty * $weight;
+					}
+				}
+
+				$i++;
+			}
+			$this->db->free($resql);
+		} else {
+			dol_syslog(__METHOD__ . ' Error ' . $this->db->lasterror(), LOG_ERR);
+		}
+
+		return $result;
+	}
 }

@@ -59,9 +59,11 @@ if (! $res) die("Include of main fails");
 
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php'; // for measuringUnitString
 dol_include_once('/pickup/class/pickup.class.php');
 dol_include_once('/pickup/class/pickupline.class.php');
 dol_include_once('/pickup/lib/pickup_pickup.lib.php');
+
 
 // Load translation files required by the page
 $langs->loadLangs(array("pickup@pickup","other"));
@@ -403,6 +405,29 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		print '<table id="tablelines" class="noborder noshadow" width="100%">';
 
 		$object->printObjectLines($action, $mysoc, null, GETPOST('lineid', 'int'), 1);
+
+		if ($action != 'editline' && $action != 'selectlines') {
+			// print the total line.
+			$totals = $object->computeTotals();
+			?>
+				<tr class="nodrag nodrop liste_total">
+					<td class="">
+					</td>
+					<td class="right">
+						<?php print price($totals['qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price ?>
+					</td>
+					<td class="right">
+					</td>
+					<td class="right">
+						<?php
+							foreach ($totals['weights'] as $weights_units => $weights) {
+								print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
+							}
+						?>
+					</td>
+				</tr>
+			<?php
+		}
 
 		// Form to add new line
 		if ($object->status == Pickup::STATUS_DRAFT && $permissionedit && $action != 'selectlines')
