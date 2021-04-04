@@ -56,15 +56,17 @@ if (isset($user->societe_id) && $user->societe_id > 0)
 	$socid = $user->societe_id;
 }
 
-$max=5;
-$now=dol_now();
-
 
 /*
  * Actions
  */
 
 // None
+if ($user->rights->pickup->read) {
+	// FIXME: remove and set some content for the index.
+	header("Location: ".dol_buildpath('/pickup/pickup_list.php', 1));
+	exit();
+}
 
 
 /*
@@ -78,18 +80,15 @@ llxHeader("", $langs->trans("ModulePickupName"));
 
 print load_fiche_titre($langs->trans("ModulePickupName"), '', 'pickup.png@pickup');
 
-print '<div class="fichecenter"><div class="fichethirdleft">';
-
-
-print '</div><div class="fichetwothirdright"><div class="ficheaddleft">';
-
-
-$NBMAX=3;
-$max=3;
-
-
-print '</div></div></div>';
-
+?>
+<div class="fichecenter">
+	<div class="fichethirdleft">
+	</div>
+<div class="fichetwothirdright">
+	<div class="ficheaddleft">
+	</div>
+</div>
+<?php
 // End of page
 llxFooter();
 $db->close();
