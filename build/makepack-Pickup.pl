@@ -7,7 +7,15 @@
 # \contributor  (c)2017 Nicolas ZABOURI <info@inovea-conseil.com>
 #----------------------------------------------------------------------------
 
-# To use: you have to be in the module root folder, and call: perl build/makepack-Pickup.pl
+# To use: you have to be in the module root folder, and call:
+# - perl build/makepack-Pickup.pl => makes the module-xxx.zip package file
+# - perl build/makepack-Pickup.pl --target=zip => same as above
+# - perl build/makepack-Pickup.pl --target=install => install the module in /var/www/dolibarr/htdocs/custom/xxx as user www-data.
+#     You can change directory and user with options --install-dir, --install-user --install-group.
+#     NB: --install-dir should not contain module name (ie should be like: /var/www/dolibarr/htdocs/custom)
+#     NB: --install-dir should not contain any space.
+#     NB: no quote or double quote allowed for parameters.
+#     Needs the current user to be a sudoer.
 
 $| = 1; # autoflush
 
@@ -16,14 +24,12 @@ use warnings;
 
 use Cwd;
 
-my @LISTETARGET=("ZIP");   # Possible packages
 my %REQUIREMENTTARGET=(    # Tool requirement for each package
   "TGZ"=>"tar",
   "ZIP"=>"7z"
 );
 my %ALTERNATEPATH=(
 );
-
 
 #------------------------------------------------------------------------------
 # MAIN
@@ -93,6 +99,65 @@ my $BUILDROOT="$TEMP/dolibarr-buildroot";
 
 my $copyalreadydone=0;
 my $batch=0;
+my $ret;
+my $INSTALL_USER = 'www-data';
+my $INSTALL_GROUP = 'www-data';
+my $INSTALL_DIR = '/var/www/dolibarr/htdocs/custom';
+
+# Choose package targets
+#-----------------------
+my %CHOOSEDTARGET;
+for (0..@ARGV-1) {
+	if ($ARGV[$_] =~ /^-*target=(\w+)/i) {
+    my $currentTarget = uc($1);
+    $CHOOSEDTARGET{$currentTarget} = 1;
+    $batch = 1;
+  }
+  if ($ARGV[$_] =~ /^-*install-user=([\w-]+)/i) {
+    $INSTALL_USER = $1;
+  }
+  if ($ARGV[$_] =~ /^-*install-group=([\w-]+)/i) {
+    $INSTALL_GROUP = $1;
+  }
+  if ($ARGV[$_] =~ /^-*install-dir=(.+)(\s|$)/i) {
+    $INSTALL_DIR = $1;
+  }
+}
+
+if ($CHOOSEDTARGET{'INSTALL'}) {
+  if ($OS ne 'linux') {
+    die "Installation script is only available for linux.\n"
+  }
+  if (!$INSTALL_DIR) {
+    die "Invalid install directory: '$INSTALL_DIR'.\n";
+  }
+  if (! -d $INSTALL_DIR) {
+    die "Install directory does not exist: '$INSTALL_DIR'.\n"
+  }
+  if (!$INSTALL_USER) {
+    die "Missing --install-user.\n";
+  }
+
+  my $ret = `sudo true`;
+  if ($? != 0) { die "Failed to act as root. You must have root rights to install.\n"; }
+
+  if ($INSTALL_USER) {
+    if (!$INSTALL_GROUP) {
+      $INSTALL_GROUP = $INSTALL_USER;
+    }
+    my $ret = `sudo -u $INSTALL_USER true`;
+    if ($? != 0) { die "Failed to act as user $INSTALL_USER.\n"; }
+  }
+  if ($INSTALL_GROUP) {
+    my $ret = `sudo -u $INSTALL_USER -g $INSTALL_GROUP true`;
+    if ($? != 0) { die "Failed to act as user $INSTALL_USER.\n"; }
+  }
+}
+
+if (!%CHOOSEDTARGET) {
+  $CHOOSEDTARGET{'ZIP'} = 1;
+}
+
 
 print "Move to the build directory: '".$DIR."'.\n";
 chdir($DIR);
@@ -149,16 +214,12 @@ foreach my $PROJECT (@PROJECTLIST) {
 	my $FILENAME="$PROJECTLC";
 	my $ARCHIVEFILENAME="module_$PROJECTLC-$MAJOR.$MINOR".($BUILD?".$BUILD":"");
 
-	# Choose package targets
-	#-----------------------
-  my %CHOOSEDTARGET;
-	$CHOOSEDTARGET{'ZIP'}=1; # Dolibarr modules are this format
-
-  my $ret;
-
 	# Test if requirement is ok
 	#--------------------------
 	foreach my $target (keys %CHOOSEDTARGET) {
+    if ($target eq 'INSTALL') {
+      next;
+    }
     foreach my $req (split(/[,\s]/,$REQUIREMENTTARGET{$target})) {
       # Test
       print "Test requirement for target $target: Search '$req'... ";
@@ -318,6 +379,28 @@ foreach my $PROJECT (@PROJECTLIST) {
         next;
       }
 
+      if ($target eq 'INSTALL') {
+        print "Installing in web directory '$INSTALL_DIR/$PROJECTLC' as user $INSTALL_USER:$INSTALL_GROUP...\n";
+
+        print "Go to directory $BUILDROOT/$PROJECTLC/htdocs/\n";
+        my $olddir=getcwd();
+        chdir("$BUILDROOT/$PROJECTLC/htdocs");
+        print "Copying files $PROJECTLC to $INSTALL_DIR/$PROJECTLC/\n";
+        $ret=`sudo cp -pr "$PROJECTLC/" "$INSTALL_DIR/$PROJECTLC"`;
+        if ($? != 0) { die "Failed to make copy of files to $INSTALL_DIR/$PROJECTLC/.\n"; }
+
+        print "Chown $INSTALL_USER:$INSTALL_GROUP on $INSTALL_DIR/$PROJECTLC\n";
+        $ret=`sudo chown -R $INSTALL_USER:$INSTALL_GROUP "$INSTALL_DIR/$PROJECTLC"`;
+        if ($? != 0) { die "Failed to chown files in $INSTALL_DIR/$PROJECTLC/.\n"; }
+
+        print "Chmod -w on $INSTALL_DIR/$PROJECTLC\n";
+        $ret=`sudo chmod -w -R "$INSTALL_DIR/$PROJECTLC"`;
+        if ($? != 0) { die "Failed to chmod files in $INSTALL_DIR/$PROJECTLC/.\n"; }
+
+        print "Restoring previous directory '$olddir'.\n";
+        chdir("$olddir");
+      }
+
       if ($target eq 'EXE') {
         die "Not implemented";
       }
@@ -327,9 +410,11 @@ foreach my $PROJECT (@PROJECTLIST) {
 	print "\n----- Summary -----\n";
 	foreach my $target (keys %CHOOSEDTARGET) {
     if ($CHOOSEDTARGET{$target} < 0) {
-        print "Package $target not built (bad requirement).\n";
+      print "Package $target not built (bad requirement).\n";
+    } elsif ($target eq 'INSTALL') {
+      print "Package installed succesfully in $INSTALL_DIR\n";
     } else {
-        print "Package $target built successfully in $DESTI\n";
+      print "Package $target built successfully in $DESTI\n";
     }
 	}
 }
