@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"module": "es6",
+		"sourceMap": true,
+		"moduleResolution": "Classic",
+		"strict": true,
+		"alwaysStrict": true,
+		"forceConsistentCasingInFileNames": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"outDir": "js/content"
+	},
+	"include": ["src/**/*"],
+}

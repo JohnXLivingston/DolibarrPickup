@@ -1,3 +1,6 @@
+.vscode
 *.php.back
 *.sql.back
 js/content
+build/templates
+node_modules
