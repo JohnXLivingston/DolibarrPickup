@@ -1,0 +1,89 @@
+{% if dataStatus === 'pending' %}
+  <div pickupmobile-form-pending>{{ translate('Waiting...') }}</div>
+{% elif dataStatus === 'rejected' %}
+  <div class="pickupmobile-error">{{ translate('Error retrieving data.') }}</div>
+  <a class="button" pickupmobile-form-reload>{{ translate('Try again') }}</a>
+{% elif dataStatus === 'resolved' %}
+  <table class="border" width="100%">
+    {% for field in currentState.fields %}
+      {% if useDefaultValues %}
+        {% set currentValue = field.default %}
+      {% else %}
+        {% set currentValue = stack.getValue(field.name) %}
+      {% endif %}
+      {% set invalid = stack.isValueInvalid(field.name) %}
+      <tr>
+        <td>
+          <label
+            class="{% if invalid %}pickupmobile-error{% endif %} {% if field.mandatory %}fieldrequired{% endif %}"
+            for="{{ field.name }}"
+          >
+            {{ field.label }}
+          </label>
+        </td>
+        <td>
+          {% if field.type === 'varchar' %}
+            <input type="text"
+              name="{{ field.name }}"
+              value="{{ currentValue }}"
+              {% if field.maxLength %} maxlength="{{ field.maxLength }}" {% endif %}
+            />
+          {% elif field.type === 'integer' or field.type === 'float' %}
+            <input type="number"
+              name="{{ field.name }}"
+              value="{{ currentValue }}"
+              min="{{ field.min }}"
+              max="{{ field.max }}"
+              {% if field.type === 'float' %}step="{{ field.step }}"{% endif %}
+            />
+          {% elif field.type === 'text' %}
+            <textarea name="{{ field.name }}">{{ currentValue }}</textarea>
+          {% elif field.type === 'select' %}
+            <select name="{{ field.name }}">
+            {% for option in field.options %}
+              <option value="{{ option.value }}" {% if option.value === currentValue %}selected="selected"{% endif %}>
+                {{ option.label }}
+              </option>
+            {% endfor %}
+            </select>
+          {% elif field.type === 'radio' %}
+            {% for option in field.options %}
+              <label>
+                <input name="{{ field.name }}"
+                  type="radio"
+                  value="{{ option.value }}"
+                  {% if currentValue === option.value %}checked="checked"{% endif %}
+                />
+                {{ option.label }}
+              </label>
+            {% endfor %}
+          {% elif field.type === 'boolean' %}
+            <input type="checkbox"
+              name="{{ field.name }}"
+              value="1"
+              {% if currentValue === '1' %}checked="checked"{% endif %}
+            />
+          {% elif field.type === 'date' %}
+            <input type="date"
+              name="{{ field.name }}"
+              value="{{ currentValue }}"
+            />
+          {% endif %}
+        
+          {% if invalid %}
+            <div class="pickupmobile-error">{{ invalid }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      {% if field.notes and field.notes.label %}
+      <tr>
+        <td></td>
+        <td>{{ field.notes.label }}</td>
+      </tr>
+      {% endif %}
+    {% endfor %}
+  </table>
+  <div class="pickupmobile-bottom-buttons">
+    <input type="submit" value="{{ translate('Ok') }}" class="button"/>
+  </div>
+{% endif %}

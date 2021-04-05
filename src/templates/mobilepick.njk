@@ -1,0 +1,55 @@
+{% if data.status === 'pending' %}
+  <div pickupmobile-pick-pending>{{ translate('Waiting...') }}</div>
+{% elif data.status === 'rejected' %}
+  <div class="pickupmobile-error">{{ translate('Error retrieving data.') }}</div>
+  <a class="button" pickupmobile-pick-reload>{{ translate('Try again') }}</a>
+{% elif data.status === 'resolved' %}
+  <table class="border" width="100%">
+    {% for fieldInfo in formInfos.fieldsInfos %}
+      {% set field = fieldInfo.field %}
+      <tr>
+        <td>
+          <label for="{{ field.name }}">
+            {{ field.label }}
+          </label>
+        </td>
+        <td>
+          <select pickupmobile-select2 pickupmobile-pick-select name="{{ field.name }}" {% if fieldInfo.disabled %}disabled="disabled"{% endif %}>
+            {% for option in fieldInfo.options %}
+              <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %}>
+                {{ option.label }}
+              </option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+  {% set pickedItems = formInfos.pickedItems %}
+  {% if pickedItems.length %}
+    <div class="pickupmobile-picked-items">
+      {{ translate('Found {items} items', {items: pickedItems.length}) }}
+      <ul>
+      {% for item in pickedItems %}
+        <li>
+          {{ item[currentState.primaryKey] }}.
+          <a class="button"
+            pickupmobile-pick-pick="{{ item[currentState.primaryKey] }}"
+            {% if currentState.itemGotoField and item[currentState.itemGotoField] %}
+              pickupmobile-pick-pick-goto="{{ item[currentState.itemGotoField] }}"
+            {% endif %}
+          >
+            {{ translate('Pick this one') }}
+          </a>
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  <div class="pickupmobile-bottom-buttons">
+    {% if formInfos.creation %}
+      <a class="button" pickupmobile-pick-create>{{ translate('Create a new one') }}</a>
+    {% endif %}
+    <a class="button" pickupmobile-pick-reload>{{ translate('Reload') }}</a>
+  </div>
+{% endif %}

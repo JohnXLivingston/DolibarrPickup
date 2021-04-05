@@ -1,0 +1,15 @@
+<div>
+  {{ translate('Please confirm the data you want to save:') }}
+  <ul>
+  {% for sv in stackValues %}
+    {% set s = displayStackValue(sv) %}
+    {% if s %}
+      <li>{{ s }}</li>
+    {% endif %}
+  {% endfor %}
+  </ul>
+</div>
+<div class="pickupmobile-bottom-buttons">
+  <input type="submit" value="{{ translate('Save') }}" class="button"/>
+</div>
+<div class="pickupmobile-error" pickupmobile-save-error-container></div>
