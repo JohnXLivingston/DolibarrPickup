@@ -177,7 +177,7 @@ my $DESTI="$SOURCE/build";
 
 print "Makepack...\n";
 print "Module name: $PROJECTINPUT\n";
-print "Current direcotyr: ".getcwd()."\n";
+print "Current directory: ".getcwd()."\n";
 print "Source directory: $SOURCE\n";
 print "Target directory: $DESTI\n";
 
@@ -256,6 +256,21 @@ foreach my $PROJECT (@PROJECTLIST) {
 	}
 
 	print "\n";
+
+  if (-f "$SOURCE/package.json") {
+    print "Building npm package...\n";
+    my $olddir=getcwd();
+    chdir($SOURCE);
+
+    open NPM, "FORCE_COLOR=true npm run build |" or die "Cant call npm run build\n";
+    while (my $line = <NPM>) {
+      print $line;
+    }
+    close NPM;
+    if ($? != 0) { die "Failed to run npm build in $SOURCE.\n"; }
+
+    chdir($olddir);
+  }
 
 	# Check if there is at least one target to build
 	#----------------------------------------------
