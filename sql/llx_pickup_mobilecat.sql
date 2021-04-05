@@ -14,7 +14,7 @@
 -- along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
-CREATE TABLE llx_pickup_dolinputcat(
+CREATE TABLE llx_pickup_mobilecat(
 	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
 	fk_category integer NOT NULL, 
 	active boolean DEFAULT 1 NOT NULL, 

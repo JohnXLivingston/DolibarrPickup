@@ -17,9 +17,9 @@
  */
 
 /**
- *   	\file       dolinputcat_list.php
+ *   	\file       mobilecat_list.php
  *		\ingroup    pickup
- *		\brief      List page for dolinputcat
+ *		\brief      List page for mobilecat
  */
 
 //if (! defined('NOREQUIREDB'))              define('NOREQUIREDB','1');					// Do not create database handler $db
@@ -61,7 +61,7 @@ if (! $res) die("Include of main fails");
 // require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
 // load pickup libraries
-require_once __DIR__ . '/class/dolinputcat.class.php';
+require_once __DIR__ . '/class/mobilecat.class.php';
 
 // for other modules
 //dol_include_once('/othermodule/class/otherobject.class.php');
@@ -70,12 +70,12 @@ dol_include_once('/categories/class/categorie.class.php');
 // Load translation files required by the page
 $langs->loadLangs(array("pickup@pickup","other"));
 
-$object = new Dolinputcat($db);
+$object = new PickupMobileCat($db);
 $extrafields = new ExtraFields($db);
 $categstatic = new Categorie($db);
-$hookmanager->initHooks(array('dolinputcatlist'));     // Note that conf->hooks_modules contains array
+$hookmanager->initHooks(array('mobilecatlist'));     // Note that conf->hooks_modules contains array
 // Fetch optionals attributes and labels
-$extralabels = $extrafields->fetch_name_optionals_label('dolinputcat');	// Load $extrafields->attributes['dolinputcat']
+$extralabels = $extrafields->fetch_name_optionals_label('mobilecat');	// Load $extrafields->attributes['mobilecat']
 
 // Security check
 if (empty($conf->pickup->enabled)) accessforbidden('Module not enabled');
@@ -92,7 +92,7 @@ if (!$user->rights->pickup->configure) {
 
 
 $help_url='';
-$title = $langs->trans('ListOf', $langs->transnoentitiesnoconv("Dolinputcats"));
+$title = $langs->trans('ListOf', $langs->transnoentitiesnoconv("MobileCats"));
 
 $fulltree = $categstatic->get_full_arbo('product');
 
@@ -110,16 +110,16 @@ foreach ($fulltree as $key => $val)
 	$cat->fetch($val['id']);
 	$allways = $cat->get_all_ways();
 
-	// $dolinputcats = $object->fetchAll('', '', 1, 0, ['customsql' => 't.fk_category='.$object->db->escape($cat->id)]);
-	// if ($dolinputcats < 0)
+	// $mobilecats = $object->fetchAll('', '', 1, 0, ['customsql' => 't.fk_category='.$object->db->escape($cat->id)]);
+	// if ($mobilecats < 0)
 	// {
 	// 	dol_print_error($db);
 	// 	exit;
 	// }
-	// $dolinputcat = count($dolinputcats) > 0 ? $dolinputcats[0] : 0;
+	// $mobilecat = count($mobilecats) > 0 ? $mobilecats[0] : 0;
 	
-	$dolinputcat = new Dolinputcat($db);
-	if ($dolinputcat->fetchByCategory($cat->id) < 0)
+	$mobilecat = new PickupMobileCat($db);
+	if ($mobilecat->fetchByCategory($cat->id) < 0)
 	{
 		dol_print_error($db);
 		exit;
@@ -137,28 +137,28 @@ foreach ($fulltree as $key => $val)
 		print '<tr class="oddeven">';
 		print '<td>';
 		// print '<span class="noborderoncategories" '.($cat->color?' style="background: #'.$cat->color.';"':' style="background: #aaa"').'>';
-		print '<a href="'.DOL_URL_ROOT.'/custom/pickup/tabs/categoriesdolinput.php?id='.$cat->id.'&backto=dolinputcat_list">';
+		print '<a href="'.DOL_URL_ROOT.'/custom/pickup/tabs/mobilecat.php?id='.$cat->id.'&backto=mobilecat_list">';
 		print $label;
 		print '</a>';
 		// print '</span>';
 		print '</td>';
-		print '<td><input type="checkbox" disabled="disabled" '.($dolinputcat->id && $dolinputcat->active ? 'checked="checked"' : '').'></td>';
+		print '<td><input type="checkbox" disabled="disabled" '.($mobilecat->id && $mobilecat->active ? 'checked="checked"' : '').'></td>';
 		print '<td>';
-		if ($dolinputcat->id)
+		if ($mobilecat->id)
 		{
-			if (!$dolinputcat->active)
+			if (!$mobilecat->active)
 			{
 				print '<span style="color: grey">';
 			}
-			if (empty($dolinputcat->form) && $dolinputcat->active)
+			if (empty($mobilecat->form) && $mobilecat->active)
 			{
 				print '-';
 			}
 			else
 			{
-				print $dolinputcat->form;
+				print $mobilecat->form;
 			}
-			if (!$dolinputcat->active)
+			if (!$mobilecat->active)
 			{
 				print '</span>';
 			}

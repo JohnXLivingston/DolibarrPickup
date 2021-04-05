@@ -72,9 +72,16 @@ MyWidget = My widget
 MyWidgetDescription = My widget description
 
 #
-# Pour Dolinput
+# For Mobile
 # 
-TitleDolinput = Dolinput
+TabTitleMobilePickup = Pickup
+MobileCats = Mobile pickup categories
+MobileCatForm = For to use in mobile application
+MobileCatDescription = Notes to display in mobile app near to the field «product description»
+MobileCatEnable = Use in mobile application
+MobileCatDisable = Disable in mobile application
+MobileCatNotEnabled = This tag is currently not used in mobile application
+
 
 #
 ConfirmPickupActionProcessing = Are you sure you want to process this pickup?

@@ -17,42 +17,42 @@
  */
 
 /**
- * \file        class/dolinputcat.class.php
+ * \file        class/mobilecat.class.php
  * \ingroup     pickup
- * \brief       This file is a CRUD class file for Dolinputcat (Create/Read/Update/Delete)
+ * \brief       This file is a CRUD class file for PickupMobileCat (Create/Read/Update/Delete)
  */
 
 require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
 
 /**
- * Class for Dolinputcat
+ * Class for PickupMobileCat
  */
-class Dolinputcat extends CommonObject
+class PickupMobileCat extends CommonObject
 {
 	/**
 	 * @var string ID to identify managed object
 	 */
-	public $element = 'dolinputcat';
+	public $element = 'mobilecat';
 
 	/**
 	 * @var string Name of table without prefix where object is stored
 	 */
-	public $table_element = 'pickup_dolinputcat';
+	public $table_element = 'pickup_mobilecat';
 
 	/**
-	 * @var int  Does dolinputcat support multicompany module ? 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+	 * @var int  Does mobilecat support multicompany module ? 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 	 */
 	public $ismultientitymanaged = 0;
 
 	/**
-	 * @var int  Does dolinputcat support extrafields ? 0=No, 1=Yes
+	 * @var int  Does mobilecat support extrafields ? 0=No, 1=Yes
 	 */
 	public $isextrafieldmanaged = 1;
 
 	/**
-	 * @var string String with name of icon for dolinputcat. Must be the part after the 'object_' into object_dolinputcat.png
+	 * @var string String with name of icon for mobilecat. Must be the part after the 'object_' into object_mobilecat.png
 	 */
-	public $picto = 'dolinputcat@pickup';
+	public $picto = 'mobilecat@pickup';
 
 
 	const STATUS_DRAFT = 0;
@@ -85,8 +85,8 @@ class Dolinputcat extends CommonObject
 	public $fields=array(
 		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>'1', 'position'=>1, 'notnull'=>1, 'visible'=>0, 'index'=>1, 'comment'=>"Id"),
 		'fk_category' => array('type'=>'integer:Categorie:categories/class/categorie.class.php', 'label'=>'Category', 'enabled'=>'1', 'position'=>2, 'notnull'=>1, 'visible'=>2, 'index'=>1, 'foreignkey'=>'categories.rowid',),
-		'active' => array('type'=>'boolean', 'label'=>'Actif', 'enabled'=>'1', 'position'=>61, 'notnull'=>1, 'visible'=>1, 'default'=>'1', 'index'=>1, 'comment'=>"Is this category used in dolinput"),
-		'form' => array('type'=>'varchar(255)', 'label'=>'Formulaire', 'enabled'=>'1', 'position'=>62, 'notnull'=>-1, 'visible'=>1, 'comment'=>"The form name for dolinput"),
+		'active' => array('type'=>'boolean', 'label'=>'Actif', 'enabled'=>'1', 'position'=>61, 'notnull'=>1, 'visible'=>1, 'default'=>'1', 'index'=>1, 'comment'=>"Is this category used in mobile pickup app"),
+		'form' => array('type'=>'varchar(255)', 'label'=>'Formulaire', 'enabled'=>'1', 'position'=>62, 'notnull'=>-1, 'visible'=>1, 'comment'=>"The form name for the mobile pickup app"),
 		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>'1', 'position'=>500, 'notnull'=>1, 'visible'=>-2,),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>-1, 'visible'=>-2,),
 		'fk_user_creat' => array('type'=>'integer', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>510, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
@@ -111,17 +111,17 @@ class Dolinputcat extends CommonObject
 	/**
 	 * @var int    Name of subtable line
 	 */
-	//public $table_element_line = 'pickup_dolinputcatline';
+	//public $table_element_line = 'pickup_mobilecatline';
 
 	/**
 	 * @var int    Field with ID of parent key if this field has a parent
 	 */
-	//public $fk_element = 'fk_dolinputcat';
+	//public $fk_element = 'fk_mobilecat';
 
 	/**
 	 * @var int    Name of subtable class that manage subtable lines
 	 */
-	//public $class_element_line = 'Dolinputcatline';
+	//public $class_element_line = 'PickupMobileCatline';
 
 	/**
 	 * @var array	List of child tables. To test if we can delete object.
@@ -131,10 +131,10 @@ class Dolinputcat extends CommonObject
 	/**
 	 * @var array	List of child tables. To know object to delete on cascade.
 	 */
-	//protected $childtablesoncascade=array('pickup_dolinputcatdet');
+	//protected $childtablesoncascade=array('pickup_mobilecatdet');
 
 	/**
-	 * @var DolinputcatLine[]     Array of subtable lines
+	 * @var PickupMobileCatLine[]     Array of subtable lines
 	 */
 	//public $lines = array();
 
@@ -437,78 +437,6 @@ class Dolinputcat extends CommonObject
 		return $this->deleteLineCommon($user, $idline, $notrigger);
 	}
 
-    /**
-     *  Return a link to the object card (with optionaly the picto)
-     *
-     *  @param  int     $withpicto                  Include picto in link (0=No picto, 1=Include picto into link, 2=Only picto)
-     *  @param  string  $option                     On what the link point to ('nolink', ...)
-     *  @param  int     $notooltip                  1=Disable tooltip
-     *  @param  string  $morecss                    Add more css on link
-     *  @param  int     $save_lastsearch_value      -1=Auto, 0=No save of lastsearch_values when clicking, 1=Save lastsearch_values whenclicking
-     *  @return	string                              String with URL
-     */
-    public function getNomUrl($withpicto = 0, $option = '', $notooltip = 0, $morecss = '', $save_lastsearch_value = -1)
-    {
-        global $conf, $langs, $hookmanager;
-
-        if (! empty($conf->dol_no_mouse_hover)) $notooltip=1;   // Force disable tooltips
-
-        $result = '';
-
-        $label = '<u>' . $langs->trans("Dolinputcat") . '</u>';
-        $label.= '<br>';
-        $label.= '<b>' . $langs->trans('Ref') . ':</b> ' . $this->ref;
-
-        $url = dol_buildpath('/pickup/dolinputcat_card.php', 1).'?id='.$this->id;
-
-        if ($option != 'nolink')
-        {
-            // Add param to save lastsearch_values or not
-            $add_save_lastsearch_values=($save_lastsearch_value == 1 ? 1 : 0);
-            if ($save_lastsearch_value == -1 && preg_match('/list\.php/', $_SERVER["PHP_SELF"])) $add_save_lastsearch_values=1;
-            if ($add_save_lastsearch_values) $url.='&save_lastsearch_values=1';
-        }
-
-        $linkclose='';
-        if (empty($notooltip))
-        {
-            if (! empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-            {
-                $label=$langs->trans("ShowDolinputcat");
-                $linkclose.=' alt="'.dol_escape_htmltag($label, 1).'"';
-            }
-            $linkclose.=' title="'.dol_escape_htmltag($label, 1).'"';
-            $linkclose.=' class="classfortooltip'.($morecss?' '.$morecss:'').'"';
-
-            /*
-             $hookmanager->initHooks(array('dolinputcatdao'));
-             $parameters=array('id'=>$this->id);
-             $reshook=$hookmanager->executeHooks('getnomurltooltip',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
-             if ($reshook > 0) $linkclose = $hookmanager->resPrint;
-             */
-        }
-        else $linkclose = ($morecss?' class="'.$morecss.'"':'');
-
-		$linkstart = '<a href="'.$url.'"';
-		$linkstart.=$linkclose.'>';
-		$linkend='</a>';
-
-		$result .= $linkstart;
-		if ($withpicto) $result.=img_object(($notooltip?'':$label), ($this->picto?$this->picto:'generic'), ($notooltip?(($withpicto != 2) ? 'class="paddingright"' : ''):'class="'.(($withpicto != 2) ? 'paddingright ' : '').'classfortooltip"'), 0, 0, $notooltip?0:1);
-		if ($withpicto != 2) $result.= $this->ref;
-		$result .= $linkend;
-		//if ($withpicto != 2) $result.=(($addlabel && $this->label) ? $sep . dol_trunc($this->label, ($addlabel > 1 ? $addlabel : 0)) : '');
-
-		global $action,$hookmanager;
-		$hookmanager->initHooks(array('dolinputcatdao'));
-		$parameters=array('id'=>$this->id, 'getnomurl'=>$result);
-		$reshook=$hookmanager->executeHooks('getNomUrl', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks
-		if ($reshook > 0) $result = $hookmanager->resPrint;
-		else $result .= $hookmanager->resPrint;
-
-		return $result;
-    }
-
 	/**
 	 *  Return label of the status
 	 *
@@ -643,8 +571,8 @@ class Dolinputcat extends CommonObject
 	{
 	    $this->lines=array();
 
-	    $objectline = new DolinputcatLine($this->db);
-	    $result = $objectline->fetchAll('ASC', 'position', 0, 0, array('customsql'=>'fk_dolinputcat = '.$this->id));
+	    $objectline = new PickupMobileCatLine($this->db);
+	    $result = $objectline->fetchAll('ASC', 'position', 0, 0, array('customsql'=>'fk_mobilecat = '.$this->id));
 
 	    if (is_numeric($result))
 	    {
@@ -657,39 +585,6 @@ class Dolinputcat extends CommonObject
 	        $this->lines = $result;
 	        return $this->lines;
 	    }
-	}
-
-	/**
-	 *  Create a document onto disk according to template module.
-	 *
-	 *  @param	    string		$modele			Force template to use ('' to not force)
-	 *  @param		Translate	$outputlangs	objet lang a utiliser pour traduction
-	 *  @param      int			$hidedetails    Hide details of lines
-	 *  @param      int			$hidedesc       Hide description
-	 *  @param      int			$hideref        Hide ref
-	 *  @param      null|array  $moreparams     Array to provide more information
-	 *  @return     int         				0 if KO, 1 if OK
-	 */
-	public function generateDocument($modele, $outputlangs, $hidedetails = 0, $hidedesc = 0, $hideref = 0, $moreparams = null)
-	{
-		global $conf,$langs;
-
-		$langs->load("pickup@pickup");
-
-		if (! dol_strlen($modele)) {
-
-			$modele = 'standard';
-
-			if ($this->modelpdf) {
-				$modele = $this->modelpdf;
-			} elseif (! empty($conf->global->DOLINPUTCAT_ADDON_PDF)) {
-				$modele = $conf->global->DOLINPUTCAT_ADDON_PDF;
-			}
-		}
-
-		$modelpath = "core/modules/pickup/doc/";
-
-		return $this->commonGenerateDocument($modelpath, $modele, $outputlangs, $hidedetails, $hidedesc, $hideref, $moreparams);
 	}
 
 	/**
@@ -724,10 +619,10 @@ class Dolinputcat extends CommonObject
 }
 
 /**
- * Class DolinputcatLine. You can also remove this and generate a CRUD class for lines objects.
+ * Class PickupMobileCatLine. You can also remove this and generate a CRUD class for lines objects.
  */
-class DolinputcatLine
+class PickupMobileCatLine
 {
-	// To complete with content of an object DolinputcatLine
-	// We should have a field rowid, fk_dolinputcat and position
+	// To complete with content of an object PickupMobileCatLine
+	// We should have a field rowid, fk_mobilecat and position
 }

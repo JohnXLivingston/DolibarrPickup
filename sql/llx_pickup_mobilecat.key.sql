@@ -13,10 +13,10 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see http://www.gnu.org/licenses/.
 
-ALTER TABLE llx_pickup_dolinputcat ADD INDEX idx_pickup_dolinputcat_rowid (rowid);
-ALTER TABLE llx_pickup_dolinputcat ADD INDEX idx_pickup_dolinputcat_fk_category (fk_category);
-ALTER TABLE llx_pickup_dolinputcat ADD CONSTRAINT llx_pickup_dolinputcat_fk_category FOREIGN KEY (fk_category) REFERENCES llx_categories(rowid);
-ALTER TABLE llx_pickup_dolinputcat ADD INDEX idx_pickup_dolinputcat_active (active);
-ALTER TABLE llx_pickup_dolinputcat ADD CONSTRAINT llx_pickup_dolinputcat_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
+ALTER TABLE llx_pickup_mobilecat ADD INDEX idx_pickup_mobilecat_rowid (rowid);
+ALTER TABLE llx_pickup_mobilecat ADD INDEX idx_pickup_mobilecat_fk_category (fk_category);
+ALTER TABLE llx_pickup_mobilecat ADD CONSTRAINT llx_pickup_mobilecat_fk_category FOREIGN KEY (fk_category) REFERENCES llx_categories(rowid);
+ALTER TABLE llx_pickup_mobilecat ADD INDEX idx_pickup_mobilecat_active (active);
+ALTER TABLE llx_pickup_mobilecat ADD CONSTRAINT llx_pickup_mobilecat_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 
-ALTER TABLE llx_pickup_dolinputcat ADD UNIQUE INDEX uk_pickup_dolinputcat_fk_category (fk_category);
+ALTER TABLE llx_pickup_mobilecat ADD UNIQUE INDEX uk_pickup_mobilecat_fk_category (fk_category);

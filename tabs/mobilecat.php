@@ -17,8 +17,8 @@ if (! $res) die("Include of main fails");
 
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/dolinputcat.class.php';
-// FIXME: should include: require_once DOL_DOCUMENT_ROOT.'/custom/dolinput/lib/dolinput.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/mobilecat.class.php';
+require_once DOL_DOCUMENT_ROOT.'/custom/pickup/lib/pickup_mobilecat.lib.php';
 
 $langs->loadlangs(array('categories'));
 
@@ -42,7 +42,7 @@ if (!$user->rights->pickup->configure) {
 $result = restrictedArea($user, 'categorie', $id, '&category');
 
 $object = new Categorie($db);
-$dolinputcat = new Dolinputcat($db);
+$mobilecat = new PickupMobileCat($db);
 if ($id > 0)
 {
   $result = $object->fetch($id);
@@ -50,7 +50,7 @@ if ($id > 0)
     dol_print_error($db);
     exit;
   }
-  if ($dolinputcat->fetchByCategory($object->id) < 0)
+  if ($mobilecat->fetchByCategory($object->id) < 0)
 	{
 		dol_print_error($db);
 		exit;
@@ -70,8 +70,8 @@ if ($object->socid)
 {
   $common_uri.= 'socid='.$object->socid.'&';
 }
-if ($backtopage === 'dolinputcat_list') {
-  $common_uri.= 'backto=dolinputcat_list&';
+if ($backtopage === 'mobilecat_list') {
+  $common_uri.= 'backto=mobilecat_list&';
 }
 
 /*
@@ -80,9 +80,9 @@ if ($backtopage === 'dolinputcat_list') {
 
 if ($action === 'activate')
 {
-  if (!$dolinputcat->id)
+  if (!$mobilecat->id)
   {
-    $dc = new Dolinputcat($db);
+    $dc = new PickupMobileCat($db);
     $dc->fk_category = $object->id;
     $dc->active = 1;
     $new_id = $dc->create($user);
@@ -97,12 +97,12 @@ if ($action === 'activate')
       dol_print_error($db);
 		  exit;
     }
-    $dolinputcat = $dc;
+    $mobilecat = $dc;
   }
   else
   {
-    $dolinputcat->active = 1;
-    if ($dolinputcat->update($user) < 0)
+    $mobilecat->active = 1;
+    if ($mobilecat->update($user) < 0)
     {
       dol_print_error($db);
 		  exit;
@@ -113,10 +113,10 @@ if ($action === 'activate')
 }
 elseif ($action === 'unactivate')
 {
-  if ($dolinputcat->id)
+  if ($mobilecat->id)
   {
-    $dolinputcat->active = 0;
-    if ($dolinputcat->update($user) < 0)
+    $mobilecat->active = 0;
+    if ($mobilecat->update($user) < 0)
     {
       dol_print_error($db);
 		  exit;
@@ -133,26 +133,26 @@ elseif ($action === 'delete')
 }
 elseif ($action === 'confirm_delete')
 {
-  if ($dolinputcat->id)
+  if ($mobilecat->id)
   {
-    if ($dolinputcat->delete($user) < 0)
+    if ($mobilecat->delete($user) < 0)
     {
       dol_print_error($db);
 		  exit;
     }
-    $dolinputcat = new Dolinputcat($db);
+    $mobilecat = new PickupMobileCat($db);
   }
 }
 elseif ($action === 'edit')
 {
   $new_form = GETPOST('form', 'alpha');
   $new_notes = GETPOST('notes', 'nohtml');
-  $forms = array(); // FIXME: should be dolinputListProductForms();
+  $forms = array(); // FIXME: should be mobileListProductForms();
   if (empty($new_form) || in_array($new_form, $forms))
   {
-    $dolinputcat->form = empty($new_form) ? null : $new_form;
-    $dolinputcat->notes = empty($new_notes) || $new_notes === '' ? null : $new_notes;
-    if ($dolinputcat->update($user) < 0)
+    $mobilecat->form = empty($new_form) ? null : $new_form;
+    $mobilecat->notes = empty($new_notes) || $new_notes === '' ? null : $new_notes;
+    if ($mobilecat->update($user) < 0)
     {
       dol_print_error($db);
 		  exit;
@@ -187,9 +187,9 @@ if ($object->id)
 
   $head = categories_prepare_head($object, $type);
 
-  dol_fiche_head($head, 'dolinput', $title, -1, 'category');
+  dol_fiche_head($head, 'pickupmobilecat', $title, -1, 'category');
 
-  if ($backtopage === 'dolinputcat_list') $linkback = '<a href="'.DOL_URL_ROOT.'/custom/pickup/dolinputcat_list.php">'.$langs->trans("BackToList").'</a>';
+  if ($backtopage === 'mobilecat_list') $linkback = '<a href="'.DOL_URL_ROOT.'/custom/pickup/mobilecat_list.php">'.$langs->trans("BackToList").'</a>';
   else $linkback = '<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type.'">'.$langs->trans("BackToList").'</a>';
 
   $object->ref = $object->label;
@@ -212,9 +212,9 @@ if ($object->id)
   print '<div class="fichecenter">';
   print '<div class="underbanner clearboth"></div>';
   
-  $forms = array(); // FIXME: should be dolinputListProductForms();
+  $forms = array(); // FIXME: should be mobileListProductForms();
 
-  if ($dolinputcat->id)
+  if ($mobilecat->id)
   {
     print '<form method="POST" action="'.$common_uri.'">';
     ?>
@@ -222,15 +222,15 @@ if ($object->id)
       <table width="100%" class="border">
         <tr>
           <td class="titlefield notopnoleft">
-            Formulaire à utiliser dans Dolinput
+            <?php $langs->trans('MobileCatForm') ?>
           </td>
           <td>
             <select name="form">
-              <option value="" <?php if (empty($dolinputcat->form)) print 'selected="selected"'; ?>>Formulaire par defaut</option>
+              <option value="" <?php if (empty($mobilecat->form)) print 'selected="selected"'; ?>>Formulaire par defaut</option>
               <?php
               foreach ($forms as $form) {
                 print '<option value="'.htmlspecialchars($form).'" ';
-                if ($dolinputcat->form === $form)
+                if ($mobilecat->form === $form)
                 {
                   print ' selected="selected" ';
                 }
@@ -242,10 +242,10 @@ if ($object->id)
         </tr>
         <tr>
           <td class="titlefield notopnoleft">
-            Notes à afficher dans Dolinput à coté du champs «Description du produit»
+            <?php $langs->trans('MobileCatDescription') ?>
           </td>
           <td>
-              <textarea name="notes"><?php print htmlspecialchars($dolinputcat->notes) ?></textarea>
+              <textarea name="notes"><?php print htmlspecialchars($mobilecat->notes) ?></textarea>
           </td>
         </tr>
         <tr>
@@ -272,18 +272,18 @@ if ($object->id)
 
   if ($user->rights->pickup->configure)
   {
-    if (!$dolinputcat->id || !$dolinputcat->active)
+    if (!$mobilecat->id || !$mobilecat->active)
     {
       print '<form method="POST" action="'.$common_uri.'">';
       print '<input type="hidden" name="action" value="activate">';
-      print '<input type="submit" value="Utiliser dans Dolinput" >';
+      print '<input type="submit" value="' . $langs->trans('MobileCatEnable') . '" >';
       print '</form>';
     }
     else
     {
       print '<form method="POST" action="'.$common_uri.'">';
       print '<input type="hidden" name="action" value="unactivate">';
-      print '<input type="submit" value="Désactiver dans Dolinput" >';
+      print '<input type="submit" value="' . $langs->trans('MobileCatEnable') . '" >';
       print '</form>';
 
       print '<form method="POST" action="'.$common_uri.'">';
@@ -297,9 +297,9 @@ if ($object->id)
 
   print "</div>";
 
-  if (!$dolinputcat->id)
+  if (!$mobilecat->id)
   {
-    print '<div class="opacitymedium">Ce tag n\'est actuellement pas utilisé dans Dolinput.</div>';
+    print '<div class="opacitymedium">' . $lang->trans('MobileCatNotEnabled') . '</div>';
   }
 }
 else

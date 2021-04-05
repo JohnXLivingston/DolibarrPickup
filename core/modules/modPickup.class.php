@@ -154,7 +154,7 @@ class modPickup extends DolibarrModules
 
         // Array to add new pages in new tabs
         $this->tabs = array();
-        $this->tabs[] = array('data' => 'categories_product:+dolinput:TitleDolinput:pickup@pickup:$user->rights->pickup->configure:/pickup/tabs/categoriesdolinput.php?id=__ID__');
+        $this->tabs[] = array('data' => 'categories_product:+pickupmobilecat:TabTitleMobilePickup:pickup@pickup:$user->rights->pickup->configure:/pickup/tabs/mobilecat.php?id=__ID__');
         // Example:
         // $this->tabs[] = array('data'=>'product:+tabname1:Title1:mylangfile@pickup:$user->rights->pickup->read:/pickup/mynewtab1.php?id=__ID__');  					// To add a new tab identified by code tabname1
         // $this->tabs[] = array('data'=>'objecttype:+tabname2:SUBSTITUTION_Title2:mylangfile@pickup:$user->rights->othermodule->read:/pickup/mynewtab2.php?id=__ID__',  	// To add another new tab identified by code tabname2. Label will be result of calling all substitution functions on 'Title2' key.
@@ -282,7 +282,7 @@ class modPickup extends DolibarrModules
         $this->rights[$r][5] = 'sign';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $r++;
         $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
-        $this->rights[$r][1] = 'Configure dolinput';	// Permission label
+        $this->rights[$r][1] = 'Configure Pickup';	// Permission label
         $this->rights[$r][4] = 'configure';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $r++;
@@ -341,7 +341,7 @@ class modPickup extends DolibarrModules
                                 'titre'=>'PickupMenuTags',
                                 'mainmenu'=>'pickup',
                                 'leftmenu'=>'pickup_pickup',
-                                'url'=>'/pickup/dolinputcat_list.php',
+                                'url'=>'/pickup/mobilecat_list.php',
                                 'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
                                 'position'=>1100+$r,
                                 'enabled'=>'$conf->pickup->enabled',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
