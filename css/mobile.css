@@ -1,0 +1,106 @@
+
+.pickupmobileapp-position {
+  width: 100%;
+}
+
+.pickupmobileapp-position [pickupmobileapp-container] {
+  margin: 0 auto;
+}
+
+.pickupmobile-error {
+	color: red
+}
+
+.pickupmobile-waiting {
+	position: relative
+}
+
+.pickupmobile-waiting::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+@keyframes pickupmobile-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.pickupmobile-waiting::after {
+  content: "";
+  position: absolute;
+  border-width: 3px;
+  border-style: solid;
+  border-color: transparent rgb(255, 255, 255) rgb(255, 255, 255);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  top: calc(50% - 12px);
+  left: calc(50% - 12px);
+  animation: 2s linear 0s normal none infinite running pickupmobile-spin;
+  filter: drop-shadow(0 0 2 rgba(0, 0, 0, 0.33));
+}
+
+
+.pickupmobile-top-bar {
+  border-bottom: 1px solid #aaa;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  padding: 10px 0px;
+  width: 100%;
+  text-align: center;
+}
+
+.pickupmobile-top-bar-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.pickupmobile-top-bar-item-main {
+  flex-shrink: 2;
+  flex-grow: 2;
+}
+
+.pickupmobile-bottom-buttons {
+  border-top: 1px solid #aaa;
+  text-align: center;
+  margin: 20px auto;
+  padding-top: 20px;
+}
+
+[pickupmobileapp-container] {
+  max-width: 600px;
+}
+
+[pickupmobileapp-container] h3 {
+  text-align: center
+}
+
+.pickupmobile-choice-list {
+  list-style: none;
+  text-align: center;
+  padding: 0px;
+}
+
+.pickupmobile-choice-list li {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.pickupmobile-picked-items {
+  margin-top: 45px;
+  margin-bottom: 15px;
+}

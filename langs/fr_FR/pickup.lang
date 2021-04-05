@@ -73,6 +73,7 @@ MyWidgetDescription = Description de mon widget
 #
 # Pour Mobile
 # 
+PickupMobileApp = Application mobile
 TabTitleMobilePickup = Collecte
 MobileCats = Catégories pour l'application mobile
 MobileCatForm = Formulaire à utiliser dans l'application mobile

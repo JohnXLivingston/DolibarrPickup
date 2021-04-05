@@ -74,6 +74,7 @@ MyWidgetDescription = My widget description
 #
 # For Mobile
 # 
+PickupMobileApp = Mobile app
 TabTitleMobilePickup = Pickup
 MobileCats = Mobile pickup categories
 MobileCatForm = For to use in mobile application
