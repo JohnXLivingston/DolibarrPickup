@@ -4,6 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 module.exports = {
   entry: './src/mobile.ts',
   // devtool: process.env.NODE_ENV === 'production' ? false : 'eval',
+  devtool: 'source-map',
   mode: 'production',
   module: {
     rules: [

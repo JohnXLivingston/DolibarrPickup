@@ -37,6 +37,7 @@ PickupStatusShortStock = Attente signature
 PickupStatusSigned = Signée
 
 PICKUP_DEFAULT_STOCK = Entrepôt par défaut
+PICKUP_MOBILE_DEBUG = Mode debug pour l'application mobile
 
 #
 # Menus

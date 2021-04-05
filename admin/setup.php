@@ -63,6 +63,7 @@ if (GETPOSTISSET('fk_entrepot')) {
 
 $arrayofparameters=array(
 	'PICKUP_DEFAULT_STOCK' => array('enabled'=>1),
+	'PICKUP_MOBILE_DEBUG' => array('enabled'=>1),
 );
 
 
