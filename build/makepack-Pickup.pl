@@ -152,6 +152,16 @@ if ($CHOOSEDTARGET{'INSTALL'}) {
     my $ret = `sudo -u $INSTALL_USER -g $INSTALL_GROUP true`;
     if ($? != 0) { die "Failed to act as user $INSTALL_USER.\n"; }
   }
+
+  if ($INSTALL_DIR ne '/var/www/dolibarr/htdocs/custom') {
+    print "Please confirm that you want to install in $INSTALL_DIR/ by typing 'yes'\n";
+    my $input = <STDIN>;
+    chomp($input);
+    if ($input ne 'yes') {
+      die "Aborting...\n";
+    }
+  }
+
 }
 
 if (!%CHOOSEDTARGET) {
@@ -385,6 +395,11 @@ foreach my $PROJECT (@PROJECTLIST) {
         print "Go to directory $BUILDROOT/$PROJECTLC/htdocs/\n";
         my $olddir=getcwd();
         chdir("$BUILDROOT/$PROJECTLC/htdocs");
+
+        print "Deleting old files with: sudo rm -rf ".$INSTALL_DIR."/".$PROJECTLC."\n";
+        $ret=`sudo rm -rf "$INSTALL_DIR/$PROJECTLC"`;
+        if ($? != 0) { die "Failed to delete previous files in $INSTALL_DIR/$PROJECTLC/.\n"; }
+
         print "Copying files $PROJECTLC to $INSTALL_DIR/$PROJECTLC/\n";
         $ret=`sudo cp -pr "$PROJECTLC/" "$INSTALL_DIR/$PROJECTLC"`;
         if ($? != 0) { die "Failed to make copy of files to $INSTALL_DIR/$PROJECTLC/.\n"; }
@@ -394,7 +409,7 @@ foreach my $PROJECT (@PROJECTLIST) {
         if ($? != 0) { die "Failed to chown files in $INSTALL_DIR/$PROJECTLC/.\n"; }
 
         print "Chmod -w on $INSTALL_DIR/$PROJECTLC\n";
-        $ret=`sudo chmod -w -R "$INSTALL_DIR/$PROJECTLC"`;
+        $ret=`sudo find "$INSTALL_DIR/$PROJECTLC" -type f -exec chmod 444 {} +`;
         if ($? != 0) { die "Failed to chmod files in $INSTALL_DIR/$PROJECTLC/.\n"; }
 
         print "Restoring previous directory '$olddir'.\n";
