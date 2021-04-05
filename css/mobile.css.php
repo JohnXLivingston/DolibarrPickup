@@ -16,9 +16,9 @@
  */
 
 /**
- * \file    dolinput/css/dolinput.css.php
- * \ingroup dolinput
- * \brief   CSS file for module Dolinput.
+ * \file    pickup/css/mobile.css.php
+ * \ingroup pickup
+ * \brief   CSS file for module Pickup (mobile app).
  */
 
 //if (! defined('NOREQUIREUSER')) define('NOREQUIREUSER','1');	// Not disabled because need to load personalized language
