@@ -34,7 +34,7 @@ $(function () {
       collecte: {
         type: 'pick',
         label: 'Mes collectes en attente de validation',
-        key: 'collectes',
+        key: 'pickup',
         goto: 'what',
         creationGoto: 'entrepot',
         primaryKey: 'rowid',
