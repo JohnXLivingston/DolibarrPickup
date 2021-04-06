@@ -299,7 +299,7 @@ $(function () {
       remarque: {
         type: 'form',
         label: 'Remarques sur la ligne de collecte',
-        goto: 'save_pickup_line',
+        goto: 'save_pickupline',
         fields: [
           {
             type: 'text',
@@ -309,11 +309,11 @@ $(function () {
           }
         ]
       },
-      save_pickup_line: {
+      save_pickupline: {
         type: 'save',
         label: 'Sauvegarde du produit',
         saveUntil: 'pickup',
-        key: 'pickup_line',
+        key: 'pickupline',
         primaryKey: 'rowid', // FIXME: to check.
         labelKey: 'Produit',
         goto: 'pickup'
