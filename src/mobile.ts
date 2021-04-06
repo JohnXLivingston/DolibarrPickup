@@ -196,7 +196,7 @@ $(function () {
       product: {
         type: 'pick',
         label: 'Recherche d\'un produit connu',
-        key: 'products',
+        key: 'product',
         primaryKey: 'rowid',
         goto: 'qty',
         creationGoto: 'categorie',
