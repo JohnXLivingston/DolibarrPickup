@@ -373,49 +373,49 @@ class Pickup extends CommonObject
 
 		dol_syslog(__METHOD__, LOG_DEBUG);
 
-		$records=array();
+		$records = array();
 
 		$sql = 'SELECT ';
 		$sql .= $this->getFieldList();
-		$sql .= ' FROM ' . MAIN_DB_PREFIX . $this->table_element. ' as t';
-		if ($this->ismultientitymanaged) $sql .= ' WHERE t.entity IN ('.getEntity($this->table_element).')';
+		$sql .= ' FROM '.MAIN_DB_PREFIX.$this->table_element.' as t';
+		if (isset($this->ismultientitymanaged) && $this->ismultientitymanaged == 1) $sql .= ' WHERE t.entity IN ('.getEntity($this->table_element).')';
 		else $sql .= ' WHERE 1 = 1';
 		// Manage filter
 		$sqlwhere = array();
 		if (count($filter) > 0) {
 			foreach ($filter as $key => $value) {
-				if ($key=='t.rowid') {
-					$sqlwhere[] = $key . '='. $value;
+				if ($key == 't.rowid') {
+					$sqlwhere[] = $key.'='.$value;
 				}
 				elseif (strpos($key, 'date') !== false) {
 					$sqlwhere[] = $key.' = \''.$this->db->idate($value).'\'';
 				}
-				elseif ($key=='customsql') {
+				elseif ($key == 'customsql') {
 					$sqlwhere[] = $value;
 				}
 				else {
-					$sqlwhere[] = $key . ' LIKE \'%' . $this->db->escape($value) . '%\'';
+					$sqlwhere[] = $key.' LIKE \'%'.$this->db->escape($value).'%\'';
 				}
 			}
 		}
 		if (count($sqlwhere) > 0) {
-			$sql .= ' AND (' . implode(' '.$filtermode.' ', $sqlwhere).')';
+			$sql .= ' AND ('.implode(' '.$filtermode.' ', $sqlwhere).')';
 		}
 
 		if (!empty($sortfield)) {
 			$sql .= $this->db->order($sortfield, $sortorder);
 		}
 		if (!empty($limit)) {
-			$sql .=  ' ' . $this->db->plimit($limit, $offset);
+			$sql .= ' '.$this->db->plimit($limit, $offset);
 		}
 
 		$resql = $this->db->query($sql);
 		if ($resql) {
 			$num = $this->db->num_rows($resql);
-            $i = 0;
-			while ($i < min($limit, $num))
+			$i = 0;
+			while ($i < ($limit ? min($limit, $num) : $num))
 			{
-			    $obj = $this->db->fetch_object($resql);
+				$obj = $this->db->fetch_object($resql);
 
 				$record = new self($this->db);
 				$record->setVarsFromFetchObj($obj);
@@ -428,8 +428,8 @@ class Pickup extends CommonObject
 
 			return $records;
 		} else {
-			$this->errors[] = 'Error ' . $this->db->lasterror();
-			dol_syslog(__METHOD__ . ' ' . join(',', $this->errors), LOG_ERR);
+			$this->errors[] = 'Error '.$this->db->lasterror();
+			dol_syslog(__METHOD__.' '.join(',', $this->errors), LOG_ERR);
 
 			return -1;
 		}
