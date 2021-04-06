@@ -1,6 +1,6 @@
 import { State, StateDefinitionBase } from './state'
 import { Stack, StackValue } from '../stack'
-import { ResultData, getData } from '../data'
+import { ResultData, getData, getDataParams } from '../data'
 
 interface FormFieldNotesStatic {
   label: string
@@ -43,6 +43,7 @@ interface FormFieldSelectDynamic extends FormFieldBase {
   type: 'select',
   options: {value: string, label: string}[],
   load: string,
+  loadParams?: getDataParams,
   map: {value: string, label: string}
 }
 type FormFieldSelect = FormFieldSelectSimple | FormFieldSelectDynamic
@@ -179,7 +180,7 @@ class StateForm extends State {
       }
 
       if (field.type === 'select' && 'load' in field) {
-        const data = getData(field.load, force)
+        const data = getData(field.load, force, field.loadParams)
         r[field.name] = data
         if (data.status === 'resolved') {
           field.options = data.data.map((d: any) => {

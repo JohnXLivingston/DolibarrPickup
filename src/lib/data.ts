@@ -17,6 +17,8 @@ interface RejectedData {
 
 type ResultData = ResolvedData | PendingData | RejectedData
 
+type getDataParams = {[key: string]: string}
+
 const cache: {[key: string]: ResultData} = {}
 
 const doctypeRegex = /^<!doctype html/i
@@ -35,43 +37,55 @@ function detectLoginError (err: JQuery.jqXHR | undefined): boolean {
   return true
 }
 
-function getData (key: string, force: boolean = false): ResultData {
-  if (key in cache) {
+function getData (dataKey: string, force: boolean = false, params: getDataParams = {}): ResultData {
+  if (dataKey.includes(':')) {
+    throw new Error('Incorrect key value.')
+  }
+  let cacheKey = dataKey
+  Object.keys(params).sort().forEach(k => {
+    cacheKey += ':' + k + '=' + params[k]
+  })
+  if (cacheKey in cache) {
     if (force) {
-      delete cache[key]
+      delete cache[cacheKey]
     } else {
-      return cache[key]
+      return cache[cacheKey]
     }
   }
 
   const p = new Promise<void>((resolve, reject) => {
-    const url = 'mobile_data.php?action=list&key=' + encodeURIComponent(key)
-    $.ajax({
+    const url = 'mobile_data.php?action=list&key=' + encodeURIComponent(dataKey)
+    const ajax: JQuery.AjaxSettings = {
       dataType: 'json',
       url,
       cache: false
-    }).then((data) => {
-      if (cache[key] && cache[key].status === 'pending' && (cache[key] as PendingData).promise === p) {
-        console.log(`Passing the cache for ${key} to resolved.`)
-        cache[key] = {
+    }
+    if (Object.keys(params).length) {
+      ajax.method = 'POST'
+      ajax.data = params
+    }
+    $.ajax(ajax).then((data) => {
+      if (cache[cacheKey] && cache[cacheKey].status === 'pending' && (cache[cacheKey] as PendingData).promise === p) {
+        console.log(`Passing the cache for ${cacheKey} to resolved.`)
+        cache[cacheKey] = {
           status: 'resolved',
           data: data,
           promise: p
         }
       } else {
-        console.log(`The promise in the cache for ${key} is not the good one. Discarding.`)
+        console.log(`The promise in the cache for ${cacheKey} is not the good one. Discarding.`)
       }
       resolve(data)
     }, (err) => {
-      if (cache[key] && cache[key].status === 'pending' && (cache[key] as PendingData).promise === p) {
-        console.log(`Passing the cache for ${key} to rejected.`)
-        cache[key] = {
+      if (cache[cacheKey] && cache[cacheKey].status === 'pending' && (cache[cacheKey] as PendingData).promise === p) {
+        console.log(`Passing the cache for ${cacheKey} to rejected.`)
+        cache[cacheKey] = {
           status: 'rejected',
           error: err,
           promise: p
         }
       } else {
-        console.log(`The promise in the cache for ${key} is not the good one. Discarding.`)
+        console.log(`The promise in the cache for ${cacheKey} is not the good one. Discarding.`)
       }
       if (detectLoginError(err)) {
         console.error('Reloading the page')
@@ -81,16 +95,16 @@ function getData (key: string, force: boolean = false): ResultData {
     })
   })
 
-  cache[key] = {
+  cache[cacheKey] = {
     status: 'pending',
     promise: p
   }
-  return cache[key]
+  return cache[cacheKey]
 }
 
-function setData (key: string, data: {[key: string]: string}): Promise<any> {
+function setData (dataKey: string, data: {[key: string]: string}): Promise<any> {
   const p = new Promise<any>((resolve, reject) => {
-    const url = 'mobile_data.php?action=save&key=' + encodeURIComponent(key)
+    const url = 'mobile_data.php?action=save&key=' + encodeURIComponent(dataKey)
     $.ajax({
       dataType: 'json',
       url,
@@ -98,10 +112,10 @@ function setData (key: string, data: {[key: string]: string}): Promise<any> {
       method: 'POST',
       data: data
     }).then((response) => {
-      delete cache[key]
+      __deleteCache(dataKey)
       resolve(response)
     }, (err) => {
-      delete cache[key]
+      __deleteCache(dataKey)
       if (detectLoginError(err)) {
         console.error('Reloading the page')
         window.location.reload()
@@ -112,9 +126,16 @@ function setData (key: string, data: {[key: string]: string}): Promise<any> {
   return p
 }
 
+function __deleteCache (dataKey: string) {
+  Object.keys(cache).filter(k => {
+    k === dataKey || k.startsWith(dataKey + ':')
+  }).forEach(k => delete cache[k])
+}
+
 export {
   getData,
   setData,
+  getDataParams,
   PendingData,
   ResolvedData,
   RejectedData,

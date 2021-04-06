@@ -118,7 +118,10 @@ $(function () {
             type: 'select',
             label: 'Type du tiers',
             options: [],
-            load: 'dict-typent_id', // FIXME: country=FR
+            load: 'dict',
+            loadParams: {
+              what: 'typent_id' // FIXME: country=FR
+            },
             map: {
               value: 'id',
               label: 'libelle'
@@ -130,7 +133,11 @@ $(function () {
             type: 'select',
             label: 'Type de structure',
             options: [],
-            load: 'dict-forme_juridique_code-fr',
+            load: 'dict',
+            loadParams: {
+              what: 'forme_juridique_code',
+              country: 'fr'
+            },
             map: {
               value: 'code',
               label: 'label'
