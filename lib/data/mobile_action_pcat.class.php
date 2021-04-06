@@ -8,10 +8,10 @@ class DataMobileActionPcat extends DataMobileAction {
     require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
     // FIXME: should add an entity id?
-    $sql  = "SELECT c.rowid as rowid, dc.form as form, dc.notes as notes ";
-    $sql .= " FROM ".MAIN_DB_PREFIX."categorie as c, ".MAIN_DB_PREFIX."collecte_dolinputcat as dc ";
-    $sql .= " WHERE c.rowid = dc.fk_category ";
-    $sql .= " AND dc.active = 1 ";
+    $sql  = "SELECT c.rowid as rowid, mc.form as form, mc.notes as notes ";
+    $sql .= " FROM ".MAIN_DB_PREFIX."categorie as c, ".MAIN_DB_PREFIX."pickup_mobilecat as mc ";
+    $sql .= " WHERE c.rowid = mc.fk_category ";
+    $sql .= " AND mc.active = 1 ";
     $sql .= " AND c.type = 0 "; // 0=Product
 
     $resql = $db->query($sql);

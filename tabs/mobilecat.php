@@ -82,22 +82,22 @@ if ($action === 'activate')
 {
   if (!$mobilecat->id)
   {
-    $dc = new PickupMobileCat($db);
-    $dc->fk_category = $object->id;
-    $dc->active = 1;
-    $new_id = $dc->create($user);
+    $mc = new PickupMobileCat($db);
+    $mc->fk_category = $object->id;
+    $mc->active = 1;
+    $new_id = $mc->create($user);
     if (!$new_id || $new_id <= 0)
     {
       dol_print_error($db);
 		  exit;
     }
 
-    if ($dc->fetch($new_id) <= 0)
+    if ($mc->fetch($new_id) <= 0)
     {
       dol_print_error($db);
 		  exit;
     }
-    $mobilecat = $dc;
+    $mobilecat = $mc;
   }
   else
   {
