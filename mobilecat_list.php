@@ -110,7 +110,7 @@ foreach ($fulltree as $key => $val)
 	$cat->fetch($val['id']);
 	$allways = $cat->get_all_ways();
 
-	// $mobilecats = $object->fetchAll('', '', 1, 0, ['customsql' => 't.fk_category='.$object->db->escape($cat->id)]);
+	// $mobilecats = $object->fetchAll('', '', 1, 0, ['customsql' => 't.fk_category=\''.$object->db->escape($cat->id)]).'\'';
 	// if ($mobilecats < 0)
 	// {
 	// 	dol_print_error($db);

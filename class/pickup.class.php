@@ -806,7 +806,7 @@ class Pickup extends CommonObject
 		$sql.= ' , ' . MAIN_DB_PREFIX . 'product as p';
 		$sql.= ' WHERE';
 		$sql.= ' p.rowid = l.fk_product';
-		$sql.= ' AND l.fk_pickup = ' . $this->db->escape($this->id);
+		$sql.= ' AND l.fk_pickup = \'' . $this->db->escape($this->id).'\'';
 
 		$resql = $this->db->query($sql);
 		if ($resql) {
