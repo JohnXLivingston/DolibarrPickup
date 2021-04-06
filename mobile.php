@@ -49,5 +49,5 @@ llxHeader("", $langs->trans("Pickups"), '', '', 0, 0, [$jsfile], [$cssfile]);
 
 ?>
 <div class="pickupmobile-position">
-  <div pickupmobile-container data-user-id="<?php print htmlspecialchars($user->id) ?>"></div>
+  <div pickupmobileapp-container data-user-id="<?php print htmlspecialchars($user->id) ?>"></div>
 </div>
