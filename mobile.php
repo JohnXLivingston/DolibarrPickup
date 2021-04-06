@@ -44,10 +44,6 @@ $conf->dol_hide_leftmenu = 1; // hide left menu
 
 $jsfile = '/pickup/js/mobile.js.php';
 $cssfile = '/pickup/css/mobile.css.php';
-if (!empty($conf->global->PICKUP_MOBILE_DEBUG)) {
-  $jsfile = '/pickup/js/content/mobile.js';
-  $cssfile = '/pickup/css/content/mobile.css';
-}
 
 llxHeader("", $langs->trans("Pickups"), '', '', 0, 0, [$jsfile], [$cssfile]);
 

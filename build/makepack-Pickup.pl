@@ -16,6 +16,7 @@
 #     NB: --install-dir should not contain any space.
 #     NB: no quote or double quote allowed for parameters.
 #     Needs the current user to be a sudoer.
+#     There is an option --debug for generating debug JS (source map, ...)
 
 $| = 1; # autoflush
 
@@ -99,6 +100,7 @@ my $BUILDROOT="$TEMP/dolibarr-buildroot";
 
 my $copyalreadydone=0;
 my $batch=0;
+my $debug=0;
 my $ret;
 my $INSTALL_USER = 'www-data';
 my $INSTALL_GROUP = 'www-data';
@@ -112,15 +114,16 @@ for (0..@ARGV-1) {
     my $currentTarget = uc($1);
     $CHOOSEDTARGET{$currentTarget} = 1;
     $batch = 1;
-  }
-  if ($ARGV[$_] =~ /^-*install-user=([\w-]+)/i) {
+  } elsif ($ARGV[$_] =~ /^-*install-user=([\w-]+)/i) {
     $INSTALL_USER = $1;
-  }
-  if ($ARGV[$_] =~ /^-*install-group=([\w-]+)/i) {
+  } elsif ($ARGV[$_] =~ /^-*install-group=([\w-]+)/i) {
     $INSTALL_GROUP = $1;
-  }
-  if ($ARGV[$_] =~ /^-*install-dir=(.+)(\s|$)/i) {
+  } elsif ($ARGV[$_] =~ /^-*install-dir=(.+)(\s|$)/i) {
     $INSTALL_DIR = $1;
+  } elsif ($ARGV[$_] =~ /^-*debug$/i) {
+    $debug = 1;
+  } else {
+    die "There is an unknown parameter: '$ARGV[$_]'.\n"
   }
 }
 
@@ -138,18 +141,18 @@ if ($CHOOSEDTARGET{'INSTALL'}) {
     die "Missing --install-user.\n";
   }
 
-  my $ret = `sudo true`;
+  $ret = `sudo true`;
   if ($? != 0) { die "Failed to act as root. You must have root rights to install.\n"; }
 
   if ($INSTALL_USER) {
     if (!$INSTALL_GROUP) {
       $INSTALL_GROUP = $INSTALL_USER;
     }
-    my $ret = `sudo -u $INSTALL_USER true`;
+    $ret = `sudo -u $INSTALL_USER true`;
     if ($? != 0) { die "Failed to act as user $INSTALL_USER.\n"; }
   }
   if ($INSTALL_GROUP) {
-    my $ret = `sudo -u $INSTALL_USER -g $INSTALL_GROUP true`;
+    $ret = `sudo -u $INSTALL_USER -g $INSTALL_GROUP true`;
     if ($? != 0) { die "Failed to act as user $INSTALL_USER.\n"; }
   }
 
@@ -168,6 +171,9 @@ if (!%CHOOSEDTARGET) {
   $CHOOSEDTARGET{'ZIP'} = 1;
 }
 
+if ($debug && %CHOOSEDTARGET > 1) {
+  die "Debug mode is not allowed for more than one target at a time.\n"
+}
 
 print "Move to the build directory: '".$DIR."'.\n";
 chdir($DIR);
@@ -262,7 +268,11 @@ foreach my $PROJECT (@PROJECTLIST) {
     my $olddir=getcwd();
     chdir($SOURCE);
 
-    open NPM, "FORCE_COLOR=true npm run build |" or die "Cant call npm run build\n";
+    my $npm_command = "FORCE_COLOR=true npm run build |";
+    if ($debug) {
+      $npm_command = "PICKUP_DEBUG_MODE=dev $npm_command";
+    }
+    open NPM, $npm_command or die "Cant call npm run build\n";
     while (my $line = <NPM>) {
       print $line;
     }

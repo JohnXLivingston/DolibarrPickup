@@ -37,7 +37,6 @@ PickupStatusShortStock = Waiting signature
 PickupStatusSigned = Signed
 
 PICKUP_DEFAULT_STOCK = Default stock
-PICKUP_MOBILE_DEBUG = Debug mode for mobile app
 
 #
 # Menus
