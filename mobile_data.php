@@ -53,11 +53,12 @@ if (preg_match('/^[a-z]+$/', $key) && preg_match('/^\w+$/', $action)) {
   $lib_file = './lib/data/mobile_action_'.$key.'.class.php';
   if (file_exists($lib_file)) {
     include_once($lib_file);
-    $className = 'Data'.ucfirst($key);
+    $className = 'DataMobileAction'.ucfirst($key);
     $actionMethod = 'action_'.$action;
     if(class_exists($className)) {
       $obj = new $className($db);
       if(method_exists($obj, $actionMethod)) {
+        dol_syslog("Calling method $actionMethod on class $className", LOG_DEBUG);
         $json = $obj->$actionMethod();
         if (!is_array($json)) {
           dol_syslog('The action '.$key.'->'.$action.' returns an empty object. Returning a 500 error.', LOG_ERR);
@@ -68,9 +69,9 @@ if (preg_match('/^[a-z]+$/', $key) && preg_match('/^\w+$/', $action)) {
         print json_encode($json);
         exit(0);
       }
-      dol_syslog('pickup_mobile_data: method dos not exist', LOG_ERR);
+      dol_syslog('pickup_mobile_data: method '.$actionMethod.' do not exist on class '.$className, LOG_ERR);
     } else {
-      dol_syslog('pickup_mobile_data: Class not found', LOG_ERR);
+      dol_syslog('pickup_mobile_data: Class '.$className.' not found', LOG_ERR);
     }
   } else {
     dol_syslog('pickup_mobile_data: file '.$lib_file.' does not exist', LOG_ERR);

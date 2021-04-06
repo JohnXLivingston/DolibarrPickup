@@ -27,11 +27,11 @@ $(function () {
           {
             label: 'Nouvelle saisie',
             value: 'new',
-            goto: 'collecte'
+            goto: 'pickup'
           }
         ]
       },
-      collecte: {
+      pickup: {
         type: 'pick',
         label: 'Mes collectes en attente de validation',
         key: 'pickup',
@@ -45,7 +45,7 @@ $(function () {
       entrepot: {
         type: 'pick',
         label: 'Entrepot',
-        key: 'entrepots',
+        key: 'entrepot',
         goto: 'societe',
         primaryKey: 'rowid',
         fields: [
@@ -55,8 +55,8 @@ $(function () {
       societe: {
         type: 'pick',
         label: 'Sélection du donneur',
-        key: 'societes',
-        goto: 'create_collecte',
+        key: 'soc',
+        goto: 'create_pickup',
         creationGoto: 'create_societe',
         primaryKey: 'rowid',
         fields: [
@@ -142,25 +142,19 @@ $(function () {
       save_societe: {
         type: 'save',
         label: 'Sauvegarde du donneur',
-        key: 'societes',
+        key: 'soc',
         primaryKey: 'rowid',
         labelKey: 'name',
         saveUntil: 'create_societe',
-        goto: 'create_collecte'
+        goto: 'create_pickup'
       },
-      create_collecte: {
+      create_pickup: {
         type: 'form',
         label: 'Nouvelle collecte',
-        goto: 'save_collecte', // FIXME
+        goto: 'save_pickup', // FIXME
         fields: [
           {
-            name: 'label',
-            type: 'varchar',
-            label: 'Libellé',
-            mandatory: false
-          },
-          {
-            name: 'date_collecte',
+            name: 'date_pickup',
             type: 'date',
             label: 'Date de la collecte',
             mandatory: true,
@@ -174,11 +168,11 @@ $(function () {
           }
         ]
       },
-      save_collecte: {
+      save_pickup: {
         type: 'save',
         label: 'Création de la collecte',
         saveUntil: 'entrepot', // FIXME: might not be that...
-        key: 'collectes',
+        key: 'pickup',
         primaryKey: 'rowid', // FIXME: to check.
         labelKey: 'Collecte',
         goto: 'what'
@@ -298,7 +292,7 @@ $(function () {
       remarque: {
         type: 'form',
         label: 'Remarques sur la ligne de collecte',
-        goto: 'save_collecte_line',
+        goto: 'save_pickup_line',
         fields: [
           {
             type: 'text',
@@ -308,14 +302,14 @@ $(function () {
           }
         ]
       },
-      save_collecte_line: {
+      save_pickup_line: {
         type: 'save',
         label: 'Sauvegarde du produit',
-        saveUntil: 'collecte',
-        key: 'collecte_line',
+        saveUntil: 'pickup',
+        key: 'pickup_line',
         primaryKey: 'rowid', // FIXME: to check.
         labelKey: 'Produit',
-        goto: 'collecte'
+        goto: 'pickup'
       }
     }
   )
