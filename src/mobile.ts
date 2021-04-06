@@ -215,7 +215,7 @@ $(function () {
       categorie: {
         type: 'pick',
         label: 'Catégorie du produit',
-        key: 'product_categorie',
+        key: 'pcat',
         primaryKey: 'rowid',
         goto: 'create_product',
         creationGoto: undefined,
@@ -256,9 +256,9 @@ $(function () {
             label: 'Description du produit',
             mandatory: false,
             notes: {
-              load: 'product_categorie',
+              load: 'pcat',
               key: 'rowid',
-              basedOnValueOf: 'product_categorie',
+              basedOnValueOf: 'pcat',
               field: 'notes'
             }
           }
