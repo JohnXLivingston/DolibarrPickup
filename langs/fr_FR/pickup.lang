@@ -92,3 +92,6 @@ PickupIncludeInStockMovementNotFoundError = Une erreur a eu lieu, le mouvement n
 PickupActionSign = Valider signature
 ConfirmPickupActionSign = Êtes-vous sûr de vouloir passer cette collecte en statut «signée»
 #
+
+
+PickupFixLine = Remonter les informations du produit

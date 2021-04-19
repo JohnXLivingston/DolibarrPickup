@@ -31,7 +31,7 @@ if (empty($object) || !is_object($object)) {
 global $forcetoshowtitlelines; // TODO: necessary?
 
 // Define colspan for the button 'Add'
-$colspan = 2; // Col col edit + col delete
+$colspan = 3; // Col fix + edit + delete
 
 $line = new PickupLine($this->db);
 

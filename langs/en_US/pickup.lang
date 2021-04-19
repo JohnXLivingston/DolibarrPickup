@@ -93,3 +93,5 @@ PickupIncludeInStockMovementNotFoundError = An error occured. The movement was n
 PickupActionSign = Validate signature
 ConfirmPickupActionSign = Are you sure you want to set this pickup as signed?
 #
+
+PickupFixLine = Get product information

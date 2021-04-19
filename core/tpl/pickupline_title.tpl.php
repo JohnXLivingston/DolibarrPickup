@@ -55,7 +55,8 @@ print "<!-- BEGIN PHP TEMPLATE pickup/pickupline_title.tpl.php -->\n";
 				<?php print $langs->trans('StockMovement'); ?>
 			<?php } ?>
 		</td>
-		<td class="linecoledit"></td><?php // No width to allow autodim ?>
+		<td class="linecoledit" style="width: 10px"></td>
+		<td class="linecoledit" style="width: 10px"></td>
 		<td class="linecoldelete" style="width: 10px"></td>
 		<?php if ($action == 'selectlines') { ?>
 			<td class="linecolcheckall center">

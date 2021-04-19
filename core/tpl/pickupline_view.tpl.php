@@ -44,6 +44,7 @@ $domData  = ' data-element="'.$line->element.'"';
 $domData .= ' data-id="'.$line->id.'"';
 $domData .= ' data-qty="'.$line->qty.'"';
 
+$product_warnings = 0;
 
 $coldisplay = 0; ?>
 <!-- BEGIN PHP TEMPLATE pickup/pickupline_view.tpl.php -->
@@ -66,7 +67,9 @@ $coldisplay = 0; ?>
     ?>
   </td>
   <td class="nowrap right"
-    <?php if ($line->weight != $line_product->weight || $line->weight_units != $line_product->weight_units) { ?>
+    <?php if ($line->weight != $line_product->weight || $line->weight_units != $line_product->weight_units) {
+      $product_warnings = 1;
+      ?>
       style="color: orange;"
       title="<?php print htmlentities($langs->trans('Product') . ': ' . $line_product->weight . ' ' . measuringUnitString(0, "weight", $line_product->weight_units)); ?>"
     <?php } ?>
@@ -83,7 +86,9 @@ $coldisplay = 0; ?>
     } ?>
   </td>
   <td class="nowrap"
-    <?php if ($line->deee != $line_product->array_options['options_deee'] || $line->deee_type != $line_product->array_options['options_type_deee']) { ?>
+    <?php if ($line->deee != $line_product->array_options['options_deee'] || $line->deee_type != $line_product->array_options['options_type_deee']) {
+      $product_warnings = 1;
+      ?>
       style="color: orange;"
       title="<?php
         print htmlentities($langs->trans('Product') . ': ');
@@ -113,6 +118,14 @@ $coldisplay = 0; ?>
   <?php if ($object->status == $object::STATUS_DRAFT && $object->canEditPickup() && $action != 'selectlines') { ?>
     <td class="linecoledit center">
       <?php $coldisplay++; ?>
+      <?php if (empty($disableedit) && $product_warnings) { ?>
+        <a class="" href="<?php print $_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=fixline&amp;lineid='.$line->id.'#line_'.$line->id; ?>">
+          <?php print img_warning($langs->trans('PickupFixLine')); ?>
+        </a>
+      <?php } ?>
+    </td>
+    <td class="linecoledit center">
+      <?php $coldisplay++; ?>
       <?php if (empty($disableedit)) { ?>
         <a class="editfielda reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=editline&amp;lineid='.$line->id.'#line_'.$line->id; ?>">
           <?php print img_edit(); ?>
@@ -130,8 +143,8 @@ $coldisplay = 0; ?>
       <?php } ?>
     </td>
   <?php } else { ?>
-    <?php $coldisplay = $coldisplay + 2; ?>
-    <td colspan="2"></td>
+    <?php $coldisplay = $coldisplay + 3; ?>
+    <td colspan="3"></td>
   <?php } ?>
 
   <?php if ($action == 'selectlines') { ?>

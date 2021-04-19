@@ -425,7 +425,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 							}
 						?>
 					</td>
-					<td colspan="4"></td>
+					<td colspan="5"></td>
 				</tr>
 			<?php
 		}

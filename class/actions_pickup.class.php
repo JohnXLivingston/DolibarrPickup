@@ -207,6 +207,47 @@ class ActionsPickup
 			}
 		}
 
+		if ($action == 'fixline' && $parameters['permissionedit'] && !empty($object->id)) {
+			dol_syslog(__METHOD__ . ' ' . 'fixline action', LOG_DEBUG);
+
+			$lineid   = GETPOST('lineid', 'int');
+
+			$line = new PickupLine($db);
+			if ($line->fetch($lineid) <= 0) {
+				if (!empty($line->error)) {
+					array_push($errors, $line->error);
+				}
+				if (!empty($line->errors)) {
+					$errors = array_merge($errors, $line->errors);
+				}
+			} else if ($line->fk_pickup !== $object->id) {
+				dol_syslog(__METHOD__ . ' ' . 'Line '.$line->fk_pickup.' is not from pickup '.$object->id, LOG_ERR);
+			} else {
+				require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+				$product = new Product($db);
+				if ($product->fetch($line->fk_product) <= 0) {
+					dol_syslog(__METHOD__ . ' ' . 'Product '.$line->fk_product.' not found', LOG_ERR);
+				} else {
+					$line->weight = $product->weight;
+					$line->weight_units = $product->weight_units;
+					$line->deee = $product->array_options['options_deee'];
+					$line->deee_type = $product->array_options['options_type_deee'];
+
+					$result = $line->update($user);
+					if ($result <= 0) {
+						if (!empty($line->error)) {
+							array_push($errors, $line->error);
+						}
+						if (!empty($line->errors)) {
+							$errors = array_merge($errors, $line->errors);
+						}
+					}
+				}
+			}
+			header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+			exit;
+		}
+
 		if ($action == 'confirm_processing' && GETPOST('confirm') == 'yes' && $pickup_rights->workflow->processing) {
 			$object->status = Pickup::STATUS_PROCESSING;
 			if ($object->update($user) <= 0) {

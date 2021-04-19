@@ -35,7 +35,7 @@ if (empty($object) || !is_object($object))
 
 
 // Define colspan for the button 'Add'
-$colspan = 2; // Col col edit + col delete
+$colspan = 3; // Col fix + edit + delete
 
 print "<!-- BEGIN PHP TEMPLATE pickup/pickupline_edit.tpl.php -->\n";
 
