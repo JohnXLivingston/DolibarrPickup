@@ -148,9 +148,15 @@ class ActionsPickup
 
 			$line_desc = GETPOST('description', 'none');
 			$qty = price2num(GETPOST('qty', 'int'));
+			$weight = price2num(GETPOST('weight'));
+			$weight_units = GETPOST('weight_units', 'int');
+			$deee_type = GETPOST('options_type_deee', 'alpha');
 
 			if ($qty == '') {
 				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')));
+			}
+			if ($weight == '') {
+				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Weight')));
 			}
 
 			if (!count($errors)) {
@@ -165,6 +171,15 @@ class ActionsPickup
 				} else {
 					$line->qty = $qty;
 					$line->description = $line_desc;
+					$line->weight = $weight;
+					$line->weight_units = $weight_units;
+					if (!$deee_type) {
+						$line->deee = 0;
+						$line->deee_type = NULL;
+					} else {
+						$line->deee = 1;
+						$line->deee_type = $deee_type;
+					}
 
 					$result = $line->update($user);
 					if ($result <= 0) {
@@ -176,6 +191,8 @@ class ActionsPickup
 						}
 					} else {
 						unset($_POST['qty']);
+						unset($_POST['weight']);
+						unset($_POST['weight_units']);
 						unset($_POST['description']);
 
 						$object->fetchLines();

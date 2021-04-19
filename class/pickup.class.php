@@ -787,6 +787,14 @@ class Pickup extends CommonObject
 		$line->qty = $qty;
 		$line->position = $this->line_max(0) + 1;
 
+		$product = new Product($db);
+		if ($product->fetch($fk_product) <= 0) {
+			dol_syslog(__METHOD__ . ' ' . 'Product '.$fk_product.' not found', LOG_ERR);
+		} else {
+			$line->weight = $product->weight;
+			$line->weight_units = $product->weight_units;
+		}
+
 		return $line;
 	}
 
@@ -801,12 +809,10 @@ class Pickup extends CommonObject
 			return $result;
 		}
 
-		$sql = 'SELECT l.qty, p.weight, p.weight_units';
+		$sql = 'SELECT l.qty, l.weight, l.weight_units';
 		$sql.= ' FROM ' . MAIN_DB_PREFIX . $this->table_element_line. ' as l';
-		$sql.= ' , ' . MAIN_DB_PREFIX . 'product as p';
 		$sql.= ' WHERE';
-		$sql.= ' p.rowid = l.fk_product';
-		$sql.= ' AND l.fk_pickup = \'' . $this->db->escape($this->id).'\'';
+		$sql.= ' l.fk_pickup = \'' . $this->db->escape($this->id).'\'';
 
 		$resql = $this->db->query($sql);
 		if ($resql) {

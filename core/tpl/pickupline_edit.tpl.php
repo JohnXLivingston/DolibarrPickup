@@ -19,6 +19,7 @@
  * $line (pickupline)
  * $conf
  * $langs
+ * $form
  * $line_product (product)
  * 
  * $stock_movement if the line is already in stock
@@ -69,31 +70,24 @@ $coldisplay = 0;
 			print $line->showInputField(null, 'qty', GETPOSTISSET("qty") ? GETPOST('qty', 'int') : $line->qty);
 		?>
 	</td>
-	<td class="nowrap right">
-    <?php $coldisplay++; ?>
-    <?php if (!empty($line_product) && !empty($line_product->weight)) {
-      print $line_product->weight . ' ' . measuringUnitString(0, "weight", $line_product->weight_units);
-    } ?>
+	<td class="nowrap right" colspan="2">
+    <?php $coldisplay++; ?><?php $coldisplay++; ?>
+		<?php
+			print $line->showInputField(null, 'weight', GETPOSTISSET("weight") ? price2num(GETPOST('weight')) : $line->weight);
+
+			require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
+			$formproduct = new FormProduct($db);
+			print $formproduct->selectMeasuringUnits('weight_units', 'weight', GETPOSTISSET('weight_units') ? GETPOST('weight_units', 'int') : $line->weight_units, 0, 2);
+		?>
   </td>
-  <td class="nowrap right">
-    <?php $coldisplay++; ?>
-    <?php if (!empty($line_product) && !empty($line_product->weight)) {
-      print ($line_product->weight * $line->qty) . ' ' . measuringUnitString(0, "weight", $line_product->weight_units);
-    } ?>
-  </td>
-  <td class="nowrap">
-    <?php $coldisplay++; ?>
+  <td class="nowrap" colspan="2">
+    <?php $coldisplay++; ?><?php $coldisplay++; ?>
     <?php
-      if (!empty($line_product) && $line_product->array_options['options_deee']) {
-        print $extrafields->showOutputField('type_deee', $line_product->array_options['options_type_deee'], '', $line_product->table_element);
-      } else {
-        print '-';
-      }
+			// this field is defined as en extrafield on the product table.
+			// print $extrafields->showInputField('deee', GETPOSTISSET('deee') ? GETPOST('deee', 'int') : $line->deee, '', '', '', 0, $line_product->table_element);
+			// this field is defined as en extrafield on the product table.
+      print $extrafields->showInputField('type_deee', GETPOSTISSET('options_type_deee') ? GETPOST('options_type_deee', 'alpha') : $line->deee_type, '', '', '', 0, $line_product->table_element);
     ?>
-  </td>
-  <td class="nowrap">
-    <?php $coldisplay++; ?>
-    <?php if (! empty($stock_movement)) { print $stock_movement->getNomUrl(1); } ?>
   </td>
 
 	<!-- colspan for this td because it replace total_ht+3 td for buttons+... -->

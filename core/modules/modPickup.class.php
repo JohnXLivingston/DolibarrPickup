@@ -64,7 +64,7 @@ class modPickup extends DolibarrModules
         $this->editor_name = 'Jonathan Dollé';
         $this->editor_url = 'https://github.com/JohnXLivingston';
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '0.8';
+        $this->version = '0.9';
         // Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
 
@@ -391,8 +391,12 @@ class modPickup extends DolibarrModules
 
         $sql=array(
             "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = 'standard_pickup' AND type = 'pickup' AND entity = ".$conf->entity,
-            "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('standard_pickup','pickup',".$conf->entity." )"
+            "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('standard_pickup','pickup',".$conf->entity." )",
+            // migration for version 0.9:
+            "UPDATE ".MAIN_DB_PREFIX."pickup_pickupline as l LEFT OUTER JOIN ".MAIN_DB_PREFIX."product as p ON l.fk_product = p.rowid set l.weight = IFNULL(p.weight, 0), l.weight_units = IFNULL(p.weight_units, 0) where l.weight is null and l.weight_units is null",
+            "UPDATE ".MAIN_DB_PREFIX."pickup_pickupline as l LEFT OUTER JOIN ".MAIN_DB_PREFIX."product_extrafields as e ON l.fk_product = e.fk_object set l.deee = IFNULL(e.deee, 0), l.deee_type = e.type_deee where l.deee is null and l.deee_type is null",
         );
+
         return $this->_init($sql, $options);
     }
 

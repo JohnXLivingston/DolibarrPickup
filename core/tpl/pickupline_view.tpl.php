@@ -67,21 +67,22 @@ $coldisplay = 0; ?>
   </td>
   <td class="nowrap right">
     <?php $coldisplay++; ?>
-    <?php if (!empty($line_product) && !empty($line_product->weight)) {
-      print $line_product->weight . ' ' . measuringUnitString(0, "weight", $line_product->weight_units);
+    <?php if (!empty($line->weight)) {
+      print $line->weight . ' ' . measuringUnitString(0, "weight", $line->weight_units);
     } ?>
   </td>
   <td class="nowrap right">
     <?php $coldisplay++; ?>
-    <?php if (!empty($line_product) && !empty($line_product->weight)) {
-      print ($line_product->weight * $line->qty) . ' ' . measuringUnitString(0, "weight", $line_product->weight_units);
+    <?php if (!empty($line->weight)) {
+      print ($line->weight * $line->qty) . ' ' . measuringUnitString(0, "weight", $line->weight_units);
     } ?>
   </td>
   <td class="nowrap">
     <?php $coldisplay++; ?>
     <?php
-      if (!empty($line_product) && $line_product->array_options['options_deee']) {
-        print $extrafields->showOutputField('type_deee', $line_product->array_options['options_type_deee'], '', $line_product->table_element);
+      if ($line->deee) {
+        // this field is defined as en extrafield on the product table.
+        print $extrafields->showOutputField('type_deee', $line->deee_type, '', $line_product->table_element);
       } else {
         print '-';
       }

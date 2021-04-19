@@ -631,8 +631,8 @@ class pdf_standard_pickup extends ModelePDFPickup
 					// Weight
 					if ($this->getColumnStatus('weight')) {
 						$weight = '';
-						if (!empty($currentProduct) && !empty($currentProduct->weight)) {
-							$weight = $currentProduct->weight . ' ' . measuringUnitString(0, "weight", $currentProduct->weight_units);
+						if (!empty($currentLine->weight)) {
+							$weight = $currentLine->weight . ' ' . measuringUnitString(0, "weight", $currentLine->weight_units);
 						}
 						$this->printStdColumnContent($pdf, $curY, 'weight', $weight);
 						$nexY = max($pdf->GetY(), $nexY);
