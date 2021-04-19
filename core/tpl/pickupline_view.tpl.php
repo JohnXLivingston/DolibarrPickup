@@ -65,7 +65,12 @@ $coldisplay = 0; ?>
 	    print price($line->qty, 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
     ?>
   </td>
-  <td class="nowrap right">
+  <td class="nowrap right"
+    <?php if ($line->weight != $line_product->weight || $line->weight_units != $line_product->weight_units) { ?>
+      style="color: orange;"
+      title="<?php print htmlentities($langs->trans('Product') . ': ' . $line_product->weight . ' ' . measuringUnitString(0, "weight", $line_product->weight_units)); ?>"
+    <?php } ?>
+  >
     <?php $coldisplay++; ?>
     <?php if (!empty($line->weight)) {
       print $line->weight . ' ' . measuringUnitString(0, "weight", $line->weight_units);
@@ -77,7 +82,19 @@ $coldisplay = 0; ?>
       print ($line->weight * $line->qty) . ' ' . measuringUnitString(0, "weight", $line->weight_units);
     } ?>
   </td>
-  <td class="nowrap">
+  <td class="nowrap"
+    <?php if ($line->deee != $line_product->array_options['options_deee'] || $line->deee_type != $line_product->array_options['options_type_deee']) { ?>
+      style="color: orange;"
+      title="<?php
+        print htmlentities($langs->trans('Product') . ': ');
+        if ($line_product->array_options['options_deee']) {
+          print htmlentities($extrafields->showOutputField('type_deee', $line_product->array_options['options_type_deee'], '', $line_product->table_element));
+        } else {
+          print '-';
+        }
+      ?>"
+    <?php } ?>
+  >
     <?php $coldisplay++; ?>
     <?php
       if ($line->deee) {
