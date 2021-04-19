@@ -168,6 +168,8 @@ class ActionsPickup
 					if (!empty($line->errors)) {
 						$errors = array_merge($errors, $line->errors);
 					}
+				} else if ($line->fk_pickup !== $object->id) {
+					dol_syslog(__METHOD__ . ' ' . 'Line '.$line->fk_pickup.' is not from pickup '.$object->id, LOG_ERR);
 				} else {
 					$line->qty = $qty;
 					$line->description = $line_desc;
