@@ -793,6 +793,8 @@ class Pickup extends CommonObject
 		} else {
 			$line->weight = $product->weight;
 			$line->weight_units = $product->weight_units;
+			$line->deee = $product->array_options['options_deee'];
+			$line->deee_type = $product->array_options['options_type_deee'];
 		}
 
 		return $line;
