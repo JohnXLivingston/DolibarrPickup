@@ -24,7 +24,7 @@ class DataMobileActionPcat extends DataMobileAction {
     while ($line = $db->fetch_object($resql)) {
       $cat = new Categorie($db);
       if ($cat->fetch($line->rowid) < 0) {
-        dol_syslog('Can retrieve category '+$line->rowid, LOG_ERR);
+        dol_syslog('Cant retrieve category '+$line->rowid, LOG_ERR);
         return 0;
       }
   
