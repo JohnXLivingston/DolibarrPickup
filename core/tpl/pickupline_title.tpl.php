@@ -44,7 +44,7 @@ print "<!-- BEGIN PHP TEMPLATE pickup/pickupline_title.tpl.php -->\n";
 			<?php print $langs->trans('Weight'); ?>
 		</td>
 		<td class="">
-			<?php print 'DEEE'; ?>
+			<?php print $langs->trans('DEEE'); ?>
 		</td>
 		<td class="">
 			<?php if ($object->status == Pickup::STATUS_STOCK) { ?>

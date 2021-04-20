@@ -637,6 +637,22 @@ class pdf_standard_pickup extends ModelePDFPickup
 						$this->printStdColumnContent($pdf, $curY, 'weight', $weight);
 						$nexY = max($pdf->GetY(), $nexY);
 					}
+
+					// Line Weight
+					if ($this->getColumnStatus('line_weight')) {
+						$weight = '';
+						if (!empty($currentLine->weight) && !empty($currentLine->qty)) {
+							$weight = ($currentLine->weight * $currentLine->qty) . ' ' . measuringUnitString(0, "weight", $currentLine->weight_units);
+						}
+						$this->printStdColumnContent($pdf, $curY, 'line_weight', $weight);
+						$nexY = max($pdf->GetY(), $nexY);
+					}
+
+					if ($this->getColumnStatus('deee')) {
+						$deee = $currentLine->deee ? $langs->trans('yes') : $langs->trans('no');
+						$this->printStdColumnContent($pdf, $curY, 'deee', $deee);
+						$nexY = max($pdf->GetY(), $nexY);
+					}
 					
 					// Extrafields
 					if (!empty($currentLine->array_options)) {
@@ -1193,6 +1209,21 @@ class pdf_standard_pickup extends ModelePDFPickup
 		//     $this->cols['photo']['status'] = true;
 		// }
 		
+
+		$rank = $rank + 10;
+		$this->cols['deee'] = array(
+			'rank' => $rank,
+			'width' => 16, // in mm
+			'status' => true,
+			'title' => array(
+				'textkey' => 'DEEE',
+				'align' => 'C'
+			),
+			'content' => array(
+				'align' => 'C'
+			),
+			'border-left' => true, // add left line separator
+		);
 		
 		$rank = $rank + 10;
 		$this->cols['qty'] = array(
@@ -1207,6 +1238,17 @@ class pdf_standard_pickup extends ModelePDFPickup
 
 		$rank = $rank + 10;
 		$this->cols['weight'] = array(
+			'rank' => $rank,
+			'width' => 16, // in mm
+			'status' => true,
+			'title' => array(
+				'textkey' => 'ProductWeight'
+			),
+			'border-left' => true, // add left line separator
+		);
+
+		$rank = $rank + 10;
+		$this->cols['line_weight'] = array(
 			'rank' => $rank,
 			'width' => 16, // in mm
 			'status' => true,
