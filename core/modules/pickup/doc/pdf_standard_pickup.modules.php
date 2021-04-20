@@ -743,6 +743,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 				}
 				*/
 				
+				$posy = $this->drawTotalTable($pdf, $object, $posy, $outputlangs);
 				$posy = $this->drawSignatureTable($pdf, $object, $posy, $outputlangs);
 				
 				// Pagefoot
@@ -1282,6 +1283,36 @@ class pdf_standard_pickup extends ModelePDFPickup
 		} else {
 			$this->cols = $hookmanager->resArray;
 		}
+	}
+
+	public function drawTotalTable(&$pdf, $object, $posy, $outputlangs) {
+		$txt = '';
+		$totals = $object->computeTotals();
+
+		foreach ($totals['deee_type_weights'] as $deee_type => $deee_type_weights) {
+			$tmp = array();
+			$txt.= $deee_type . ': ';
+			foreach ($totals['deee_type_weights'][$deee_type] as $weights_units => $weights) {
+				array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
+			}
+			$txt.= join(', ', $tmp);
+			$txt.= "\n";
+		}
+
+		$tmp = array();
+		foreach ($totals['deee_weights'] as $weights_units => $weights) {
+			array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
+		}
+		$txt.= $outputlangs->transnoentities('DEEETotal') . ': '. join(', ', $tmp) . "\n";
+
+		$tmp = array();
+		foreach ($totals['weights'] as $weights_units => $weights) {
+			array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
+		}
+		$txt.= $outputlangs->transnoentities('PickupTotalWeight') . ': '. join(', ', $tmp) . "\n";
+
+		$pdf->SetXY(20, 230);
+		$pdf->MultiCell(80, 5, $txt, 0, 'L', 0);
 	}
 						
 	public function drawSignatureTable(&$pdf, $object, $posy, $outputlangs) {

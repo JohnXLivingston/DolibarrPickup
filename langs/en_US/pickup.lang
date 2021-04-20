@@ -95,3 +95,5 @@ ConfirmPickupActionSign = Are you sure you want to set this pickup as signed?
 
 PickupFixLine = Get product information
 DEEE = DEEE
+DEEETotal = DEEE total
+PickupTotalWeight = Total weight
