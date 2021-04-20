@@ -492,6 +492,11 @@ class ActionsPickup
 
 		$product = new Product($db);
 		$product->fetch($line->fk_product);
+		$cats = $line->getProductCategoriesLabels();
+
+		if (count($cats) > 0) {
+			$text.= join(', ', $cats) . '<br>';
+		}
 		$text.= $product->ref;
 
 		$text.= '<br>';

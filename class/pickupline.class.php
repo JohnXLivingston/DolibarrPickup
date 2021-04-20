@@ -353,4 +353,24 @@ class PickupLine extends CommonObjectLine
 		$this->initAsSpecimenCommon();
 	}
 
+	/**
+	 * Returns categories label to display for the product.
+	 */
+	public function getProductCategoriesLabels() {
+		global $db;
+
+		if (!$this->fk_product) {
+			return array();
+		}
+		require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
+		$cat = new Categorie($db);
+		$cats = $cat->getListForItem($this->fk_product, Categorie::TYPE_PRODUCT);
+		if ($cats <= 0) { return array(); }
+
+		$result = array();
+		foreach ($cats as $cat) {
+			array_push($result, $cat['label']);
+		}
+		return $result;
+	}
 }

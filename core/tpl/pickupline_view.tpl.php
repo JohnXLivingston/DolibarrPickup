@@ -53,6 +53,11 @@ $coldisplay = 0; ?>
     <div id="line_<?php print $line->id; ?>"></div>
     <?php
       if ($line->fk_product > 0) {
+        $cats = $line->getProductCategoriesLabels();
+        if (count($cats) > 0) {
+          print join(', ', $cats);
+          print ('<br>');
+        }
         print $form->textwithtooltip($line_product->getNomUrl(1), '', 3, '', '', $i, 0, '');
       }
 
