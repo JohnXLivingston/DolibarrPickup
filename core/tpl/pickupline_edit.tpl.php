@@ -62,7 +62,7 @@ $coldisplay = 0;
 			// 	$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $object, $action);
 			// }
 
-			print $line->showInputField(null, 'description', GETPOSTISSET("description") ? GETPOST('description', 'none') : $line->description);
+			// print $line->showInputField(null, 'description', GETPOSTISSET("description") ? GETPOST('description', 'none') : $line->description);
 		?>
 	</td>
 	<td class="right">

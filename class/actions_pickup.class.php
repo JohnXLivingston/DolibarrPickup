@@ -146,7 +146,7 @@ class ActionsPickup
 
 			$lineid   = GETPOST('lineid', 'int');
 
-			$line_desc = GETPOST('description', 'none');
+			// $line_desc = GETPOST('description', 'none');
 			$qty = price2num(GETPOST('qty', 'int'));
 			$weight = price2num(GETPOST('weight'));
 			$weight_units = GETPOST('weight_units', 'int');
@@ -172,7 +172,7 @@ class ActionsPickup
 					dol_syslog(__METHOD__ . ' ' . 'Line '.$line->fk_pickup.' is not from pickup '.$object->id, LOG_ERR);
 				} else {
 					$line->qty = $qty;
-					$line->description = $line_desc;
+					// $line->description = $line_desc;
 					$line->weight = $weight;
 					$line->weight_units = $weight_units;
 					if (!$deee_type) {
@@ -195,7 +195,7 @@ class ActionsPickup
 						unset($_POST['qty']);
 						unset($_POST['weight']);
 						unset($_POST['weight_units']);
-						unset($_POST['description']);
+						// unset($_POST['description']);
 
 						$object->fetchLines();
 					}
@@ -502,8 +502,8 @@ class ActionsPickup
 		}
 		$text.= $product->ref;
 
-		$text.= '<br>';
-		$text.= dol_htmlentitiesbr($line->description);
+		// $text.= '<br>';
+		// $text.= dol_htmlentitiesbr($line->description);
 
 		// Fix bug of some HTML editors that replace links <img src="http://localhostgit/viewimage.php?modulepart=medias&file=image/efd.png" into <img src="http://localhostgit/viewimage.php?modulepart=medias&amp;file=image/efd.png"
 		// We make the reverse, so PDF generation has the real URL.

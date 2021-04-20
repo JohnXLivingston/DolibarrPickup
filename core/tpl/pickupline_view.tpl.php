@@ -61,8 +61,8 @@ $coldisplay = 0; ?>
         print $form->textwithtooltip($line_product->getNomUrl(1), '', 3, '', '', $i, 0, '');
       }
 
-      print '<br>';
-      print dol_htmlentitiesbr($line->description);
+      // print '<br>';
+      // print dol_htmlentitiesbr($line->description);
     ?>
   </td>
 	<td class="nowrap right">
