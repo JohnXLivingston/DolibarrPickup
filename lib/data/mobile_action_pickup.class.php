@@ -4,7 +4,7 @@ dol_include_once('/pickup/lib/data/mobile_action.class.php');
 class DataMobileActionPickup extends DataMobileAction {
   protected function pickup2json($pickup) {
     return array(
-      'rowid' => $pickup->rowid,
+      'rowid' => $pickup->id,
       'display' => $pickup->ref.' '.$pickup->label
     );
   }
