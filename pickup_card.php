@@ -85,6 +85,7 @@ $diroutputmassaction=$conf->pickup->dir_output . '/temp/massgeneration/'.$user->
 $hookmanager->initHooks(array('pickupcard','globalcard'));     // Note that conf->hooks_modules contains array
 // Fetch optionals attributes and labels
 $extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
+$extrafields->fetch_name_optionals_label('product');
 $search_array_options=$extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criterias
@@ -418,14 +419,33 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 					</td>
 					<td class="right">
 					</td>
-					<td class="right">
+					<td class="right nowrap">
 						<?php
 							foreach ($totals['weights'] as $weights_units => $weights) {
 								print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
 							}
 						?>
 					</td>
-					<td colspan="5"></td>
+					<td class="nowrap">
+						<?php
+							foreach ($totals['deee_type_weights'] as $deee_type => $deee_type_weights) {
+								$tmp = array();
+								print $deee_type . ': ';
+								foreach ($totals['deee_type_weights'][$deee_type] as $weights_units => $weights) {
+									array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
+								}
+								print join(', ', $tmp);
+								print '<br />';
+							}
+
+							$tmp = array();
+							foreach ($totals['deee_weights'] as $weights_units => $weights) {
+								array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
+							}
+							print join(', ', $tmp);
+						?>
+					</td>
+					<td colspan="4"></td>
 				</tr>
 			<?php
 		}

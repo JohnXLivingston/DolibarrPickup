@@ -801,20 +801,28 @@ class Pickup extends CommonObject
 	}
 
 	public function computeTotals() {
+		global $db;
+
 		$result = array(
 			'qty' => 0,
 			'weights' => array(
-				0 => 0
-			)
+				0 => 0 // 0 = kg
+			),
+			'deee_type_weights' => array(), // deee_type label => array(unit => value)
+			'deee_weights' => array(0 => 0)
 		);
 		if (empty($this->id)) {
 			return $result;
 		}
 
-		$sql = 'SELECT l.qty, l.weight, l.weight_units';
+		$sql = 'SELECT l.qty, l.weight, l.weight_units, l.deee, l.deee_type';
 		$sql.= ' FROM ' . MAIN_DB_PREFIX . $this->table_element_line. ' as l';
 		$sql.= ' WHERE';
 		$sql.= ' l.fk_pickup = \'' . $this->db->escape($this->id).'\'';
+
+		require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		$extrafields = new ExtraFields($db);
+		$extrafields->fetch_name_optionals_label('product');
 
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -829,10 +837,28 @@ class Pickup extends CommonObject
 					if (!empty($line->weight)) {
 						$weight = (double) $line->weight;
 						$weight_units = (int) $line->weight_units;
+						$line_weight = $qty * $weight;
 						if (!array_key_exists($weight_units, $result['weights'])) {
 							$result['weights'][$weight_units] = 0;
 						}
-						$result['weights'][$weight_units]+= $qty * $weight;
+						$result['weights'][$weight_units]+= $line_weight;
+
+						if ($line->deee) {
+							$deee_type = strval($line->deee_type);
+							$deee_type = $extrafields->showOutputField('type_deee', $deee_type, '', 'product');
+							if (!array_key_exists($weight_units, $result['deee_weights'])) {
+								$result['deee_weights'][$weight_units] = 0;
+							}
+							$result['deee_weights'][$weight_units]+= $line_weight;
+
+							if (!array_key_exists($deee_type, $result['deee_type_weights'])) {
+								$result['deee_type_weights'][$deee_type] = array(0 => 0);
+							}
+							if (!array_key_exists($weight_units, $result['deee_type_weights'][$deee_type])) {
+								$result['deee_type_weights'][$deee_type][$weight_units] = 0;
+							}
+							$result['deee_type_weights'][$deee_type][$weight_units]+= $line_weight;
+						}
 					}
 				}
 
