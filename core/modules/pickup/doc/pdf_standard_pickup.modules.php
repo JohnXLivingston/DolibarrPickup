@@ -146,7 +146,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 		$this->db = $db;
 		$this->name = "standard";
 		$this->description = $langs->trans('DocumentModelStandardPDF');
-		$this->update_main_doc_field = 1; // Save the name of generated file as the main doc when generating a doc with this template
+		$this->update_main_doc_field = 0; // DO NOT Save the name of generated file as the main doc when generating a doc with this template
 		
 		// Dimension page
 		$this->type = 'pdf';
