@@ -26,7 +26,6 @@ ModulePickupDesc = Ce module permet de gérer les collectes
 
 PickupCard = Collecte
 PickupPdfTitle = Bon de collecte
-PickupSignatureOfInternalContact = Nom et signature du réceptionneur
 PickupSignatureOfExternalContact = Nom et signature du donateur
 
 PickupNumRefModelDesc = Retourne le numéro de collecte

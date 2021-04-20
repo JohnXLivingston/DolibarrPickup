@@ -1286,13 +1286,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 						
 	public function drawSignatureTable(&$pdf, $object, $posy, $outputlangs) {
 		global $conf;
-		$this->printRect($pdf, $this->marge_gauche, $tab_top, $this->page_largeur - $this->marge_gauche - $this->marge_droite, $tab_height + 1, 0, 0); // Rect takes a length in 3rd parameter and 4th parameter
-		$pdf->SetXY(20, 230);
-		$pdf->MultiCell(66, 5, $outputlangs->transnoentities("PickupSignatureOfInternalContact"), 0, 'L', 0);
-		
-		$pdf->SetXY(20, 235);
-		$pdf->MultiCell(80, 25, '', 1);
-		
+
 		$pdf->SetXY(110, 230);
 		$pdf->MultiCell(80, 5, $outputlangs->transnoentities("PickupSignatureOfExternalContact"), 0, 'L', 0);
 		
