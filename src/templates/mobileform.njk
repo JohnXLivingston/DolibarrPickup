@@ -22,6 +22,13 @@
           </label>
         </td>
         <td>
+          {% if field.notes and field.notes.label %}
+            <div>
+              {% for noteLine in field.notes.label.split('\n') %}
+                <p>{{ noteLine }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
           {% if field.type === 'varchar' %}
             <input type="text"
               name="{{ field.name }}"
@@ -75,12 +82,6 @@
           {% endif %}
         </td>
       </tr>
-      {% if field.notes and field.notes.label %}
-      <tr>
-        <td></td>
-        <td>{{ field.notes.label }}</td>
-      </tr>
-      {% endif %}
     {% endfor %}
   </table>
   <div class="pickupmobile-bottom-buttons">
