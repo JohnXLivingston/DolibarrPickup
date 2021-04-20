@@ -67,7 +67,7 @@ $coldisplay = 0; ?>
     ?>
   </td>
   <td class="nowrap right"
-    <?php if ($line->weight != $line_product->weight || $line->weight_units != $line_product->weight_units) {
+    <?php if (floatval($line->weight) != floatval($line_product->weight) || intval($line->weight_units) != intval($line_product->weight_units)) {
       $product_warnings = 1;
       ?>
       style="color: orange;"
@@ -86,7 +86,7 @@ $coldisplay = 0; ?>
     } ?>
   </td>
   <td class="nowrap"
-    <?php if ($line->deee != $line_product->array_options['options_deee'] || $line->deee_type != $line_product->array_options['options_type_deee']) {
+    <?php if (intval($line->deee) != intval($line_product->array_options['options_deee']) || strval($line->deee_type) != strval($line_product->array_options['options_type_deee'])) {
       $product_warnings = 1;
       ?>
       style="color: orange;"
