@@ -497,6 +497,9 @@ class ActionsPickup
 		if (count($cats) > 0) {
 			$text.= join(', ', $cats) . '<br>';
 		}
+		if ($product->label != $product->ref) {
+			$text.= $product->label . ' - ';
+		}
 		$text.= $product->ref;
 
 		$text.= '<br>';
