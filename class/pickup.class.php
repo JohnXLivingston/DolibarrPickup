@@ -845,7 +845,7 @@ class Pickup extends CommonObject
 
 						if ($line->deee) {
 							$deee_type = strval($line->deee_type);
-							$deee_type = $extrafields->showOutputField('type_deee', $deee_type, '', 'product');
+							$deee_type = trim($extrafields->showOutputField('type_deee', $deee_type, '', 'product'));
 							if (!array_key_exists($weight_units, $result['deee_weights'])) {
 								$result['deee_weights'][$weight_units] = 0;
 							}
