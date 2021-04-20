@@ -24,6 +24,8 @@
     {% include 'mobilepick.njk' %}
   {% elif currentState.type === 'form' %}
     {% include 'mobileform.njk' %}
+  {% elif currentState.type === 'show' %}
+    {% include 'mobileshow.njk' %}
   {% elif currentState.type === 'save' %}
     {% include 'mobilesave.njk' %}
   {% else %}

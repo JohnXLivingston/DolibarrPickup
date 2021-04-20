@@ -59,7 +59,7 @@ class StatePick extends State {
 
   renderVars (stack: Stack) {
     const h = super.renderVars(stack)
-    h.data = getData(this.key)
+    h.data = getData(this.key, 'list')
     if (h.data.status === 'pending') {
       setTimeout(() => {
         const div = $('[pickupmobile-pick-pending]')
@@ -117,7 +117,7 @@ class StatePick extends State {
 
   bindEvents (dom: JQuery, stack: Stack): void {
     dom.on('click.stateEvents', '[pickupmobile-pick-reload]', () => {
-      getData(this.key, true) // force reload
+      getData(this.key, 'list', true) // force reload
       dom.trigger('rerender-state')
     })
 
@@ -258,7 +258,7 @@ class StatePick extends State {
     if (this.goto) r.push(this.goto)
     if (this.creationGoto) r.push(this.creationGoto)
     if (this.itemGotoField) {
-      const d = getData(this.key)
+      const d = getData(this.key, 'list')
       const p = Promise.all([d.promise])
       const data = (await p)[0]
       for (let i = 0; i < data.length; i++) {

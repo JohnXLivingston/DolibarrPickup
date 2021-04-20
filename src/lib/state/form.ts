@@ -164,7 +164,7 @@ class StateForm extends State {
       const field = this.fields[i]
       if (field.notes && 'load' in field.notes) {
         const notes: FormFieldNotesLoad = field.notes
-        const data = getData(notes.load, force)
+        const data = getData(notes.load, 'list', force)
         r['__notes_' + field.name] = data
         if (data.status === 'resolved') {
           const value = stack.searchValue(notes.basedOnValueOf)
@@ -180,7 +180,7 @@ class StateForm extends State {
       }
 
       if (field.type === 'select' && 'load' in field) {
-        const data = getData(field.load, force, field.loadParams)
+        const data = getData(field.load, 'list', force, field.loadParams)
         r[field.name] = data
         if (data.status === 'resolved') {
           field.options = data.data.map((d: any) => {

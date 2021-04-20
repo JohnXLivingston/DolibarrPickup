@@ -35,6 +35,19 @@ class DataMobileActionPickup extends DataMobileAction {
     return $result;
   }
 
+  public function action_get() {
+    dol_syslog(__METHOD__, LOG_DEBUG);
+    global $user;
+
+    $id = GETPOST('id', 'int');
+    dol_include_once('/pickup/class/pickup.class.php');
+    $pickup = new Pickup($this->db);
+    if ($pickup->fetch($id) <= 0) {
+      return 0;
+    }
+    return $this->pickup2json($pickup);
+  }
+
   public function action_save() {
     dol_syslog(__METHOD__, LOG_DEBUG);
     global $user;

@@ -35,7 +35,7 @@ $(function () {
         type: 'pick',
         label: 'Mes collectes en attente de validation',
         key: 'pickup',
-        goto: 'what',
+        goto: 'show_pickup',
         creationGoto: 'entrepot',
         primaryKey: 'rowid',
         fields: [
@@ -182,7 +182,13 @@ $(function () {
         key: 'pickup',
         primaryKey: 'rowid', // FIXME: to check.
         labelKey: 'Collecte',
-        goto: 'what'
+        goto: 'show_pickup'
+      },
+      show_pickup: {
+        type: 'show',
+        label: 'Collecte',
+        key: 'pickup',
+        primaryKey: 'pickup' // FIXME: should be less ambigous
       },
       what: {
         type: 'choice',

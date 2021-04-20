@@ -37,11 +37,14 @@ function detectLoginError (err: JQuery.jqXHR | undefined): boolean {
   return true
 }
 
-function getData (dataKey: string, force: boolean = false, params: getDataParams = {}): ResultData {
+function getData (dataKey: string, requestType: string, force: boolean = false, params: getDataParams = {}): ResultData {
   if (dataKey.includes(':')) {
     throw new Error('Incorrect key value.')
   }
-  let cacheKey = dataKey
+  if (requestType === 'save' || !/^[a-z]+$/.test(requestType)) {
+    throw new Error('Incorrect requestType')
+  }
+  let cacheKey = dataKey + ':' + requestType
   Object.keys(params).sort().forEach(k => {
     cacheKey += ':' + k + '=' + params[k]
   })
@@ -54,7 +57,7 @@ function getData (dataKey: string, force: boolean = false, params: getDataParams
   }
 
   const p = new Promise<void>((resolve, reject) => {
-    const url = 'mobile_data.php?action=list&key=' + encodeURIComponent(dataKey)
+    const url = 'mobile_data.php?action=' + encodeURIComponent(requestType) + '&key=' + encodeURIComponent(dataKey)
     const ajax: JQuery.AjaxSettings = {
       dataType: 'json',
       url,

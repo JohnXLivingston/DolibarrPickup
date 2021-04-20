@@ -1,0 +1,15 @@
+{% if missingKey %}
+  <div class="pickupmobile-error">{{ translate('Error retrieving data. Missing key') }}</div>
+{% elif data.status === 'pending' %}
+  <div pickupmobile-show-pending>{{ translate('Waiting...') }}</div>
+{% elif data.status === 'rejected' %}
+  <div class="pickupmobile-error">{{ translate('Error retrieving data.') }}</div>
+  <a class="button" pickupmobile-show-reload>{{ translate('Try again') }}</a>
+{% elif data.status === 'resolved' %}
+  <table class="border" width="100%">
+
+  </table>
+  <div class="pickupmobile-bottom-buttons">
+    <a class="button" pickupmobile-show-reload>{{ translate('Reload') }}</a>    
+  </div>
+{% endif %}
