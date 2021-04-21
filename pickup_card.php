@@ -537,17 +537,14 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		print '<div class="fichecenter"><div class="fichehalfleft">';
 		print '<a name="builddoc"></a>'; // ancre
 
-		$includedocgeneration = 0;
-		if ($object->status == Pickup::STATUS_STOCK || $object->status == Pickup::STATUS_SIGNED) {
-			$includedocgeneration = 1;
-		}
+		$includedocgeneration = 1;
 
 		// Documents
 		if ($includedocgeneration) {
 			$objref = dol_sanitizeFileName($object->ref);
 			$filedir = $conf->pickup->dir_output.'/'.$object->element.'/'.$objref;
 			$urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
-			$genallowed = $object->status == Pickup::STATUS_STOCK && $object->canEditPickup();
+			$genallowed = $object->canCreatePickupPdf();
 			$delallowed = 0; // FIXME: buggy... should be: $permissiontoadd;
 			$model_pdf = 'standard_pickup';
 			print $formfile->showdocuments(

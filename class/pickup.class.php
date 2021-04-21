@@ -777,6 +777,21 @@ class Pickup extends CommonObject
 		}
 		return 0;
 	}
+
+	public function canCreatePickupPdf() {
+		global $user;
+		if (
+			$this->status == Pickup::STATUS_DRAFT ||
+			$this->status == Pickup::STATUS_PROCESSING ||
+			$this->status == Pickup::STATUS_STOCK
+		) {
+			$pickup_rights = $this->getRights();
+			if ($pickup_rights->workflow->stock) { // Editing the pdf needs this right
+				return 1;
+			}
+		}
+		return 0;
+	}
 	
 	public function initPickupLine($fk_product, $qty = 1) {
 		global $db;
