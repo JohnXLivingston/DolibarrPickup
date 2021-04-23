@@ -161,7 +161,7 @@ $(function () {
         label: 'Donneur',
         key: 'soc',
         primaryKey: 'soc', // FIXME: should be less ambigous
-        addGoto: 'create_pickup',
+        okGoto: 'create_pickup',
         fields: [
           {
             type: 'varchar',

@@ -26,9 +26,10 @@ type ShowField = ShowFieldVarchar | ShowFieldText | ShowFieldLines | ShowFieldIn
 interface StateShowDefinition extends StateDefinitionBase {
   type: 'show'
   key: string
-  primaryKey: string,
-  fields: ShowField[],
+  primaryKey: string
+  fields: ShowField[]
   addGoto?: string
+  okGoto?: string
 }
 
 class StateShow extends State {
@@ -36,6 +37,7 @@ class StateShow extends State {
   private readonly primaryKey: string
   public readonly fields: ShowField[]
   public readonly addGoto?: string
+  public readonly okGoto?: string
 
   constructor (definition: StateShowDefinition) {
     super('show', definition)
@@ -43,6 +45,7 @@ class StateShow extends State {
     this.primaryKey = definition.primaryKey
     this.fields = definition.fields
     this.addGoto = definition.addGoto
+    this.okGoto = definition.okGoto
   }
 
   private _getValue (stack: Stack): string | undefined {
@@ -84,12 +87,20 @@ class StateShow extends State {
         dom.trigger('goto-state', [this.addGoto])
       }
     })
+    dom.on('click.stateEvents', '[pickupmobile-show-ok]', () => {
+      if (this.okGoto) {
+        dom.trigger('goto-state', [this.okGoto])
+      }
+    })
   }
 
   async possibleGotos () {
     const a: string[] = []
     if (this.addGoto) {
       a.push(this.addGoto)
+    }
+    if (this.okGoto) {
+      a.push(this.okGoto)
     }
     return a
   }

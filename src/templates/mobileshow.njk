@@ -49,6 +49,9 @@
     {% if currentState.addGoto %}
       <a class="button" pickupmobile-show-add>{{ translate('Add') }}
     {% endif %}
+    {% if currentState.okGoto %}
+      <a class="button" pickupmobile-show-ok>{{ translate('Ok') }}
+    {% endif %}
     <a class="button" pickupmobile-show-reload>{{ translate('Reload') }}</a>    
   </div>
 {% endif %}
