@@ -88,9 +88,9 @@ class DataMobileActionPickup extends DataMobileAction {
     $object = new Pickup($this->db);
 
     $object->fk_entrepot = GETPOSTISSET('entrepot') ? GETPOST('entrepot') : $conf->global->PICKUP_DEFAULT_STOCK;
-    $object->fk_soc = GETPOST('soc');
-    $object->date_pickup = GETPOST('date_pickup');
-    $object->description = GETPOST('description');
+    $object->fk_soc = GETPOST('soc', 'int');
+    $object->date_pickup = GETPOST('date_pickup', 'alpha');
+    $object->description = GETPOST('description', 'none');
   
     $id = $object->create($user);
     if (!$id || $id <= 0) {
