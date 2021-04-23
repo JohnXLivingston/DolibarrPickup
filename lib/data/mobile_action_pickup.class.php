@@ -1,5 +1,7 @@
 <?php
 dol_include_once('/pickup/lib/data/mobile_action.class.php');
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 class DataMobileActionPickup extends DataMobileAction {
   protected function pickup2json($pickup, $complete = false) {
@@ -84,12 +86,20 @@ class DataMobileActionPickup extends DataMobileAction {
     dol_syslog(__METHOD__, LOG_DEBUG);
     global $user;
 
+    $date_pickup_input = GETPOST('date_pickup', 'alpha');
+    $date_pickup_parts = explode('-', $date_pickup_input);
+    $date_pickup = dol_mktime(12, 0, 0, $date_pickup_parts[1], $date_pickup_parts[2], $date_pickup_parts[0], true, 1);
+    if (empty($date_pickup)) {
+      dol_syslog('Invalid date: ' . $date_pickup_input, LOG_ERR);
+      return 0;
+    }
+
     dol_include_once('/pickup/class/pickup.class.php');
     $object = new Pickup($this->db);
 
     $object->fk_entrepot = GETPOSTISSET('entrepot') ? GETPOST('entrepot') : $conf->global->PICKUP_DEFAULT_STOCK;
     $object->fk_soc = GETPOST('soc', 'int');
-    $object->date_pickup = GETPOST('date_pickup', 'alpha');
+    $object->date_pickup = $date_pickup;
     $object->description = GETPOST('description', 'none');
   
     $id = $object->create($user);
