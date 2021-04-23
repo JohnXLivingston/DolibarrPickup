@@ -337,6 +337,21 @@ $(function () {
             maxLength: 255
           },
           {
+            type: 'select',
+            name: 'deee_type',
+            label: 'DEEE',
+            mandatory: false,
+            options: [],
+            load: 'dict',
+            loadParams: {
+              what: 'deee_type'
+            },
+            map: {
+              value: 'value',
+              label: 'label'
+            }
+          },
+          {
             type: 'text',
             name: 'desc',
             label: 'Description du produit',

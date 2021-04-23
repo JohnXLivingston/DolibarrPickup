@@ -26,6 +26,21 @@ class DataMobileActionDict extends DataMobileAction {
       $sql.= " WHERE active = 1 AND (fk_country IS NULL OR fk_country = ".(empty($country_codeid)?'0':$country_codeid).")";
       // if ($filter) $sql.=" ".$filter;
       $sql.= " ORDER by position, id";
+    } else if ($what == 'deee_type') {
+      // This is an extrafield...
+      require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+      $extrafields = new ExtraFields($db);
+      $extrafields->fetch_name_optionals_label('product');
+
+      $options = $extrafields->attributes['product']['param']['type_deee']['options'];
+      $result = array();
+      foreach ($options as $key => $val) {
+        array_push($result, array(
+          'value' => $key,
+          'label' => $val
+        ));
+      }
+      return $result;
     } else {
       dol_syslog(__METHOD__." Unknown what=$what", LOG_ERR);
       return 0;
