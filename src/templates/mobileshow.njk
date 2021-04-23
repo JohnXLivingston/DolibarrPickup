@@ -6,8 +6,44 @@
   <div class="pickupmobile-error">{{ translate('Error retrieving data.') }}</div>
   <a class="button" pickupmobile-show-reload>{{ translate('Try again') }}</a>
 {% elif data.status === 'resolved' %}
+  {% macro printFieldContent(field, data) %}
+    {% if field.type === 'varchar' or field.type === 'integer'%}
+      {{ data[field.name] }}
+    {% elif field.type === 'text' %}
+      {{ data[field.name] | safe }}
+    {% elif field.type === 'lines' %}
+      {{ printLines(field.lines, data[field.name]) }}
+    {% endif %}
+  {% endmacro %}
+  {% macro printLines(fields, lines) %}
+    <table class="" width="100%" style="border: 1px solid black">
+      <tr>
+        {% for field in fields %}
+          <th>{{ field.label }}</th>
+        {% endfor%}
+      </tr>
+      {% for line in lines %}
+        <tr>
+          {% for field in fields %}
+            <td>{{ printFieldContent(field, line) }}</td>
+          {% endfor%}
+        </tr>
+      {% endfor %}
+    </table>
+  {% endmacro %}
   <table class="border" width="100%">
-
+    {% for field in fields %}
+      <tr>
+        <td>
+          <label>
+            {{ field.label }}
+          </label>
+        </td>
+        <td>
+          {{ printFieldContent(field, data.data) }}
+        </td>
+      </tr>
+    {% endfor %}
   </table>
   <div class="pickupmobile-bottom-buttons">
     <a class="button" pickupmobile-show-reload>{{ translate('Reload') }}</a>    

@@ -2,11 +2,44 @@
 dol_include_once('/pickup/lib/data/mobile_action.class.php');
 
 class DataMobileActionPickup extends DataMobileAction {
-  protected function pickup2json($pickup) {
-    return array(
+  protected function pickup2json($pickup, $complete = false) {
+    $r = array(
       'rowid' => $pickup->id,
       'display' => $pickup->ref.' '.$pickup->label
     );
+    if (!$complete) {
+      return $r;
+    }
+
+    global $db;
+    require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+    $soc = new Societe($db);
+    $soc->fetch($pickup->fk_soc);
+
+    require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
+    $entrepot = new Entrepot($db);
+    $entrepot->fetch($pickup->fk_entrepot);
+
+    $r['date'] = dol_print_date($pickup->date_pickup, 'day');
+    $r['soc_name'] = $soc->name;
+    $r['description'] = $pickup->description;
+    $r['entrepot_name'] = $entrepot->ref;
+    $r['lines'] = array();
+
+    require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+
+    $pickup->getLinesArray();
+    foreach ($pickup->lines as $line) {
+      $product = new Product($db);
+      $product->fetch($line->fk_product);
+      $rl = array(
+        'rowid' => $line->id,
+        'name' => $product->ref,
+        'qty' => $line->qty
+      );
+      array_push($r['lines'], $rl);
+    }
+    return $r;
   }
 
   public function action_list() {
@@ -45,7 +78,7 @@ class DataMobileActionPickup extends DataMobileAction {
     if ($pickup->fetch($id) <= 0) {
       return 0;
     }
-    return $this->pickup2json($pickup);
+    return $this->pickup2json($pickup, true);
   }
 
   public function action_save() {

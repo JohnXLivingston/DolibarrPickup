@@ -188,7 +188,41 @@ $(function () {
         type: 'show',
         label: 'Collecte',
         key: 'pickup',
-        primaryKey: 'pickup' // FIXME: should be less ambigous
+        primaryKey: 'pickup', // FIXME: should be less ambigous
+        fields: [
+          {
+            type: 'varchar',
+            name: 'display',
+            label: 'Collecte'
+          },
+          {
+            type: 'varchar',
+            name: 'date',
+            label: 'Date'
+          },
+          {
+            type: 'text',
+            name: 'description',
+            label: 'Description'
+          },
+          {
+            type: 'lines',
+            name: 'lines',
+            label: 'Produits',
+            lines: [
+              {
+                type: 'varchar',
+                name: 'name',
+                label: 'Produit'
+              },
+              {
+                type: 'integer',
+                name: 'qty',
+                label: 'Quantité'
+              }
+            ]
+          }
+        ]
       },
       what: {
         type: 'choice',
