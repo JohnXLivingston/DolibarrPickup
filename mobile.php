@@ -49,5 +49,8 @@ llxHeader("", $langs->trans("Pickups"), '', '', 0, 0, [$jsfile], [$cssfile]);
 
 ?>
 <div class="pickupmobile-position">
-  <div pickupmobileapp-container data-user-id="<?php print htmlspecialchars($user->id) ?>"></div>
+  <div pickupmobileapp-container
+    data-user-id="<?php print htmlspecialchars($user->id) ?>"
+    data-entrepot-id="<?php if(!empty($conf->global->PICKUP_DEFAULT_STOCK)) { print $conf->global->PICKUP_DEFAULT_STOCK; } ?>"
+  ></div>
 </div>

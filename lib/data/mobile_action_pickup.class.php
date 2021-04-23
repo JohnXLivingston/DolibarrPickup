@@ -88,7 +88,7 @@ class DataMobileActionPickup extends DataMobileAction {
     dol_include_once('/pickup/class/pickup.class.php');
     $object = new Pickup($this->db);
 
-    $object->fk_entrepot = GETPOST('entrepot');
+    $object->fk_entrepot = GETPOSTISSET('entrepot') ? GETPOST('entrepot') : $conf->global->PICKUP_DEFAULT_STOCK;
     $object->fk_soc = GETPOST('soc');
     $object->date_pickup = GETPOST('date_pickup');
     $object->description = GETPOST('description');
