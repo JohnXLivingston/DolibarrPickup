@@ -46,6 +46,9 @@
     {% endfor %}
   </table>
   <div class="pickupmobile-bottom-buttons">
+    {% if currentState.addGoto %}
+      <a class="button" pickupmobile-show-add>{{ translate('Add') }}
+    {% endif %}
     <a class="button" pickupmobile-show-reload>{{ translate('Reload') }}</a>    
   </div>
 {% endif %}

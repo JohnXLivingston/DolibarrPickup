@@ -12,5 +12,6 @@ export const fr: {[key: string]: string} = {
   'Reload': 'Recharger',
   'Create a new one': 'Créer nouveau',
   'Please confirm the data you want to save:': 'Merci de confirmer les données à enregistrer :',
-  'Ok': 'Ok'
+  'Ok': 'Ok',
+  'Add': 'Ajouter'
 }

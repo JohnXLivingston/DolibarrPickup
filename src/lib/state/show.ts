@@ -27,19 +27,22 @@ interface StateShowDefinition extends StateDefinitionBase {
   type: 'show'
   key: string
   primaryKey: string,
-  fields: ShowField[]
+  fields: ShowField[],
+  addGoto?: string
 }
 
 class StateShow extends State {
   private readonly key: string
   private readonly primaryKey: string
-  private readonly fields: ShowField[]
+  public readonly fields: ShowField[]
+  public readonly addGoto?: string
 
   constructor (definition: StateShowDefinition) {
     super('show', definition)
     this.key = definition.key
     this.primaryKey = definition.primaryKey
     this.fields = definition.fields
+    this.addGoto = definition.addGoto
   }
 
   private _getValue (stack: Stack): string | undefined {
@@ -76,10 +79,19 @@ class StateShow extends State {
         dom.trigger('rerender-state')
       }
     })
+    dom.on('click.stateEvents', '[pickupmobile-show-add]', () => {
+      if (this.addGoto) {
+        dom.trigger('goto-state', [this.addGoto])
+      }
+    })
   }
 
   async possibleGotos () {
-    return []
+    const a: string[] = []
+    if (this.addGoto) {
+      a.push(this.addGoto)
+    }
+    return a
   }
 }
 
