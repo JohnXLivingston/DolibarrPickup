@@ -61,11 +61,9 @@ class DataMobileActionSoc extends DataMobileAction {
 
     $name = GETPOST('name');
     $name_alias = GETPOST('name_alias');
-    if ( $name ) {
-      $object->name = $name;
+    $object->name = $name;
+    if (!empty($name_alias)) {
       $object->name_alias = $name_alias;
-    } else {
-      $object->name = $name_alias;
     }
     $object->country_id = 1; // 'FR' hardcoded.
     $object->address = GETPOST('address');

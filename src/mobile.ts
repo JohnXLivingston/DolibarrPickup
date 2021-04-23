@@ -70,14 +70,14 @@ $(function () {
         goto: 'save_societe',
         fields: [
           {
-            name: 'name_alias',
+            name: 'name',
             type: 'varchar',
             label: 'Nom de la structure',
             mandatory: true,
             maxLength: 128
           },
           {
-            name: 'name', // TODO: which field?
+            name: 'name_alias',
             type: 'varchar',
             label: 'Nom de la personne référente',
             mandatory: false,
@@ -164,12 +164,12 @@ $(function () {
         fields: [
           {
             type: 'varchar',
-            name: 'name_alias',
+            name: 'name',
             label: 'Nom'
           },
           {
             type: 'varchar',
-            name: 'name',
+            name: 'name_alias',
             label: 'Nom de la personne référente'
           },
           {
