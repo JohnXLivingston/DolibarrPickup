@@ -70,7 +70,6 @@ class DataMobileActionPickup extends DataMobileAction {
 
   public function action_get() {
     dol_syslog(__METHOD__, LOG_DEBUG);
-    global $user;
 
     $id = GETPOST('id', 'int');
     dol_include_once('/pickup/class/pickup.class.php');

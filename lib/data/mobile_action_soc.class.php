@@ -30,6 +30,27 @@ class DataMobileActionSoc extends DataMobileAction {
     return $response;
   }
 
+  public function action_get() {
+    dol_syslog(__METHOD__, LOG_DEBUG);
+
+    $id = GETPOST('id', 'int');
+    require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+    $soc = new Societe($this->db);
+    if ($soc->fetch($id) <= 0) {
+      return 0;
+    }
+    return array(
+      'rowid' => $soc->id,
+      'name' => $soc->name,
+      'name_alias' => $soc->name_alias,
+      'complete_address' => $soc->address . ' ' . $soc->zip . ' ' . $soc->town,
+      'email' => $soc->email,
+      'phone' => $soc->phone,
+      'typent' => $soc->typent_code,
+      'forme_juridique' => $soc->forme_juridique
+    );
+  }
+
   public function action_save() {
     dol_syslog(__METHOD__, LOG_DEBUG);
     $db = $this->db;

@@ -57,7 +57,7 @@ $(function () {
         type: 'pick',
         label: 'Sélection du donneur',
         key: 'soc',
-        goto: 'create_pickup',
+        goto: 'show_societe',
         creationGoto: 'create_societe',
         primaryKey: 'rowid',
         fields: [
@@ -154,7 +154,50 @@ $(function () {
         primaryKey: 'rowid',
         labelKey: 'name',
         saveUntil: 'create_societe',
-        goto: 'create_pickup'
+        goto: 'show_societe'
+      },
+      show_societe: {
+        type: 'show',
+        label: 'Donneur',
+        key: 'soc',
+        primaryKey: 'soc', // FIXME: should be less ambigous
+        fields: [
+          {
+            type: 'varchar',
+            name: 'name_alias',
+            label: 'Nom'
+          },
+          {
+            type: 'varchar',
+            name: 'name',
+            label: 'Nom de la personne référente'
+          },
+          {
+            type: 'varchar',
+            name: 'complete_address',
+            label: 'Adresse'
+          },
+          {
+            type: 'varchar',
+            name: 'email',
+            label: 'Email'
+          },
+          {
+            type: 'varchar',
+            name: 'phone',
+            label: 'Téléphone'
+          },
+          {
+            type: 'varchar',
+            name: 'typent',
+            label: 'Type du tiers'
+          },
+          {
+            type: 'varchar',
+            name: 'forme_juridique',
+            label: 'Type de structure'
+          }
+        ]
       },
       create_pickup: {
         type: 'form',
