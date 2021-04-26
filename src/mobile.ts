@@ -291,7 +291,7 @@ $(function () {
         label: 'Recherche d\'un produit connu',
         key: 'product',
         primaryKey: 'rowid',
-        goto: 'qty',
+        goto: 'show_product',
         creationGoto: 'categorie',
         fields: [
           { name: 'options_marque', label: 'Marque', applyFilter: 'localeUpperCase' },
@@ -338,7 +338,7 @@ $(function () {
           },
           {
             type: 'select',
-            name: 'deee_type',
+            name: 'product_deee_type',
             label: 'DEEE',
             mandatory: false,
             options: [],
@@ -353,7 +353,7 @@ $(function () {
           },
           {
             type: 'text',
-            name: 'desc',
+            name: 'product_desc',
             label: 'Description du produit',
             mandatory: false,
             notes: {
@@ -368,7 +368,7 @@ $(function () {
       weight: {
         type: 'form',
         label: 'Poids unitaire',
-        goto: 'qty',
+        goto: 'save_product',
         fields: [
           {
             type: 'float',
@@ -378,6 +378,59 @@ $(function () {
             min: 0,
             max: 1000,
             step: 0.1
+          }
+        ]
+      },
+      save_product: {
+        type: 'save',
+        label: 'Sauvegarde du produit',
+        saveUntil: 'categorie',
+        key: 'product',
+        primaryKey: 'rowid', // FIXME: to check.
+        labelKey: 'Produit',
+        goto: 'show_product'
+      },
+      show_product: {
+        type: 'show',
+        label: 'Produit',
+        key: 'product',
+        primaryKey: 'product',
+        okGoto: 'qty',
+        fields: [
+          {
+            type: 'varchar',
+            name: 'pcats',
+            label: 'Catégorie'
+          },
+          {
+            type: 'varchar',
+            name: 'marque',
+            label: 'Marque'
+          },
+          {
+            type: 'varchar',
+            name: 'ref',
+            label: 'Référence'
+          },
+          {
+            type: 'varchar',
+            name: 'label',
+            label: 'Libellé'
+          },
+          {
+            type: 'text',
+            name: 'desc',
+            label: 'Description'
+          },
+          {
+            type: 'varchar',
+            name: 'deee_type',
+            label: 'DEEE'
+          },
+          {
+            type: 'varchar',
+            name: 'weight_txt',
+            label: 'Poids'
           }
         ]
       },
@@ -417,7 +470,7 @@ $(function () {
         key: 'pickupline',
         primaryKey: 'rowid', // FIXME: to check.
         labelKey: 'Produit',
-        goto: 'pickup'
+        goto: 'show_pickup'
       }
     }
   )
