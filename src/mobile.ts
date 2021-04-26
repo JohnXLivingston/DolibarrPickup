@@ -234,7 +234,7 @@ $(function () {
         label: 'Collecte',
         key: 'pickup',
         primaryKey: 'pickup', // FIXME: should be less ambigous
-        addGoto: 'what',
+        addGoto: 'product',
         fields: [
           {
             type: 'varchar',
@@ -270,22 +270,22 @@ $(function () {
           }
         ]
       },
-      what: {
-        type: 'choice',
-        label: 'Type de produit',
-        choices: [
-          {
-            label: 'Matériel',
-            value: 'materiel',
-            goto: 'product'
-          },
-          {
-            label: 'Matériaux',
-            value: 'materiaux',
-            goto: '???'
-          }
-        ]
-      },
+      // what: {
+      //   type: 'choice',
+      //   label: 'Type de produit',
+      //   choices: [
+      //     {
+      //       label: 'Matériel',
+      //       value: 'materiel',
+      //       goto: 'product'
+      //     },
+      //     {
+      //       label: 'Matériaux',
+      //       value: 'materiaux',
+      //       goto: '???'
+      //     }
+      //   ]
+      // },
       product: {
         type: 'pick',
         label: 'Recherche d\'un produit connu',
