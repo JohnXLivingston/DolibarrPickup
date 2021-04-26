@@ -36,7 +36,7 @@ class DataMobileActionDict extends DataMobileAction {
       $result = array();
       foreach ($options as $key => $val) {
         array_push($result, array(
-          'value' => $key,
+          'value' => strval($key),
           'label' => $val
         ));
       }
