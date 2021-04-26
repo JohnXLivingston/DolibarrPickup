@@ -364,13 +364,21 @@ class PickupLine extends CommonObjectLine
 		}
 		require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 		$cat = new Categorie($db);
-		$cats = $cat->getListForItem($this->fk_product, Categorie::TYPE_PRODUCT);
+		$cats = $cat->containing($this->fk_product, Categorie::TYPE_PRODUCT, 'object');
 		if ($cats <= 0) { return array(); }
 
 		$result = array();
 		foreach ($cats as $cat) {
-			array_push($result, $cat['label']);
+			$allways = $cat->get_all_ways();
+			foreach ($allways as $way) {
+        foreach ($way as $parent_cat) {
+					array_push($result, $parent_cat->label);
+        }
+			}
 		}
+
+		$result = array_unique($result, SORT_STRING);
+
 		return $result;
 	}
 }
