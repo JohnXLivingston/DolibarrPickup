@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    pickupMobileDebugDataCache: any
+  }
+}
+
 interface ResolvedData {
   status: 'resolved',
   data: any,
@@ -20,6 +26,7 @@ type ResultData = ResolvedData | PendingData | RejectedData
 type getDataParams = {[key: string]: string}
 
 const cache: {[key: string]: ResultData} = {}
+window.pickupMobileDebugDataCache = () => cache
 
 const doctypeRegex = /^<!doctype html/i
 const inputLoginRegex = /<input\s[^>]*name="username"/i
@@ -105,7 +112,7 @@ function getData (dataKey: string, requestType: string, force: boolean = false, 
   return cache[cacheKey]
 }
 
-function setData (dataKey: string, data: {[key: string]: string}): Promise<any> {
+function setData (dataKey: string, data: {[key: string]: string}, dependingCacheKey?: string): Promise<any> {
   const p = new Promise<any>((resolve, reject) => {
     const url = 'mobile_data.php?action=save&key=' + encodeURIComponent(dataKey)
     $.ajax({
@@ -116,9 +123,11 @@ function setData (dataKey: string, data: {[key: string]: string}): Promise<any> 
       data: data
     }).then((response) => {
       __deleteCache(dataKey)
+      if (dependingCacheKey !== undefined) { __deleteCache(dependingCacheKey) }
       resolve(response)
     }, (err) => {
       __deleteCache(dataKey)
+      if (dependingCacheKey !== undefined) { __deleteCache(dependingCacheKey) }
       if (detectLoginError(err)) {
         console.error('Reloading the page')
         window.location.reload()
@@ -130,9 +139,10 @@ function setData (dataKey: string, data: {[key: string]: string}): Promise<any> 
 }
 
 function __deleteCache (dataKey: string) {
-  Object.keys(cache).filter(k => {
-    k === dataKey || k.startsWith(dataKey + ':')
-  }).forEach(k => delete cache[k])
+  const keys = Object.keys(cache).filter(k => {
+    return k === dataKey || k.startsWith(dataKey + ':')
+  })
+  keys.forEach(k => delete cache[k])
 }
 
 export {

@@ -458,7 +458,8 @@ $(function () {
         key: 'pickupline',
         primaryKey: 'rowid', // FIXME: to check.
         labelKey: 'Produit',
-        goto: 'show_pickup'
+        goto: 'show_pickup',
+        dependingCacheKey: 'pickup'
       }
     }
   )

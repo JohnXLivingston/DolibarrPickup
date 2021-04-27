@@ -12,7 +12,8 @@ interface StateSaveDefinition extends StateDefinitionBase {
   key: string,
   primaryKey: string,
   labelKey: string,
-  goto: string
+  goto: string,
+  dependingCacheKey?: string
 }
 
 class StateSave extends State {
@@ -22,6 +23,7 @@ class StateSave extends State {
   private readonly primaryKey: string
   private readonly labelKey: string
   private readonly goto: string
+  private readonly dependingCacheKey?: string
 
   constructor (definition: StateSaveDefinition) {
     super('save', definition)
@@ -31,6 +33,7 @@ class StateSave extends State {
     this.primaryKey = definition.primaryKey
     this.labelKey = definition.labelKey
     this.goto = definition.goto
+    this.dependingCacheKey = definition.dependingCacheKey
   }
 
   renderVars (stack: Stack): {[key: string]: any} {
@@ -121,7 +124,7 @@ class StateSave extends State {
         notOk(err)
         return
       }
-      const p = setData(this.key, data)
+      const p = setData(this.key, data, this.dependingCacheKey)
       p.then(
         ok,
         notOk
