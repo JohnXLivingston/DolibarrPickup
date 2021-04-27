@@ -437,7 +437,7 @@ $(function () {
       qty: {
         type: 'form',
         label: 'Quantité',
-        goto: 'remarque',
+        goto: 'save_pickupline',
         fields: [
           {
             type: 'integer',
@@ -447,19 +447,6 @@ $(function () {
             default: '1',
             min: 1,
             max: 1000
-          }
-        ]
-      },
-      remarque: {
-        type: 'form',
-        label: 'Remarques sur la ligne de collecte',
-        goto: 'save_pickupline',
-        fields: [
-          {
-            type: 'text',
-            name: 'description',
-            label: 'Remarques',
-            mandatory: false
           }
         ]
       },
