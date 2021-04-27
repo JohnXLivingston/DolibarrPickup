@@ -244,7 +244,7 @@ function retrieve_data() {
     while ($i < $num) {
       $row = $db->fetch_object($resql);
       $fk_soc = $row->fk_soc;
-      if (!in_array($fk_soc, $data)) {
+      if (!array_key_exists($fk_soc, $data)) {
         $soc = new Societe($db);
         $soc->fetch($fk_soc);
         $data[$fk_soc] = array(
@@ -261,22 +261,22 @@ function retrieve_data() {
       $deee_type = $row->deee ? strval($row->deee_type) : '';
       $weight_units = empty($row->weight_units) ? '0' : intval($row->weight_units);
       $weight = empty($row->line_weight) ? 0.0 : $row->line_weight;
-      if (!in_array($weight_units, $data[$fk_soc]['total'])) {
+      if (!array_key_exists($weight_units, $data[$fk_soc]['total'])) {
         $data[$fk_soc]['total'][$weight_units] = 0.0;
       }
       $data[$fk_soc]['total'][$weight_units] += $weight;
 
       if (!empty($deee_type)) {
-        if (!in_array($weight_units, $data[$fk_soc]['deee_total'])) {
+        if (!array_key_exists($weight_units, $data[$fk_soc]['deee_total'])) {
           $data[$fk_soc]['deee_total'][$weight_units] = 0.0;
         }
         $data[$fk_soc]['deee_total'][$weight_units] += $weight;
 
-        if (!in_array($deee_type, $data[$fk_soc]['per_deee_type'])) {
+        if (!array_key_exists($deee_type, $data[$fk_soc]['per_deee_type'])) {
           $data[$fk_soc]['per_deee_type'][$deee_type] = init_weight_array();
         }
 
-        if (!in_array($weight_units, $data[$fk_soc]['per_deee_type'][$deee_type])) {
+        if (!array_key_exists($weight_units, $data[$fk_soc]['per_deee_type'][$deee_type])) {
           $data[$fk_soc]['per_deee_type'][$deee_type][$weight_units] = 0.0;
         }
         $data[$fk_soc]['per_deee_type'][$deee_type][$weight_units] += $weight;
