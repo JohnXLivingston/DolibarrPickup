@@ -9,6 +9,11 @@ interface StackValue {
   invisible?: boolean // if true, the value will not be shown by displayStackValue
 }
 
+interface RemoveBetween {
+  from?: string
+  to: string
+}
+
 class Stack {
   readonly stateName: string
   previous?: Stack
@@ -203,5 +208,6 @@ class Stack {
 
 export {
   Stack,
-  StackValue
+  StackValue,
+  RemoveBetween
 }

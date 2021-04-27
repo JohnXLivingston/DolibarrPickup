@@ -2,6 +2,7 @@ import { Stack } from './stack'
 import { createState, State, StateUnknown, StateDefinition } from './state/index'
 import { RenderReason } from './constants'
 import { nunjucks, commonNunjucksVars } from './nunjucks'
+import type { RemoveBetween } from './stack'
 
 class Machine {
   private name: string
@@ -126,7 +127,7 @@ class Machine {
       this.rerender()
     })
 
-    this.content.on('goto-state.machineEvents', (ev, stateName: string, removeBetween?: {from: string, to: string}) => {
+    this.content.on('goto-state.machineEvents', (ev, stateName: string, removeBetween?: RemoveBetween) => {
       if (!stateName || typeof stateName !== 'string') {
         throw new Error('Invalid goto-state event')
       }
@@ -160,16 +161,23 @@ class Machine {
 
   /**
    * @param name state name to go to
-   * @param removeBetween if given, removes states from stack between 'from' (excluded) and 'to' (included) (from is the more recent state)
+   * @param removeBetween if given, removes states from stack between 'from' (excluded) and 'to' (included)
+   *  (from is the more recent state).
+   *  If there is no from, all states on top of 'to' will be removed
    */
-  gotoState (name: string, removeBetween?: {from: string, to: string}): void {
+  gotoState (name: string, removeBetween?: RemoveBetween): void {
+    let stack: Stack | undefined = this.stack
     if (removeBetween) {
-      const from = this.stack.findByStateName(removeBetween.from)
-      if (from) {
-        from.previous = from.findByStateName(removeBetween.to)?.previous
+      if (removeBetween.from) {
+        const from = stack.findByStateName(removeBetween.from)
+        if (from) {
+          from.previous = from.findByStateName(removeBetween.to)?.previous
+        }
+      } else {
+        stack = stack.findByStateName(removeBetween.to)?.previous
       }
     }
-    this.stack = new Stack(name, this.stack)
+    this.stack = new Stack(name, stack)
     this.saveStack()
     this.render(RenderReason.GOING_FORWARD)
   }

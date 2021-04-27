@@ -455,6 +455,7 @@ $(function () {
         label: 'Ajout du produit sur la collecte',
         saveUntil: 'pickup',
         removeUntil: 'show_pickup',
+        removeFromStack: true,
         key: 'pickupline',
         primaryKey: 'rowid', // FIXME: to check.
         labelKey: 'Produit',

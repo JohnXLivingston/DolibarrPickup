@@ -1,6 +1,6 @@
 import { RenderReason } from '../constants'
 import { State, StateDefinitionBase } from './state'
-import { Stack } from '../stack'
+import { Stack, RemoveBetween } from '../stack'
 import { setData } from '../data'
 import { waitingOn, waitingOff } from '../waiting'
 import { Veto } from '../veto'
@@ -9,6 +9,7 @@ interface StateSaveDefinition extends StateDefinitionBase {
   type: 'save',
   saveUntil: string,
   removeUntil?: string,
+  removeFromStack?: boolean
   key: string,
   primaryKey: string,
   labelKey: string,
@@ -19,6 +20,7 @@ interface StateSaveDefinition extends StateDefinitionBase {
 class StateSave extends State {
   private readonly saveUntil: string
   private readonly removeUntil: string
+  private removeFromStack: boolean
   private readonly key: string
   private readonly primaryKey: string
   private readonly labelKey: string
@@ -29,6 +31,7 @@ class StateSave extends State {
     super('save', definition)
     this.saveUntil = definition.saveUntil
     this.removeUntil = definition.removeUntil ?? definition.saveUntil
+    this.removeFromStack = !!definition.removeFromStack
     this.key = definition.key
     this.primaryKey = definition.primaryKey
     this.labelKey = definition.labelKey
@@ -84,7 +87,10 @@ class StateSave extends State {
           value: id,
           display: result[this.labelKey]
         })
-        const removeBetween = { from: stack.stateName, to: this.removeUntil }
+        const removeBetween: RemoveBetween = {
+          from: this.removeFromStack ? undefined : stack.stateName,
+          to: this.removeUntil
+        }
         dom.trigger('goto-state', [this.goto, removeBetween])
       }
       const notOk = (err: any) => {
