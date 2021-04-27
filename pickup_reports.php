@@ -38,6 +38,8 @@ if (! $res) die("Include of main fails");
 
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
+dol_include_once('societe/class/societe.class.php');
+require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php'; // for measuringUnitString
 
 // Load translation files required by the page
 $langs->loadLangs(array("pickup@pickup"));
@@ -58,7 +60,7 @@ $date_endmonth = GETPOST('date_endmonth', 'int');
 $date_endday = GETPOST('date_endday', 'int');
 $date_endyear = GETPOST('date_endyear', 'int');
 
-$nbofyear = 2;
+$nbofyear = 1;
 
 // Date range
 $year = GETPOST('year', 'int');
@@ -119,6 +121,8 @@ $form = new Form($db);
 
 llxHeader("", $langs->trans("ModulePickupName"));
 
+// TODO: filter on soc
+// TODO: filter on pickup states
 $period = $form->selectDate($date_start, 'date_start', 0, 0, 0, '', 1, 0).' - '.$form->selectDate($date_end, 'date_end', 0, 0, 0, '', 1, 0);
 $periodlink = $periodlink = ($year_start ? "<a href='".$_SERVER["PHP_SELF"]."?year=".($year_start + $nbofyear - 2)."'>".img_previous()."</a> <a href='".$_SERVER["PHP_SELF"]."?year=".($year_start + $nbofyear)."'>".img_next()."</a>" : "");
 $builddate = dol_now();
@@ -191,6 +195,153 @@ function pickup_report_header($reportname, $period, $periodlink, $builddate)
 	print "\n<!-- end banner of report -->\n\n";
 }
 pickup_report_header($langs->trans("PickupMenuReports"), $period, $periodlink, $builddate);
+
+
+/*
+ * Retrieve data
+ */
+
+function deee_types() {
+  global $db;
+  // This is an extrafield...
+  require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+  $extrafields = new ExtraFields($db);
+  $extrafields->fetch_name_optionals_label('product');
+
+  $options = $extrafields->attributes['product']['param']['type_deee']['options'];
+  $result = array();
+  foreach ($options as $key => $label) {
+    $result[strval($key)] = $label;
+  }
+  return $result;
+}
+$deee_types = deee_types();
+
+function init_weight_array() {
+  return array(0 => 0.0);
+}
+function sort_pickup_report_lines($a, $b) {
+  return strcmp($a['soc']->name, $b['soc']->name);
+}
+function retrieve_data() {
+  // TODO: add indexes in DB.
+  global $db;
+  global $date_start, $date_end, $deee_types;
+
+  $sql = 'SELECT p.fk_soc, pl.deee, pl.deee_type, pl.weight_units, sum(pl.weight * pl.qty) as line_weight';
+  $sql.= ' FROM '.MAIN_DB_PREFIX.'pickup_pickup as p';
+  $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'pickup_pickupline as pl ON pl.fk_pickup = p.rowid';
+  $sql.= ' WHERE';
+  $sql.= " p.date_pickup >= '".$db->escape(dol_print_date($date_start, "%Y-%m-%d"))."'";
+  $sql.= " AND p.date_pickup <= '".$db->escape(dol_print_date($date_end, "%Y-%m-%d"))."'";
+  $sql.= ' GROUP BY p.fk_soc, pl.deee, pl.deee_type, pl.weight_units';
+
+  $data = array();
+  $resql = $db->query($sql);
+  if ($resql) {
+    $num = $db->num_rows($resql);
+    $i = 0;
+    while ($i < $num) {
+      $row = $db->fetch_object($resql);
+      $fk_soc = $row->fk_soc;
+      if (!in_array($fk_soc, $data)) {
+        $soc = new Societe($db);
+        $soc->fetch($fk_soc);
+        $data[$fk_soc] = array(
+          'soc' => $soc,
+          'per_deee_type' => array(),
+          'deee_total' => init_weight_array(),
+          'total' => init_weight_array()
+        );
+        foreach ($deee_types as $deee_type_key => $label) {
+          $data[$fk_soc]['per_deee_type'][$deee_type_key] = init_weight_array();
+        }
+      }
+
+      $deee_type = $row->deee ? strval($row->deee_type) : '';
+      $weight_units = empty($row->weight_units) ? '0' : intval($row->weight_units);
+      $weight = empty($row->line_weight) ? 0.0 : $row->line_weight;
+      if (!in_array($weight_units, $data[$fk_soc]['total'])) {
+        $data[$fk_soc]['total'][$weight_units] = 0.0;
+      }
+      $data[$fk_soc]['total'][$weight_units] += $weight;
+
+      if (!empty($deee_type)) {
+        if (!in_array($weight_units, $data[$fk_soc]['deee_total'])) {
+          $data[$fk_soc]['deee_total'][$weight_units] = 0.0;
+        }
+        $data[$fk_soc]['deee_total'][$weight_units] += $weight;
+
+        if (!in_array($deee_type, $data[$fk_soc]['per_deee_type'])) {
+          $data[$fk_soc]['per_deee_type'][$deee_type] = init_weight_array();
+        }
+
+        if (!in_array($weight_units, $data[$fk_soc]['per_deee_type'][$deee_type])) {
+          $data[$fk_soc]['per_deee_type'][$deee_type][$weight_units] = 0.0;
+        }
+        $data[$fk_soc]['per_deee_type'][$deee_type][$weight_units] += $weight;
+      }
+
+      $i++;
+    }
+    $db->free($resql);
+  } else {
+    dol_print_error($db);
+  }
+
+  usort($data, "sort_pickup_report_lines");
+  return $data;
+}
+$data = retrieve_data();
+
+
+
+/*
+ * Show result array
+ */
+
+print '<div class="div-table-responsive">';
+print '<table class="tagtable liste">'."\n";
+
+print '<tr class="liste_titre"><td class="liste_titre">&nbsp;</td>';
+foreach ($deee_types as $label) {
+  print '<td align="center" class="liste_titre">' . $label . '</td>';
+}
+print '<td align="center" class="liste_titre">' . $langs->trans('DEEETotal') . '</td>';
+print '<td align="center" class="liste_titre">' . $langs->trans('PickupTotalWeight') . '</td>';
+print '</tr>';
+
+foreach ($data as $line) {
+  print '<tr class="oddeven">';
+  print '<td>';
+    if (!empty($line['soc'])) {
+      print $line['soc']->getNomUrl(1);
+    }
+  print '</td>';
+  foreach ($deee_types as $deee_type_key => $label) {
+    print '<td align="center" class="nowrap">';
+      foreach ($line['per_deee_type'][$deee_type_key] as $weights_units => $weights) {
+        print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
+      }
+    print '</td>';
+  }
+  print '<td align="center" class="nowrap">';
+    foreach ($line['deee_total'] as $weights_units => $weights) {
+      print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
+    }
+  print '</td>';
+  print '<td align="center" class="nowrap">';
+    foreach ($line['total'] as $weights_units => $weights) {
+      print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
+    }
+  print '</td>';
+  print '</tr>';
+}
+
+// TODO: total line
+
+print "</table>";
+print '</div>';
 
 // End of page
 llxFooter();
