@@ -353,8 +353,8 @@ $(function () {
           },
           {
             type: 'text',
-            name: 'product_desc',
-            label: 'Description du produit',
+            name: 'product_note',
+            label: 'Notes',
             mandatory: false,
             notes: {
               load: 'pcat',
@@ -419,8 +419,8 @@ $(function () {
           },
           {
             type: 'text',
-            name: 'desc',
-            label: 'Description'
+            name: 'note',
+            label: 'Notes'
           },
           {
             type: 'varchar',
