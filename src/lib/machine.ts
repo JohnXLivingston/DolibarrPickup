@@ -194,7 +194,6 @@ class Machine {
   }
 
   saveStack (): void {
-    // TODO: add a version key, so if there is a non backward compat modification, we can trash the stack.
     localStorage.setItem(this.stackStoragePrefix() + this.name, this.stack.serialize())
   }
 
