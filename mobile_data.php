@@ -36,7 +36,7 @@ if (! $res && file_exists("../../main.inc.php")) $res=@include "../../main.inc.p
 if (! $res && file_exists("../../../main.inc.php")) $res=@include "../../../main.inc.php";
 if (! $res) die("Include of main fails");
 
-if (! $user->rights->pickup->read) {
+if (! $user->rights->pickup->create) { // mobile app needs create rights.
   http_response_code(403);
   accessforbidden();
 }
