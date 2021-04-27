@@ -62,8 +62,8 @@ if (isset($user->societe_id) && $user->societe_id > 0)
  */
 
 // None
-if ($user->rights->pickup->read) {
-	// FIXME: remove and set some content for the index.
+if (!($user->rights->pickup->create && !$user->rights->pickup->write)) {
+	// Direct access to the pickup lists...
 	header("Location: ".dol_buildpath('/pickup/pickup_list.php', 1));
 	exit();
 }
@@ -83,6 +83,9 @@ print load_fiche_titre($langs->trans("ModulePickupName"), '', 'pickup.png@pickup
 ?>
 <div class="fichecenter">
 	<div class="fichethirdleft">
+		<a class="button" href="mobile.php">
+			<?php print $langs->trans("PickupMobileApp") ?>
+		</a>
 	</div>
 <div class="fichetwothirdright">
 	<div class="ficheaddleft">
