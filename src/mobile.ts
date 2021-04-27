@@ -454,6 +454,7 @@ $(function () {
         type: 'save',
         label: 'Sauvegarde du produit',
         saveUntil: 'pickup',
+        removeUntil: 'show_pickup',
         key: 'pickupline',
         primaryKey: 'rowid', // FIXME: to check.
         labelKey: 'Produit',

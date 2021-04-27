@@ -8,6 +8,7 @@ import { Veto } from '../veto'
 interface StateSaveDefinition extends StateDefinitionBase {
   type: 'save',
   saveUntil: string,
+  removeUntil?: string,
   key: string,
   primaryKey: string,
   labelKey: string,
@@ -16,6 +17,7 @@ interface StateSaveDefinition extends StateDefinitionBase {
 
 class StateSave extends State {
   private readonly saveUntil: string
+  private readonly removeUntil: string
   private readonly key: string
   private readonly primaryKey: string
   private readonly labelKey: string
@@ -24,6 +26,7 @@ class StateSave extends State {
   constructor (definition: StateSaveDefinition) {
     super('save', definition)
     this.saveUntil = definition.saveUntil
+    this.removeUntil = definition.removeUntil ?? definition.saveUntil
     this.key = definition.key
     this.primaryKey = definition.primaryKey
     this.labelKey = definition.labelKey
@@ -42,7 +45,7 @@ class StateSave extends State {
     if (parentVeto) return parentVeto
 
     if (reason === RenderReason.GOING_BACKWARD) {
-      // Cant go back to a save state... it dropped all data coming after saveUntil
+      // Cant go back to a save state... it dropped all data coming after removeUntil
       return {
         type: 'backward'
       }
@@ -78,7 +81,7 @@ class StateSave extends State {
           value: id,
           display: result[this.labelKey]
         })
-        const removeBetween = { from: stack.stateName, to: this.saveUntil }
+        const removeBetween = { from: stack.stateName, to: this.removeUntil }
         dom.trigger('goto-state', [this.goto, removeBetween])
       }
       const notOk = (err: any) => {
@@ -131,7 +134,11 @@ class StateSave extends State {
   }
 
   async possibleBackwards () {
-    return [this.saveUntil]
+    const r = [this.saveUntil]
+    if (this.removeUntil !== this.saveUntil) {
+      r.push(this.removeUntil)
+    }
+    return r
   }
 }
 
