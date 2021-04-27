@@ -452,7 +452,7 @@ $(function () {
       },
       save_pickupline: {
         type: 'save',
-        label: 'Sauvegarde du produit',
+        label: 'Ajout du produit sur la collecte',
         saveUntil: 'pickup',
         removeUntil: 'show_pickup',
         key: 'pickupline',
