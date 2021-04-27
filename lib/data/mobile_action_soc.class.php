@@ -77,7 +77,8 @@ class DataMobileActionSoc extends DataMobileAction {
     $object->forme_juridique_code = GETPOST('forme_juridique_code', 'int');
     $object->typent_id = GETPOST('typent_id', 'int');
     
-    // TODO $object->fournisseur = '0'; // hardcoded
+    $object->fournisseur = '0'; // hardcoded
+    $object->client = '3'; // hardcoded: client/prospect
 
     $id = $object->create($user);
     if (!$id || $id <= 0) {
