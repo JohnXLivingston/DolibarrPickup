@@ -43,6 +43,7 @@ PICKUP_DEFAULT_STOCK = Default stock
 PickupMenuList = Pickups list
 PickupMenuTags = Configure tags
 PickupNew = New pickup
+PickupMenuReports = Reports
 
 #
 # Admin page

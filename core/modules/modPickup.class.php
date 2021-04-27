@@ -286,6 +286,11 @@ class modPickup extends DolibarrModules
         $this->rights[$r][4] = 'configure';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
         $r++;
+        $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
+        $this->rights[$r][1] = 'Reports';	// Permission label
+        $this->rights[$r][4] = 'reports';				// In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
+        $this->rights[$r][5] = '';				    // In php code, permission will be checked by test if ($user->rights->pickup->level1->level2)
+        $r++;
         /* END PERMISSIONS */
 
         // Main menu entries to add
@@ -346,6 +351,19 @@ class modPickup extends DolibarrModules
                                 'position'=>1100+$r,
                                 'enabled'=>'$conf->pickup->enabled',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
                                 'perms'=>'$user->rights->pickup->create',               // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
+                                'target'=>'',
+                                'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
+        $this->menu[$r++]=array(
+                                'fk_menu'=>'fk_mainmenu=pickup',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+                                'type'=>'left',			                // This is a Left menu entry
+                                'titre'=>'PickupMenuReports',
+                                'mainmenu'=>'pickup',
+                                'leftmenu'=>'pickup_pickup',
+                                'url'=>'/pickup/pickup_reports.php',
+                                'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+                                'position'=>1100+$r,
+                                'enabled'=>'$conf->pickup->enabled',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+                                'perms'=>'$user->rights->pickup->reports',               // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
                                 'target'=>'',
                                 'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
         $this->menu[$r++]=array(

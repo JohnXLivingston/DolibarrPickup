@@ -43,6 +43,7 @@ PICKUP_DEFAULT_STOCK = Entrepôt par défaut
 PickupMenuList = Liste des collectes
 PickupMenuTags = Configuration des tags
 PickupNew = Nouvelle collecte
+PickupMenuReports = Rapports
 
 #
 # Page d'administration
