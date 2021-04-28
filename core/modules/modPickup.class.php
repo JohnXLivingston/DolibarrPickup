@@ -319,7 +319,7 @@ class modPickup extends DolibarrModules
 								'type'=>'left',			                // This is a Left menu entry
 								'titre'=>'PickupMenuList',
 								'mainmenu'=>'pickup',
-								'leftmenu'=>'pickup_pickup',
+								'leftmenu'=>'pickup_list',
 								'url'=>'/pickup/pickup_list.php',
 								'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 								'position'=>1100+$r,
@@ -328,11 +328,11 @@ class modPickup extends DolibarrModules
 								'target'=>'',
 								'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
 		$this->menu[$r++]=array(
-                				'fk_menu'=>'fk_mainmenu=pickup,fk_leftmenu=pickup_pickup',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+                				'fk_menu'=>'fk_mainmenu=pickup,fk_leftmenu=pickup_list',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 								'type'=>'left',			                // This is a Left menu entry
 								'titre'=>'PickupNew',
 								'mainmenu'=>'pickup',
-								'leftmenu'=>'pickup_pickup',
+								'leftmenu'=>'pickup_list_new',
 								'url'=>'/pickup/pickup_card.php?action=create',
 								'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 								'position'=>1100+$r,
@@ -345,7 +345,7 @@ class modPickup extends DolibarrModules
                                 'type'=>'left',			                // This is a Left menu entry
                                 'titre'=>'PickupMobileApp',
                                 'mainmenu'=>'pickup',
-                                'leftmenu'=>'pickup_pickup',
+                                'leftmenu'=>'pickup_mobile',
                                 'url'=>'/pickup/mobile.php',
                                 'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
                                 'position'=>1100+$r,
@@ -358,7 +358,7 @@ class modPickup extends DolibarrModules
                                 'type'=>'left',			                // This is a Left menu entry
                                 'titre'=>'PickupMenuReports',
                                 'mainmenu'=>'pickup',
-                                'leftmenu'=>'pickup_pickup',
+                                'leftmenu'=>'pickup_reports',
                                 'url'=>'/pickup/pickup_reports.php',
                                 'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
                                 'position'=>1100+$r,
@@ -367,11 +367,24 @@ class modPickup extends DolibarrModules
                                 'target'=>'',
                                 'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
         $this->menu[$r++]=array(
+                                'fk_menu'=>'fk_mainmenu=pickup,fk_leftmenu=pickup_reports',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+                                'type'=>'left',			                // This is a Left menu entry
+                                'titre'=>'PickupMenuSocReports',
+                                'mainmenu'=>'pickup',
+                                'leftmenu'=>'pickup_soc_reports',
+                                'url'=>'/pickup/pickup_soc_reports',
+                                'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+                                'position'=>1100+$r,
+                                'enabled'=>'$conf->pickup->enabled',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+                                'perms'=>'$user->rights->pickup->reports',			                // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
+                                'target'=>'',
+                                'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
+        $this->menu[$r++]=array(
                                 'fk_menu'=>'fk_mainmenu=pickup',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
                                 'type'=>'left',			                // This is a Left menu entry
                                 'titre'=>'PickupMenuTags',
                                 'mainmenu'=>'pickup',
-                                'leftmenu'=>'pickup_pickup',
+                                'leftmenu'=>'pickup_tags',
                                 'url'=>'/pickup/mobilecat_list.php',
                                 'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
                                 'position'=>1100+$r,
