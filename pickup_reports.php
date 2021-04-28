@@ -39,6 +39,7 @@ if (! $res) die("Include of main fails");
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
 dol_include_once('societe/class/societe.class.php');
+dol_include_once('/pickup/class/pickup.class.php');
 require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php'; // for measuringUnitString
 
 // Load translation files required by the page
@@ -52,6 +53,7 @@ if (isset($user->societe_id) && $user->societe_id > 0)
 	$socid = $user->societe_id;
 }
 
+$status_filter = GETPOST('status', 'int');
 
 $date_startmonth = GETPOST('date_startmonth', 'int');
 $date_startday = GETPOST('date_startday', 'int');
@@ -136,9 +138,9 @@ $builddate = dol_now();
  *	@param 	integer	      $builddate      Date generation
  *	@return	void
  */
-function pickup_report_header($reportname, $period, $periodlink, $builddate)
+function pickup_report_header($reportname, $period, $periodlink, $builddate, $status_filter)
 {
-	global $langs;
+	global $langs, $db;
 
 	print "\n\n<!-- start banner of report -->\n";
 
@@ -174,6 +176,25 @@ function pickup_report_header($reportname, $period, $periodlink, $builddate)
 	print '</td>';
 	print '</tr>'."\n";
 
+  // Status
+  print '<tr>';
+  print '<td>'.$langs->trans('Status').'</td>';
+  print '<td>';
+  $tmp_pickup = new Pickup($db);
+  $status_options = array();
+  foreach (array($tmp_pickup::STATUS_DRAFT, $tmp_pickup::STATUS_PROCESSING, $tmp_pickup::STATUS_STOCK, $tmp_pickup::STATUS_SIGNED, $tmp_pickup::STATUS_DISABLED) as $status) {
+    $status_options[$status] = $tmp_pickup->LibStatut($status);
+  }
+  print '<select name="status">';
+  print '<option value=""></option>';
+  foreach ($status_options as $status => $label) {
+    print '<option value="'.$status.'"'.($status_filter !== '' && intval($status_filter) === $status ? ' selected="selected"' : '').'>'.$label.'</option>';
+  }
+  print '</select>';
+  print '</td>';
+  if ($periodlink) print '<td></td>';
+  print '</tr>'."\n";
+
 	// Export line
 	print '<tr>';
 	print '<td>'.$langs->trans("GeneratedOn").'</td>';
@@ -194,7 +215,7 @@ function pickup_report_header($reportname, $period, $periodlink, $builddate)
 
 	print "\n<!-- end banner of report -->\n\n";
 }
-pickup_report_header($langs->trans("PickupMenuReports"), $period, $periodlink, $builddate);
+pickup_report_header($langs->trans("PickupMenuReports"), $period, $periodlink, $builddate, $status_filter);
 
 
 /*
@@ -224,9 +245,9 @@ function sort_pickup_report_lines($a, $b) {
   return strcmp($a['soc']->name, $b['soc']->name);
 }
 function retrieve_data() {
-  // TODO: add indexes in DB.
+  // TODO: add indexes in DB?
   global $db;
-  global $date_start, $date_end, $deee_types;
+  global $date_start, $date_end, $deee_types, $status_filter;
 
   $sql = 'SELECT p.fk_soc, pl.deee, pl.deee_type, pl.weight_units, sum(pl.weight * pl.qty) as line_weight';
   $sql.= ' FROM '.MAIN_DB_PREFIX.'pickup_pickup as p';
@@ -234,6 +255,9 @@ function retrieve_data() {
   $sql.= ' WHERE';
   $sql.= " p.date_pickup >= '".$db->escape(dol_print_date($date_start, "%Y-%m-%d"))."'";
   $sql.= " AND p.date_pickup <= '".$db->escape(dol_print_date($date_end, "%Y-%m-%d"))."'";
+  if ($status_filter !== '') {
+    $sql.= " AND p.status = '".$db->escape($status_filter)."'";
+  }
   $sql.= ' GROUP BY p.fk_soc, pl.deee, pl.deee_type, pl.weight_units';
 
   $data = array();
@@ -338,7 +362,7 @@ foreach ($data as $line) {
   print '</tr>';
 }
 
-// TODO: total line
+// TODO: total line?
 
 print "</table>";
 print '</div>';
