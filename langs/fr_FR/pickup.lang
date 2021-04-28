@@ -44,6 +44,7 @@ PickupMenuList = Liste des collectes
 PickupMenuTags = Configuration des tags
 PickupNew = Nouvelle collecte
 PickupMenuReports = Rapports
+PickupMenuSocReports = Rapports par Tiers
 
 #
 # Page d'administration

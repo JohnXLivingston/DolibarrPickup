@@ -44,6 +44,7 @@ PickupMenuList = Pickups list
 PickupMenuTags = Configure tags
 PickupNew = New pickup
 PickupMenuReports = Reports
+PickupMenuSocReports = Reports by third party
 
 #
 # Admin page
