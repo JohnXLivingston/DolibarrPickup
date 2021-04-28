@@ -123,8 +123,7 @@ $form = new Form($db);
 
 llxHeader("", $langs->trans("ModulePickupName"));
 
-// TODO: filter on soc
-// TODO: filter on pickup states
+// TODO: filter on soc?
 $period = $form->selectDate($date_start, 'date_start', 0, 0, 0, '', 1, 0).' - '.$form->selectDate($date_end, 'date_end', 0, 0, 0, '', 1, 0);
 $periodlink = $periodlink = ($year_start ? "<a href='".$_SERVER["PHP_SELF"]."?year=".($year_start + $nbofyear - 2)."'>".img_previous()."</a> <a href='".$_SERVER["PHP_SELF"]."?year=".($year_start + $nbofyear)."'>".img_next()."</a>" : "");
 $builddate = dol_now();
