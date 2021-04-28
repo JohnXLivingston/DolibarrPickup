@@ -45,7 +45,7 @@ dol_include_once('/product/stock/class/mouvementstock.class.php');
 require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php'; // for measuringUnitString
 
 // Load translation files required by the page
-$langs->loadLangs(array("pickup@pickup"));
+$langs->loadLangs(array("stocks", "pickup@pickup"));
 
 // Securite acces client
 if (! $user->rights->pickup->reports) accessforbidden();
@@ -335,6 +335,7 @@ print '<td align="" class="liste_titre">' . $langs->trans('Qty') . '</td>';
 print '<td align="" class="liste_titre">' . $langs->trans('ProductWeight') . '</td>';
 print '<td align="" class="liste_titre">' . $langs->trans('Weight') . '</td>';
 print '<td align="" class="liste_titre">' . $langs->trans('DEEE') . '</td>';
+print '<td align="" class="liste_titre">' . $langs->trans('StockMovement') . '</td>';
 print '</tr>';
 
 foreach ($data as $line) {
@@ -369,15 +370,15 @@ foreach ($data as $line) {
       print $form->textwithtooltip($line_product->getNomUrl(1), '');
     }
   print '</td>';
-  print '<td class="nowrap">';
+  print '<td class="nowrap right">';
     print price($pickupline->qty, 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
   print '</td>';
-  print '<td class="nowrap">';
+  print '<td class="nowrap right">';
   if (!empty($pickupline->weight)) {
     print $pickupline->weight . ' ' . measuringUnitString(0, "weight", $pickupline->weight_units);
   }
   print '</td>';
-  print '<td class="nowrap">';
+  print '<td class="nowrap right">';
   if (!empty($pickupline->weight)) {
     print ($pickupline->qty * $pickupline->weight) . ' ' . measuringUnitString(0, "weight", $pickupline->weight_units);
   }
