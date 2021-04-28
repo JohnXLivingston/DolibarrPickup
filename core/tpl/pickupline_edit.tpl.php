@@ -49,7 +49,8 @@ $coldisplay = 0;
 		<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
 
 		<?php if ($line->fk_product > 0) {
-      print $form->textwithtooltip($line_product->getNomUrl(1), '', 3, '', '', $i, 0, '');
+      // print $form->textwithtooltip($line_product->getNomUrl(1), '', 3, '', '', $i, 0, '');
+			print $form->textwithtooltip($line_product->getNomUrl(1), '');
 			print '<br>';
 		}	?>
 
