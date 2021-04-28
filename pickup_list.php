@@ -214,6 +214,20 @@ $title = $langs->trans('ListOf', $langs->transnoentitiesnoconv("Pickups"));
 
 // Build and execute select
 // --------------------------------------------------------------------
+$label_searches = array(
+	'fk_soc' => array(
+		'key' => 'soc.nom',
+		'join' => MAIN_DB_PREFIX.'societe as soc ON soc.rowid = t.fk_soc'
+	),
+	'fk_entrepot' => array(
+		'key' => 'entrepot.ref',
+		'join' => MAIN_DB_PREFIX."entrepot as entrepot ON entrepot.rowid = t.fk_entrepot"
+	),
+	'fk_user_creat' => array(
+		'key' => "CONCAT(user_creat.firstname, ' ', user_creat.lastname)",
+		'join' => MAIN_DB_PREFIX."user as user_creat ON user_creat.rowid = t.fk_user_creat"
+	)
+);
 $sql = 'SELECT ';
 foreach($object->fields as $key => $val)
 {
@@ -228,12 +242,21 @@ $reshook=$hookmanager->executeHooks('printFieldListSelect', $parameters, $object
 $sql.=preg_replace('/^,/', '', $hookmanager->resPrint);
 $sql =preg_replace('/,\s*$/', '', $sql);
 $sql.= " FROM ".MAIN_DB_PREFIX.$object->table_element." as t";
+foreach ($label_searches as $key => $val) {
+	if ($search[$key] != '') {
+		$sql.= " LEFT JOIN ".$val['join'];
+	}
+}
 if (is_array($extrafields->attributes[$object->table_element]['label']) && count($extrafields->attributes[$object->table_element]['label'])) $sql.= " LEFT JOIN ".MAIN_DB_PREFIX.$object->table_element."_extrafields as ef on (t.rowid = ef.fk_object)";
 if ($object->ismultientitymanaged == 1) $sql.= " WHERE t.entity IN (".getEntity($object->element).")";
 else $sql.=" WHERE 1 = 1";
 foreach($search as $key => $val)
 {
 	if ($key == 'status' && $search[$key] == -1) continue;
+	if (array_key_exists($key, $label_searches)) {
+		if ($search[$key] != '') $sql.=natural_search($label_searches[$key]['key'], $search[$key], 0);
+		continue;
+	}
 	$mode_search=(($object->isInt($object->fields[$key]) || $object->isFloat($object->fields[$key])) ? 1 : 0);
 	if ($search[$key] != '') $sql.=natural_search($key, $search[$key], (($key == 'status')?2:$mode_search));
 }
