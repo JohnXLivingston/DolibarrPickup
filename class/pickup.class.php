@@ -577,11 +577,11 @@ class Pickup extends CommonObject
 		{
 			global $langs;
 			$langs->load("pickup");
-			$this->labelstatus[self::STATUS_DRAFT] = $langs->trans('Draft');
-			$this->labelstatus[self::STATUS_PROCESSING] = $langs->trans('PickupStatusProcessing');
-			$this->labelstatus[self::STATUS_STOCK] = $langs->trans('PickupStatusStock');
-			$this->labelstatus[self::STATUS_SIGNED] = $langs->trans('PickupStatusSigned');
-			$this->labelstatus[self::STATUS_DISABLED] = $langs->trans('Disabled');
+			$this->labelStatus[self::STATUS_DRAFT] = $langs->trans('Draft');
+			$this->labelStatus[self::STATUS_PROCESSING] = $langs->trans('PickupStatusProcessing');
+			$this->labelStatus[self::STATUS_STOCK] = $langs->trans('PickupStatusStock');
+			$this->labelStatus[self::STATUS_SIGNED] = $langs->trans('PickupStatusSigned');
+			$this->labelStatus[self::STATUS_DISABLED] = $langs->trans('Disabled');
 
 			$this->labelStatusShort[self::STATUS_DRAFT] = $langs->trans('Draft');
 			$this->labelStatusShort[self::STATUS_PROCESSING] = $langs->trans('PickupStatusShortProcessing');
