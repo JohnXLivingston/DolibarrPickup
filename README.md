@@ -2,7 +2,7 @@
 
 ## Fonctionnalités
 
-Il s'agit d'un module Dolibarr destiné à gérer les collectes de certaines ressourceries.
+Il s'agit d'un module pour l'ERP/CRM [Dolibarr](https://www.dolibarr.org/) destiné à gérer les collectes de certaines ressourceries.
 
 Le projet a été créé à l'origine pour [La Ressourcerie Du Spectacle](https://www.ressourcerieduspectacle.fr).
 
