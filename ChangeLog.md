@@ -1,5 +1,11 @@
-# CHANGELOG PICKUP FOR <a href="https://www.dolibarr.org">DOLIBARR ERP CRM</a>
+# DolibarrPickup
 
-## 1.0
-Initial version
+## ???
 
+### Minor fixes
+
+* Update npm dependencies.
+
+## 0.12
+
+Initial version. Released for LaRessourcerieDuSpectacle.
