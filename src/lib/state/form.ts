@@ -1,6 +1,7 @@
 import { State, StateDefinitionBase } from './state'
 import { Stack, StackValue } from '../stack'
 import { ResultData, getData, getDataParams } from '../data'
+import { translate } from '../translate'
 
 interface FormFieldNotesStatic {
   label: string
@@ -254,44 +255,44 @@ class StateForm extends State {
       // Checking constraints...
       if (field.mandatory) {
         if (!sv.value) {
-          sv.invalid = 'This field is mandatory.'
+          sv.invalid = translate('This field is mandatory')
           continue
         }
         if (field.type === 'select' && sv.value === '0') {
           // For select fields, '0' is considered as an empty value.
-          sv.invalid = 'This field is mandatory.'
+          sv.invalid = translate('This field is mandatory')
           continue
         }
       }
       if (sv.value && field.maxLength) {
         if (sv.value.length > field.maxLength) {
-          sv.invalid = 'Max length is ' + field.maxLength + '.'
+          sv.invalid = translate('Max length is {length}', { length: field.maxLength.toString() })
           continue
         }
       }
       if (field.type === 'integer') {
         if (!/^\d*$/.test(sv.value)) {
-          sv.invalid = 'Invalid number.'
+          sv.invalid = translate('Invalid number')
           continue
         }
       }
       if (field.type === 'float') {
         if (!/^$|^\d+(\.\d*)?$/.test(sv.value)) {
-          sv.invalid = 'Invalid number.'
+          sv.invalid = translate('Invalid number')
           continue
         }
       }
       if (field.type === 'integer' || field.type === 'float') {
         if (Number(sv.value) < field.min) {
-          sv.invalid = 'Minimum is ' + field.min
+          sv.invalid = translate('Minimum is {min}', { min: field.min.toString() })
         }
         if (Number(sv.value) > field.max) {
-          sv.invalid = 'Maximum is ' + field.max
+          sv.invalid = translate('Maximum is {max}', { max: field.max.toString() })
         }
       }
       if (field.type === 'date') {
         if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-          sv.invalid = 'Invalid date'
+          sv.invalid = translate('Invalid date')
         }
       }
     }

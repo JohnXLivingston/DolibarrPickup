@@ -13,5 +13,11 @@ export const fr: {[key: string]: string} = {
   'Create a new one': 'Créer nouveau',
   'Please confirm the data you want to save:': 'Merci de confirmer les données à enregistrer :',
   'Ok': 'Ok',
-  'Add': 'Ajouter'
+  'Add': 'Ajouter',
+  'This field is mandatory': 'Ce champ est obligatoire',
+  'Max length is {length}': 'La longueur maximum est {length}',
+  'Invalid number': 'Nombre invalide',
+  'Minimum is {min}': 'Le minimum est {min}',
+  'Maximum is {max}': 'Le maximum est {max}',
+  'Invalid date': 'Date invalide'
 }

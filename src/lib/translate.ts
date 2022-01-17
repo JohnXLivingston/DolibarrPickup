@@ -6,7 +6,7 @@ function initLang () {
   lang = $('html').attr('lang') || 'en'
 }
 
-function translate (s: string, data: undefined | {[key: string]: string}): string {
+function translate (s: string, data?: {[key: string]: string}): string {
   let t: string = s
   if (lang.startsWith('fr')) {
     if (s in fr) t = fr[s]
