@@ -66,7 +66,7 @@ $(function () {
       },
       create_societe: {
         type: 'form',
-        label: 'Fiche du donneur',
+        label: 'Remplir la fiche du donneur',
         goto: 'save_societe',
         fields: [
           {
@@ -158,7 +158,7 @@ $(function () {
       },
       show_societe: {
         type: 'show',
-        label: 'Donneur',
+        label: 'Fiche du donneur',
         key: 'soc',
         primaryKey: 'soc', // FIXME: should be less ambigous
         okGoto: 'create_pickup',
