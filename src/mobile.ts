@@ -312,7 +312,7 @@ $(function () {
       },
       create_product: {
         type: 'form',
-        label: 'Produit',
+        label: 'Remplir la fiche produit',
         goto: 'weight',
         fields: [
           {
