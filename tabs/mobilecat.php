@@ -283,7 +283,7 @@ if ($object->id)
     {
       print '<form method="POST" action="'.$common_uri.'">';
       print '<input type="hidden" name="action" value="unactivate">';
-      print '<input type="submit" value="' . $langs->trans('MobileCatEnable') . '" >';
+      print '<input type="submit" value="' . $langs->trans('MobileCatDisable') . '" >';
       print '</form>';
 
       print '<form method="POST" action="'.$common_uri.'">';
