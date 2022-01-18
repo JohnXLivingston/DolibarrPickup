@@ -20,7 +20,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/mobilecat.class.php';
 require_once DOL_DOCUMENT_ROOT.'/custom/pickup/lib/pickup_mobilecat.lib.php';
 
-$langs->loadlangs(array('categories'));
+$langs->loadLangs(array("pickup@pickup", "categories", "other"));
 
 $id=GETPOST('id', 'int');
 $type = Categorie::TYPE_PRODUCT;
@@ -222,7 +222,7 @@ if ($object->id)
       <table width="100%" class="border">
         <tr>
           <td class="titlefield notopnoleft">
-            <?php $langs->trans('MobileCatForm') ?>
+            <?php echo $langs->trans('MobileCatForm') ?>
           </td>
           <td>
             <select name="form">
@@ -242,7 +242,7 @@ if ($object->id)
         </tr>
         <tr>
           <td class="titlefield notopnoleft">
-            <?php $langs->trans('MobileCatDescription') ?>
+            <?php echo $langs->trans('MobileCatDescription') ?>
           </td>
           <td>
               <textarea name="notes"><?php print htmlspecialchars($mobilecat->notes) ?></textarea>
@@ -299,7 +299,7 @@ if ($object->id)
 
   if (!$mobilecat->id)
   {
-    print '<div class="opacitymedium">' . $lang->trans('MobileCatNotEnabled') . '</div>';
+    print '<div class="opacitymedium">' . $langs->trans('MobileCatNotEnabled') . '</div>';
   }
 }
 else
