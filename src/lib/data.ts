@@ -23,7 +23,7 @@ interface RejectedData {
 
 type ResultData = ResolvedData | PendingData | RejectedData
 
-type getDataParams = {[key: string]: string}
+type GetDataParams = {[key: string]: string}
 
 const cache: {[key: string]: ResultData} = {}
 window.pickupMobileDebugDataCache = () => cache
@@ -44,7 +44,7 @@ function detectLoginError (err: JQuery.jqXHR | undefined): boolean {
   return true
 }
 
-function getData (dataKey: string, requestType: string, force: boolean = false, params: getDataParams = {}): ResultData {
+function getData (dataKey: string, requestType: string, force: boolean = false, params: GetDataParams = {}): ResultData {
   if (dataKey.includes(':')) {
     throw new Error('Incorrect key value.')
   }
@@ -148,7 +148,7 @@ function __deleteCache (dataKey: string) {
 export {
   getData,
   setData,
-  getDataParams,
+  GetDataParams,
   PendingData,
   ResolvedData,
   RejectedData,

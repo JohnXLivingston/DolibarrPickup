@@ -1,6 +1,6 @@
 import { State, StateDefinitionBase } from './state'
 import { Stack, StackValue } from '../stack'
-import { ResultData, getData, getDataParams } from '../data'
+import { ResultData, getData, GetDataParams } from '../data'
 import { translate } from '../translate'
 
 interface FormFieldNotesStatic {
@@ -40,11 +40,17 @@ interface FormFieldSelectSimple extends FormFieldBase {
   type: 'select',
   options: {value: string, label: string}[]
 }
+
+interface FormFieldSelectDynamicLoadParamsFromStack {
+  type: 'stack'
+  key: string // the value to get from the stack
+}
+type FormFieldSelectDynamicLoadParams = {[key: string]: string | FormFieldSelectDynamicLoadParamsFromStack}
 interface FormFieldSelectDynamic extends FormFieldBase {
   type: 'select',
   options: {value: string, label: string}[],
   load: string,
-  loadParams?: getDataParams,
+  loadParams?: FormFieldSelectDynamicLoadParams,
   map: {value: string, label: string}
 }
 type FormFieldSelect = FormFieldSelectSimple | FormFieldSelectDynamic
@@ -181,7 +187,24 @@ class StateForm extends State {
       }
 
       if (field.type === 'select' && 'load' in field) {
-        const data = getData(field.load, 'list', force, field.loadParams)
+        let loadParams: GetDataParams | undefined
+        if (field.loadParams) {
+          loadParams = {}
+          for (const key in field.loadParams) {
+            const loadParam = field.loadParams[key]
+            if (typeof loadParam === 'string') {
+              loadParams[key] = loadParam
+            } else if ((typeof loadParam === 'object') && loadParam.type === 'stack') {
+              const value = stack.searchValue(loadParam.key)
+              if (value !== undefined) {
+                loadParams[key] = value
+              }
+            } else {
+              throw new Error('Wrong definition')
+            }
+          }
+        }
+        const data = getData(field.load, 'list', force, loadParams)
         r[field.name] = data
         if (data.status === 'resolved') {
           field.options = data.data.map((d: any) => {
