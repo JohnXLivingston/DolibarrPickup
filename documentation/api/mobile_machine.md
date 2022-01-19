@@ -212,6 +212,8 @@ Documentation à faire.
 ## Notes
 
 Pour débuguer, on peut accéder à la machine dans la console JS du navigateur via `window.pickupMobileMachine`.
-La stack est dans `window.pickupMobileMachine.stack`.
+La stack est dans `window.pickupMobileMachine.stack`. On peut en avoir une version «lisible à l'oeil humain» via `window.pickupMobileMachine.stack.dumpForHuman()`.
 
 On peut également débuguer le cache des données remontées du backend via `window.pickupMobileDebugDataCache()`.
+
+Il y a une fonction qui essaie de trouver les problèmes de définition de l'automate (status manquants, template manquant, etc...) : `window.pickupMobileMachine.findProblems()`.
