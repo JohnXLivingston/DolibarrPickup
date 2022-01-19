@@ -2,5 +2,7 @@
 *.php.back
 *.sql.back
 js/content
+css/*.css
+css/*.css.map
 build/templates
 node_modules

@@ -1,3 +1,10 @@
+[pickupmobileapp-container] {
+  max-width: 600px;
+
+  h3 {
+    text-align: center;
+  }
+}
 
 .pickupmobileapp-position {
   width: 100%;
@@ -8,27 +15,28 @@
 }
 
 .pickupmobile-error {
-	color: red
+  color: red;
 }
 
 .pickupmobile-waiting {
-	position: relative
+  position: relative;
 }
 
 .pickupmobile-waiting::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(0 0 0 / 25%);
 }
 
 @keyframes pickupmobile-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(359deg);
   }
@@ -39,24 +47,22 @@
   position: absolute;
   border-width: 3px;
   border-style: solid;
-  border-color: transparent rgb(255, 255, 255) rgb(255, 255, 255);
+  border-color: transparent rgb(255 255 255) rgb(255 255 255);
   border-radius: 50%;
   width: 24px;
   height: 24px;
   top: calc(50% - 12px);
   left: calc(50% - 12px);
   animation: 2s linear 0s normal none infinite running pickupmobile-spin;
-  filter: drop-shadow(0 0 2 rgba(0, 0, 0, 0.33));
+  filter: drop-shadow(0 0 2 rgba(0 0 0 / 33%));
 }
-
 
 .pickupmobile-top-bar {
   border-bottom: 1px solid #aaa;
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex: row nowrap;
   justify-content: space-between;
-  padding: 10px 0px;
+  padding: 10px 0;
   width: 100%;
   text-align: center;
 }
@@ -81,18 +87,10 @@
   padding-top: 20px;
 }
 
-[pickupmobileapp-container] {
-  max-width: 600px;
-}
-
-[pickupmobileapp-container] h3 {
-  text-align: center
-}
-
 .pickupmobile-choice-list {
   list-style: none;
   text-align: center;
-  padding: 0px;
+  padding: 0;
 }
 
 .pickupmobile-choice-list li {
