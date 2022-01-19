@@ -5,25 +5,25 @@ declare global {
 }
 
 interface ResolvedData {
-  status: 'resolved',
-  data: any,
+  status: 'resolved'
+  data: any
   promise: Promise<any>
 }
 
 interface PendingData {
-  status: 'pending',
+  status: 'pending'
   promise: Promise<any>
 }
 
 interface RejectedData {
-  status: 'rejected',
-  error: any,
+  status: 'rejected'
+  error: any
   promise: Promise<any>
 }
 
 type ResultData = ResolvedData | PendingData | RejectedData
 
-type GetDataParams = {[key: string]: string}
+interface GetDataParams {[key: string]: string}
 
 const cache: {[key: string]: ResultData} = {}
 window.pickupMobileDebugDataCache = () => cache
@@ -57,6 +57,7 @@ function getData (dataKey: string, requestType: string, force: boolean = false, 
   })
   if (cacheKey in cache) {
     if (force) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete cache[cacheKey]
     } else {
       return cache[cacheKey]
@@ -112,6 +113,7 @@ function getData (dataKey: string, requestType: string, force: boolean = false, 
   return cache[cacheKey]
 }
 
+// eslint-disable-next-line @typescript-eslint/promise-function-async
 function setData (dataKey: string, data: {[key: string]: string}, dependingCacheKey?: string): Promise<any> {
   const p = new Promise<any>((resolve, reject) => {
     const url = 'mobile_data.php?action=save&key=' + encodeURIComponent(dataKey)
@@ -122,12 +124,12 @@ function setData (dataKey: string, data: {[key: string]: string}, dependingCache
       method: 'POST',
       data: data
     }).then((response) => {
-      __deleteCache(dataKey)
-      if (dependingCacheKey !== undefined) { __deleteCache(dependingCacheKey) }
+      deleteCache(dataKey)
+      if (dependingCacheKey !== undefined) { deleteCache(dependingCacheKey) }
       resolve(response)
     }, (err) => {
-      __deleteCache(dataKey)
-      if (dependingCacheKey !== undefined) { __deleteCache(dependingCacheKey) }
+      deleteCache(dataKey)
+      if (dependingCacheKey !== undefined) { deleteCache(dependingCacheKey) }
       if (detectLoginError(err)) {
         console.error('Reloading the page')
         window.location.reload()
@@ -138,10 +140,11 @@ function setData (dataKey: string, data: {[key: string]: string}, dependingCache
   return p
 }
 
-function __deleteCache (dataKey: string) {
+function deleteCache (dataKey: string): void {
   const keys = Object.keys(cache).filter(k => {
     return k === dataKey || k.startsWith(dataKey + ':')
   })
+  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
   keys.forEach(k => delete cache[k])
 }
 

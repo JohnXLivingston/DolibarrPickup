@@ -2,16 +2,16 @@ import { State, StateDefinitionBase } from './state'
 import { Stack, StackValue } from '../stack'
 
 interface Choice {
-  label: string,
-  value: string,
-  goto: string,
+  label: string
+  value: string
+  goto: string
   name?: string // if provided, this choice value will be save in field "name". It overrides StateChoice.name.
 }
 
 type Choices = Choice[]
 
 interface StateChoiceDefinition extends StateDefinitionBase {
-  type: 'choice',
+  type: 'choice'
   choices: Choices
 }
 
@@ -30,13 +30,13 @@ class StateChoice extends State {
       const value = $(ev.currentTarget).attr('pickupmobile-button')
       const choice = this.choices.find((c) => c.value === value)
       if (!choice) {
-        throw new Error('Cant find this choice: ' + value)
+        throw new Error(`Cant find this choice: ${value as string}`)
       }
       const sv: StackValue = {
         label: this.label,
-        name: this.name || choice.name || '', // FIXME '' value.
-        value: value || '',
-        silent: !(this.name || choice.name),
+        name: this.name ?? choice.name ?? '', // FIXME '' value.
+        value: value ?? '',
+        silent: !this.name && !choice.name,
         display: choice.label
       }
       stack.setValues(sv)
@@ -44,7 +44,7 @@ class StateChoice extends State {
     })
   }
 
-  async possibleGotos () {
+  async possibleGotos (): Promise<string[]> {
     const r: {[key: string]: true} = {}
     for (let i = 0; i < this.choices.length; i++) {
       const goto = this.choices[i].goto

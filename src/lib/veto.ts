@@ -1,5 +1,5 @@
 interface VetoForward {
-  type: 'forward',
+  type: 'forward'
   goto: string
 }
 

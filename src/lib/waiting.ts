@@ -1,16 +1,14 @@
 let current: JQuery | null
 function waitingOn (): void {
   const el = $('[pickupmobileapp-container]')
-  if (el.length) {
+  if (el.length > 0) {
     current = el
     el.addClass('pickupmobile-waiting')
   }
 }
 
 function waitingOff (): void {
-  if (current) {
-    current.removeClass('pickupmobile-waiting')
-  }
+  current?.removeClass('pickupmobile-waiting')
 }
 
 export {

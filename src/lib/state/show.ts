@@ -1,10 +1,11 @@
+import type { NunjucksVars } from '../nunjucks'
 import { State, StateDefinitionBase } from './state'
 import { Stack } from '../stack'
 import { getData } from '../data'
 
 interface ShowFieldBase {
-  type: string,
-  label: string,
+  type: string
+  label: string
   name: string
 }
 
@@ -52,7 +53,7 @@ class StateShow extends State {
     return stack.searchValue(this.primaryKey)
   }
 
-  renderVars (stack: Stack) {
+  renderVars (stack: Stack): NunjucksVars {
     const h = super.renderVars(stack)
     h.fields = this.fields
     const value = this._getValue(stack)
@@ -94,7 +95,7 @@ class StateShow extends State {
     })
   }
 
-  async possibleGotos () {
+  async possibleGotos (): Promise<string[]> {
     const a: string[] = []
     if (this.addGoto) {
       a.push(this.addGoto)

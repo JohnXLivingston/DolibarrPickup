@@ -1,14 +1,14 @@
 import { State, StateDefinitionBase } from './state'
 
 interface Option {
-  value: string,
+  value: string
   label: string
 }
 
 type Options = Option[]
 
 interface StateSelectDefinition extends StateDefinitionBase {
-  type: 'select',
+  type: 'select'
   options: Options
 }
 
@@ -20,7 +20,7 @@ class StateSelect extends State {
     this.options = definition.options
   }
 
-  bindEvents (dom: JQuery): void {
+  bindEvents (_dom: JQuery): void {
     console.error('not implemented yet')
   }
 

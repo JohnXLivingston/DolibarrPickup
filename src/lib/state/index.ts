@@ -23,7 +23,7 @@ function createState (o: any): State {
   if (typeof o !== 'object') {
     throw new Error('Wrong parameter, should be an object')
   }
-  const type: string = o.type || ''
+  const type: string = o.type ?? ''
   switch (type) {
     case 'choice': return new StateChoice(o)
     case 'form': return new StateForm(o)
@@ -35,7 +35,7 @@ function createState (o: any): State {
     case 'unknown': return new StateUnknown()
   }
 
-  throw new Error('Unknown type: ' + o.type)
+  throw new Error(`Unknown type: ${o.type as string}`)
 }
 
 export {

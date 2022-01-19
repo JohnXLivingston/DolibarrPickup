@@ -5,12 +5,12 @@ import { nunjucks, commonNunjucksVars } from './nunjucks'
 import type { RemoveBetween } from './stack'
 
 class Machine {
-  private name: string
-  private version: number
-  private content: JQuery
-  private states: {[key: string]: State}
+  private readonly name: string
+  private readonly version: number
+  private readonly content: JQuery
+  private readonly states: {[key: string]: State}
   private stack: Stack
-  private userId: string
+  private readonly userId: string
 
   constructor (name: string, version: number, userId: string, definition: {[key: string]: StateDefinition}) {
     this.name = name
@@ -64,15 +64,15 @@ class Machine {
     return this.states[name]
   }
 
-  render (reason: RenderReason) {
+  render (reason: RenderReason): void {
     this._render(reason, true)
   }
 
-  rerender () {
+  rerender (): void {
     this._render(RenderReason.REFRESHING, false)
   }
 
-  private _render (reason: RenderReason, bind: boolean) {
+  private _render (reason: RenderReason, bind: boolean): void {
     const currentState: State = this.currentState()
 
     const veto1 = currentState.renderVeto1(reason, this.stack)
@@ -109,7 +109,7 @@ class Machine {
     if (bind) this.bindEvents()
   }
 
-  private unbindEvents () {
+  private unbindEvents (): void {
     // removing all handlers... seems more appropriate and robust than removing only .machinEvents and states' events.
     this.content.off()
     // this.content.off('.machineEvents')
@@ -117,7 +117,7 @@ class Machine {
     // currentState.unbindEvents(this.content)
   }
 
-  private bindEvents () {
+  private bindEvents (): void {
     this.content.on('click', '[pickupmobile-reset-stack]', () => {
       this.resetStack()
     })
@@ -151,7 +151,7 @@ class Machine {
     })
   }
 
-  private postRender () {
+  private postRender (): void {
     this.content.find('[pickupmobile-select2]').each((i, html) => {
       const el = $(html)
       el.removeAttr('pickupmobile-select2')
@@ -198,7 +198,7 @@ class Machine {
   }
 
   stackStoragePrefix (): string {
-    return 'stack_' + this.version + '_' + this.userId + '_'
+    return 'stack_' + (this.version.toString()) + '_' + this.userId + '_'
   }
 
   saveStack (): void {
@@ -207,7 +207,7 @@ class Machine {
 
   async findMissingStates (name?: string): Promise<string[]> {
     const missings: {[key: string]: true} = {}
-    const states: string[] = [name || 'init']
+    const states: string[] = [name ?? 'init']
     const seen: {[key: string]: true} = {}
     let key: string | undefined
     while (undefined !== (key = states.shift())) {
@@ -329,14 +329,14 @@ class Machine {
       for (let j = 0; j < njks.length; j++) {
         const njk = njks[j]
         try {
-          nunjucks.renderString(njk.format, njk.var || {})
+          nunjucks.renderString(njk.format, njk.var ?? {})
         } catch (err) {
           result.push(
             `For state ${key}, there was a format that failed:` +
             '\n==================\n' +
             njk.format +
             '\n==================\n' +
-            'With error: ' + err
+            'With error: ' + (err as string)
           )
         }
       }
@@ -344,7 +344,7 @@ class Machine {
     return result
   }
 
-  async findProblems () {
+  async findProblems (): Promise<any> {
     return {
       missings: await this.findMissingStates(),
       missingsBackwards: await this.findMissingBackwardStates(),

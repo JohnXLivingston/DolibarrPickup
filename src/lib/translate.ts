@@ -2,8 +2,9 @@
 import { fr } from '../translations/fr'
 
 let lang: string = 'en'
-function initLang () {
-  lang = $('html').attr('lang') || 'en'
+function initLang (): void {
+  lang = $('html').attr('lang') ?? 'en'
+  if (lang === '') { lang = 'en' }
 }
 
 function translate (s: string, data?: {[key: string]: string}): string {

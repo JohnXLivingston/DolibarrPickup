@@ -1,3 +1,4 @@
+import type { NunjucksVars } from '../nunjucks'
 import { State, StateDefinitionBase } from './state'
 import { Stack, StackValue } from '../stack'
 import { getData } from '../data'
@@ -5,37 +6,37 @@ import { RenderReason } from '../constants'
 import { Veto } from '../veto'
 
 interface PickField {
-  name: string,
-  label: string,
+  name: string
+  label: string
   applyFilter?: 'lowerCase' | 'upperCase' | 'localeLowerCase' | 'localeUpperCase'
 }
 
 type PickFields = PickField[]
 
 interface PickOption {
-  value: string,
-  label: string,
+  value: string
+  label: string
   selected?: boolean
 }
 
 interface PickFormFieldInfo {
   disabled: boolean
-  field: PickField,
-  options: PickOption[] | undefined,
+  field: PickField
+  options: PickOption[] | undefined
 }
 interface PickFormInfos {
-  fieldsInfos: PickFormFieldInfo[],
-  pickedItems: any[],
+  fieldsInfos: PickFormFieldInfo[]
+  pickedItems: any[]
   creation: boolean
 }
 
 interface StatePickDefinition extends StateDefinitionBase {
-  type: 'pick',
-  key: string,
-  fields: PickFields,
-  primaryKey: string,
-  goto: string, // default goto. Can be overriden by an item, if itemGotoField is defined
-  itemGotoField?: string,
+  type: 'pick'
+  key: string
+  fields: PickFields
+  primaryKey: string
+  goto: string // default goto. Can be overriden by an item, if itemGotoField is defined
+  itemGotoField?: string
   creationGoto?: string
 }
 
@@ -57,7 +58,7 @@ class StatePick extends State {
     this.creationGoto = definition.creationGoto
   }
 
-  renderVars (stack: Stack) {
+  renderVars (stack: Stack): NunjucksVars {
     const h = super.renderVars(stack)
     h.data = getData(this.key, 'list')
     if (h.data.status === 'pending') {
@@ -124,8 +125,8 @@ class StatePick extends State {
     dom.on('change.stateEvents', '[pickupmobile-pick-select]', (ev) => {
       const select = $(ev.currentTarget)
       const option = select.find('option:selected:first')
-      const value: string = option.attr('value') || ''
-      const fieldName: string = select.attr('name') || ''
+      const value: string = option.attr('value') ?? ''
+      const fieldName: string = select.attr('name') ?? ''
       const field = this.fields.find(f => f.name === fieldName)
       if (!field) {
         throw new Error('Cant find field ' + fieldName)
@@ -148,7 +149,7 @@ class StatePick extends State {
 
     dom.on('click.stateEvents', '[pickupmobile-pick-pick]', ev => {
       const a = $(ev.currentTarget)
-      const value = a.attr('pickupmobile-pick-pick') || ''
+      const value = a.attr('pickupmobile-pick-pick') ?? ''
       const sv: StackValue = {
         label: this.key, // FIXME: something else
         name: this.key, // FIXME: i'm not sure this is good
@@ -201,7 +202,7 @@ class StatePick extends State {
       let options: PickOption[] = []
       for (let i = 0; i < data.length; i++) {
         const d = data[i]
-        let value: string = d[field.name] || ''
+        let value: string = d[field.name] ?? ''
         switch (field.applyFilter) {
           case 'upperCase':
             value = value.toUpperCase()
@@ -253,7 +254,7 @@ class StatePick extends State {
     return r
   }
 
-  async possibleGotos () {
+  async possibleGotos (): Promise<string[]> {
     const r = []
     if (this.goto) r.push(this.goto)
     if (this.creationGoto) r.push(this.creationGoto)

@@ -1,3 +1,4 @@
+import type { NunjucksVars } from '../nunjucks'
 import { State, StateDefinitionBase } from './state'
 import { Stack, StackValue } from '../stack'
 import { ResultData, getData, GetDataParams } from '../data'
@@ -7,10 +8,10 @@ interface FormFieldNotesStatic {
   label: string
 }
 interface FormFieldNotesLoad {
-  load: string, // Source name
-  basedOnValueOf: string, // the value key to search in stack
-  key: string, // the field to use in the source data as key
-  field: string, // the field to display as a note
+  load: string // Source name
+  basedOnValueOf: string // the value key to search in stack
+  key: string // the field to use in the source data as key
+  field: string // the field to display as a note
   label?: string // the computed notes will replace this value
 }
 /**
@@ -19,12 +20,12 @@ interface FormFieldNotesLoad {
 type FormFieldNotes = FormFieldNotesStatic | FormFieldNotesLoad
 
 interface FormFieldBase {
-  type: string,
-  name: string,
-  label: string,
-  mandatory: boolean,
-  default?: string,
-  maxLength?: number,
+  type: string
+  name: string
+  label: string
+  mandatory: boolean
+  default?: string
+  maxLength?: number
   notes?: FormFieldNotes
 }
 
@@ -37,33 +38,33 @@ interface FormFieldText extends FormFieldBase {
 }
 
 interface FormFieldSelectSimple extends FormFieldBase {
-  type: 'select',
-  options: {value: string, label: string}[]
+  type: 'select'
+  options: Array<{ value: string, label: string }>
 }
 
 interface FormFieldSelectDynamicLoadParamsFromStack {
   type: 'stack'
   key: string // the value to get from the stack
 }
-type FormFieldSelectDynamicLoadParams = {[key: string]: string | FormFieldSelectDynamicLoadParamsFromStack}
+interface FormFieldSelectDynamicLoadParams {[key: string]: string | FormFieldSelectDynamicLoadParamsFromStack}
 interface FormFieldSelectDynamic extends FormFieldBase {
-  type: 'select',
-  options: {value: string, label: string}[],
-  load: string,
-  loadParams?: FormFieldSelectDynamicLoadParams,
+  type: 'select'
+  options: Array<{value: string, label: string}>
+  load: string
+  loadParams?: FormFieldSelectDynamicLoadParams
   map: {value: string, label: string}
 }
 type FormFieldSelect = FormFieldSelectSimple | FormFieldSelectDynamic
 
 interface FormFieldInteger extends FormFieldBase {
-  type: 'integer',
-  min: number,
+  type: 'integer'
+  min: number
   max: number
 }
 
 interface FormFieldFloat extends FormFieldBase {
-  type: 'float',
-  min: number,
+  type: 'float'
+  min: number
   max: number
   step: number
 }
@@ -73,25 +74,25 @@ interface FormFieldBoolean extends FormFieldBase {
 }
 
 interface FormFieldRadio extends FormFieldBase {
-  type: 'radio',
+  type: 'radio'
   options: FormFieldRadioOption[]
 }
 
 interface FormFieldRadioOption {
-  value: string,
+  value: string
   label: string
 }
 
 interface FormFieldDate extends FormFieldBase {
-  type: 'date',
+  type: 'date'
   defaultToToday?: boolean
 }
 
 type FormField = FormFieldSelect | FormFieldVarchar | FormFieldText | FormFieldInteger | FormFieldFloat | FormFieldBoolean | FormFieldRadio | FormFieldDate
 
 interface StateFormDefinition extends StateDefinitionBase {
-  type: 'form',
-  goto: string,
+  type: 'form'
+  goto: string
   fields: FormField[]
 }
 
@@ -105,7 +106,7 @@ class StateForm extends State {
     this.fields = definition.fields
   }
 
-  renderVars (stack: Stack) {
+  renderVars (stack: Stack): NunjucksVars {
     const h = super.renderVars(stack)
 
     // Is there any field that needs data?
@@ -165,8 +166,8 @@ class StateForm extends State {
   /**
    * Returns getData promises for each field that need async data.
    */
-  private asyncFieldsData (stack: Stack, force: boolean) :{[key: string]: ResultData} {
-    const r:{[key: string]: ResultData} = {}
+  private asyncFieldsData (stack: Stack, force: boolean): {[key: string]: ResultData} {
+    const r: {[key: string]: ResultData} = {}
     for (let i = 0; i < this.fields.length; i++) {
       const field = this.fields[i]
       if (field.notes && 'load' in field.notes) {
@@ -176,7 +177,7 @@ class StateForm extends State {
         if (data.status === 'resolved') {
           const value = stack.searchValue(notes.basedOnValueOf)
           if (value !== undefined) {
-            const note = (data.data as Array<any>).find(
+            const note = (data.data as any[]).find(
               el => notes.key && el[notes.key] === value
             )
             if (note) {
@@ -228,10 +229,10 @@ class StateForm extends State {
       }
       if (field.defaultToToday) {
         const today = new Date(Date.now())
-        const y: string = '' + today.getFullYear()
-        let m: string = '' + (today.getMonth() + 1)
+        const y: string = today.getFullYear().toString()
+        let m: string = (today.getMonth() + 1).toString()
         if (m.length < 2) m = '0' + m
-        let d:string = '' + today.getDate()
+        let d: string = today.getDate().toString()
         if (d.length < 2) d = '0' + d
         field.default = y + '-' + m + '-' + d
       }
@@ -322,7 +323,7 @@ class StateForm extends State {
     return sva
   }
 
-  async possibleGotos () {
+  async possibleGotos (): Promise<string[]> {
     return [this.goto]
   }
 }

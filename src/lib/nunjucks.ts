@@ -1,13 +1,16 @@
 import { translate } from './translate'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const nunjucks = require('../../node_modules/nunjucks/browser/nunjucks.min')
 require('../../build/templates/templates.js')
 
-function initNunjucks () {
+interface NunjucksVars { [key: string]: any }
+
+function initNunjucks (): void {
   nunjucks.configure({ autoescape: true })
 }
 
-function commonNunjucksVars () {
+function commonNunjucksVars (): NunjucksVars {
   return {
     translate
   }
@@ -16,5 +19,6 @@ function commonNunjucksVars () {
 export {
   nunjucks,
   initNunjucks,
-  commonNunjucksVars
+  commonNunjucksVars,
+  NunjucksVars
 }

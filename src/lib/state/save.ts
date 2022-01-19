@@ -6,21 +6,21 @@ import { waitingOn, waitingOff } from '../waiting'
 import { Veto } from '../veto'
 
 interface StateSaveDefinition extends StateDefinitionBase {
-  type: 'save',
-  saveUntil: string,
-  removeUntil?: string,
+  type: 'save'
+  saveUntil: string
+  removeUntil?: string
   removeFromStack?: boolean
-  key: string,
-  primaryKey: string,
-  labelKey: string,
-  goto: string,
+  key: string
+  primaryKey: string
+  labelKey: string
+  goto: string
   dependingCacheKey?: string
 }
 
 class StateSave extends State {
   private readonly saveUntil: string
   private readonly removeUntil: string
-  private removeFromStack: boolean
+  private readonly removeFromStack: boolean
   private readonly key: string
   private readonly primaryKey: string
   private readonly labelKey: string
@@ -59,7 +59,7 @@ class StateSave extends State {
     return undefined
   }
 
-  bindEvents (dom: JQuery, stack: Stack) {
+  bindEvents (dom: JQuery, stack: Stack): void {
     dom.on('submit.stateEvents', 'form', (ev) => {
       const form = $(ev.currentTarget)
       if (form.hasClass('pickupmobile-saving')) {
@@ -71,14 +71,14 @@ class StateSave extends State {
       form.addClass('pickupmobile-saving')
       waitingOn()
 
-      const ok = (result: any) => {
+      const ok = (result: any): void => {
         const id = result[this.primaryKey]
         console.log('Reading save result...')
         if (!id || Number(id) <= 0) {
           notOk('Missing primary key in result')
           return
         }
-        console.log('We got a new object with primaryKey: ' + id)
+        console.log('We got a new object with primaryKey: ' + (id as string))
         form.removeClass('pickupmobile-saving')
         waitingOff()
         stack.setValues({
@@ -93,7 +93,7 @@ class StateSave extends State {
         }
         dom.trigger('goto-state', [this.goto, removeBetween])
       }
-      const notOk = (err: any) => {
+      const notOk = (err: any): void => {
         console.error(err)
         form.removeClass('pickupmobile-saving')
         waitingOff()
@@ -103,14 +103,14 @@ class StateSave extends State {
         } else if (typeof err === 'object' && ('statusText' in err)) {
           txt = err.statusText
         } else {
-          txt = '' + err
+          txt = '' + (err as string)
         }
         $('[pickupmobile-save-error-container]').text('Error: ' + txt)
       }
 
       // If the object was already saved... Do not save again!
       const previousSV = stack.getStackValue(this.key) // FIXME: it is not this.key.
-      if (previousSV && previousSV.value) {
+      if (previousSV?.value) {
         console.log('The value was already saved.')
         form.removeClass('pickupmobile-saving')
         waitingOff()
@@ -138,11 +138,11 @@ class StateSave extends State {
     })
   }
 
-  async possibleGotos () {
+  async possibleGotos (): Promise<string[]> {
     return [this.goto]
   }
 
-  async possibleBackwards () {
+  async possibleBackwards (): Promise<string[]> {
     const r = [this.saveUntil]
     if (this.removeUntil !== this.saveUntil) {
       r.push(this.removeUntil)

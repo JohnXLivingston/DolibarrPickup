@@ -15,7 +15,8 @@ $(function () {
   initHistory()
 
   const container = $('[pickupmobileapp-container]')
-  const entrepotId = container.attr('data-entrepot-id')
+  let entrepotId = container.attr('data-entrepot-id')
+  if (entrepotId === '') { entrepotId = undefined }
   const machine = new Machine(
     'myMachine',
     1, // this is the version number. Change it if there is no retro compatibility for existing stacks
@@ -37,7 +38,7 @@ $(function () {
         label: 'Mes collectes en attente de validation',
         key: 'pickup',
         goto: 'show_pickup',
-        creationGoto: entrepotId ? 'societe' : 'entrepot',
+        creationGoto: entrepotId !== undefined ? 'societe' : 'entrepot',
         primaryKey: 'rowid',
         fields: [
           { name: 'display', label: 'Collecte' }
@@ -223,7 +224,7 @@ $(function () {
       save_pickup: {
         type: 'save',
         label: 'Création de la collecte',
-        saveUntil: entrepotId ? 'societe' : 'entrepot', // FIXME: might not be that...
+        saveUntil: entrepotId !== undefined ? 'societe' : 'entrepot', // FIXME: might not be that...
         key: 'pickup',
         primaryKey: 'rowid', // FIXME: to check.
         labelKey: 'Collecte',

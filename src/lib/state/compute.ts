@@ -1,26 +1,26 @@
-import { State, StateDefinitionBase } from './state'
+import { State, StateDefinitionBase, PossibleNunjucks } from './state'
 import { Stack, StackValue } from '../stack'
 import { RenderReason } from '../constants'
 import { Veto } from '../veto'
 import { nunjucks } from '../nunjucks'
 
 interface ComputeNunjucks {
-  name: string,
-  label: string,
+  name: string
+  label: string
   format: string
 }
 
 interface StateComputeDefinition extends StateDefinitionBase {
-  type: 'compute',
-  goto: string,
-  computeUntil: string,
+  type: 'compute'
+  goto: string
+  computeUntil: string
   nunjucks?: ComputeNunjucks
 }
 
 class StateCompute extends State {
-  private goto: string
-  private computeUntil: string
-  private nunjucks?: ComputeNunjucks
+  private readonly goto: string
+  private readonly computeUntil: string
+  private readonly nunjucks?: ComputeNunjucks
 
   constructor (definition: StateComputeDefinition) {
     super('compute', definition)
@@ -70,19 +70,19 @@ class StateCompute extends State {
       return undefined
     }
     const vars: any = {}
-    const sva = stack.getStackValuesUntil(this.computeUntil) || []
+    const sva = stack.getStackValuesUntil(this.computeUntil) ?? []
     for (let i = 0; i < sva.length; i++) {
       const va: StackValue = sva[i]
-      vars[va.name] = va.display || va.value
+      vars[va.name] = va.display ?? va.value
     }
     return nunjucks.renderString(this.nunjucks.format, vars)
   }
 
-  async possibleGotos () {
+  async possibleGotos (): Promise<string[]> {
     return [this.goto]
   }
 
-  async possibleNunjucks () {
+  async possibleNunjucks (): Promise<PossibleNunjucks[]> {
     if (!this.nunjucks) return []
     return [{
       format: this.nunjucks.format

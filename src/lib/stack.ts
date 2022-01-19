@@ -1,11 +1,11 @@
 interface StackValue {
-  label: string,
-  name: string,
-  value: string,
-  display?: string, // what to display. If undefined, will be the value.
+  label: string
+  name: string
+  value: string
+  display?: string // what to display. If undefined, will be the value.
   // object?: string, // the name of the target object for this field
-  invalid?: string, // if set, indicate the value is invalid
-  silent?: boolean, // if true, the value will not be sent to backend
+  invalid?: string // if set, indicate the value is invalid
+  silent?: boolean // if true, the value will not be sent to backend
   invisible?: boolean // if true, the value will not be shown by displayStackValue
 }
 
@@ -96,7 +96,7 @@ class Stack {
 
   static displayStackValue (sv: StackValue): string | undefined {
     if (sv.invisible) return undefined
-    const display: string = sv.display || sv.value
+    const display: string = sv.display ?? sv.value
     const s = `${sv.label}: ${display}`
     return s
   }

@@ -1,3 +1,4 @@
+import type { NunjucksVars } from '../nunjucks'
 import { Stack } from '../stack'
 import { RenderReason } from '../constants'
 import { Veto } from '../veto'
@@ -16,7 +17,7 @@ abstract class State {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  renderVars (stack: Stack): {[key: string]: any} {
+  renderVars (stack: Stack): NunjucksVars {
     return {}
   }
 
@@ -67,12 +68,18 @@ abstract class State {
    * List nunjucks strings used by this template.
    * Can return an example vars object to pass to nunjucks render method.
    */
-  async possibleNunjucks (): Promise<{format: string, var?: {}}[]> {
+  async possibleNunjucks (): Promise<PossibleNunjucks[]> {
     return []
   }
 }
 
+interface PossibleNunjucks {
+  format: string
+  var?: NunjucksVars
+}
+
 export {
   State,
-  StateDefinitionBase
+  StateDefinitionBase,
+  PossibleNunjucks
 }

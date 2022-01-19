@@ -7,9 +7,9 @@ class StateUnknown extends State {
     })
   }
 
-  bindEvents () {}
+  bindEvents (): void {}
 
-  async possibleGotos () {
+  async possibleGotos (): Promise<string[]> {
     return []
   }
 }
