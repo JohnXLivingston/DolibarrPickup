@@ -2,12 +2,16 @@
 
 ## ???
 
-### Minor fixes
+### Fonctionnalités
 
-* Update npm dependencies.
-* Fix missing translations for frontend form errors.
-* Some labels changes for LRDS state machine.
-* Tags / Pickup tab: fix translations (some labels were not visible).
+
+
+### Corrections mineures
+
+* Mise à jour des dépendances npm
+* Appli mobile : traductions des erreurs de ssaisie
+* Appli mobile : Changements de certains libellés pour LRDS.
+* Tags / onglet Collecte : correctif de l'écran. Certains libellés n'étaient pas affichés, ou étaient incorrect.
 
 ## 0.12
 
