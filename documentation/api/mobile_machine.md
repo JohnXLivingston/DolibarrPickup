@@ -208,3 +208,10 @@ Cette classe n'est pas documentée pour l'instant, car non utilisée et sujette 
 La classe [StateSave](/src/lib/state/save.ts) permet de faire un récapitulatif des données dans la stack, et de proposer de les enregistrer.
 
 Documentation à faire.
+
+## Notes
+
+Pour débuguer, on peut accéder à la machine dans la console JS du navigateur via `window.pickupMobileMachine`.
+La stack est dans `window.pickupMobileMachine.stack`.
+
+On peut également débuguer le cache des données remontées du backend via `window.pickupMobileDebugDataCache()`.
