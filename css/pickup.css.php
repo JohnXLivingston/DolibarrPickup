@@ -21,6 +21,10 @@
  * \brief   CSS file for module Pickup.
  */
 
+session_cache_limiter('public');
+// false or '' = keep cache instruction added by server
+// 'public'  = remove cache instruction added by server and if no cache-control added later, a default cache delay (10800) will be added by PHP.
+
 //if (! defined('NOREQUIREUSER')) define('NOREQUIREUSER','1');	// Not disabled because need to load personalized language
 //if (! defined('NOREQUIREDB'))   define('NOREQUIREDB','1');	// Not disabled. Language code is found on url.
 if (! defined('NOREQUIRESOC'))    define('NOREQUIRESOC', '1');
@@ -47,10 +51,6 @@ if (! $res && file_exists("../../../main.inc.php")) $res=@include "../../../main
 if (! $res) die("Include of main fails");
 
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-
-session_cache_limiter('public');
-// false or '' = keep cache instruction added by server
-// 'public'  = remove cache instruction added by server and if no cache-control added later, a default cache delay (10800) will be added by PHP.
 
 // Load user to have $user->conf loaded (not done by default here because of NOLOGIN constant defined) and load permission if we need to use them in CSS
 /*if (empty($user->id) && ! empty($_SESSION['dol_login']))
