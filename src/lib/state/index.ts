@@ -6,6 +6,7 @@ import { StatePick, StatePickDefinition } from './pick'
 import { StateSave, StateSaveDefinition } from './save'
 import { StateSelect, StateSelectDefinition } from './select'
 import { StateShow, StateShowDefinition } from './show'
+import { StateVirtual, StateVirtualDefinition } from './virtual'
 import { StateUnknown } from './unknown'
 
 export * from './compute'
@@ -15,9 +16,10 @@ export * from './pick'
 export * from './save'
 export * from './select'
 export * from './state'
+export * from './virtual'
 export * from './unknown'
 
-type StateDefinition = StateChoiceDefinition | StateFormDefinition | StatePickDefinition | StateSaveDefinition | StateSelectDefinition | StateComputeDefinition | StateShowDefinition
+type StateDefinition = StateChoiceDefinition | StateFormDefinition | StatePickDefinition | StateSaveDefinition | StateSelectDefinition | StateComputeDefinition | StateShowDefinition | StateVirtualDefinition
 
 function createState (o: any): State {
   if (typeof o !== 'object') {
@@ -32,6 +34,7 @@ function createState (o: any): State {
     case 'select': return new StateSelect(o)
     case 'show': return new StateShow(o)
     case 'compute': return new StateCompute(o)
+    case 'virtual': return new StateVirtual(o)
     case 'unknown': return new StateUnknown()
   }
 

@@ -195,6 +195,10 @@ Affiche un bouton «ok» qui ira sur le state correspondant.
 
 Affiche un bouton «ajouter» qui ira sur le state correspondant.
 
+### StateVirtual
+
+La classe [StateVirtual](/src/lib/state/virtual.ts) est un état virtuel qui avance automatiquement.
+
 ### StateCompute
 
 La classe [StateCompute](/src/lib/state/compute.ts) est un état virtuel qui permet d'effectuer des modifications sur les valeurs en stack.
