@@ -15,6 +15,7 @@
 * Tags / onglet Collecte : correctif de l'écran. Certains libellés n'étaient pas affichés, ou étaient incorrect.
 * Nettoyage du code (diverses modifications).
 * Ajout de StateVirtual.
+* Appli mobile : le champs «Notes» devient «Description» (et n'est plus stocké dans les notes privées).
 
 ## 0.12
 

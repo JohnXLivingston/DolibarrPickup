@@ -72,7 +72,7 @@ class DataMobileActionProduct extends DataMobileAction {
     return array(
       'rowid' => $object->id,
       'ref' => $object->ref,
-      'note' => $object->note,
+      'description' => $object->description,
       'label' => $object->label,
       'marque' => $object->array_options['options_marque'],
       'pcats' => join(', ', $cats_labels),
@@ -96,7 +96,7 @@ class DataMobileActionProduct extends DataMobileAction {
       $product_label = GETPOST('product_ref');
     }
     $product->label = $product_label;
-    $product->note = htmlentities(GETPOST('product_note'));
+    $product->description = htmlentities(trim(GETPOST('product_description')));
     $product->weight = GETPOST('weight', 'int'); // yes... for dolibarr floats are 'int'
     $product->weight_units = 0;
     

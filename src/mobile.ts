@@ -354,7 +354,7 @@ $(function () {
           },
           {
             type: 'text',
-            name: 'product_note',
+            name: 'product_description',
             label: 'Notes',
             mandatory: false,
             notes: {
@@ -420,8 +420,8 @@ $(function () {
           },
           {
             type: 'text',
-            name: 'note',
-            label: 'Notes'
+            name: 'description',
+            label: 'Description'
           },
           {
             type: 'varchar',
