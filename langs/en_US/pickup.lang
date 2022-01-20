@@ -34,6 +34,7 @@ PickupStatusShortProcessing = Processing
 PickupStatusStock = Waiting signature
 PickupStatusShortStock = Waiting signature
 PickupStatusSigned = Signed
+PickupDate = Pickup date
 
 PICKUP_DEFAULT_STOCK = Default stock
 

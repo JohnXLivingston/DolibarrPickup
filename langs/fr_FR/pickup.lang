@@ -34,6 +34,7 @@ PickupStatusShortProcessing = Traitement
 PickupStatusStock = En attente de signature
 PickupStatusShortStock = Attente signature
 PickupStatusSigned = Signée
+PickupDate = Date de la collecte
 
 PICKUP_DEFAULT_STOCK = Entrepôt par défaut
 
