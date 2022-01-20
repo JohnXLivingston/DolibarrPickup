@@ -19,23 +19,23 @@ $(function () {
   if (entrepotId === '') { entrepotId = undefined }
   const machine = new Machine(
     'myMachine',
-    2, // this is the version number. Change it if there is no retro compatibility for existing stacks
+    2022012001, // this is the version number. Change it if there is no retro compatibility for existing stacks
     container.attr('data-user-id') ?? '',
     {
+      // init: {
+      //   type: 'choice',
+      //   label: 'Accueil',
+      //   choices: [
+      //     {
+      //       label: 'Nouvelle saisie',
+      //       value: 'new',
+      //       goto: 'pickup'
+      //     }
+      //   ]
+      // },
       init: {
-        type: 'choice',
-        label: 'Accueil',
-        choices: [
-          {
-            label: 'Nouvelle saisie',
-            value: 'new',
-            goto: 'pickup'
-          }
-        ]
-      },
-      pickup: {
         type: 'pick',
-        label: 'Mes collectes en attente de validation',
+        label: 'Accueil',
         key: 'pickup',
         goto: 'show_pickup',
         creationGoto: entrepotId !== undefined ? 'societe' : 'entrepot',
@@ -454,7 +454,7 @@ $(function () {
       save_pickupline: {
         type: 'save',
         label: 'Ajout du produit sur la collecte',
-        saveUntil: 'pickup',
+        saveUntil: 'init',
         removeUntil: 'show_pickup',
         removeFromStack: true,
         key: 'pickupline',

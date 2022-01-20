@@ -5,6 +5,7 @@
 ### Fonctionnalités
 
 * Appli mobile : si on a le droit «Create pickups», on liste toutes les collectes en cours.
+* Appli mobile : l'écran d'accueil devient le choix de la collecte.
 
 ### Corrections mineures
 
