@@ -19,7 +19,7 @@ $(function () {
   if (entrepotId === '') { entrepotId = undefined }
   const machine = new Machine(
     'myMachine',
-    1, // this is the version number. Change it if there is no retro compatibility for existing stacks
+    2, // this is the version number. Change it if there is no retro compatibility for existing stacks
     container.attr('data-user-id') ?? '',
     {
       init: {

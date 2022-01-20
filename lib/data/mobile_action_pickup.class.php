@@ -52,7 +52,9 @@ class DataMobileActionPickup extends DataMobileAction {
     $object = new Pickup($this->db);
 
     $where = array();
-    $where[] = 't.fk_user_creat = \''.$object->db->escape($user->id).'\'';
+    if (!$user->rights->pickup->write) { // this is the right to update all pickups.
+      $where[] = 't.fk_user_creat = \''.$object->db->escape($user->id).'\'';
+    }
     $where[] = 't.status = \''.$object->db->escape($object::STATUS_DRAFT).'\'';
     $filters = array(
       'customsql' => '('.implode(' AND ', $where).')'
