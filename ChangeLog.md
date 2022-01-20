@@ -17,6 +17,7 @@
 * Ajout de StateVirtual.
 * Appli mobile : le champs «Notes» devient «Description» (et n'est plus stocké dans les notes privées).
 * Modification de libellé sur la fiche collecte : «Date» => «Date de la collecte»
+* Formulaire de création de collecte : on retire le statut.
 
 ## 0.12
 
