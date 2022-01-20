@@ -6,6 +6,7 @@
 
 * Appli mobile : si on a le droit «Create pickups», on liste toutes les collectes en cours.
 * Appli mobile : l'écran d'accueil devient le choix de la collecte.
+* Liste des collectes : affichage du nombre de produits (DEEE vs non DEEE).
 
 ### Corrections mineures
 

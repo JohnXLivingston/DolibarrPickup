@@ -815,6 +815,47 @@ class Pickup extends CommonObject
 		return $line;
 	}
 
+	public function computeQtyTotals () {
+		global $db;
+
+		$result = array(
+			'qty' => 0,
+			'deee_qty' => 0,
+		);
+		if (empty($this->id)) {
+			return $result;
+		}
+
+		$sql = 'SELECT sum(l.qty) as qty';
+		$sql.= ' FROM ' . MAIN_DB_PREFIX . $this->table_element_line. ' as l';
+		$sql.= ' WHERE';
+		$sql.= ' l.fk_pickup = \'' . $this->db->escape($this->id).'\'';
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			$line = $this->db->fetch_object($resql);
+			if (!empty($line) && !empty($line->qty)) {
+					$result['qty'] = (int) $line->qty;
+			}
+			$this->db->free($resql);
+		} else {
+			dol_syslog(__METHOD__ . ' Error ' . $this->db->lasterror(), LOG_ERR);
+		}
+
+		$sql.= ' AND l.deee';
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			$line = $this->db->fetch_object($resql);
+			if (!empty($line) && !empty($line->qty)) {
+					$result['deee_qty'] = (int) $line->qty;
+			}
+			$this->db->free($resql);
+		} else {
+			dol_syslog(__METHOD__ . ' Error ' . $this->db->lasterror(), LOG_ERR);
+		}
+
+		return $result;
+	}
+	
 	public function computeTotals() {
 		global $db;
 
