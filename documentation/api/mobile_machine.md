@@ -220,4 +220,4 @@ La stack est dans `window.pickupMobileMachine.stack`. On peut en avoir une versi
 
 On peut également débuguer le cache des données remontées du backend via `window.pickupMobileDebugDataCache()`.
 
-Il y a une fonction qui essaie de trouver les problèmes de définition de l'automate (status manquants, template manquant, etc...) : `window.pickupMobileMachine.findProblems()`.
+Il y a une fonction qui essaie de trouver les problèmes de définition de l'automate (status manquants, template manquant, etc...) : `window.pickupMobileMachine.findProblems().then(console.log)`.
