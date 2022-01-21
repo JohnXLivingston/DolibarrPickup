@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## ???
+## 0.13
 
 ### Fonctionnalités
 
