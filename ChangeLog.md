@@ -4,7 +4,11 @@
 
 ### Fonctionnalités
 
-* 
+*
+
+### Corrections mineures
+
+* Clean du code.
 
 ## 0.13
 
