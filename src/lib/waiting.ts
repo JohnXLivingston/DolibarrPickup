@@ -1,15 +1,21 @@
-// let waitingEl: HTMLElement | null
 function waitingOn (): void {
-  // if (!waitingEl) {
-  //   waitingEl = document.querySelector('[pickupmobileapp-waiting]')
-  // }
-  // waitingEl?.classList.remove('d-none')
-  console.error('TODO: Clean code in waiting.ts.')
+  const submits = document.querySelectorAll('input[type=submit]')
+  submits.forEach((submit) => {
+    submit.setAttribute('pickupmobile-disabled-waiting', '')
+    if ('disabled' in submit) {
+      (submit as HTMLInputElement).disabled = true
+    }
+  })
 }
 
 function waitingOff (): void {
-  // waitingEl?.classList.remove('d-none')
-  console.error('TODO: Clean code in waiting.ts.')
+  const submits = document.querySelectorAll('input[type=submit][pickupmobile-disabled-waiting]')
+  submits.forEach((submit) => {
+    submit.removeAttribute('pickupmobile-disabled-waiting')
+    if ('disabled' in submit) {
+      (submit as HTMLInputElement).disabled = false
+    }
+  })
 }
 
 export {
