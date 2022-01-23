@@ -1,10 +1,19 @@
 {% if dataStatus === 'pending' %}
-  <div pickupmobile-form-pending>{{ translate('Waiting...') }}</div>
+  <div class="alert alert-secondary" pickupmobile-form-pending>
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    {{ translate('Waiting...') }}
+  </div>
 {% elif dataStatus === 'rejected' %}
-  <div class="pickupmobile-error">{{ translate('Error retrieving data.') }}</div>
-  <a class="button" pickupmobile-form-reload>{{ translate('Try again') }}</a>
+  <div class="alert alert-danger">
+    {{ translate('Error retrieving data.') }}
+  </div>
+  <div class="row justify-content-center">
+    <a class="col-4 btn btn-primary" pickupmobile-form-reload>
+      {{ translate('Try again') }}
+    </a>
+  </div>
 {% elif dataStatus === 'resolved' %}
-  <table class="border" width="100%">
+  <table class="table">
     {% for field in currentState.fields %}
       {% if useDefaultValues %}
         {% set currentValue = field.default %}
@@ -84,7 +93,9 @@
       </tr>
     {% endfor %}
   </table>
-  <div class="pickupmobile-bottom-buttons">
-    <input type="submit" value="{{ translate('Ok') }}" class="button"/>
-  </div>
+
+  <hr>
+  <nav>
+    <input type="submit" value="{{ translate('Ok') }}" class="btn btn-primary" />
+  </nav>
 {% endif %}
