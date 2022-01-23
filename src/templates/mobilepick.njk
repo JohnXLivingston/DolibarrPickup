@@ -23,7 +23,7 @@
           </label>
         </td>
         <td>
-          <select pickupmobile-select2 pickupmobile-pick-select name="{{ field.name }}" {% if fieldInfo.disabled %}disabled="disabled"{% endif %}>
+          <select class="form-select" pickupmobile-select2 pickupmobile-pick-select name="{{ field.name }}" {% if fieldInfo.disabled %}disabled="disabled"{% endif %}>
             {% for option in fieldInfo.options %}
               <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %}>
                 {{ option.label }}
