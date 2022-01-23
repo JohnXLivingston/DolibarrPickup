@@ -3,6 +3,9 @@ import { initHistory } from './lib/history'
 import { initNunjucks } from './lib/nunjucks'
 import { Machine } from './lib/machine'
 
+// FIXME: only pick needed files.
+import '../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'
+
 declare global {
   interface Window {
     pickupMobileMachine: Machine

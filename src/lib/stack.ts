@@ -94,11 +94,21 @@ class Stack {
     this.values = this.values.filter(sv => sv.name !== fieldName)
   }
 
-  static displayStackValue (sv: StackValue): string | undefined {
+  static getDisplayStackValue (sv: StackValue): { label: string, display: string } | undefined {
     if (sv.invisible) return undefined
     const display: string = sv.display ?? sv.value
-    const s = `${sv.label}: ${display}`
-    return s
+    return {
+      label: sv.label,
+      display: display
+    }
+  }
+
+  static displayStackValue (sv: StackValue): string | undefined {
+    const r = Stack.getDisplayStackValue(sv)
+    if (r === undefined) {
+      return undefined
+    }
+    return `${r.label}: ${r.display}`
   }
 
   static stackValuesToParams (sva: StackValue[]): {[key: string]: string} {

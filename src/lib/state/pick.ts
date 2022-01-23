@@ -173,6 +173,11 @@ class StatePick extends State {
         dom.trigger('goto-state', [this.creationGoto])
       }
     })
+
+    dom.on('click.stateEvents', '[pickupmobile-pick-empty]', () => {
+      stack.setValues(null) // Erasing...
+      dom.trigger('rerender-state')
+    })
   }
 
   getFormInfos (stack: Stack, data: any[]): PickFormInfos {

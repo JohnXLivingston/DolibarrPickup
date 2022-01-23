@@ -1,14 +1,15 @@
-let current: JQuery | null
+// let waitingEl: HTMLElement | null
 function waitingOn (): void {
-  const el = $('[pickupmobileapp-container]')
-  if (el.length > 0) {
-    current = el
-    el.addClass('pickupmobile-waiting')
-  }
+  // if (!waitingEl) {
+  //   waitingEl = document.querySelector('[pickupmobileapp-waiting]')
+  // }
+  // waitingEl?.classList.remove('d-none')
+  console.error('TODO: Clean code in waiting.ts.')
 }
 
 function waitingOff (): void {
-  current?.removeClass('pickupmobile-waiting')
+  // waitingEl?.classList.remove('d-none')
+  console.error('TODO: Clean code in waiting.ts.')
 }
 
 export {

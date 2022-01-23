@@ -43,6 +43,7 @@ class StateSave extends State {
     const h = super.renderVars(stack)
     h.stackValues = stack.previous?.getStackValuesUntil(this.saveUntil)
     h.displayStackValue = Stack.displayStackValue
+    h.getDisplayStackValue = Stack.getDisplayStackValue
     return h
   }
 
@@ -67,7 +68,7 @@ class StateSave extends State {
         return
       }
       console.log('Saving data...')
-      $('[pickupmobile-save-error-container]').text('')
+      $('[pickupmobile-save-error-container]').text('').addClass('d-none')
       form.addClass('pickupmobile-saving')
       waitingOn()
 
@@ -105,7 +106,7 @@ class StateSave extends State {
         } else {
           txt = '' + (err as string)
         }
-        $('[pickupmobile-save-error-container]').text('Error: ' + txt)
+        $('[pickupmobile-save-error-container]').text('Error: ' + txt).removeClass('d-none')
       }
 
       // If the object was already saved... Do not save again!
@@ -130,6 +131,7 @@ class StateSave extends State {
         notOk(err)
         return
       }
+
       const p = setData(this.key, data, this.dependingCacheKey)
       p.then(
         ok,

@@ -1,10 +1,21 @@
 {% if missingKey %}
-  <div class="pickupmobile-error">{{ translate('Error retrieving data. Missing key') }}</div>
+  <div class="alert alert-danger">
+      {{ translate('Error retrieving data. Missing key') }}
+    </div>
 {% elif data.status === 'pending' %}
-  <div pickupmobile-show-pending>{{ translate('Waiting...') }}</div>
+  <div class="alert alert-secondary" pickupmobile-show-pending>
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    {{ translate('Waiting...') }}
+  </div>
 {% elif data.status === 'rejected' %}
-  <div class="pickupmobile-error">{{ translate('Error retrieving data.') }}</div>
-  <a class="button" pickupmobile-show-reload>{{ translate('Try again') }}</a>
+  <div class="alert alert-danger">
+    {{ translate('Error retrieving data.') }}
+  </div>
+  <div class="row justify-content-center">
+    <a class="col-4 btn btn-primary" pickupmobile-show-reload>
+      {{ translate('Try again') }}
+    </a>
+  </div>
 {% elif data.status === 'resolved' %}
   {% macro printFieldContent(field, data) %}
     {% if field.type === 'varchar' or field.type === 'integer'%}
@@ -16,22 +27,26 @@
     {% endif %}
   {% endmacro %}
   {% macro printLines(fields, lines) %}
-    <table class="" width="100%" style="border: 1px solid black">
-      <tr>
-        {% for field in fields %}
-          <th>{{ field.label }}</th>
-        {% endfor%}
-      </tr>
-      {% for line in lines %}
+    <table class="table">
+      <thead>
         <tr>
           {% for field in fields %}
-            <td>{{ printFieldContent(field, line) }}</td>
+            <th>{{ field.label }}</th>
           {% endfor%}
         </tr>
-      {% endfor %}
+      </thead>
+      <tbody>
+        {% for line in lines %}
+          <tr>
+            {% for field in fields %}
+              <td>{{ printFieldContent(field, line) }}</td>
+            {% endfor%}
+          </tr>
+        {% endfor %}
+      </tbody>
     </table>
   {% endmacro %}
-  <table class="border" width="100%">
+  <table class="table table-striped table-bordered"><tbody>
     {% for field in fields %}
       <tr>
         <td>
@@ -44,14 +59,18 @@
         </td>
       </tr>
     {% endfor %}
-  </table>
-  <div class="pickupmobile-bottom-buttons">
+  </tbody></table>
+
+  <hr>
+  <nav>
     {% if currentState.addGoto %}
-      <a class="button" pickupmobile-show-add>{{ translate('Add') }}
+      <a class="btn btn-primary" role="button" pickupmobile-show-add>
+        {{ translate('Add') }}
+      </a>
     {% endif %}
     {% if currentState.okGoto %}
-      <a class="button" pickupmobile-show-ok>{{ translate('Ok') }}
+      <a class="btn btn-primary" role="button" pickupmobile-show-ok>{{ translate('Ok') }}
     {% endif %}
-    <a class="button" pickupmobile-show-reload>{{ translate('Reload') }}</a>    
-  </div>
+    <a class="btn btn-secondary" role="button" pickupmobile-show-reload>{{ translate('Reload') }}</a>
+  </nav>
 {% endif %}

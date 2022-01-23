@@ -1,7 +1,7 @@
-<div class="pickupmobile-top-bar">
+<nav class="pickupmobile-top">
   {% if stack.previous %}
-    <a class="button pickupmobile-top-bar-item" pickupmobile-goto-previous>&larr; </a>
-    <div class="pickupmobile-top-bar-item pickupmobile-top-bar-item-main">
+    <a class="btn btn-primary" role="button" pickupmobile-goto-previous>&larr; </a>
+    <div>
       {% set previousLabel = stack.previous.displayStackValues() %}
       {% if previousLabel %}
         {{ previousLabel }}
@@ -9,13 +9,16 @@
     </div>
   {% endif %}
   {% if stack.stateName !== 'init' %}
-    <a pickupmobile-reset-stack class="button pickupmobile-top-bar-item">{{ translate('Return to Home') }}</a>
+    <a class="btn btn-primary" role="button" pickupmobile-reset-stack>{{ translate('Return to Home') }}</a>
   {% endif %}
-</div>
-<h3>{{ currentState.label }}</h3>
+</nav>
+<hr>
+<h1 class="col-auto">{{ currentState.label }}</h1>
 <form action="">
   {% if currentState.type === 'unknown' %}
-    {{ translate('Not configured yet.') }}
+    <div class="alert alert-danger">
+      {{ translate('Not configured yet.') }}
+    </div>
   {% elif currentState.type === 'choice' %}
     {% include 'mobilechoice.njk' %}
   {% elif currentState.type === 'select' %}

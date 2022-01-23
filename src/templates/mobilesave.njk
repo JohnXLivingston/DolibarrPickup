@@ -1,15 +1,22 @@
-<div>
+<div class="alert alert-info">
   {{ translate('Please confirm the data you want to save:') }}
-  <ul>
+</div>
+<table class="table table-striped table-bordered">
+  <tbody>
   {% for sv in stackValues %}
-    {% set s = displayStackValue(sv) %}
+    {% set s = getDisplayStackValue(sv) %}
     {% if s %}
-      <li>{{ s }}</li>
+      <tr>
+        <th>{{ s.label }}</th>
+        <td>{{ s.display }}</td>
+      </tr>
     {% endif %}
   {% endfor %}
-  </ul>
-</div>
-<div class="pickupmobile-bottom-buttons">
-  <input type="submit" value="{{ translate('Save') }}" class="button"/>
-</div>
-<div class="pickupmobile-error" pickupmobile-save-error-container></div>
+  </tbody>
+</table>
+
+<hr>
+<nav>
+  <input type="submit" value="{{ translate('Save') }}" class="btn btn-primary"/>
+</nav>
+<div class="alert alert-danger d-none" pickupmobile-save-error-container></div>
