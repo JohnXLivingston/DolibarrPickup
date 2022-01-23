@@ -61,7 +61,7 @@ function mobile_header () {
   print '<meta charset="UTF-8">'."\n";
   print '<meta name="robots" content="noindex'.($disablenofollow?'':',nofollow').'">'."\n";	// Do not index
   print '<meta name="viewport" content="width=device-width, initial-scale=1">'."\n";
-  
+
   $favicon = DOL_URL_ROOT.'/theme/dolibarr_256x256_color.png';
   if (!empty($conf->global->MAIN_FAVICON_URL)) $favicon = $conf->global->MAIN_FAVICON_URL;
   print '<link rel="shortcut icon" type="image/x-icon" href="'.$favicon.'"/>'."\n";
@@ -69,7 +69,7 @@ function mobile_header () {
   print '<title>' . dol_htmlentities($langs->trans('Pickups')) . "</title>\n";
 
   $ext='layout='.$conf->browser->layout.'&version='.urlencode(DOL_VERSION);
-  $extpickup = 'version='.urlencode($modulePickup->version); // TODO
+  $extpickup = 'version='.urlencode($modulePickup->version);
 
   // FIXME: clean or remove this:
   if (true) {
