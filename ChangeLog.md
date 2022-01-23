@@ -1,10 +1,10 @@
 # DolibarrPickup
 
-## ???
+## 0.14
 
 ### Fonctionnalités
 
-*
+* Appli mobile : refonte graphique complète (utilisation de Bootstap).
 
 ### Corrections mineures
 
