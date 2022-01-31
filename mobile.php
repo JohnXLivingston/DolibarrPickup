@@ -71,43 +71,12 @@ function mobile_header () {
   $ext='layout='.$conf->browser->layout.'&version='.urlencode(DOL_VERSION);
   $extpickup = 'version='.urlencode($modulePickup->version);
 
-  // FIXME: clean or remove this:
-  if (true) {
-    print '<!-- Includes CSS for JQuery (Ajax library) -->'."\n";
-    $jquerytheme = 'base';
-    if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;
-    if (constant('JS_JQUERY_UI')) print '<link rel="stylesheet" type="text/css" href="'.JS_JQUERY_UI.'css/'.$jquerytheme.'/jquery-ui.min.css'.($ext ? '?'.$ext : '').'">'."\n"; // Forced JQuery
-    else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui.css'.($ext ? '?'.$ext : '').'">'."\n"; // JQuery
-    if (!defined('DISABLE_JQUERY_JNOTIFY')) print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css'.($ext ? '?'.$ext : '').'">'."\n"; // JNotify
-    if (!defined('DISABLE_SELECT2') && (!empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) || defined('REQUIRE_JQUERY_MULTISELECT')))     // jQuery plugin "mutiselect", "multiple-select", "select2"...
-    {
-      $tmpplugin = empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) ?constant('REQUIRE_JQUERY_MULTISELECT') : $conf->global->MAIN_USE_JQUERY_MULTISELECT;
-      print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/'.$tmpplugin.'/dist/css/'.$tmpplugin.'.css'.($ext ? '?'.$ext : '').'">'."\n";
-    }
-  }
-
   print '<link rel="stylesheet" type="text/css" href="'.dol_buildpath('/pickup/css/mobile.css', 1).($extpickup?'?'.$extpickup:'').'">'."\n";
 
 
-  // FIXME: clean or remove this:
-  if (true) {
-    // JQuery. Must be before other includes
-    if (defined('JS_JQUERY') && constant('JS_JQUERY')) print '<script src="'.JS_JQUERY.'jquery.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
-    else print '<script src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
-    if (defined('JS_JQUERY_UI') && constant('JS_JQUERY_UI')) print '<script src="'.JS_JQUERY_UI.'jquery-ui.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
-    else print '<script src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery-ui.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n";
-    if (!defined('DISABLE_SELECT2') && (!empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) || defined('REQUIRE_JQUERY_MULTISELECT')))     // jQuery plugin "mutiselect", "multiple-select", "select2", ...
-    {
-      $tmpplugin = empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) ?constant('REQUIRE_JQUERY_MULTISELECT') : $conf->global->MAIN_USE_JQUERY_MULTISELECT;
-      print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/'.$tmpplugin.'/dist/js/'.$tmpplugin.'.full.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n"; // We include full because we need the support of containerCssClass
-    }
-    if (! defined('DISABLE_MULTISELECT'))     // jQuery plugin "mutiselect" to select with checkboxes. Can be removed once we have an enhanced search tool
-    {
-      print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/jquery.multi-select.js'.($ext?'?'.$ext:'').'"></script>'."\n";
-    }
-  }
-
-  print '<script src="'.dol_buildpath('/pickup/js/mobile.js.php', 1).($extpickup?'?'.$extpickup:'').'"></script>'."\n";
+  print '<script src="'.dol_buildpath('/pickup/js/lib/jquery/jquery.min.js', 1).($extpickup?'?'.$extpickup:'').'"></script>'."\n";
+  print '<script src="'.dol_buildpath('/pickup/js/lib/select2/select2.min.js', 1).($extpickup?'?'.$extpickup:'').'"></script>'."\n";
+  print '<script src="'.dol_buildpath('/pickup/js/content/mobile.js', 1).($extpickup?'?'.$extpickup:'').'"></script>'."\n";
   print "</head>\n\n";
 }
 mobile_header();

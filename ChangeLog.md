@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## 0.15
+
+### Corrections
+
+* Appli mobile : ne s'appuie plus sur les libs JS de Dolibarr.
+
 ## 0.14
 
 ### Fonctionnalités

@@ -15,6 +15,10 @@
 // FIXME: only pick needed files.
 @import "bootstrap/scss/bootstrap";
 
+// Select2 styles:
+@import "select2/src/scss/core";
+@import "select2-bootstrap-5-theme/src/include-all";
+
 nav {
   display: flex;
   flex: row nowrap;

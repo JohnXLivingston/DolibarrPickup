@@ -155,7 +155,9 @@ class Machine {
     this.content.find('[pickupmobile-select2]').each((i, html) => {
       const el = $(html)
       el.removeAttr('pickupmobile-select2')
-      el.select2()
+      el.select2({
+        theme: 'bootstrap-5'
+      })
     })
   }
 

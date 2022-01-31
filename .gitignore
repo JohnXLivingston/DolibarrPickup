@@ -2,6 +2,7 @@
 *.php.back
 *.sql.back
 js/content
+js/lib
 css/*.css
 css/*.css.map
 build/templates
