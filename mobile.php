@@ -73,7 +73,6 @@ function mobile_header () {
 
   print '<link rel="stylesheet" type="text/css" href="'.dol_buildpath('/pickup/css/mobile.css', 1).($extpickup?'?'.$extpickup:'').'">'."\n";
 
-
   print '<script src="'.dol_buildpath('/pickup/js/lib/jquery/jquery.min.js', 1).($extpickup?'?'.$extpickup:'').'"></script>'."\n";
   print '<script src="'.dol_buildpath('/pickup/js/lib/select2/select2.min.js', 1).($extpickup?'?'.$extpickup:'').'"></script>'."\n";
   print '<script src="'.dol_buildpath('/pickup/js/content/mobile.js', 1).($extpickup?'?'.$extpickup:'').'"></script>'."\n";
