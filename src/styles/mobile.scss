@@ -27,6 +27,12 @@ nav {
   width: 100%;
   text-align: center;
 
+  &.pickupmobile-top {
+    background-color: $body-bg;
+    position: sticky;
+    top: 0;
+  }
+
   & > * {
     white-space: nowrap;
     overflow: hidden;
