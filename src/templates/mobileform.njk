@@ -40,7 +40,15 @@
             value="{{ currentValue }}"
             class="form-control {% if invalid %}is-invalid{% endif %}"
             {% if field.maxLength %} maxlength="{{ field.maxLength }}" {% endif %}
+            {% if field.suggestions %} autocomplete="off" list="{{ field.name }}.suggestions" {% endif %}
           />
+          {% if field.suggestions %}
+            <datalist id="{{ field.name }}.suggestions">
+            {% for suggestion in field.suggestions %}
+              <option value="{{ suggestion }}">
+            {% endfor %}
+            </datalist>
+          {% endif %}
         {% elif field.type === 'integer' or field.type === 'float' %}
           <input type="number"
             name="{{ field.name }}"

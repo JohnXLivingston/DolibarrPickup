@@ -3,6 +3,7 @@ import { State, StateDefinitionBase } from './state'
 import { Stack, StackValue } from '../stack'
 import { ResultData, getData, GetDataParams } from '../data'
 import { translate } from '../translate'
+import { uniqAndSort, Filter } from '../utils/filters'
 
 interface FormFieldNotesStatic {
   label: string
@@ -31,6 +32,12 @@ interface FormFieldBase {
 
 interface FormFieldVarchar extends FormFieldBase {
   type: 'varchar'
+  suggestions?: string[]
+  loadSuggestions?: {
+    dataKey: string // name of the data list to load
+    field: string // name of the field from the data list to use for the suggestions
+    filter?: Filter
+  }
 }
 
 interface FormFieldText extends FormFieldBase {
@@ -184,6 +191,14 @@ class StateForm extends State {
               notes.label = note[notes.field]
             }
           }
+        }
+      }
+
+      if (field.type === 'varchar' && 'loadSuggestions' in field && field.loadSuggestions) {
+        const data = getData(field.loadSuggestions.dataKey, 'list', force)
+        r[field.name + '.suggestions'] = data
+        if (data.status === 'resolved') {
+          field.suggestions = uniqAndSort(data.data, field.loadSuggestions.field, field.loadSuggestions.filter, true)
         }
       }
 

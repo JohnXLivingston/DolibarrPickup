@@ -2,6 +2,10 @@
 
 ## 0.15 (Not released yet)
 
+### Fonctionnalités
+
+* Appli mobile : le champs «marque» suggère les valeurs déjà existantes.
+
 ### Corrections
 
 * Appli mobile : ne s'appuie plus sur les libs JS de Dolibarr.

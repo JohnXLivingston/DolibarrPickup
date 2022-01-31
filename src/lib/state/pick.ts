@@ -4,11 +4,12 @@ import { Stack, StackValue } from '../stack'
 import { getData } from '../data'
 import { RenderReason } from '../constants'
 import { Veto } from '../veto'
+import { uniqAndSort, Filter } from '../utils/filters'
 
 interface PickField {
   name: string
   label: string
-  applyFilter?: 'lowerCase' | 'upperCase' | 'localeLowerCase' | 'localeUpperCase'
+  applyFilter?: Filter
 }
 
 type PickFields = PickField[]
@@ -203,45 +204,28 @@ class StatePick extends State {
 
       const currentValue: string | undefined = stack.getValue(field.name)
 
-      const already: {[key: string]: true} = {}
-      let options: PickOption[] = []
-      for (let i = 0; i < data.length; i++) {
-        const d = data[i]
-        let value: string = d[field.name] ?? ''
-        switch (field.applyFilter) {
-          case 'upperCase':
-            value = value.toUpperCase()
-            break
-          case 'lowerCase':
-            value = value.toLowerCase()
-            break
-          case 'localeUpperCase':
-            value = value.toLocaleUpperCase()
-            break
-          case 'localeLowerCase':
-            value = value.toLocaleLowerCase()
-            break
-        }
-        const selected: boolean = currentValue === value
-        if (selected) {
+      for (const d of data) {
+        const value: string = d[field.name] ?? ''
+        if (currentValue === value) {
           nextData.push(d)
         }
-        if (value in already) {
-          continue
-        }
-        already[value] = true
-        options.push({
-          label: value === '' ? '-' : value,
-          value,
-          selected: selected
-        })
       }
-      options.push({
+
+      const options: PickOption[] = [{
         label: '',
         value: '',
         selected: currentValue === undefined
-      })
-      options = options.sort((a, b) => a.label.localeCompare(b.label))
+      }]
+
+      const labels = uniqAndSort(data, field.name, field.applyFilter)
+      for (const label in labels) {
+        const selected: boolean = currentValue === label
+        options.push({
+          label: label === '' ? '-' : label,
+          value: label,
+          selected: selected
+        })
+      }
 
       r.fieldsInfos.push({
         disabled: false,

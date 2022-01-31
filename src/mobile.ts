@@ -324,7 +324,12 @@ $(function () {
             name: 'product_marque',
             label: 'Marque',
             mandatory: true,
-            maxLength: 25
+            maxLength: 25,
+            loadSuggestions: {
+              dataKey: 'product',
+              field: 'options_marque',
+              filter: 'localeUpperCase'
+            }
           },
           {
             type: 'varchar',
