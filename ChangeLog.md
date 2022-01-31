@@ -6,6 +6,7 @@
 
 * Appli mobile : ne s'appuie plus sur les libs JS de Dolibarr.
 * Appli mobile : la barre de bouton du haut reste en place.
+* Appli mobile : on n'importe que les styles nécessaires de bootstrap.
 
 ## 0.14
 

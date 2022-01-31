@@ -1,19 +1,22 @@
-// @import "bootstrap/scss/functions"; // Required
-// @import "bootstrap/scss/variables"; // Required
-// @import "bootstrap/scss/mixins"; // Required
-// @import "bootstrap/scss/utilities"; // Required
-// @import "bootstrap/scss/root"; // Required
-// @import "bootstrap/scss/reboot"; // Required
-// @import "bootstrap/scss/type";
-// @import "bootstrap/scss/containers";
-// @import "bootstrap/scss/grid";
-// @import "bootstrap/scss/buttons";
-// @import "bootstrap/scss/spinners";
-// @import "bootstrap/scss/helpers";
-// @import "bootstrap/scss/utilities/api";
+@import "bootstrap/scss/functions"; // Required
+@import "bootstrap/scss/variables"; // Required
+@import "bootstrap/scss/mixins"; // Required
+@import "bootstrap/scss/utilities"; // Required
+@import "bootstrap/scss/root"; // Required
+@import "bootstrap/scss/reboot"; // Required
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/tables";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/spinners";
+@import "bootstrap/scss/helpers";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/utilities/api";
 
-// FIXME: only pick needed files.
-@import "bootstrap/scss/bootstrap";
+// If you want to test bootstrap without cherry picking files, you can try import all:
+// @import "bootstrap/scss/bootstrap";
 
 // Select2 styles:
 @import "select2/src/scss/core";
