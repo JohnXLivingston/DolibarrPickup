@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## 0.15
+## 0.15 (Not released yet)
 
 ### Corrections
 
