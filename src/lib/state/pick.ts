@@ -218,7 +218,7 @@ class StatePick extends State {
       }]
 
       const labels = uniqAndSort(data, field.name, field.applyFilter)
-      for (const label in labels) {
+      for (const label of labels) {
         const selected: boolean = currentValue === label
         options.push({
           label: label === '' ? '-' : label,

@@ -20,7 +20,7 @@ function applyFilter (value: string, filter: Filter): string {
  * @param column the column on which apply the sort/uniq/filters
  * @param filter filters to apply
  */
-function uniqAndSort (data: any[], column: string, filter?: Filter, removeEmpty?: boolean): any {
+function uniqAndSort (data: any[], column: string, filter?: Filter, removeEmpty?: boolean): string[] {
   const seen = new Map<string, true>()
   const r: string[] = []
   for (const line of data) {
