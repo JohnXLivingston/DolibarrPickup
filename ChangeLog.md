@@ -5,6 +5,7 @@
 ### Fonctionnalités
 
 * Appli mobile : le champs «marque» suggère les valeurs déjà existantes.
+* Colonne «entrepôt» dans la liste des collectes: cachée par défaut.
 
 ### Corrections
 
