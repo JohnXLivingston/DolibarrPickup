@@ -90,6 +90,9 @@ if (!$user->rights->pickup->configure) {
 }
 
 
+require_once DOL_DOCUMENT_ROOT.'/custom/pickup/lib/mobile_forms.php';
+
+$mobileforms = mobileListProductForms();
 
 $help_url='';
 $title = $langs->trans('ListOf', $langs->transnoentitiesnoconv("MobileCats"));
@@ -150,13 +153,12 @@ foreach ($fulltree as $key => $val)
 			{
 				print '<span style="color: grey">';
 			}
-			if (empty($mobilecat->form) && $mobilecat->active)
-			{
+			if (empty($mobilecat->form)) {
 				print '-';
-			}
-			else
-			{
-				print $mobilecat->form;
+			} else if (array_key_exists($mobilecat->form, $mobileforms)) {
+				print htmlspecialchars($mobileforms[$mobilecat->form]);
+			} else {
+			  print htmlspecialchars($mobilecat->form);
 			}
 			if (!$mobilecat->active)
 			{

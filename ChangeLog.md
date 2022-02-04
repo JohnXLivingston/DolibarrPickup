@@ -4,7 +4,10 @@
 
 ### Fonctionnalités
 
-*
+* Automatisation de la saisie DEEE dans l'application mobile :
+  * Au niveau de chaque tag, on peut forcer DEEE à OFF, ou à un type particulier.
+  * On peut également proposer le choix entre les DEEE ECR/ECR Pro et PAM/PAM Pro.
+  * L'application mobile adapte le formulaire de création de produit en fonction.
 
 ### Corrections et changements mineurs
 

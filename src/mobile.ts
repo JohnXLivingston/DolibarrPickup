@@ -40,7 +40,16 @@ $(function () {
 
   definition.product = definitions.pickProduct('show_product', 'categorie')
   definition.categorie = definitions.pickPCat('create_product') // Note: itemGotoField can override the goto
-  definition.create_product = definitions.createProduct('weight')
+  definition.create_product = definitions.createProduct('weight', '')
+  definition.create_product_deee_off = definitions.createProduct('weight', 'create_product_deee_off')
+  definition.create_product_deee_gef = definitions.createProduct('weight', 'create_product_deee_gef')
+  definition.create_product_deee_ghf = definitions.createProduct('weight', 'create_product_deee_ghf')
+  definition.create_product_deee_pam = definitions.createProduct('weight', 'create_product_deee_pam')
+  definition.create_product_deee_pampro = definitions.createProduct('weight', 'create_product_deee_pampro')
+  definition.create_product_deee_ecr = definitions.createProduct('weight', 'create_product_deee_ecr')
+  definition.create_product_deee_ecrpro = definitions.createProduct('weight', 'create_product_deee_ecrpro')
+  definition.create_product_deee_pam_or_pampro = definitions.createProduct('weight', 'create_product_deee_pam_or_pampro')
+  definition.create_product_deee_ecr_or_ecrpro = definitions.createProduct('weight', 'create_product_deee_ecr_or_ecrpro')
   definition.weight = definitions.createProductWeight('save_product')
   definition.save_product = definitions.saveProduct('show_product', 'categorie')
   definition.show_product = definitions.showProduct('qty')

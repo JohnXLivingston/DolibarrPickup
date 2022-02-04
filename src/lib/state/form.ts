@@ -44,11 +44,15 @@ interface FormFieldText extends FormFieldBase {
   type: 'text'
 }
 
+interface FormFieldSelectOption {
+  value: string
+  label: string
+}
+type FormFieldSelectLoadFilter = (option: FormFieldSelectOption) => boolean
 interface FormFieldSelectSimple extends FormFieldBase {
   type: 'select'
-  options: Array<{ value: string, label: string }>
+  options: FormFieldSelectOption[]
 }
-
 interface FormFieldSelectDynamicLoadParamsFromStack {
   type: 'stack'
   key: string // the value to get from the stack
@@ -56,9 +60,11 @@ interface FormFieldSelectDynamicLoadParamsFromStack {
 interface FormFieldSelectDynamicLoadParams {[key: string]: string | FormFieldSelectDynamicLoadParamsFromStack}
 interface FormFieldSelectDynamic extends FormFieldBase {
   type: 'select'
-  options: Array<{value: string, label: string}>
+  options: FormFieldSelectOption[]
+  readonly?: boolean
   load: string
   loadParams?: FormFieldSelectDynamicLoadParams
+  loadFilter?: FormFieldSelectLoadFilter // a function to filter values
   map: {value: string, label: string}
 }
 type FormFieldSelect = FormFieldSelectSimple | FormFieldSelectDynamic
@@ -230,6 +236,9 @@ class StateForm extends State {
           if (!field.options.find(option => option.value === '' || option.value === '0')) {
             field.options.unshift({ value: '', label: '-' })
           }
+          if (field.loadFilter) {
+            field.options = field.options.filter(field.loadFilter)
+          }
         }
       }
     }
@@ -345,5 +354,7 @@ class StateForm extends State {
 
 export {
   StateForm,
-  StateFormDefinition
+  StateFormDefinition,
+  FormField,
+  FormFieldSelectLoadFilter
 }

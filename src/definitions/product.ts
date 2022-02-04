@@ -1,4 +1,4 @@
-import { StateDefinition } from '../lib/state/index'
+import type { StateDefinition, FormField, FormFieldSelectLoadFilter } from '../lib/state/index'
 
 export function pickProduct (goto: string, creationGoto: string): StateDefinition {
   return {
@@ -15,7 +15,76 @@ export function pickProduct (goto: string, creationGoto: string): StateDefinitio
   }
 }
 
-export function createProduct (goto: string): StateDefinition {
+function getDeeeField (deeeForm: string): FormField {
+  switch (deeeForm) {
+    case 'create_product_deee_off':
+      return getDeeeFieldForce('')
+    case 'create_product_deee_gef':
+      return getDeeeFieldForce('1')
+    case 'create_product_deee_ghf':
+      return getDeeeFieldForce('2')
+    case 'create_product_deee_pam':
+      return getDeeeFieldForce('3')
+    case 'create_product_deee_pampro':
+      return getDeeeFieldForce('4')
+    case 'create_product_deee_ecr':
+      return getDeeeFieldForce('5')
+    case 'create_product_deee_ecrpro':
+      return getDeeeFieldForce('6')
+    case 'create_product_deee_pam_or_pampro':
+    case 'create_product_deee_ecr_or_ecrpro':
+    default:
+      return getDeeeFieldMultiple(deeeForm)
+  }
+}
+function getDeeeFieldForce (value: string): FormField {
+  return {
+    type: 'select',
+    name: 'product_deee_type',
+    label: 'DEEE',
+    readonly: true,
+    mandatory: false,
+    default: value,
+    options: [],
+    load: 'dict',
+    loadParams: {
+      what: 'deee_type'
+    },
+    loadFilter: (option) => option.value === value,
+    map: {
+      value: 'value',
+      label: 'label'
+    }
+  }
+}
+function getDeeeFieldMultiple (deeeForm: string): FormField {
+  let loadFilter: FormFieldSelectLoadFilter | undefined
+  if (deeeForm === 'create_product_deee_pam_or_pampro') {
+    loadFilter = (option) => { return option.value === '3' || option.value === '4' }
+  } else if (deeeForm === 'create_product_deee_ecr_or_ecrpro') {
+    loadFilter = (option) => { return option.value === '5' || option.value === '6' }
+  }
+  return {
+    type: 'select',
+    name: 'product_deee_type',
+    label: 'DEEE',
+    mandatory: false,
+    options: [],
+    load: 'dict',
+    loadParams: {
+      what: 'deee_type'
+    },
+    loadFilter,
+    map: {
+      value: 'value',
+      label: 'label'
+    }
+  }
+}
+
+export function createProduct (goto: string, deeeForm: string): StateDefinition {
+  const deeeField: FormField = getDeeeField(deeeForm)
+
   return {
     type: 'form',
     label: 'Remplir la fiche produit',
@@ -47,21 +116,7 @@ export function createProduct (goto: string): StateDefinition {
         mandatory: false,
         maxLength: 255
       },
-      {
-        type: 'select',
-        name: 'product_deee_type',
-        label: 'DEEE',
-        mandatory: false,
-        options: [],
-        load: 'dict',
-        loadParams: {
-          what: 'deee_type'
-        },
-        map: {
-          value: 'value',
-          label: 'label'
-        }
-      },
+      deeeField,
       {
         type: 'text',
         name: 'product_description',

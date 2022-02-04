@@ -19,6 +19,8 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/mobilecat.class.php';
 require_once DOL_DOCUMENT_ROOT.'/custom/pickup/lib/pickup_mobilecat.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/custom/pickup/lib/mobile_forms.php';
+
 
 $langs->loadLangs(array("pickup@pickup", "categories", "other"));
 
@@ -147,8 +149,8 @@ elseif ($action === 'edit')
 {
   $new_form = GETPOST('form', 'alpha');
   $new_notes = GETPOST('notes', 'nohtml');
-  $forms = array(); // FIXME: should be mobileListProductForms();
-  if (empty($new_form) || in_array($new_form, $forms))
+  $forms = mobileListProductForms();
+  if (empty($new_form) || array_key_exists($new_form, $forms))
   {
     $mobilecat->form = empty($new_form) ? null : $new_form;
     $mobilecat->notes = empty($new_notes) || $new_notes === '' ? null : $new_notes;
@@ -212,7 +214,7 @@ if ($object->id)
   print '<div class="fichecenter">';
   print '<div class="underbanner clearboth"></div>';
   
-  $forms = array(); // FIXME: should be mobileListProductForms();
+  $forms = mobileListProductForms();
 
   if ($mobilecat->id)
   {
@@ -226,15 +228,14 @@ if ($object->id)
           </td>
           <td>
             <select name="form">
-              <option value="" <?php if (empty($mobilecat->form)) print 'selected="selected"'; ?>>Formulaire par defaut</option>
               <?php
-              foreach ($forms as $form) {
+              foreach ($forms as $form => $form_label) {
                 print '<option value="'.htmlspecialchars($form).'" ';
                 if ($mobilecat->form === $form)
                 {
                   print ' selected="selected" ';
                 }
-                print '>'.htmlspecialchars($form).'</option>';
+                print '>'.htmlspecialchars($form_label).'</option>';
               }
               ?>
             </select>

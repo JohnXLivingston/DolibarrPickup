@@ -67,6 +67,7 @@
           <select
             name="{{ field.name }}"
             class="form-select {% if invalid %}is-invalid{% endif %}"
+            {% if field.readonly %}disabled="disabled"{% endif %}
           >
           {% for option in field.options %}
             <option value="{{ option.value }}" {% if option.value === currentValue %}selected="selected"{% endif %}>
@@ -74,6 +75,9 @@
             </option>
           {% endfor %}
           </select>
+          {% if field.readonly %}
+            <input type="hidden" name="{{ field.name }}" value="{{ currentValue }}">
+          {% endif %}
         {% elif field.type === 'radio' %}
           {% for option in field.options %}
             <label class="form-check-label">
