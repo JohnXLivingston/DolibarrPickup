@@ -39,7 +39,7 @@ $(function () {
   definition.show_pickup = definitions.showPickup('product')
 
   definition.product = definitions.pickProduct('show_product', 'categorie')
-  definition.categorie = definitions.pickPCat('create_product')
+  definition.categorie = definitions.pickPCat('create_product') // Note: itemGotoField can override the goto
   definition.create_product = definitions.createProduct('weight')
   definition.weight = definitions.createProductWeight('save_product')
   definition.save_product = definitions.saveProduct('show_product', 'categorie')
