@@ -198,7 +198,7 @@ class StateForm extends State {
         const data = getData(field.loadSuggestions.dataKey, 'list', force)
         r[field.name + '.suggestions'] = data
         if (data.status === 'resolved') {
-          field.suggestions = uniqAndSort(data.data, field.loadSuggestions.field, field.loadSuggestions.filter, true)
+          field.suggestions = uniqAndSort(data.data, field.loadSuggestions.field, field.loadSuggestions.filter, true).values
         }
       }
 

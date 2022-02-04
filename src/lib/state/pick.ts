@@ -204,27 +204,27 @@ class StatePick extends State {
 
       const currentValue: string | undefined = stack.getValue(field.name)
 
-      for (const d of data) {
-        const value: string = d[field.name] ?? ''
-        if (currentValue === value) {
-          nextData.push(d)
-        }
-      }
-
       const options: PickOption[] = [{
         label: '',
         value: '',
         selected: currentValue === undefined
       }]
 
-      const labels = uniqAndSort(data, field.name, field.applyFilter)
-      for (const label of labels) {
+      const uniqandSorted = uniqAndSort(data, field.name, field.applyFilter)
+      for (const label of uniqandSorted.values) {
         const selected: boolean = currentValue === label
         options.push({
           label: label === '' ? '-' : label,
           value: label,
           selected: selected
         })
+      }
+
+      if (currentValue !== undefined && uniqandSorted.matchingLines.has(currentValue)) {
+        const lines = uniqandSorted.matchingLines.get(currentValue) ?? []
+        for (const line of lines) {
+          nextData.push(line)
+        }
       }
 
       r.fieldsInfos.push({

@@ -4,6 +4,7 @@
 
 ### Fonctionnalités
 
+* Appli mobile : Fix d'un bug bloquant (impossibilité de sélectionner un produit existant).
 * Appli mobile : affichage du champs DEEE sur la fiche collecte.
 
 ### Corrections mineures

@@ -14,27 +14,39 @@ function applyFilter (value: string, filter: Filter): string {
   return value
 }
 
+interface UniqAndSortResult {
+  values: string[]
+  matchingLines: Map<string, any[]>
+}
+
 /**
  * filters data, by removing duplicates. The result is sorted.
  * @param data data returned by the backend source
  * @param column the column on which apply the sort/uniq/filters
  * @param filter filters to apply
  */
-function uniqAndSort (data: any[], column: string, filter?: Filter, removeEmpty?: boolean): string[] {
-  const seen = new Map<string, true>()
-  const r: string[] = []
+function uniqAndSort (data: any[], column: string, filter?: Filter, removeEmpty?: boolean): UniqAndSortResult {
+  const result: UniqAndSortResult = {
+    values: [],
+    matchingLines: new Map<string, any>()
+  }
   for (const line of data) {
     let value: string = line[column] ?? ''
     if (filter) {
       value = applyFilter(value, filter)
     }
     if (removeEmpty && value === '') { continue }
-    if (seen.has(value)) { continue }
-    seen.set(value, true)
 
-    r.push(value)
+    if (result.matchingLines.has(value)) {
+      result.matchingLines.get(value)?.push(line)
+      continue
+    }
+
+    result.matchingLines.set(value, [line])
+    result.values.push(value)
   }
-  return r.sort((a, b) => a.localeCompare(b))
+  result.values.sort((a, b) => a.localeCompare(b))
+  return result
 }
 
 export {
