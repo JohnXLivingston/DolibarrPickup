@@ -29,10 +29,12 @@
     {% endif %}
   {% endmacro %}
   {% macro printLines(fields, lines) %}
+    {% set isLineTotals = 0 %}
     <table class="table">
       <thead>
         <tr>
           {% for field in fields %}
+            {% if field.total %}{% set isLineTotals = 1 %}{% endif %}
             <th>{{ field.label }}</th>
           {% endfor%}
         </tr>
@@ -46,6 +48,29 @@
           </tr>
         {% endfor %}
       </tbody>
+      {% if isLineTotals %}
+        <tbody>
+          {% for field in fields %}
+            <td>
+              {% if field.total %}
+                {% set lineTotal = 0 %}
+                {% if field.type === 'integer' %}
+                  {% for line in lines %}
+                    {% set lineTotal = lineTotal + line[field.name] %}
+                  {% endfor %}
+                {% elif field.type === 'boolean' %}
+                  {% for line in lines %}
+                    {% if line[field.name]%}
+                      {% set lineTotal = lineTotal + 1 %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                {{ lineTotal }}
+              {% endif %}
+            </td>
+          {% endfor %}
+        </tbody>
+      {% endif %}
     </table>
   {% endmacro %}
   <table class="table table-striped table-bordered"><tbody>

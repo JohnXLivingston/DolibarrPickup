@@ -268,12 +268,14 @@ $(function () {
               {
                 type: 'boolean',
                 name: 'deee',
-                label: 'DEEE'
+                label: 'DEEE',
+                total: true
               },
               {
                 type: 'integer',
                 name: 'qty',
-                label: 'Quantité'
+                label: 'Quantité',
+                total: true
               }
             ]
           }

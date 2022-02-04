@@ -17,9 +17,11 @@ interface ShowFieldText extends ShowFieldBase {
 }
 interface ShowFieldBoolean extends ShowFieldBase {
   type: 'boolean'
+  total?: boolean
 }
 interface ShowFieldInteger extends ShowFieldBase {
   type: 'integer'
+  total?: boolean
 }
 interface ShowFieldLines extends ShowFieldBase {
   type: 'lines'
