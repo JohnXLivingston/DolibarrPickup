@@ -8,7 +8,7 @@
 
 ### Corrections mineures
 
-* Passage au `semantic versionning` pour la numérotation des versions.
+* Passage au `semantic versioning` pour la numérotation des versions.
 
 ## 0.15
 
