@@ -1,5 +1,15 @@
 # DolibarrPickup
 
+## 0.17.0 (Not released yet)
+
+### Fonctionnalités
+
+*
+
+### Corrections et changements mineurs
+
+* Déclaration des états mobiles : rangement et refactoring.
+
 ## 0.16.0
 
 ### Fonctionnalités
