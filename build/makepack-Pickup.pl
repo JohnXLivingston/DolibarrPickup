@@ -209,7 +209,7 @@ foreach my $PROJECT (@PROJECTLIST) {
     if ($_ =~ /this->version\s*=\s*'([\d\.]+)'/) { $PROJVERSION=$1; last; }
   }
   close IN;
-  if ($PROJVERSION !~ /^\d+\.\d+(\.d+)?$/) {
+  if ($PROJVERSION !~ /^\d+\.\d+(\.\d+)?$/) {
     print "Invalid project version number: '$PROJVERSION'.\n";
     print "Aborting...";
     sleep(2);
@@ -220,7 +220,7 @@ foreach my $PROJECT (@PROJECTLIST) {
 	my ($MAJOR,$MINOR,$BUILD)=split(/\./,$PROJVERSION,3);
 
 	my $FILENAME="$PROJECTLC";
-	my $ARCHIVEFILENAME="module_$PROJECTLC-$MAJOR.$MINOR".($BUILD?".$BUILD":"");
+	my $ARCHIVEFILENAME="module_$PROJECTLC-$MAJOR.$MINOR".($BUILD ne '' ? ".$BUILD" : "");
 
 	# Test if requirement is ok
 	#--------------------------

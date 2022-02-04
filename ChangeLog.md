@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## 0.16.0 (Not released yet)
+
+### Corrections mineures
+
+* Passage au `semantic versionning` pour la numérotation des versions.
+
 ## 0.15
 
 ### Fonctionnalités
