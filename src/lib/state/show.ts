@@ -15,6 +15,9 @@ interface ShowFieldVarchar extends ShowFieldBase {
 interface ShowFieldText extends ShowFieldBase {
   type: 'text'
 }
+interface ShowFieldBoolean extends ShowFieldBase {
+  type: 'boolean'
+}
 interface ShowFieldInteger extends ShowFieldBase {
   type: 'integer'
 }
@@ -23,7 +26,7 @@ interface ShowFieldLines extends ShowFieldBase {
   lines: ShowField[]
 }
 
-type ShowField = ShowFieldVarchar | ShowFieldText | ShowFieldLines | ShowFieldInteger
+type ShowField = ShowFieldVarchar | ShowFieldText | ShowFieldBoolean | ShowFieldLines | ShowFieldInteger
 interface StateShowDefinition extends StateDefinitionBase {
   type: 'show'
   key: string

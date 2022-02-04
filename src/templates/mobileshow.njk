@@ -22,6 +22,8 @@
       {{ data[field.name] }}
     {% elif field.type === 'text' %}
       {{ data[field.name] | safe }}
+    {% elif field.type === 'boolean' %}
+      <input type="checkbox" disabled="disabled" {% if (data[field.name]) %}checked="checked"{% endif %}>
     {% elif field.type === 'lines' %}
       {{ printLines(field.lines, data[field.name]) }}
     {% endif %}

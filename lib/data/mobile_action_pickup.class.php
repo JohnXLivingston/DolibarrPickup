@@ -37,7 +37,8 @@ class DataMobileActionPickup extends DataMobileAction {
       $rl = array(
         'rowid' => $line->id,
         'name' => $product->ref,
-        'qty' => $line->qty
+        'qty' => $line->qty,
+        'deee' => $line->deee ? true : false
       );
       array_push($r['lines'], $rl);
     }

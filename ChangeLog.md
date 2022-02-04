@@ -2,6 +2,10 @@
 
 ## 0.16.0 (Not released yet)
 
+### Fonctionnalités
+
+* Appli mobile : affichage du champs DEEE sur la fiche collecte.
+
 ### Corrections mineures
 
 * Passage au `semantic versionning` pour la numérotation des versions.
