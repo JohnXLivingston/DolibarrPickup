@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## 0.17.0 (Not released yet)
+## 0.17.0
 
 ### Fonctionnalités
 
