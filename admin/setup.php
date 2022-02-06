@@ -80,7 +80,7 @@ $pickup_extrafields = array(
 		// 'totalizable' => 1,
 	),
 	'pickup_deee_type' => array(
-		'label' => 'Type DEEE',
+		'label' => 'DEEEType',
 		'type' => 'select',
 		'pos' => 16,
 		'size' => '',
@@ -96,8 +96,29 @@ $pickup_extrafields = array(
 		)),
 		'always_editable' => 1,
 		'visibility' => '-1',
+		'LRDS' => array(
+			'migrate' => true,
+			'lrds_name' => 'type_deee',
+			'map' => array(
+				'1' => 'gef',
+				'2' => 'ghf',
+				'3' => 'pam',
+				'4' => 'pam_pro',
+				'5' => 'ecr',
+				'6' => 'ecr_pro'
+			)
+		)
 	)
 );
+
+$extrafields = new ExtraFields($db);
+$fetched_element_types = array();
+foreach ($pickup_extrafields as $key => $val) {
+	if ($fetched_element_types[$val['elementype']]) { continue; }
+	$extrafields->fetch_name_optionals_label($val['elementype']);
+	$fetched_element_types[$val['elementype']] = true;
+}
+
 
 $arrayofparameters=array(
 	'PICKUP_DEFAULT_STOCK' => array('enabled'=>1),
@@ -105,6 +126,91 @@ $arrayofparameters=array(
 	'PICKUP_USE_PBRAND' => array('enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand'))
 );
 
+
+function count_extra_fields_to_migrate($extrafield_name) {
+	global $db, $extrafields, $pickup_extrafields;
+
+	if (empty($pickup_extrafields[$extrafield_name])) {
+		return null;
+	}
+
+	$ef_definition = $pickup_extrafields[$extrafield_name];
+	if (empty($ef_definition['LRDS']) || !$ef_definition['LRDS']['migrate']) {
+		return null;
+	}
+
+	if (!array_key_exists($ef_definition['elementype'], $extrafields->attributes)) {
+		return null;
+	}
+	if (!array_key_exists($ef_definition['LRDS']['lrds_name'], $extrafields->attributes[$ef_definition['elementype']]['type'])) {
+		return null;
+	}
+
+	$sql = 'SELECT  count(*) as nb ';
+	$sql.= ' FROM '.MAIN_DB_PREFIX.'product_extrafields WHERE ';
+	$sql.= ' ('.$extrafield_name.' = "" OR '.$extrafield_name.' = "0" OR '.$extrafield_name.' is NULL) ';
+	$sql.= ' AND ';
+	$sql.= ' ('.$ef_definition['LRDS']['lrds_name'].') ';
+	$resql = $db->query($sql);
+	if (!$resql) {
+		return null;
+	}
+
+	$row = $db->fetch_object($resql);
+	return $row->nb;
+}
+
+function migrate_extra_fields_to_migrate($extrafield_name) {
+	global $db, $extrafields, $pickup_extrafields;
+
+	if (empty($pickup_extrafields[$extrafield_name])) {
+		return null;
+	}
+
+	$ef_definition = $pickup_extrafields[$extrafield_name];
+	if (empty($ef_definition['LRDS']) || !$ef_definition['LRDS']['migrate']) {
+		return null;
+	}
+
+	if (!array_key_exists($ef_definition['elementype'], $extrafields->attributes)) {
+		return null;
+	}
+	if (!array_key_exists($ef_definition['LRDS']['lrds_name'], $extrafields->attributes[$ef_definition['elementype']]['type'])) {
+		return null;
+	}
+
+	dol_syslog('pickup module: migrate extrafield: '.$extrafield_name, LOG_INFO);
+
+	$map = $ef_definition['LRDS']['map'];
+	if (empty($map)) {
+		$sql = 'UPDATE '.MAIN_DB_PREFIX.'product_extrafields ';
+		$sql.= ' SET '.$extrafield_name.' = '.$ef_definition['LRDS']['lrds_name']. ' ';
+		$sql.=' WHERE ';
+		$sql.= ' ('.$extrafield_name.' = "" OR '.$extrafield_name.' = "0" OR '.$extrafield_name.' is NULL) ';
+		$sql.= ' AND ';
+		$sql.= ' ('.$ef_definition['LRDS']['lrds_name'].') ';
+		$resql = $db->query($sql);
+		if (!$resql) {
+			dol_syslog('pickup module: Failed to migrate extrafield: '.$db->lasterror(), LOG_ERR);
+			return -1;
+		}
+	} else {
+		foreach ($map as $oldv => $newv) {
+			$sql = 'UPDATE '.MAIN_DB_PREFIX.'product_extrafields ';
+			$sql.= ' SET '.$extrafield_name.' = \''.$db->escape($newv). '\' ';
+			$sql.=' WHERE ';
+			$sql.= ' ('.$extrafield_name.' = "" OR '.$extrafield_name.' = "0" OR '.$extrafield_name.' is NULL) ';
+			$sql.= ' AND ';
+			$sql.= ' ('.$ef_definition['LRDS']['lrds_name'].' = \''.$db->escape($oldv).'\') ';
+			$resql = $db->query($sql);
+			if (!$resql) {
+				dol_syslog('pickup module: Failed to migrate extrafield: '.$db->lasterror(), LOG_ERR);
+				return -1;
+			}
+		}
+	}
+	return 1;
+}
 
 
 /*
@@ -138,7 +244,6 @@ if ($action == 'update' && is_array($arrayofparameters))
 					foreach ($val['extrafields'] as $extrafield_name) {
 						if (!empty($pickup_extrafields[$extrafield_name])) {
 							$ef_definition = $pickup_extrafields[$extrafield_name];
-							$extrafields = new ExtraFields($db);
 							$ef_result = $extrafields->addExtraField(
 								$extrafield_name,
 								$ef_definition['label'],
@@ -241,6 +346,20 @@ if ($action === 'updateExtraFields' && $arrayofparameters && GETPOSTISSET('extra
 		}
 	}
 }
+if ($action === 'migrateExtraFields' && $pickup_extrafields) {
+	$field_to_migrate = GETPOST('extrafield', 'alpha');
+	if (!empty($pickup_extrafields[$field_to_migrate])) {
+		$db->begin();
+		$result = migrate_extra_fields_to_migrate($field_to_migrate);
+		if ($result<0) {
+			$db->rollback();
+			if (empty($nomessageinupdate)) setEventMessages($langs->trans("SetupNotSaved"), null, 'errors');
+		} else {
+			$db->commit();
+			if (empty($nomessageinupdate)) setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
+		}
+	}
+}
 
 /*
  * View
@@ -326,7 +445,22 @@ else
 					print '<input type="hidden" name="extrafields_for" value="'.$key.'">';
 					print '<input type="submit" name="" value="'.dol_escape_htmltag($langs->trans("PICKUP_UPDATE_EXTRAFIELDS")).'">';
 					print '</form>';
+
+					foreach ($val['extrafields'] as $extrafield_name) {
+						if (!empty($pickup_extrafields[$extrafield_name])) {
+							$count = count_extra_fields_to_migrate($extrafield_name);
+							if ($count) {
+								print ' <form style="display:inline" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
+								print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+								print '<input type="hidden" name="action" value="migrateExtraFields">';
+								print '<input type="hidden" name="extrafield" value="'.$extrafield_name.'">';
+								print '<input type="submit" name="" value="'.dol_escape_htmltag($langs->trans("PICKUP_MIGRATE_EXTRAFIELDS").' ('.$pickup_extrafields[$extrafield_name]['label'].': '.$count.')').'">';
+								print '</form>';
+							}
+						}
+					}
 				}
+
 			} else {
 				print $conf->global->$key;
 			}

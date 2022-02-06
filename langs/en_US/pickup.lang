@@ -42,7 +42,8 @@ PICKUP_USE_DEEE = Use French DEEE fields
 PICKUP_USE_DEEETooltip = Will add DEEE and DEEE type files to products.
 PICKUP_USE_PBRAND = Use a «brand» field on products
 PICKUP_USE_PBRANDTooltip = Will add a brand field to products.
-PICKUP_UPDATE_EXTRAFIELDS = Reset extra fields.
+PICKUP_UPDATE_EXTRAFIELDS = Reset extra fields
+PICKUP_MIGRATE_EXTRAFIELDS = Migrate old LRDS fields
 
 #
 # Menus
@@ -104,5 +105,6 @@ ConfirmPickupActionSign = Are you sure you want to set this pickup as signed?
 
 PickupFixLine = Get product information
 DEEE = DEEE
+DEEEType = DEEE Type
 DEEETotal = DEEE total
 PickupTotalWeight = Total weight

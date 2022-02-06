@@ -42,7 +42,8 @@ PICKUP_USE_DEEE = Utiliser les champs DEEE
 PICKUP_USE_DEEETooltip = Ajoute les champs DEEE et Type DEEE sur les fiches produits.
 PICKUP_USE_PBRAND = Ajouter un champ «marque» à la fiche produit
 PICKUP_USE_PBRANDTooltip = Ajoute un champ «marque» aux fiches produits.
-PICKUP_UPDATE_EXTRAFIELDS = Réinitialiser les attributs supplémentaires.
+PICKUP_UPDATE_EXTRAFIELDS = Réinitialiser les attributs supplémentaires
+PICKUP_MIGRATE_EXTRAFIELDS = Migrer les anciens champs LRDS
 
 #
 # Menus
@@ -104,5 +105,6 @@ ConfirmPickupActionSign = Êtes-vous sûr de vouloir passer cette collecte en st
 
 PickupFixLine = Remonter les informations du produit
 DEEE = DEEE
+DEEEType = Type DEEE
 DEEETotal = Total DEEE
 PickupTotalWeight = Poids total
