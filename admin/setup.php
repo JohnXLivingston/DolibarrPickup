@@ -61,8 +61,48 @@ if (GETPOSTISSET('fk_entrepot')) {
 	$_POST['PICKUP_DEFAULT_STOCK'] = $_POST['fk_entrepot'];
 }
 
+$pickup_extrafields = array(
+	'pickup_deee' => array(
+		'label' => 'DEEE',
+		'type' => 'boolean',
+		'pos' => 15,
+		'size' => '',
+		'elementype' => 'product',
+		'visibility' => '5',
+		'computed' => '(
+			(
+				$resql = $db->query("select pickup_deee_type from ".MAIN_DB_PREFIX."product_extrafields p where p.fk_object = " . $db->escape($obj->id ? $obj->id : ($obj->rowid ? $obj->rowid : $object->id)))
+			)
+			?
+				((($objsql = $db->fetch_object($resql)) && !empty($objsql->pickup_deee_type) && $objsql->pickup_deee_type != "0" ) ? 1 : 0)
+			:
+				0)',
+		// 'totalizable' => 1,
+	),
+	'pickup_deee_type' => array(
+		'label' => 'Type DEEE',
+		'type' => 'select',
+		'pos' => 16,
+		'size' => '',
+		'elementype' => 'product',
+		'default_value' => '',
+		'param' => array('options' => array(
+			'gef' => 'GEF (Gros Electroménager Froid)',
+			'ghf' => 'GHF (Gros électroménager Hors Froid)',
+			'pam' => 'PAM (Petits Appareils Ménager)',
+			'pam_pro' => 'PAM Pro (Petits Appareils Ménager Pro)',
+			'ecr' => 'ECR (Ecran < 1m2 )',
+			'ecr_pro' => 'ECR Pro (Ecran > 1m2 )'
+		)),
+		'always_editable' => 1,
+		'visibility' => '-1',
+	)
+);
+
 $arrayofparameters=array(
-	'PICKUP_DEFAULT_STOCK' => array('enabled'=>1)
+	'PICKUP_DEFAULT_STOCK' => array('enabled'=>1),
+	'PICKUP_USE_DEEE' => array('enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_deee', 'pickup_deee_type')),
+	'PICKUP_USE_PBRAND' => array('enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand'))
 );
 
 
@@ -71,12 +111,136 @@ $arrayofparameters=array(
  * Actions
  */
 
-if ((float) DOL_VERSION >= 6)
+
+// We don't use the generic actions_setmoduleoptions template, as it does not permit to change the constants types.
+// if ((float) DOL_VERSION >= 6)
+// {
+// 	include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+// }
+if ($action == 'update' && is_array($arrayofparameters))
 {
-	include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+	$db->begin();
+
+	$ok = true;
+	foreach ($arrayofparameters as $key => $val)
+	{
+		if ($val['type'] === 'boolean') {
+			if (GETPOSTISSET($key.'_hidden')) {
+				// Modify constant only if key was posted (avoid resetting key to the null value)
+				$checkbox_value = GETPOST($key, 'alpha') === '1' ? '1':'0';
+				$result = dolibarr_set_const($db, $key, $checkbox_value, 'yesno', 0, '', $conf->entity);
+				if ($result < 0) {
+					$ok = false;
+					break;
+				}
+
+				if ($checkbox_value === '1' && !empty($val['extrafields'])) {
+					foreach ($val['extrafields'] as $extrafield_name) {
+						if (!empty($pickup_extrafields[$extrafield_name])) {
+							$ef_definition = $pickup_extrafields[$extrafield_name];
+							$extrafields = new ExtraFields($db);
+							$ef_result = $extrafields->addExtraField(
+								$extrafield_name,
+								$ef_definition['label'],
+								$ef_definition['type'],
+								$ef_definition['pos'],
+								$ef_definition['size'],
+								$ef_definition['elementype'],
+								$ef_definition['unique'] ?? 0,
+								$ef_definition['required'] ?? 0,
+								$ef_definition['default_value'] ?? '',
+								$ef_definition['param'] ?? '',
+								$ef_definition['always_editable'] ?? 0,
+								$ef_definition['perms'] ?? '',
+								$ef_definition['visibility'] ?? '-1',
+								$ef_definition['help'] ?? '',
+								$ef_definition['computed'] ?? '',
+								$conf->entity,
+								'pickup@pickup',
+								$ef_definition['enabled'] ?? '1',
+								$ef_definition['totalizable'] ?? 0,
+								$ef_definition['printable'] ?? 0
+							);
+							if ($ef_result < 0) {
+								$ok = false;
+								break 2;
+							}
+						}
+					}
+				}
+			}
+		} else if (GETPOSTISSET($key)) {
+			// Modify constant only if key was posted (avoid resetting key to the null value)
+			$result = dolibarr_set_const($db, $key, GETPOST($key, 'alpha'), 'chaine', 0, '', $conf->entity);
+			if ($result < 0) {
+				$ok = false;
+				break;
+			}
+		}
+	}
+
+	if (!$error && $ok)
+	{
+		$db->commit();
+		if (empty($nomessageinupdate)) setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
+	}
+	else
+	{
+		$db->rollback();
+		if (empty($nomessageinupdate)) setEventMessages($langs->trans("SetupNotSaved"), null, 'errors');
+	}
 }
+if ($action === 'updateExtraFields' && $arrayofparameters && GETPOSTISSET('extrafields_for')) {
+	$extrafields_for = GETPOST('extrafields_for', 'alpha');
+	if (!empty($arrayofparameters[$extrafields_for]) && !empty($arrayofparameters[$extrafields_for]['extrafields'])) {
+		$db->begin();
+		$ok = true;
 
+		foreach ($arrayofparameters[$extrafields_for]['extrafields'] as $extrafield_name) {
+			if (!empty($pickup_extrafields[$extrafield_name])) {
+				$ef_definition = $pickup_extrafields[$extrafield_name];
+				$extrafields = new ExtraFields($db);
+				$ef_result = $extrafields->update(
+					$extrafield_name,
+					$ef_definition['label'],
+					$ef_definition['type'],
+					$ef_definition['size'],
+					$ef_definition['elementype'],
+					$ef_definition['unique'] ?? 0,
+					$ef_definition['required'] ?? 0,
+					$ef_definition['pos'],
+					$ef_definition['param'] ?? '',
+					$ef_definition['always_editable'] ?? 0,
+					$ef_definition['perms'] ?? '',
+					$ef_definition['visibility'] ?? '-1',
+					$ef_definition['help'] ?? '',
+					$ef_definition['default_value'] ?? '',
+					$ef_definition['computed'] ?? '',
+					$conf->entity,
+					'pickup@pickup',
+					$ef_definition['enabled'] ?? '1',
+					$ef_definition['totalizable'] ?? 0,
+					$ef_definition['printable'] ?? 0
+				);
+				if ($ef_result < 0) {
+					$ok = false;
+					break;
+				}
+			}
+		}
 
+		if (!$error && $ok)
+		{
+			$db->commit();
+			if (empty($nomessageinupdate)) setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
+		}
+		else
+		{
+			$db->rollback();
+			if (empty($nomessageinupdate)) setEventMessages($langs->trans("SetupNotSaved"), null, 'errors');
+		}
+	}
+}
 
 /*
  * View
@@ -116,6 +280,9 @@ if ($action == 'edit')
 			dol_include_once('/pickup/class/pickup.class.php');
 			$pickup = new Pickup($db);
 			print $pickup->showInputField($pickup->fields['fk_entrepot'], 'fk_entrepot', $conf->global->$key);
+		} else if ($val['type'] === 'boolean') {
+			print '<input type="hidden" name="'.$key.'_hidden" value="1">';
+			print '<input type="checkbox" name="'.$key.'"  class="flat '.(empty($val['css'])?'':$val['css']).'" value="1" ' . ($conf->global->$key ? 'checked':'') . '>';
 		} else {
 			print '<input name="'.$key.'"  class="flat '.(empty($val['css'])?'minwidth200':$val['css']).'" value="' . $conf->global->$key . '">';
 		}
@@ -148,6 +315,17 @@ else
 					$entrepot = new Entrepot($db);
 					$entrepot->fetch($conf->global->$key);
 					print $entrepot->getNomUrl(1);
+				}
+			} else if ($val['type'] === 'boolean') {
+				print '<input type="checkbox" disabled name="'.$key.'"  class="flat '.(empty($val['css'])?'':$val['css']).'" ' . ($conf->global->$key ? 'checked':'') . '>';
+
+				if (!empty($val['extrafields']) && $conf->global->$key) {
+					print '&nbsp;<form style="display:inline" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
+					print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+					print '<input type="hidden" name="action" value="updateExtraFields">';
+					print '<input type="hidden" name="extrafields_for" value="'.$key.'">';
+					print '<input type="submit" name="" value="'.dol_escape_htmltag($langs->trans("PICKUP_UPDATE_EXTRAFIELDS")).'">';
+					print '</form>';
 				}
 			} else {
 				print $conf->global->$key;

@@ -6,6 +6,8 @@
 
 * Compatibilité avec d'autres Dolibarr que celui de LRDS:
   * Ajout des dépendances aux autres modules.
+  * Les champs customs DEEE, type DEEE et marque deviennent optionnels. Les champs sont créé à l'activation depuis les paramètres du module.
+  * Script de migration de ces champs customs pour LRDS.
 
 ## 0.17.0
 

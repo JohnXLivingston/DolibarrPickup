@@ -37,6 +37,12 @@ PickupStatusSigned = Signée
 PickupDate = Date de la collecte
 
 PICKUP_DEFAULT_STOCK = Entrepôt par défaut
+PICKUP_DEFAULT_STOCKTooltip = L'entrepôt à utiliser quand on créé une collecte depuis l'application mobile.
+PICKUP_USE_DEEE = Utiliser les champs DEEE
+PICKUP_USE_DEEETooltip = Ajoute les champs DEEE et Type DEEE sur les fiches produits.
+PICKUP_USE_PBRAND = Ajouter un champ «marque» à la fiche produit
+PICKUP_USE_PBRANDTooltip = Ajoute un champ «marque» aux fiches produits.
+PICKUP_UPDATE_EXTRAFIELDS = Réinitialiser les attributs supplémentaires.
 
 #
 # Menus
