@@ -5,6 +5,7 @@
 ### Fonctionnalités
 
 * Compatibilité avec d'autres Dolibarr que celui de LRDS:
+  * Ajout des dépendances aux autres modules.
 
 ## 0.17.0
 
