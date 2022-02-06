@@ -153,11 +153,13 @@ if ($CHOOSEDTARGET{'INSTALL'}) {
   }
 
   if ($INSTALL_DIR ne '/var/www/dolibarr/htdocs/custom') {
-    print "Please confirm that you want to install in $INSTALL_DIR/ by typing 'yes'\n";
-    my $input = <STDIN>;
-    chomp($input);
-    if ($input ne 'yes') {
-      die "Aborting...\n";
+    if (!(-d "$INSTALL_DIR/" . lc($PROJECTINPUT))) {
+      print "Please confirm that you want to install in $INSTALL_DIR/ ($INSTALL_DIR/".lc($PROJECTINPUT).") by typing 'yes'\n";
+      my $input = <STDIN>;
+      chomp($input);
+      if ($input ne 'yes') {
+        die "Aborting...\n";
+      }
     }
   }
 
