@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## 1.0.0 (Not Released Yet)
+
+### Fonctionnalités
+
+* Compatibilité avec d'autres Dolibarr que celui de LRDS:
+
 ## 0.17.0
 
 ### Fonctionnalités
