@@ -68,15 +68,17 @@ $pickup_extrafields = array(
 		'pos' => 15,
 		'size' => '',
 		'elementype' => 'product',
-		'visibility' => '5',
-		'computed' => '(
-			(
-				$resql = $db->query("select pickup_deee_type from ".MAIN_DB_PREFIX."product_extrafields p where p.fk_object = " . $db->escape($obj->id ? $obj->id : ($obj->rowid ? $obj->rowid : $object->id)))
-			)
-			?
-				((($objsql = $db->fetch_object($resql)) && !empty($objsql->pickup_deee_type) && $objsql->pickup_deee_type != "0" ) ? 1 : 0)
-			:
-				0)',
+		'visibility' => '5'
+		// This field is computed by a trigger.
+
+		// 'computed' => '(
+		// 	(
+		// 		$resql = $db->query("select pickup_deee_type from ".MAIN_DB_PREFIX."product_extrafields p where p.fk_object = " . $db->escape($obj->id ? $obj->id : ($obj->rowid ? $obj->rowid : $object->id)))
+		// 	)
+		// 	?
+		// 		((($objsql = $db->fetch_object($resql)) && !empty($objsql->pickup_deee_type) && $objsql->pickup_deee_type != "0" ) ? 1 : 0)
+		// 	:
+		// 		0)',
 		// 'totalizable' => 1,
 	),
 	'pickup_deee_type' => array(

@@ -77,7 +77,7 @@ class modPickup extends DolibarrModules
         // Define some features supported by module (triggers, login, substitutions, menus, css, etc...)
         $this->module_parts = array(
             // Set this to 1 if module has its own trigger directory (core/triggers)
-            'triggers' => 0,
+            'triggers' => 1,
             // Set this to 1 if module has its own login method file (core/login)
             'login' => 0,
             // Set this to 1 if module has its own substitution function file (core/substitutions)
@@ -430,6 +430,11 @@ class modPickup extends DolibarrModules
             ),
             array(
                 'sql' => "UPDATE ".MAIN_DB_PREFIX."pickup_pickupline as l LEFT OUTER JOIN ".MAIN_DB_PREFIX."product_extrafields as e ON l.fk_product = e.fk_object set l.deee = IFNULL(e.deee, 0), l.deee_type = e.type_deee where l.deee is null and l.deee_type is null",
+                'ignoreerror' => true
+            ),
+            array(
+                // Update pickup_deee_type if needed. May fail if fields does not exists.
+                'sql' => "UPDATE ".MAIN_DB_PREFIX."product_extrafields SET pickup_deee = IF(pickup_deee_type is not null and pickup_deee_type != '' and pickup_deee_type != '0','1','0')",
                 'ignoreerror' => true
             )
         );
