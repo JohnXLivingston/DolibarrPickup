@@ -424,8 +424,14 @@ class modPickup extends DolibarrModules
             "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = 'standard_pickup' AND type = 'pickup' AND entity = ".$conf->entity,
             "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('standard_pickup','pickup',".$conf->entity." )",
             // migration for version 0.9:
-            "UPDATE ".MAIN_DB_PREFIX."pickup_pickupline as l LEFT OUTER JOIN ".MAIN_DB_PREFIX."product as p ON l.fk_product = p.rowid set l.weight = IFNULL(p.weight, 0), l.weight_units = IFNULL(p.weight_units, 0) where l.weight is null and l.weight_units is null",
-            "UPDATE ".MAIN_DB_PREFIX."pickup_pickupline as l LEFT OUTER JOIN ".MAIN_DB_PREFIX."product_extrafields as e ON l.fk_product = e.fk_object set l.deee = IFNULL(e.deee, 0), l.deee_type = e.type_deee where l.deee is null and l.deee_type is null",
+            array(
+                'sql' => "UPDATE ".MAIN_DB_PREFIX."pickup_pickupline as l LEFT OUTER JOIN ".MAIN_DB_PREFIX."product as p ON l.fk_product = p.rowid set l.weight = IFNULL(p.weight, 0), l.weight_units = IFNULL(p.weight_units, 0) where l.weight is null and l.weight_units is null",
+                'ignoreerror' => true
+            ),
+            array(
+                'sql' => "UPDATE ".MAIN_DB_PREFIX."pickup_pickupline as l LEFT OUTER JOIN ".MAIN_DB_PREFIX."product_extrafields as e ON l.fk_product = e.fk_object set l.deee = IFNULL(e.deee, 0), l.deee_type = e.type_deee where l.deee is null and l.deee_type is null",
+                'ignoreerror' => true
+            )
         );
 
         return $this->_init($sql, $options);
