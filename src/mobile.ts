@@ -25,7 +25,7 @@ $(function () {
 
   const definition: {[key: string]: StateDefinition} = {}
 
-  definition.init = definitions.choosePickup(entrepotId !== undefined ? 'societe' : 'entrepot')
+  definition.init = definitions.choosePickup('show_pickup', entrepotId !== undefined ? 'societe' : 'entrepot')
 
   definition.entrepot = definitions.pickEntrepot('societe')
 
@@ -35,7 +35,7 @@ $(function () {
   definition.show_societe = definitions.showSociete('create_pickup')
 
   definition.create_pickup = definitions.createPickup('save_pickup')
-  definition.save_pickup = definitions.savePickup(entrepotId !== undefined ? 'societe' : 'entrepot', 'show_pickup')
+  definition.save_pickup = definitions.savePickup('show_pickup', entrepotId !== undefined ? 'societe' : 'entrepot')
   definition.show_pickup = definitions.showPickup('product')
 
   definition.product = definitions.pickProduct('show_product', 'categorie')
@@ -59,7 +59,7 @@ $(function () {
 
   const machine = new Machine(
     'myMachine',
-    2022020401, // this is the version number. Change it if there is no retro compatibility for existing stacks
+    2022021001, // this is the version number. Change it if there is no retro compatibility for existing stacks
     container.attr('data-user-id') ?? '',
     definition
   )

@@ -1,12 +1,12 @@
 import { StateDefinition } from '../lib/state/index'
 
-export function choosePickup (goto: string): StateDefinition {
+export function choosePickup (goto: string, creationGoto: string): StateDefinition {
   return {
     type: 'pick',
     label: 'Accueil',
     key: 'pickup',
-    goto: 'show_pickup',
-    creationGoto: goto,
+    goto,
+    creationGoto,
     primaryKey: 'rowid',
     fields: [
       { name: 'display', label: 'Collecte' }

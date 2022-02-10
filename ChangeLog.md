@@ -9,6 +9,10 @@
   * Les champs customs DEEE, type DEEE et marque deviennent optionnels. Les champs sont créé à l'activation depuis les paramètres du module.
   * Script de migration de ces champs customs pour LRDS.
 
+## 0.17.1
+
+* Correctif: il n'était plus possible de créer une collecte.
+
 ## 0.17.0
 
 ### Fonctionnalités
