@@ -268,8 +268,10 @@ class ActionsPickup
 		}
 
 		if ($action == 'confirm_includeinstock' && GETPOST('confirm') == 'yes' && $pickup_rights->workflow->stock) {
+			$db->begin();
 			$object->getLinesArray();
 			$nb_ok = 0;
+			$nb_error = 0;
 			$movement_label = empty($object->label) ? $object->ref : $object->ref . ' - ' . $object->label;
 			$inventorycode = $object->ref;
 
@@ -278,12 +280,14 @@ class ActionsPickup
 					require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 					$product = new Product($db);
 					if ($product->fetch($line->fk_product) <= 0) {
+						$nb_error++;
 						setEventMessages($product->error, $product->errors, 'errors');
 						continue;
 					}
 
 					$result = $product->correct_stock($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, $inventorycode);
 					if ($result <= 0) {
+						$nb_error++;
 						setEventMessages($product->error, $product->errors, 'errors');
 					} else {
 						$nb_ok++;
@@ -300,8 +304,11 @@ class ActionsPickup
         		if ($resql && $db->num_rows($resql) > 0) {
               $obj = $this->db->fetch_object($resql);
 							$line->fk_stock_movement = $obj->rowid;
-							$line->update($user);
+							if ($line->update($user) <= 0) {
+								$nb_error++;
+							}
 						} else {
+							$nb_error++;
 							setEventMessages($langs->trans('PickupIncludeInStockMovementNotFoundError'), null, 'errors');
 						}
 						$db->free($resql);
@@ -309,15 +316,22 @@ class ActionsPickup
 				}
 			}
 
-			if ($nb_ok > 0) {
+			if ($nb_error === 0 && $nb_ok > 0) {
 				$object->status = Pickup::STATUS_STOCK;
 				if ($object->update($user) <= 0) {
+					$nb_error++;
 					setEventMessages($object->error, $object->errors, 'errors');
 				}
 			}
 
-			if ($nb_ok > 0 ) {
+			if ($nb_error === 0 && $nb_ok > 0 ) {
 				setEventMessages($langs->trans('PickupIncludeInStockOk'), null, 'mesgs');
+			}
+
+			if ($nb_error === 0) {
+				$db->commit();
+			} else {
+				$db->rollback();
 			}
 			header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.'&action=builddoc');
 			exit;

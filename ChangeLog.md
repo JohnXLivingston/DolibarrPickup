@@ -13,6 +13,7 @@
 ### Corrections et changements mineurs
 
 * Application mobile: affichage du libellé pour le «type du tiers», plutôt que le code.
+* Intégration des collectes au stock: en cas d'erreur, rollback des modifications.
 
 ## 0.17.1
 
