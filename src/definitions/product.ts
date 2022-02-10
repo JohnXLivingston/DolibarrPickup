@@ -10,7 +10,7 @@ export function pickProduct (goto: string, creationGoto: string): StateDefinitio
     creationGoto,
     creationLabel: 'Nouveau produit',
     fields: [
-      { name: 'options_pbrand', label: 'Marque', applyFilter: 'localeUpperCase' },
+      { name: 'pbrand', label: 'Marque', applyFilter: 'localeUpperCase' },
       { name: 'ref', label: 'Ref' }
     ]
   }
@@ -99,7 +99,7 @@ export function createProduct (goto: string, deeeForm: string): StateDefinition 
         maxLength: 25,
         loadSuggestions: {
           dataKey: 'product',
-          field: 'options_pickup_pbrand',
+          field: 'pbrand',
           filter: 'localeUpperCase'
         }
       },

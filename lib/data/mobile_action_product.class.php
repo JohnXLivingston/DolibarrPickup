@@ -8,7 +8,7 @@ class DataMobileActionProduct extends DataMobileAction {
     require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
     $object = new Product($db);
 
-    $sql = 'SELECT t.rowid, t.ref, ef.pickup_pbrand as options_pbrand ';
+    $sql = 'SELECT t.rowid, t.ref, ef.pickup_pbrand as pbrand ';
     $sql.= ' FROM '.MAIN_DB_PREFIX.'product as t ';
     $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_extrafields as ef on t.rowid = ef.fk_object ';
     if ($object->ismultientitymanaged == 1) {
