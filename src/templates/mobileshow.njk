@@ -92,7 +92,11 @@
   <nav class="">
     {% if currentState.addGoto %}
       <a class="btn btn-primary" role="button" pickupmobile-show-add>
-        {{ translate('Add') }}
+        {% if currentState.addLabel %}
+          {{ currentState.addLabel }}
+        {% else %}
+          {{ translate('Add') }}
+        {% endif %}
       </a>
     {% endif %}
     {% if currentState.okGoto %}

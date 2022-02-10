@@ -7,6 +7,7 @@ export function choosePickup (goto: string, creationGoto: string): StateDefiniti
     key: 'pickup',
     goto,
     creationGoto,
+    creationLabel: 'Nouvelle collecte',
     primaryKey: 'rowid',
     fields: [
       { name: 'display', label: 'Collecte' }
@@ -56,6 +57,7 @@ export function showPickup (addGoto: string): StateDefinition {
     key: 'pickup',
     primaryKey: 'pickup', // FIXME: should be less ambigous
     addGoto,
+    addLabel: 'Ajouter un produit',
     fields: [
       {
         type: 'varchar',

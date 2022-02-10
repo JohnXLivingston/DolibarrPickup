@@ -8,6 +8,7 @@
   * Ajout des dépendances aux autres modules.
   * Les champs customs DEEE, type DEEE et marque deviennent optionnels. Les champs sont créé à l'activation depuis les paramètres du module.
   * Script de migration de ces champs customs pour LRDS.
+* Application Mobile: libellés des boutons de création et d'ajout personnalisables.
 
 ## 0.17.1
 

@@ -35,6 +35,7 @@ interface StateShowDefinition extends StateDefinitionBase {
   primaryKey: string
   fields: ShowField[]
   addGoto?: string
+  addLabel?: string
   okGoto?: string
 }
 
@@ -43,6 +44,7 @@ class StateShow extends State {
   private readonly primaryKey: string
   public readonly fields: ShowField[]
   public readonly addGoto?: string
+  public readonly addLabel?: string
   public readonly okGoto?: string
 
   constructor (definition: StateShowDefinition) {
@@ -51,6 +53,7 @@ class StateShow extends State {
     this.primaryKey = definition.primaryKey
     this.fields = definition.fields
     this.addGoto = definition.addGoto
+    this.addLabel = definition.addLabel
     this.okGoto = definition.okGoto
   }
 

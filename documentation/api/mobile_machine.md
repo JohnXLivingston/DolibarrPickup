@@ -151,9 +151,11 @@ Si itemGotoField est fourni, on cherchera un champs de ce nom dans l'item sélec
 
 Ainsi, le backend peut piloter le comportement de l'automate. Par exemple, afficher un formulaire différent en fonction de la catégorie de produit.
 
-#### creationGoto (optionnel)
+#### creationGoto / creationLabel (optionnel)
 
 Si fourni, un bouton «créer nouveau» sera affiché. La valeur est le state dans lequel aller.
+
+creationLabel permet de personnaliser le libellé du bouton.
 
 ### StateSelect
 
@@ -191,9 +193,11 @@ Voir le code pour la doc (le code bouge encore, ce sera à documenter plus tard)
 
 Affiche un bouton «ok» qui ira sur le state correspondant.
 
-#### addGoto (optionnel)
+#### addGoto / addLabel (optionnel)
 
 Affiche un bouton «ajouter» qui ira sur le state correspondant.
+
+addLabel permet de personnaliser le libellé du bouton.
 
 ### StateVirtual
 

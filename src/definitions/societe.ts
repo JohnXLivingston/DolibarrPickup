@@ -7,6 +7,7 @@ export function pickSociete (goto: string, creationGoto: string): StateDefinitio
     key: 'soc',
     goto,
     creationGoto,
+    creationLabel: 'Nouveau donneur',
     primaryKey: 'rowid',
     fields: [
       { name: 'nom', label: 'Nom du donneur' }

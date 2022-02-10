@@ -62,7 +62,13 @@
   <hr>
   <nav class="">
     {% if formInfos.creation %}
-      <a class="btn btn-primary" role="button" pickupmobile-pick-create>{{ translate('Create a new one') }}</a>
+      <a class="btn btn-primary" role="button" pickupmobile-pick-create>
+        {% if formInfos.creationLabel %}
+          {{ formInfos.creationLabel }}
+        {% else %}
+          {{ translate('Create a new one') }}
+        {% endif %}
+      </a>
     {% endif %}
     <a class="btn btn-secondary" role="button" pickupmobile-pick-reload>{{ translate('Reload') }}</a>
   </nav>

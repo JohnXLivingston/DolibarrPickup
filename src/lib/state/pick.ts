@@ -29,6 +29,7 @@ interface PickFormInfos {
   fieldsInfos: PickFormFieldInfo[]
   pickedItems: any[]
   creation: boolean
+  creationLabel?: string
 }
 
 interface StatePickDefinition extends StateDefinitionBase {
@@ -39,6 +40,7 @@ interface StatePickDefinition extends StateDefinitionBase {
   goto: string // default goto. Can be overriden by an item, if itemGotoField is defined
   itemGotoField?: string
   creationGoto?: string
+  creationLabel?: string
 }
 
 class StatePick extends State {
@@ -47,6 +49,7 @@ class StatePick extends State {
   private readonly goto: string
   readonly itemGotoField?: string
   private readonly creationGoto?: string
+  private readonly creationLabel?: string
   readonly primaryKey: string
 
   constructor (definition: StatePickDefinition) {
@@ -57,6 +60,7 @@ class StatePick extends State {
     this.goto = definition.goto
     this.itemGotoField = definition.itemGotoField
     this.creationGoto = definition.creationGoto
+    this.creationLabel = definition.creationLabel
   }
 
   renderVars (stack: Stack): NunjucksVars {
@@ -185,7 +189,8 @@ class StatePick extends State {
     const r: PickFormInfos = {
       fieldsInfos: [],
       pickedItems: [],
-      creation: !!this.creationGoto
+      creation: !!this.creationGoto,
+      creationLabel: this.creationLabel
     }
 
     let isPreviousSet: boolean = true

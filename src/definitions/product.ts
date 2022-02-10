@@ -8,6 +8,7 @@ export function pickProduct (goto: string, creationGoto: string): StateDefinitio
     primaryKey: 'rowid',
     goto,
     creationGoto,
+    creationLabel: 'Nouveau produit',
     fields: [
       { name: 'options_pbrand', label: 'Marque', applyFilter: 'localeUpperCase' },
       { name: 'ref', label: 'Ref' }
