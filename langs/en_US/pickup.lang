@@ -43,7 +43,9 @@ PICKUP_USE_DEEETooltip = Will add DEEE and DEEE type files to products.
 PICKUP_USE_PBRAND = Use a «brand» field on products
 PICKUP_USE_PBRANDTooltip = Will add a brand field to products.
 PICKUP_UPDATE_EXTRAFIELDS = Reset extra fields
+PICKUP_UPDATE_EXTRAFIELDS_Tooltip = If you accidentaly modified extrafields parameters, you can reinit them by clicking on this button.
 PICKUP_MIGRATE_EXTRAFIELDS = Migrate old LRDS fields
+PICKUP_MIGRATE_EXTRAFIELDS_Tooltip = Il semblerait que vous utilisez encore les anciens champs LRDS et que ceux-ci n'ont pas été migré. Cliquez ici pour les migrer. Vous pourrez ensuite les supprimer.
 
 #
 # Menus

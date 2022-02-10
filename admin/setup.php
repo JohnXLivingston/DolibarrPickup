@@ -39,7 +39,8 @@ if (! $res) die("Include of main fails");
 global $langs, $user;
 
 // Libraries
-require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/core/lib/functions.lib.php';
 require_once '../lib/pickup.lib.php';
 //require_once "../class/myclass.class.php";
 
@@ -466,6 +467,7 @@ else
 					print '<input type="hidden" name="action" value="updateExtraFields">';
 					print '<input type="hidden" name="extrafields_for" value="'.$key.'">';
 					print '<input type="submit" name="" value="'.dol_escape_htmltag($langs->trans("PICKUP_UPDATE_EXTRAFIELDS")).'">';
+					print img_help(1, $langs->trans('PICKUP_UPDATE_EXTRAFIELDS_Tooltip'));
 					print '</form>';
 
 					foreach ($val['extrafields'] as $extrafield_name) {
@@ -477,6 +479,7 @@ else
 								print '<input type="hidden" name="action" value="migrateExtraFields">';
 								print '<input type="hidden" name="extrafield" value="'.$extrafield_name.'">';
 								print '<input type="submit" name="" value="'.dol_escape_htmltag($langs->trans("PICKUP_MIGRATE_EXTRAFIELDS").' ('.$pickup_extrafields[$extrafield_name]['label'].': '.$count.')').'">';
+								print img_help(1, $langs->trans('PICKUP_MIGRATE_EXTRAFIELDS_Tooltip'));
 								print '</form>';
 							}
 						}
