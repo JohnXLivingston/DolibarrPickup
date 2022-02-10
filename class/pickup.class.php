@@ -808,8 +808,8 @@ class Pickup extends CommonObject
 		} else {
 			$line->weight = $product->weight;
 			$line->weight_units = $product->weight_units;
-			$line->deee = $product->array_options['options_deee'];
-			$line->deee_type = $product->array_options['options_type_deee'];
+			$line->deee = $product->array_options['options_pickup_deee'];
+			$line->deee_type = $product->array_options['options_pickup_deee_type'];
 		}
 
 		return $line;
@@ -901,7 +901,7 @@ class Pickup extends CommonObject
 
 						if ($line->deee) {
 							$deee_type = strval($line->deee_type);
-							$deee_type = trim($extrafields->showOutputField('type_deee', $deee_type, '', 'product'));
+							$deee_type = trim($extrafields->showOutputField('pickup_deee_type', $deee_type, '', 'product'));
 							if (!array_key_exists($weight_units, $result['deee_weights'])) {
 								$result['deee_weights'][$weight_units] = 0;
 							}

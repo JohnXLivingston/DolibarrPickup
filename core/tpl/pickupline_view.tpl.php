@@ -92,14 +92,14 @@ $coldisplay = 0; ?>
     } ?>
   </td>
   <td class="nowrap"
-    <?php if (intval($line->deee) != intval($line_product->array_options['options_deee']) || strval($line->deee_type) != strval($line_product->array_options['options_type_deee'])) {
+    <?php if (intval($line->deee) != intval($line_product->array_options['options_pickup_deee']) || strval($line->deee_type) != strval($line_product->array_options['options_pickup_deee_type'])) {
       $product_warnings = 1;
       ?>
       style="color: orange;"
       title="<?php
         print htmlentities($langs->trans('Product') . ': ');
-        if ($line_product->array_options['options_deee']) {
-          print htmlentities($extrafields->showOutputField('type_deee', $line_product->array_options['options_type_deee'], '', $line_product->table_element));
+        if ($line_product->array_options['options_pickup_deee']) {
+          print htmlentities($extrafields->showOutputField('pickup_deee_type', $line_product->array_options['options_pickup_deee_type'], '', $line_product->table_element));
         } else {
           print '-';
         }
@@ -110,7 +110,7 @@ $coldisplay = 0; ?>
     <?php
       if ($line->deee) {
         // this field is defined as en extrafield on the product table.
-        print $extrafields->showOutputField('type_deee', $line->deee_type, '', $line_product->table_element);
+        print $extrafields->showOutputField('pickup_deee_type', $line->deee_type, '', $line_product->table_element);
       } else {
         print '-';
       }

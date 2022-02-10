@@ -8,7 +8,7 @@ class DataMobileActionProduct extends DataMobileAction {
     require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
     $object = new Product($db);
 
-    $sql = 'SELECT t.rowid, t.ref, ef.marque as options_marque ';
+    $sql = 'SELECT t.rowid, t.ref, ef.pickup_pbrand as options_pbrand ';
     $sql.= ' FROM '.MAIN_DB_PREFIX.'product as t ';
     $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_extrafields as ef on t.rowid = ef.fk_object ';
     if ($object->ismultientitymanaged == 1) {
@@ -67,14 +67,14 @@ class DataMobileActionProduct extends DataMobileAction {
     require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
     $extrafields = new ExtraFields($db);
     $extrafields->fetch_name_optionals_label('product');
-    $deee_type = $extrafields->showOutputField('type_deee', $object->array_options['options_type_deee'], '', $object->table_element);
+    $deee_type = $extrafields->showOutputField('pickup_deee_type', $object->array_options['options_pickup_deee_type'], '', $object->table_element);
 
     return array(
       'rowid' => $object->id,
       'ref' => $object->ref,
       'description' => $object->description,
       'label' => $object->label,
-      'marque' => $object->array_options['options_marque'],
+      'pbrand' => $object->array_options['options_pickup_pbrand'],
       'pcats' => join(', ', $cats_labels),
       'deee_type' => $deee_type,
       'weight_txt' => $weight // FIXME: should be weight + weight_units... Be it is simplier like that for now
@@ -100,13 +100,10 @@ class DataMobileActionProduct extends DataMobileAction {
     $product->weight = GETPOST('weight', 'int'); // yes... for dolibarr floats are 'int'
     $product->weight_units = 0;
     
-    $product->array_options['options_marque'] = GETPOST('product_marque');
+    $product->array_options['options_pickup_pbrand'] = GETPOST('product_pbrand');
     $deee_type = GETPOST('product_deee_type', 'alpha');
-    if (empty($deee_type)) {
-      $product->array_options['options_deee'] = 0;
-    } else {
-      $product->array_options['options_deee'] = 1;
-      $product->array_options['options_type_deee'] = $deee_type;
+    if (!empty($deee_type)) {
+      $product->array_options['options_pickup_deee_type'] = $deee_type;
     }
     // FIXME: see specifications for missing fields
   
@@ -120,6 +117,6 @@ class DataMobileActionProduct extends DataMobileAction {
     $pcat = GETPOST('pcat', 'int');
     $product->setCategories(array($pcat));
 
-    return array("rowid" => $product_id, "ref" => $product->ref, "marque" => $product->array_options['options_marque']);
+    return array("rowid" => $product_id, "ref" => $product->ref, "pbrand" => $product->array_options['options_pickup_pbrand']);
   }
 }

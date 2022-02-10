@@ -386,7 +386,7 @@ foreach ($data as $line) {
   print '<td class="nowrap">';
   if ($pickupline->deee) {
     // this field is defined as en extrafield on the product table.
-    print $extrafields->showOutputField('type_deee', $pickupline->deee_type, '', 'product');
+    print $extrafields->showOutputField('pickup_deee_type', $pickupline->deee_type, '', 'product');
   } else {
     print '-';
   }

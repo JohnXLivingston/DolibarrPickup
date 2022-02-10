@@ -84,10 +84,10 @@ $coldisplay = 0;
   <td class="nowrap" colspan="2">
     <?php $coldisplay++; ?><?php $coldisplay++; ?>
     <?php
-			// this field is defined as en extrafield on the product table.
-			// print $extrafields->showInputField('deee', GETPOSTISSET('deee') ? GETPOST('deee', 'int') : $line->deee, '', '', '', 0, $line_product->table_element);
-			// this field is defined as en extrafield on the product table.
-      print $extrafields->showInputField('type_deee', GETPOSTISSET('options_type_deee') ? GETPOST('options_type_deee', 'alpha') : $line->deee_type, '', '', '', 0, $line_product->table_element);
+			// this field is defined as an extrafield on the product table.
+			// print $extrafields->showInputField('pickup_deee', GETPOSTISSET('deee') ? GETPOST('deee', 'int') : $line->deee, '', '', '', 0, $line_product->table_element);
+			// this field is defined as an extrafield on the product table.
+      print $extrafields->showInputField('pickup_deee_type', GETPOSTISSET('options_pickup_deee_type') ? GETPOST('options_pickup_deee_type', 'alpha') : $line->deee_type, '', '', '', 0, $line_product->table_element);
     ?>
   </td>
 

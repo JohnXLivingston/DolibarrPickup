@@ -150,7 +150,7 @@ class ActionsPickup
 			$qty = price2num(GETPOST('qty', 'int'));
 			$weight = price2num(GETPOST('weight'));
 			$weight_units = GETPOST('weight_units', 'int');
-			$deee_type = GETPOST('options_type_deee', 'alpha');
+			$deee_type = GETPOST('options_pickup_deee_type', 'alpha');
 
 			if ($qty == '') {
 				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')));
@@ -232,8 +232,8 @@ class ActionsPickup
 				} else {
 					$line->weight = $product->weight;
 					$line->weight_units = $product->weight_units;
-					$line->deee = $product->array_options['options_deee'];
-					$line->deee_type = $product->array_options['options_type_deee'];
+					$line->deee = $product->array_options['options_pickup_deee'];
+					$line->deee_type = $product->array_options['options_pickup_deee_type'];
 
 					$result = $line->update($user);
 					if ($result <= 0) {

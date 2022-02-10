@@ -32,7 +32,7 @@ class DataMobileActionDict extends DataMobileAction {
       $extrafields = new ExtraFields($db);
       $extrafields->fetch_name_optionals_label('product');
 
-      $options = $extrafields->attributes['product']['param']['type_deee']['options'];
+      $options = $extrafields->attributes['product']['param']['pickup_deee_type']['options'];
       $result = array();
       foreach ($options as $key => $val) {
         array_push($result, array(

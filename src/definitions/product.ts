@@ -9,7 +9,7 @@ export function pickProduct (goto: string, creationGoto: string): StateDefinitio
     goto,
     creationGoto,
     fields: [
-      { name: 'options_marque', label: 'Marque', applyFilter: 'localeUpperCase' },
+      { name: 'options_pbrand', label: 'Marque', applyFilter: 'localeUpperCase' },
       { name: 'ref', label: 'Ref' }
     ]
   }
@@ -20,17 +20,17 @@ function getDeeeField (deeeForm: string): FormField {
     case 'create_product_deee_off':
       return getDeeeFieldForce('')
     case 'create_product_deee_gef':
-      return getDeeeFieldForce('1')
+      return getDeeeFieldForce('gef')
     case 'create_product_deee_ghf':
-      return getDeeeFieldForce('2')
+      return getDeeeFieldForce('ghf')
     case 'create_product_deee_pam':
-      return getDeeeFieldForce('3')
+      return getDeeeFieldForce('pam')
     case 'create_product_deee_pampro':
-      return getDeeeFieldForce('4')
+      return getDeeeFieldForce('pam_pro')
     case 'create_product_deee_ecr':
-      return getDeeeFieldForce('5')
+      return getDeeeFieldForce('ecr')
     case 'create_product_deee_ecrpro':
-      return getDeeeFieldForce('6')
+      return getDeeeFieldForce('ecr_pro')
     case 'create_product_deee_pam_or_pampro':
     case 'create_product_deee_ecr_or_ecrpro':
     default:
@@ -60,9 +60,9 @@ function getDeeeFieldForce (value: string): FormField {
 function getDeeeFieldMultiple (deeeForm: string): FormField {
   let loadFilter: FormFieldSelectLoadFilter | undefined
   if (deeeForm === 'create_product_deee_pam_or_pampro') {
-    loadFilter = (option) => { return option.value === '3' || option.value === '4' }
+    loadFilter = (option) => { return option.value === 'pam' || option.value === 'pam_pro' }
   } else if (deeeForm === 'create_product_deee_ecr_or_ecrpro') {
-    loadFilter = (option) => { return option.value === '5' || option.value === '6' }
+    loadFilter = (option) => { return option.value === 'ecr' || option.value === 'ecr_pro' }
   }
   return {
     type: 'select',
@@ -92,13 +92,13 @@ export function createProduct (goto: string, deeeForm: string): StateDefinition 
     fields: [
       {
         type: 'varchar',
-        name: 'product_marque',
+        name: 'product_pbrand',
         label: 'Marque',
         mandatory: true,
         maxLength: 25,
         loadSuggestions: {
           dataKey: 'product',
-          field: 'options_marque',
+          field: 'options_pickup_pbrand',
           filter: 'localeUpperCase'
         }
       },
@@ -179,7 +179,7 @@ export function showProduct (okGoto: string): StateDefinition {
       },
       {
         type: 'varchar',
-        name: 'marque',
+        name: 'pbrand',
         label: 'Marque'
       },
       {

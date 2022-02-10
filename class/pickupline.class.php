@@ -102,7 +102,7 @@ class PickupLine extends CommonObjectLine
 		'weight' => array('type' => 'double(24,8)', 'label'=>'ProductWeight', 'enabled'=>1, 'position'=>100, 'notnull'=>0,'visible'=>1,'isameasure'=>'1'),
 		'weight_units' => array('type' => 'integer', 'label'=>'', 'enabled'=>1,'position'=>101,'notnull'=>0,'visible'=>1),
 		'deee' => array('type' => 'integer', 'label'=>'DEEE', 'enabled'=>1,'position'=>102,'notnull'=>0,'visible'=>1),
-		'deee_type' => array('type' => 'varchar(255)', 'label'=>'DEEE', 'position'=>103,'enabled'=>1,'notnull'=>0,'visible'=>1),
+		'deee_type' => array('type' => 'varchar(255)', 'label'=>'DEEEType', 'position'=>103,'enabled'=>1,'notnull'=>0,'visible'=>1),
 	);
 	public $rowid;
 	public $fk_pickup;
