@@ -1,5 +1,9 @@
 # DolibarrPickup
 
+## 0.17.1
+
+* Correctif: il n'était plus possible de créer une collecte.
+
 ## 0.17.0
 
 ### Fonctionnalités
