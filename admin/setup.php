@@ -110,6 +110,20 @@ $pickup_extrafields = array(
 				'6' => 'ecr_pro'
 			)
 		)
+	),
+	'pickup_pbrand' => array(
+		'label' => 'PBrand',
+		'type' => 'varchar',
+		'pos' => 12,
+		'size' => 25,
+		'elementype' => 'product',
+		'default_value' => '',
+		'always_editable' => 1,
+		'visibility' => '1',
+		'LRDS' => array(
+			'migrate' => true,
+			'lrds_name' => 'marque'
+		)
 	)
 );
 
@@ -150,9 +164,15 @@ function count_extra_fields_to_migrate($extrafield_name) {
 
 	$sql = 'SELECT  count(*) as nb ';
 	$sql.= ' FROM '.MAIN_DB_PREFIX.'product_extrafields WHERE ';
-	$sql.= ' ('.$extrafield_name.' = "" OR '.$extrafield_name.' = "0" OR '.$extrafield_name.' is NULL) ';
-	$sql.= ' AND ';
-	$sql.= ' ('.$ef_definition['LRDS']['lrds_name'].') ';
+	if (!empty($ef_definition['LRDS']['map'])) {
+		$sql.= ' ('.$extrafield_name.' = "" OR '.$extrafield_name.' = "0" OR '.$extrafield_name.' is NULL) ';
+		$sql.= ' AND ';
+		$sql.= ' ('.$ef_definition['LRDS']['lrds_name'].') ';
+	} else {
+		$sql.= ' ('.$extrafield_name.' = "" OR '.$extrafield_name.' is NULL) ';
+		$sql.= ' AND ';
+		$sql.= ' ('.$ef_definition['LRDS']['lrds_name'].' != "") ';
+	}
 	$resql = $db->query($sql);
 	if (!$resql) {
 		return null;
@@ -188,9 +208,9 @@ function migrate_extra_fields_to_migrate($extrafield_name) {
 		$sql = 'UPDATE '.MAIN_DB_PREFIX.'product_extrafields ';
 		$sql.= ' SET '.$extrafield_name.' = '.$ef_definition['LRDS']['lrds_name']. ' ';
 		$sql.=' WHERE ';
-		$sql.= ' ('.$extrafield_name.' = "" OR '.$extrafield_name.' = "0" OR '.$extrafield_name.' is NULL) ';
+		$sql.= ' ('.$extrafield_name.' = "" OR '.$extrafield_name.' is NULL) ';
 		$sql.= ' AND ';
-		$sql.= ' ('.$ef_definition['LRDS']['lrds_name'].') ';
+		$sql.= ' ('.$ef_definition['LRDS']['lrds_name'].' != "") ';
 		$resql = $db->query($sql);
 		if (!$resql) {
 			dol_syslog('pickup module: Failed to migrate extrafield: '.$db->lasterror(), LOG_ERR);

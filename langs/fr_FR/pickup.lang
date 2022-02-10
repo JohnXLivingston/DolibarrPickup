@@ -108,3 +108,5 @@ DEEE = DEEE
 DEEEType = Type DEEE
 DEEETotal = Total DEEE
 PickupTotalWeight = Poids total
+
+PBrand = Marque
