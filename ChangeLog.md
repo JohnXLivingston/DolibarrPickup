@@ -10,6 +10,10 @@
   * Script de migration de ces champs customs pour LRDS.
 * Application Mobile: libellés des boutons de création et d'ajout personnalisables.
 
+### Corrections et changements mineurs
+
+* Application mobile: affichage du libellé pour le «type du tiers», plutôt que le code.
+
 ## 0.17.1
 
 * Correctif: il n'était plus possible de créer une collecte.

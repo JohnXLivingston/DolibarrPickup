@@ -39,6 +39,12 @@ class DataMobileActionSoc extends DataMobileAction {
     if ($soc->fetch($id) <= 0) {
       return 0;
     }
+
+    require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+    $formcompany = new FormCompany($this->db);
+    $arr_typent = $formcompany->typent_array(1);
+    $typent_libelle = $arr_typent[$soc->typent_code];
+
     return array(
       'rowid' => $soc->id,
       'name' => $soc->name,
@@ -47,6 +53,7 @@ class DataMobileActionSoc extends DataMobileAction {
       'email' => $soc->email,
       'phone' => $soc->phone,
       'typent' => $soc->typent_code,
+      'typent_libelle' => $typent_libelle,
       'forme_juridique' => $soc->forme_juridique
     );
   }

@@ -148,7 +148,7 @@ export function showSociete (okGoto: string): StateDefinition {
       },
       {
         type: 'varchar',
-        name: 'typent',
+        name: 'typent_libelle',
         label: 'Type du tiers'
       },
       {
