@@ -24,7 +24,7 @@ function mobileListProductForms() {
   $r = array();
   $r[''] = 'Formulaire par défaut';
 
-  if ($conf->global->PICKUP_USE_DEEE) {
+  if (!empty($conf->global->PICKUP_USE_DEEE)) {
     $r['create_product_deee_off'] = 'Non DEEE';
     $r['create_product_deee_gef'] = 'GEF';
     $r['create_product_deee_ghf'] = 'GHF';

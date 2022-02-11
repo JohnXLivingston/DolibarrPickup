@@ -334,7 +334,7 @@ print '<td align="" class="liste_titre">' . $langs->trans('Description') . '</td
 print '<td align="" class="liste_titre">' . $langs->trans('Qty') . '</td>';
 print '<td align="" class="liste_titre right">' . $langs->trans('ProductWeight') . '</td>';
 print '<td align="" class="liste_titre right">' . $langs->trans('Weight') . '</td>';
-if ($conf->global->PICKUP_USE_DEEE) {
+if (!empty($conf->global->PICKUP_USE_DEEE)) {
   print '<td align="" class="liste_titre">' . $langs->trans('DEEE') . '</td>';
 }
 print '<td align="" class="liste_titre">' . $langs->trans('StockMovement') . '</td>';
@@ -385,7 +385,7 @@ foreach ($data as $line) {
     print ($pickupline->qty * $pickupline->weight) . ' ' . measuringUnitString(0, "weight", $pickupline->weight_units);
   }
   print '</td>';
-  if ($conf->global->PICKUP_USE_DEEE) {
+  if (!empty($conf->global->PICKUP_USE_DEEE)) {
     print '<td class="nowrap">';
     if ($pickupline->deee) {
       // this field is defined as en extrafield on the product table.

@@ -41,7 +41,7 @@ class DataMobileActionPickup extends DataMobileAction {
         'name' => $product->ref,
         'qty' => $line->qty
       );
-      if ($conf->global->PICKUP_USE_DEEE) {
+      if (!empty($conf->global->PICKUP_USE_DEEE)) {
         $rl['deee'] = $line->deee ? true : false;
       }
       array_push($r['lines'], $rl);

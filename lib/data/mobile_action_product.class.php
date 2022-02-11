@@ -11,11 +11,11 @@ class DataMobileActionProduct extends DataMobileAction {
     $object = new Product($db);
 
     $sql = 'SELECT t.rowid, t.ref ';
-    if ($conf->global->PICKUP_USE_PBRAND) {
+    if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $sql.= ', ef.pickup_pbrand as pbrand ';
     }
     $sql.= ' FROM '.MAIN_DB_PREFIX.'product as t ';
-    if ($conf->global->PICKUP_USE_PBRAND) {
+    if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_extrafields as ef on t.rowid = ef.fk_object ';
     }
     if ($object->ismultientitymanaged == 1) {
@@ -80,10 +80,10 @@ class DataMobileActionProduct extends DataMobileAction {
       'pcats' => join(', ', $cats_labels),
       'weight_txt' => $weight // FIXME: should be weight + weight_units... Be it is simplier like that for now
     );
-    if ($conf->global->PICKUP_USE_PBRAND) {
+    if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $result['pbrand'] = $object->array_options['options_pickup_pbrand'];
     }
-    if ($conf->global->PICKUP_USE_DEEE) {
+    if (!empty($conf->global->PICKUP_USE_DEEE)) {
       require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
       $extrafields = new ExtraFields($db);
       $extrafields->fetch_name_optionals_label('product');
@@ -111,10 +111,10 @@ class DataMobileActionProduct extends DataMobileAction {
     $product->weight = GETPOST('weight', 'int'); // yes... for dolibarr floats are 'int'
     $product->weight_units = 0;
     
-    if ($conf->global->PICKUP_USE_PBRAND) {
+    if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $product->array_options['options_pickup_pbrand'] = GETPOST('product_pbrand');
     }
-    if ($conf->global->PICKUP_USE_DEEE) {
+    if (!empty($conf->global->PICKUP_USE_DEEE)) {
       $deee_type = GETPOST('product_deee_type', 'alpha');
       if (!empty($deee_type)) {
         $product->array_options['options_pickup_deee_type'] = $deee_type;
@@ -133,7 +133,7 @@ class DataMobileActionProduct extends DataMobileAction {
     $product->setCategories(array($pcat));
 
     $result = array("rowid" => $product_id, "ref" => $product->ref);
-    if ($conf->global->PICKUP_USE_PBRAND) {
+    if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $result['pbrand'] = $product->array_options['options_pickup_pbrand'];
     }
     return $result;

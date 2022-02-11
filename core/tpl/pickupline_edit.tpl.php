@@ -81,7 +81,7 @@ $coldisplay = 0;
 			print $formproduct->selectMeasuringUnits('weight_units', 'weight', GETPOSTISSET('weight_units') ? GETPOST('weight_units', 'int') : $line->weight_units, 0, 2);
 		?>
   </td>
-	<?php if ($conf->global->PICKUP_USE_DEEE) { ?>
+	<?php if (!empty($conf->global->PICKUP_USE_DEEE)) { ?>
 		<td class="nowrap" colspan="2">
 			<?php $coldisplay++; ?><?php $coldisplay++; ?>
 			<?php

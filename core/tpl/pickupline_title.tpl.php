@@ -43,7 +43,7 @@ print "<!-- BEGIN PHP TEMPLATE pickup/pickupline_title.tpl.php -->\n";
 		<td class="right">
 			<?php print $langs->trans('Weight'); ?>
 		</td>
-		<?php if ($conf->global->PICKUP_USE_DEEE) { ?>
+		<?php if (!empty($conf->global->PICKUP_USE_DEEE)) { ?>
 			<td class="">
 				<?php print $langs->trans('DEEE'); ?>
 			</td>

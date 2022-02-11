@@ -426,7 +426,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 							}
 						?>
 					</td>
-					<?php if ($conf->global->PICKUP_USE_DEEE) { ?>
+					<?php if (!empty($conf->global->PICKUP_USE_DEEE)) { ?>
 						<td class="nowrap">
 							<?php
 								foreach ($totals['deee_type_weights'] as $deee_type => $deee_type_weights) {

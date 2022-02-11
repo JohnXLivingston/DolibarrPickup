@@ -1215,7 +1215,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 		$this->cols['deee'] = array(
 			'rank' => $rank,
 			'width' => 16, // in mm
-			'status' => $conf->global->PICKUP_USE_DEEE ? true : false,
+			'status' => !empty($conf->global->PICKUP_USE_DEEE) ? true : false,
 			'title' => array(
 				'textkey' => 'DEEE',
 				'align' => 'C'
@@ -1288,7 +1288,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 	public function drawTotalTable(&$pdf, $object, $posy, $outputlangs) {
 		global $conf;
 
-		if (!$conf->global->PICKUP_USE_DEEE) {
+		if (empty($conf->global->PICKUP_USE_DEEE)) {
 			return;
 		}
 

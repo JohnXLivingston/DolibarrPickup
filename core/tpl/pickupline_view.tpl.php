@@ -91,7 +91,7 @@ $coldisplay = 0; ?>
       print ($line->weight * $line->qty) . ' ' . measuringUnitString(0, "weight", $line->weight_units);
     } ?>
   </td>
-  <?php if ($conf->global->PICKUP_USE_DEEE) { ?>
+  <?php if (!empty($conf->global->PICKUP_USE_DEEE)) { ?>
     <td class="nowrap"
       <?php if (intval($line->deee) != intval($line_product->array_options['options_pickup_deee']) || strval($line->deee_type) != strval($line_product->array_options['options_pickup_deee_type'])) {
         $product_warnings = 1;

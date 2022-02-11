@@ -223,7 +223,7 @@ pickup_report_header($langs->trans("PickupMenuReports"), $period, $periodlink, $
 
 function deee_types() {
   global $db, $conf;
-  if (!$conf->global->PICKUP_USE_DEEE) {
+  if (empty($conf->global->PICKUP_USE_DEEE)) {
     return array();
   }
   // This is an extrafield...
@@ -331,7 +331,7 @@ print '<div class="div-table-responsive">';
 print '<table class="tagtable liste">'."\n";
 
 print '<tr class="liste_titre"><td class="liste_titre">&nbsp;</td>';
-if ($conf->global->PICKUP_USE_DEEE) {
+if (!empty($conf->global->PICKUP_USE_DEEE)) {
   foreach ($deee_types as $label) {
     print '<td align="center" class="liste_titre">' . $label . '</td>';
   }
@@ -347,7 +347,7 @@ foreach ($data as $line) {
       print $line['soc']->getNomUrl(1);
     }
   print '</td>';
-  if ($conf->global->PICKUP_USE_DEEE) {
+  if (!empty($conf->global->PICKUP_USE_DEEE)) {
     foreach ($deee_types as $deee_type_key => $label) {
       print '<td align="center" class="nowrap">';
         foreach ($line['per_deee_type'][$deee_type_key] as $weights_units => $weights) {

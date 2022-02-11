@@ -449,7 +449,7 @@ include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input.tpl.php';
 $parameters=array('arrayfields'=>$arrayfields);
 $reshook=$hookmanager->executeHooks('printFieldListOption', $parameters, $object);    // Note that $action and $object may have been modified by hook
 print $hookmanager->resPrint;
-if ($conf->global->PICKUP_USE_DEEE) {
+if (!empty($conf->global->PICKUP_USE_DEEE)) {
 	// DEEE qty column
 	print '<td class="liste_titre"></td>';
 }
@@ -482,7 +482,7 @@ include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
 $parameters=array('arrayfields'=>$arrayfields,'param'=>$param,'sortfield'=>$sortfield,'sortorder'=>$sortorder);
 $reshook=$hookmanager->executeHooks('printFieldListTitle', $parameters, $object);    // Note that $action and $object may have been modified by hook
 print $hookmanager->resPrint;
-if ($conf->global->PICKUP_USE_DEEE) {
+if (!empty($conf->global->PICKUP_USE_DEEE)) {
 	// DEEE qty column
 	print '<td class="liste_titre">' . $langs->trans('DEEE') . '</td>';
 }
@@ -552,7 +552,7 @@ while ($i < min($num, $limit))
 	$parameters=array('arrayfields'=>$arrayfields, 'obj'=>$obj, 'i'=>$i, 'totalarray'=>&$totalarray);
 	$reshook=$hookmanager->executeHooks('printFieldListValue', $parameters, $object);    // Note that $action and $object may have been modified by hook
 	print $hookmanager->resPrint;
-	if ($conf->global->PICKUP_USE_DEEE) {
+	if (!empty($conf->global->PICKUP_USE_DEEE)) {
 		// DEEE qty column
 		print '<td class="nowrap right">';
 		$qtyTotals = $object->computeQtyTotals();

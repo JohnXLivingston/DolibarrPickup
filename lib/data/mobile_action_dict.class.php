@@ -29,7 +29,7 @@ class DataMobileActionDict extends DataMobileAction {
       // if ($filter) $sql.=" ".$filter;
       $sql.= " ORDER by position, id";
     } else if ($what == 'deee_type') {
-      if (!$conf->global->PICKUP_USE_DEEE) {
+      if (empty($conf->global->PICKUP_USE_DEEE)) {
         return array();
       }
       // This is an extrafield...
