@@ -43,9 +43,11 @@ print "<!-- BEGIN PHP TEMPLATE pickup/pickupline_title.tpl.php -->\n";
 		<td class="right">
 			<?php print $langs->trans('Weight'); ?>
 		</td>
-		<td class="">
-			<?php print $langs->trans('DEEE'); ?>
-		</td>
+		<?php if ($conf->global->PICKUP_USE_DEEE) { ?>
+			<td class="">
+				<?php print $langs->trans('DEEE'); ?>
+			</td>
+		<?php } ?>
 		<td class="">
 			<?php if ($object->status == Pickup::STATUS_STOCK) { ?>
 				<a href="<?php print dol_buildpath('product/stock/movement_card.php', 1) ?>?id=<?php print $object->fk_entrepot ?>&search_inventorycode=<?php print urlencode($object->ref) ?>">

@@ -1,4 +1,4 @@
-import { StateDefinition } from '../lib/state/index'
+import type { StateDefinition, ShowFields } from '../lib/state/index'
 
 export function choosePickup (goto: string, creationGoto: string): StateDefinition {
   return {
@@ -50,7 +50,28 @@ export function savePickup (goto: string, saveUntil: string): StateDefinition {
   }
 }
 
-export function showPickup (addGoto: string): StateDefinition {
+export function showPickup (useDEEE: boolean, addGoto: string): StateDefinition {
+  const lineCols: ShowFields = []
+  lineCols.push({
+    type: 'varchar',
+    name: 'name',
+    label: 'Produit'
+  })
+  if (useDEEE) {
+    lineCols.push({
+      type: 'boolean',
+      name: 'deee',
+      label: 'DEEE',
+      total: true
+    })
+  }
+  lineCols.push({
+    type: 'integer',
+    name: 'qty',
+    label: 'Quantité',
+    total: true
+  })
+
   return {
     type: 'show',
     label: 'Collecte',
@@ -78,25 +99,7 @@ export function showPickup (addGoto: string): StateDefinition {
         type: 'lines',
         name: 'lines',
         label: 'Produits',
-        lines: [
-          {
-            type: 'varchar',
-            name: 'name',
-            label: 'Produit'
-          },
-          {
-            type: 'boolean',
-            name: 'deee',
-            label: 'DEEE',
-            total: true
-          },
-          {
-            type: 'integer',
-            name: 'qty',
-            label: 'Quantité',
-            total: true
-          }
-        ]
+        lines: lineCols
       }
     ]
   }

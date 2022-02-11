@@ -3,6 +3,8 @@ dol_include_once('/pickup/lib/data/mobile_action.class.php');
 
 class DataMobileActionDict extends DataMobileAction {
   public function action_list() {
+    global $conf;
+
     dol_syslog(__METHOD__, LOG_DEBUG);
     $db = $this->db;
 
@@ -27,6 +29,9 @@ class DataMobileActionDict extends DataMobileAction {
       // if ($filter) $sql.=" ".$filter;
       $sql.= " ORDER by position, id";
     } else if ($what == 'deee_type') {
+      if (!$conf->global->PICKUP_USE_DEEE) {
+        return array();
+      }
       // This is an extrafield...
       require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
       $extrafields = new ExtraFields($db);

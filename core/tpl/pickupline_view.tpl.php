@@ -91,31 +91,33 @@ $coldisplay = 0; ?>
       print ($line->weight * $line->qty) . ' ' . measuringUnitString(0, "weight", $line->weight_units);
     } ?>
   </td>
-  <td class="nowrap"
-    <?php if (intval($line->deee) != intval($line_product->array_options['options_pickup_deee']) || strval($line->deee_type) != strval($line_product->array_options['options_pickup_deee_type'])) {
-      $product_warnings = 1;
-      ?>
-      style="color: orange;"
-      title="<?php
-        print htmlentities($langs->trans('Product') . ': ');
-        if ($line_product->array_options['options_pickup_deee']) {
-          print htmlentities($extrafields->showOutputField('pickup_deee_type', $line_product->array_options['options_pickup_deee_type'], '', $line_product->table_element));
+  <?php if ($conf->global->PICKUP_USE_DEEE) { ?>
+    <td class="nowrap"
+      <?php if (intval($line->deee) != intval($line_product->array_options['options_pickup_deee']) || strval($line->deee_type) != strval($line_product->array_options['options_pickup_deee_type'])) {
+        $product_warnings = 1;
+        ?>
+        style="color: orange;"
+        title="<?php
+          print htmlentities($langs->trans('Product') . ': ');
+          if ($line_product->array_options['options_pickup_deee']) {
+            print htmlentities($extrafields->showOutputField('pickup_deee_type', $line_product->array_options['options_pickup_deee_type'], '', $line_product->table_element));
+          } else {
+            print '-';
+          }
+        ?>"
+      <?php } ?>
+    >
+      <?php $coldisplay++; ?>
+      <?php
+        if ($line->deee) {
+          // this field is defined as en extrafield on the product table.
+          print $extrafields->showOutputField('pickup_deee_type', $line->deee_type, '', $line_product->table_element);
         } else {
           print '-';
         }
-      ?>"
-    <?php } ?>
-  >
-    <?php $coldisplay++; ?>
-    <?php
-      if ($line->deee) {
-        // this field is defined as en extrafield on the product table.
-        print $extrafields->showOutputField('pickup_deee_type', $line->deee_type, '', $line_product->table_element);
-      } else {
-        print '-';
-      }
-    ?>
-  </td>
+      ?>
+    </td>
+  <?php } ?>
   <td class="nowrap">
     <?php $coldisplay++; ?>
     <?php if (! empty($stock_movement)) { print $stock_movement->getNomUrl(1); } ?>

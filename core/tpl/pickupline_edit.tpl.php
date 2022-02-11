@@ -81,15 +81,17 @@ $coldisplay = 0;
 			print $formproduct->selectMeasuringUnits('weight_units', 'weight', GETPOSTISSET('weight_units') ? GETPOST('weight_units', 'int') : $line->weight_units, 0, 2);
 		?>
   </td>
-  <td class="nowrap" colspan="2">
-    <?php $coldisplay++; ?><?php $coldisplay++; ?>
-    <?php
-			// this field is defined as an extrafield on the product table.
-			// print $extrafields->showInputField('pickup_deee', GETPOSTISSET('deee') ? GETPOST('deee', 'int') : $line->deee, '', '', '', 0, $line_product->table_element);
-			// this field is defined as an extrafield on the product table.
-      print $extrafields->showInputField('pickup_deee_type', GETPOSTISSET('options_pickup_deee_type') ? GETPOST('options_pickup_deee_type', 'alpha') : $line->deee_type, '', '', '', 0, $line_product->table_element);
-    ?>
-  </td>
+	<?php if ($conf->global->PICKUP_USE_DEEE) { ?>
+		<td class="nowrap" colspan="2">
+			<?php $coldisplay++; ?><?php $coldisplay++; ?>
+			<?php
+				// this field is defined as an extrafield on the product table.
+				// print $extrafields->showInputField('pickup_deee', GETPOSTISSET('deee') ? GETPOST('deee', 'int') : $line->deee, '', '', '', 0, $line_product->table_element);
+				// this field is defined as an extrafield on the product table.
+				print $extrafields->showInputField('pickup_deee_type', GETPOSTISSET('options_pickup_deee_type') ? GETPOST('options_pickup_deee_type', 'alpha') : $line->deee_type, '', '', '', 0, $line_product->table_element);
+			?>
+		</td>
+	<?php } ?>
 
 	<!-- colspan for this td because it replace total_ht+3 td for buttons+... -->
 	<td class="center valignmiddle" colspan="<?php echo $colspan; ?>">

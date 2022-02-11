@@ -794,7 +794,7 @@ class Pickup extends CommonObject
 	}
 	
 	public function initPickupLine($fk_product, $qty = 1) {
-		global $db;
+		global $db, $conf;
 
 		$line = new PickupLine($db);
 		$line->fk_pickup = $this->id;
@@ -808,8 +808,10 @@ class Pickup extends CommonObject
 		} else {
 			$line->weight = $product->weight;
 			$line->weight_units = $product->weight_units;
-			$line->deee = $product->array_options['options_pickup_deee'];
-			$line->deee_type = $product->array_options['options_pickup_deee_type'];
+			if ($conf->global->PICKUP_USE_DEEE) {
+				$line->deee = $product->array_options['options_pickup_deee'];
+				$line->deee_type = $product->array_options['options_pickup_deee_type'];
+			}
 		}
 
 		return $line;
@@ -818,6 +820,7 @@ class Pickup extends CommonObject
 	public function computeQtyTotals () {
 		global $db;
 
+		// NB: we compute deee_qty even if !PICKUP_USE_DEEE to simplify code. It will be ignored later on.
 		$result = array(
 			'qty' => 0,
 			'deee_qty' => 0,
@@ -857,8 +860,9 @@ class Pickup extends CommonObject
 	}
 	
 	public function computeTotals() {
-		global $db;
+		global $db, $conf;
 
+		// NB: we compute deee_xxx even if !PICKUP_USE_DEEE to simplify code. It will be ignored later on.
 		$result = array(
 			'qty' => 0,
 			'weights' => array(
@@ -899,7 +903,7 @@ class Pickup extends CommonObject
 						}
 						$result['weights'][$weight_units]+= $line_weight;
 
-						if ($line->deee) {
+						if ($conf->global->PICKUP_USE_DEEE && $line->deee) {
 							$deee_type = strval($line->deee_type);
 							$deee_type = trim($extrafields->showOutputField('pickup_deee_type', $deee_type, '', 'product'));
 							if (!array_key_exists($weight_units, $result['deee_weights'])) {

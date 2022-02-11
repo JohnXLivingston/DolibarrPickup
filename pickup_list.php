@@ -449,8 +449,10 @@ include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input.tpl.php';
 $parameters=array('arrayfields'=>$arrayfields);
 $reshook=$hookmanager->executeHooks('printFieldListOption', $parameters, $object);    // Note that $action and $object may have been modified by hook
 print $hookmanager->resPrint;
-// DEEE qty column
-print '<td class="liste_titre"></td>';
+if ($conf->global->PICKUP_USE_DEEE) {
+	// DEEE qty column
+	print '<td class="liste_titre"></td>';
+}
 // Action column
 print '<td class="liste_titre maxwidthsearch">';
 $searchpicto=$form->showFilterButtons();
@@ -480,8 +482,10 @@ include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
 $parameters=array('arrayfields'=>$arrayfields,'param'=>$param,'sortfield'=>$sortfield,'sortorder'=>$sortorder);
 $reshook=$hookmanager->executeHooks('printFieldListTitle', $parameters, $object);    // Note that $action and $object may have been modified by hook
 print $hookmanager->resPrint;
-// DEEE qty column
-print '<td class="liste_titre">' . $langs->trans('DEEE') . '</td>';
+if ($conf->global->PICKUP_USE_DEEE) {
+	// DEEE qty column
+	print '<td class="liste_titre">' . $langs->trans('DEEE') . '</td>';
+}
 // Action column
 print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
 print '</tr>'."\n";
@@ -548,13 +552,15 @@ while ($i < min($num, $limit))
 	$parameters=array('arrayfields'=>$arrayfields, 'obj'=>$obj, 'i'=>$i, 'totalarray'=>&$totalarray);
 	$reshook=$hookmanager->executeHooks('printFieldListValue', $parameters, $object);    // Note that $action and $object may have been modified by hook
 	print $hookmanager->resPrint;
-	// DEEE qty column
-	print '<td class="nowrap right">';
-	$qtyTotals = $object->computeQtyTotals();
-	print price($qtyTotals['deee_qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
-	print  ' / ';
-	print price($qtyTotals['qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
-	print '</td>';
+	if ($conf->global->PICKUP_USE_DEEE) {
+		// DEEE qty column
+		print '<td class="nowrap right">';
+		$qtyTotals = $object->computeQtyTotals();
+		print price($qtyTotals['deee_qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
+		print  ' / ';
+		print price($qtyTotals['qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
+		print '</td>';
+	}
 	// Action column
 	print '<td class="nowrap center">';
 	if ($massactionbutton || $massaction)   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined

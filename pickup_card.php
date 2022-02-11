@@ -426,25 +426,27 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 							}
 						?>
 					</td>
-					<td class="nowrap">
-						<?php
-							foreach ($totals['deee_type_weights'] as $deee_type => $deee_type_weights) {
+					<?php if ($conf->global->PICKUP_USE_DEEE) { ?>
+						<td class="nowrap">
+							<?php
+								foreach ($totals['deee_type_weights'] as $deee_type => $deee_type_weights) {
+									$tmp = array();
+									print $deee_type . ': ';
+									foreach ($totals['deee_type_weights'][$deee_type] as $weights_units => $weights) {
+										array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
+									}
+									print join(', ', $tmp);
+									print '<br />';
+								}
+
 								$tmp = array();
-								print $deee_type . ': ';
-								foreach ($totals['deee_type_weights'][$deee_type] as $weights_units => $weights) {
+								foreach ($totals['deee_weights'] as $weights_units => $weights) {
 									array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
 								}
 								print join(', ', $tmp);
-								print '<br />';
-							}
-
-							$tmp = array();
-							foreach ($totals['deee_weights'] as $weights_units => $weights) {
-								array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
-							}
-							print join(', ', $tmp);
-						?>
-					</td>
+							?>
+						</td>
+					<?php } ?>
 					<td colspan="4"></td>
 				</tr>
 			<?php

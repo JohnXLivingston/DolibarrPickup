@@ -72,22 +72,22 @@ class DataMobileActionProduct extends DataMobileAction {
     $langs->loadLangs(array("other"));
     $weight = $object->weight . ' ' . measuringUnitString(0, "weight", $object->weight_units);
 
-    require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-    $extrafields = new ExtraFields($db);
-    $extrafields->fetch_name_optionals_label('product');
-    $deee_type = $extrafields->showOutputField('pickup_deee_type', $object->array_options['options_pickup_deee_type'], '', $object->table_element);
-
     $result = array(
       'rowid' => $object->id,
       'ref' => $object->ref,
       'description' => $object->description,
       'label' => $object->label,
       'pcats' => join(', ', $cats_labels),
-      'deee_type' => $deee_type,
       'weight_txt' => $weight // FIXME: should be weight + weight_units... Be it is simplier like that for now
     );
     if ($conf->global->PICKUP_USE_PBRAND) {
       $result['pbrand'] = $object->array_options['options_pickup_pbrand'];
+    }
+    if ($conf->global->PICKUP_USE_DEEE) {
+      require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+      $extrafields = new ExtraFields($db);
+      $extrafields->fetch_name_optionals_label('product');
+      $result['deee_type'] = $extrafields->showOutputField('pickup_deee_type', $object->array_options['options_pickup_deee_type'], '', $object->table_element);
     }
     return $result;
   }
@@ -114,9 +114,11 @@ class DataMobileActionProduct extends DataMobileAction {
     if ($conf->global->PICKUP_USE_PBRAND) {
       $product->array_options['options_pickup_pbrand'] = GETPOST('product_pbrand');
     }
-    $deee_type = GETPOST('product_deee_type', 'alpha');
-    if (!empty($deee_type)) {
-      $product->array_options['options_pickup_deee_type'] = $deee_type;
+    if ($conf->global->PICKUP_USE_DEEE) {
+      $deee_type = GETPOST('product_deee_type', 'alpha');
+      if (!empty($deee_type)) {
+        $product->array_options['options_pickup_deee_type'] = $deee_type;
+      }
     }
     // FIXME: see specifications for missing fields
   

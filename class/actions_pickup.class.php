@@ -175,12 +175,14 @@ class ActionsPickup
 					// $line->description = $line_desc;
 					$line->weight = $weight;
 					$line->weight_units = $weight_units;
-					if (!$deee_type) {
-						$line->deee = 0;
-						$line->deee_type = NULL;
-					} else {
-						$line->deee = 1;
-						$line->deee_type = $deee_type;
+					if ($conf->global->PICKUP_USE_DEEE) {
+						if (!$deee_type) {
+							$line->deee = 0;
+							$line->deee_type = NULL;
+						} else {
+							$line->deee = 1;
+							$line->deee_type = $deee_type;
+						}
 					}
 
 					$result = $line->update($user);
@@ -232,8 +234,10 @@ class ActionsPickup
 				} else {
 					$line->weight = $product->weight;
 					$line->weight_units = $product->weight_units;
-					$line->deee = $product->array_options['options_pickup_deee'];
-					$line->deee_type = $product->array_options['options_pickup_deee_type'];
+					if ($conf->global->PICKUP_USE_DEEE) {
+						$line->deee = $product->array_options['options_pickup_deee'];
+						$line->deee_type = $product->array_options['options_pickup_deee_type'];
+					}
 
 					$result = $line->update($user);
 					if ($result <= 0) {

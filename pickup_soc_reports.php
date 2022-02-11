@@ -332,9 +332,11 @@ print '<td align="" class="liste_titre">' . $langs->trans('Date') . '</td>';
 print '<td align="" class="liste_titre">' . $langs->trans('Status') . '</td>';
 print '<td align="" class="liste_titre">' . $langs->trans('Description') . '</td>';
 print '<td align="" class="liste_titre">' . $langs->trans('Qty') . '</td>';
-print '<td align="" class="liste_titre">' . $langs->trans('ProductWeight') . '</td>';
-print '<td align="" class="liste_titre">' . $langs->trans('Weight') . '</td>';
-print '<td align="" class="liste_titre">' . $langs->trans('DEEE') . '</td>';
+print '<td align="" class="liste_titre right">' . $langs->trans('ProductWeight') . '</td>';
+print '<td align="" class="liste_titre right">' . $langs->trans('Weight') . '</td>';
+if ($conf->global->PICKUP_USE_DEEE) {
+  print '<td align="" class="liste_titre">' . $langs->trans('DEEE') . '</td>';
+}
 print '<td align="" class="liste_titre">' . $langs->trans('StockMovement') . '</td>';
 print '</tr>';
 
@@ -383,14 +385,16 @@ foreach ($data as $line) {
     print ($pickupline->qty * $pickupline->weight) . ' ' . measuringUnitString(0, "weight", $pickupline->weight_units);
   }
   print '</td>';
-  print '<td class="nowrap">';
-  if ($pickupline->deee) {
-    // this field is defined as en extrafield on the product table.
-    print $extrafields->showOutputField('pickup_deee_type', $pickupline->deee_type, '', 'product');
-  } else {
-    print '-';
+  if ($conf->global->PICKUP_USE_DEEE) {
+    print '<td class="nowrap">';
+    if ($pickupline->deee) {
+      // this field is defined as en extrafield on the product table.
+      print $extrafields->showOutputField('pickup_deee_type', $pickupline->deee_type, '', 'product');
+    } else {
+      print '-';
+    }
+    print '</td>';
   }
-  print '</td>';
   print '<td>';
   if (! empty($stock_movement)) { print $stock_movement->getNomUrl(1); }
   print '</td>';

@@ -25,15 +25,16 @@ interface ShowFieldInteger extends ShowFieldBase {
 }
 interface ShowFieldLines extends ShowFieldBase {
   type: 'lines'
-  lines: ShowField[]
+  lines: ShowFields
 }
 
 type ShowField = ShowFieldVarchar | ShowFieldText | ShowFieldBoolean | ShowFieldLines | ShowFieldInteger
+type ShowFields = ShowField[]
 interface StateShowDefinition extends StateDefinitionBase {
   type: 'show'
   key: string
   primaryKey: string
-  fields: ShowField[]
+  fields: ShowFields
   addGoto?: string
   addLabel?: string
   okGoto?: string
@@ -42,7 +43,7 @@ interface StateShowDefinition extends StateDefinitionBase {
 class StateShow extends State {
   private readonly key: string
   private readonly primaryKey: string
-  public readonly fields: ShowField[]
+  public readonly fields: ShowFields
   public readonly addGoto?: string
   public readonly addLabel?: string
   public readonly okGoto?: string
@@ -116,6 +117,8 @@ class StateShow extends State {
 }
 
 export {
+  ShowField,
+  ShowFields,
   StateShow,
   StateShowDefinition
 }

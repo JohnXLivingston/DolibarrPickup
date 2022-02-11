@@ -222,7 +222,10 @@ pickup_report_header($langs->trans("PickupMenuReports"), $period, $periodlink, $
  */
 
 function deee_types() {
-  global $db;
+  global $db, $conf;
+  if (!$conf->global->PICKUP_USE_DEEE) {
+    return array();
+  }
   // This is an extrafield...
   require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
   $extrafields = new ExtraFields($db);
@@ -245,9 +248,10 @@ function sort_pickup_report_lines($a, $b) {
 }
 function retrieve_data() {
   // TODO: add indexes in DB?
-  global $db;
+  global $db, $conf;
   global $date_start, $date_end, $deee_types, $status_filter;
 
+  // NB: We can get deee and deee_type even if !PICKUP_USE_DEEE. Fields will just be empty or ignored later.
   $sql = 'SELECT p.fk_soc, pl.deee, pl.deee_type, pl.weight_units, sum(pl.weight * pl.qty) as line_weight';
   $sql.= ' FROM '.MAIN_DB_PREFIX.'pickup_pickup as p';
   $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'pickup_pickupline as pl ON pl.fk_pickup = p.rowid';
@@ -327,10 +331,12 @@ print '<div class="div-table-responsive">';
 print '<table class="tagtable liste">'."\n";
 
 print '<tr class="liste_titre"><td class="liste_titre">&nbsp;</td>';
-foreach ($deee_types as $label) {
-  print '<td align="center" class="liste_titre">' . $label . '</td>';
+if ($conf->global->PICKUP_USE_DEEE) {
+  foreach ($deee_types as $label) {
+    print '<td align="center" class="liste_titre">' . $label . '</td>';
+  }
+  print '<td align="center" class="liste_titre">' . $langs->trans('DEEETotal') . '</td>';
 }
-print '<td align="center" class="liste_titre">' . $langs->trans('DEEETotal') . '</td>';
 print '<td align="center" class="liste_titre">' . $langs->trans('PickupTotalWeight') . '</td>';
 print '</tr>';
 
@@ -341,18 +347,20 @@ foreach ($data as $line) {
       print $line['soc']->getNomUrl(1);
     }
   print '</td>';
-  foreach ($deee_types as $deee_type_key => $label) {
+  if ($conf->global->PICKUP_USE_DEEE) {
+    foreach ($deee_types as $deee_type_key => $label) {
+      print '<td align="center" class="nowrap">';
+        foreach ($line['per_deee_type'][$deee_type_key] as $weights_units => $weights) {
+          print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
+        }
+      print '</td>';
+    }
     print '<td align="center" class="nowrap">';
-      foreach ($line['per_deee_type'][$deee_type_key] as $weights_units => $weights) {
+      foreach ($line['deee_total'] as $weights_units => $weights) {
         print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
       }
     print '</td>';
   }
-  print '<td align="center" class="nowrap">';
-    foreach ($line['deee_total'] as $weights_units => $weights) {
-      print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
-    }
-  print '</td>';
   print '<td align="center" class="nowrap">';
     foreach ($line['total'] as $weights_units => $weights) {
       print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';

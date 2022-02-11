@@ -1,4 +1,4 @@
-import type { StateDefinition, FormField, FormFieldSelectLoadFilter, PickFields } from '../lib/state/index'
+import type { StateDefinition, FormField, FormFieldSelectLoadFilter, PickFields, ShowFields } from '../lib/state/index'
 
 export function pickProduct (usePBrand: boolean, goto: string, creationGoto: string): StateDefinition {
   const fields: PickFields = []
@@ -85,7 +85,7 @@ function getDeeeFieldMultiple (deeeForm: string): FormField {
   }
 }
 
-export function createProduct (usePBrand: boolean, goto: string, deeeForm: string): StateDefinition {
+export function createProduct (useDEEE: boolean, usePBrand: boolean, goto: string, deeeForm: string): StateDefinition {
   const fields: FormField[] = []
 
   if (usePBrand) {
@@ -117,8 +117,10 @@ export function createProduct (usePBrand: boolean, goto: string, deeeForm: strin
     maxLength: 255
   })
 
-  const deeeField: FormField = getDeeeField(deeeForm)
-  fields.push(deeeField)
+  if (useDEEE) {
+    const deeeField: FormField = getDeeeField(deeeForm)
+    fields.push(deeeField)
+  }
 
   fields.push({
     type: 'text',
@@ -172,49 +174,58 @@ export function saveProduct (goto: string, saveUntil: string): StateDefinition {
   }
 }
 
-export function showProduct (okGoto: string): StateDefinition {
+export function showProduct (useDEEE: boolean, usePBrand: boolean, okGoto: string): StateDefinition {
+  const fields: ShowFields = []
+  fields.push({
+    type: 'varchar',
+    name: 'pcats',
+    label: 'Catégorie'
+  })
+
+  if (usePBrand) {
+    fields.push({
+      type: 'varchar',
+      name: 'pbrand',
+      label: 'Marque'
+    })
+  }
+
+  fields.push({
+    type: 'varchar',
+    name: 'ref',
+    label: 'Référence'
+  },
+  {
+    type: 'varchar',
+    name: 'label',
+    label: 'Libellé'
+  },
+  {
+    type: 'text',
+    name: 'description',
+    label: 'Description'
+  })
+
+  if (useDEEE) {
+    fields.push({
+      type: 'varchar',
+      name: 'deee_type',
+      label: 'DEEE'
+    })
+  }
+
+  fields.push({
+    type: 'varchar',
+    name: 'weight_txt',
+    label: 'Poids'
+  })
+
   return {
     type: 'show',
     label: 'Produit',
     key: 'product',
     primaryKey: 'product',
     okGoto,
-    fields: [
-      {
-        type: 'varchar',
-        name: 'pcats',
-        label: 'Catégorie'
-      },
-      {
-        type: 'varchar',
-        name: 'pbrand',
-        label: 'Marque'
-      },
-      {
-        type: 'varchar',
-        name: 'ref',
-        label: 'Référence'
-      },
-      {
-        type: 'varchar',
-        name: 'label',
-        label: 'Libellé'
-      },
-      {
-        type: 'text',
-        name: 'description',
-        label: 'Description'
-      },
-      {
-        type: 'varchar',
-        name: 'deee_type',
-        label: 'DEEE'
-      },
-      {
-        type: 'varchar',
-        name: 'weight_txt',
-        label: 'Poids'
-      }
-    ]
+    fields
   }
 }

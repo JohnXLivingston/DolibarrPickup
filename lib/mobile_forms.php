@@ -15,30 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// DEEE_TYPEs as configured for LRDS:
-// 1, GEF (Gros Electroménager Froid)
-// 2, GHF ( Gros électroménager Hors Froid)
-// 3, PAM ( Petits Appareils Ménager)
-// 4, PAM Pro ( Petits Appareils Ménager Pro)
-// 5, ECR ( Ecran < 1m2 )
-// 6, ECR Pro ( Ecran > 1m2 )
-
 /**
  * Return the list of mobile forms for mobilecats.
  */
 function mobileListProductForms() {
+  global $conf;
+
   $r = array();
   $r[''] = 'Formulaire par défaut';
 
-  $r['create_product_deee_off'] = 'Non DEEE';
-  $r['create_product_deee_gef'] = 'GEF';
-  $r['create_product_deee_ghf'] = 'GHF';
-  $r['create_product_deee_pam'] = 'PAM';
-  $r['create_product_deee_pampro'] = 'PAM Pro';
-  $r['create_product_deee_ecr'] = 'ECR (Ecran < 1m2)';
-  $r['create_product_deee_ecrpro'] = 'ECR Pro (Ecran > 1m2)';
-  $r['create_product_deee_pam_or_pampro'] = 'PAM ou PAM Pro';
-  $r['create_product_deee_ecr_or_ecrpro'] = 'ECR ou ECR Pro';
+  if ($conf->global->PICKUP_USE_DEEE) {
+    $r['create_product_deee_off'] = 'Non DEEE';
+    $r['create_product_deee_gef'] = 'GEF';
+    $r['create_product_deee_ghf'] = 'GHF';
+    $r['create_product_deee_pam'] = 'PAM';
+    $r['create_product_deee_pampro'] = 'PAM Pro';
+    $r['create_product_deee_ecr'] = 'ECR (Ecran < 1m2)';
+    $r['create_product_deee_ecrpro'] = 'ECR Pro (Ecran > 1m2)';
+    $r['create_product_deee_pam_or_pampro'] = 'PAM ou PAM Pro';
+    $r['create_product_deee_ecr_or_ecrpro'] = 'ECR ou ECR Pro';
+  }
 
   return $r;
 }

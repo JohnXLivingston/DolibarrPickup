@@ -5,6 +5,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 class DataMobileActionPickup extends DataMobileAction {
   protected function pickup2json($pickup, $complete = false) {
+    global $conf;
+
     $r = array(
       'rowid' => $pickup->id,
       'display' => $pickup->ref.' '.$pickup->label
@@ -37,9 +39,11 @@ class DataMobileActionPickup extends DataMobileAction {
       $rl = array(
         'rowid' => $line->id,
         'name' => $product->ref,
-        'qty' => $line->qty,
-        'deee' => $line->deee ? true : false
+        'qty' => $line->qty
       );
+      if ($conf->global->PICKUP_USE_DEEE) {
+        $rl['deee'] = $line->deee ? true : false;
+      }
       array_push($r['lines'], $rl);
     }
     return $r;
