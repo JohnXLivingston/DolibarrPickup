@@ -99,10 +99,11 @@ class InterfacePickupDEEE extends DolibarrTriggers
 					dol_syslog("Trigger '".$this->name."': no array_options, assuming extrafields where not modified.");
 					return 0;
 				}
-				if (!array_key_exists('options_pickup_deee', $object->array_options)) {
-					dol_syslog("Trigger '".$this->name."': no options_pickup_deee fields. Dont recompute.");
-					return 0;
-				}
+				// This test is not valid: when creating from mobile app, the key is missing...
+				// if (!array_key_exists('options_pickup_deee', $object->array_options)) {
+				// 	dol_syslog("Trigger '".$this->name."': no options_pickup_deee fields. Dont recompute.");
+				// 	return 0;
+				// }
 				if (!array_key_exists('options_pickup_deee_type', $object->array_options)) {
 					dol_syslog("Trigger '".$this->name."': no options_pickup_deee_type fields. Dont recompute.");
 					return 0;
