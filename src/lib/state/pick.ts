@@ -271,6 +271,8 @@ class StatePick extends State {
 }
 
 export {
+  PickField,
+  PickFields,
   StatePick,
   StatePickDefinition
 }

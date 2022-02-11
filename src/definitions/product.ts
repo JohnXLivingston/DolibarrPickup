@@ -1,6 +1,11 @@
-import type { StateDefinition, FormField, FormFieldSelectLoadFilter } from '../lib/state/index'
+import type { StateDefinition, FormField, FormFieldSelectLoadFilter, PickFields } from '../lib/state/index'
 
-export function pickProduct (goto: string, creationGoto: string): StateDefinition {
+export function pickProduct (usePBrand: boolean, goto: string, creationGoto: string): StateDefinition {
+  const fields: PickFields = []
+  if (usePBrand) {
+    fields.push({ name: 'pbrand', label: 'Marque', applyFilter: 'localeUpperCase' })
+  }
+  fields.push({ name: 'ref', label: 'Ref' })
   return {
     type: 'pick',
     label: 'Recherche d\'un produit connu',
@@ -9,10 +14,7 @@ export function pickProduct (goto: string, creationGoto: string): StateDefinitio
     goto,
     creationGoto,
     creationLabel: 'Nouveau produit',
-    fields: [
-      { name: 'pbrand', label: 'Marque', applyFilter: 'localeUpperCase' },
-      { name: 'ref', label: 'Ref' }
-    ]
+    fields
   }
 }
 
@@ -83,54 +85,59 @@ function getDeeeFieldMultiple (deeeForm: string): FormField {
   }
 }
 
-export function createProduct (goto: string, deeeForm: string): StateDefinition {
+export function createProduct (usePBrand: boolean, goto: string, deeeForm: string): StateDefinition {
+  const fields: FormField[] = []
+
+  if (usePBrand) {
+    fields.push({
+      type: 'varchar',
+      name: 'product_pbrand',
+      label: 'Marque',
+      mandatory: true,
+      maxLength: 25,
+      loadSuggestions: {
+        dataKey: 'product',
+        field: 'pbrand',
+        filter: 'localeUpperCase'
+      }
+    })
+  }
+
+  fields.push({
+    type: 'varchar',
+    name: 'product_ref',
+    label: 'Référence',
+    mandatory: true,
+    maxLength: 128
+  }, {
+    type: 'varchar',
+    name: 'product_label',
+    label: 'Libellé',
+    mandatory: false,
+    maxLength: 255
+  })
+
   const deeeField: FormField = getDeeeField(deeeForm)
+  fields.push(deeeField)
+
+  fields.push({
+    type: 'text',
+    name: 'product_description',
+    label: 'Notes',
+    mandatory: false,
+    notes: {
+      load: 'pcat',
+      key: 'rowid',
+      basedOnValueOf: 'pcat',
+      field: 'notes'
+    }
+  })
 
   return {
     type: 'form',
     label: 'Remplir la fiche produit',
     goto,
-    fields: [
-      {
-        type: 'varchar',
-        name: 'product_pbrand',
-        label: 'Marque',
-        mandatory: true,
-        maxLength: 25,
-        loadSuggestions: {
-          dataKey: 'product',
-          field: 'pbrand',
-          filter: 'localeUpperCase'
-        }
-      },
-      {
-        type: 'varchar',
-        name: 'product_ref',
-        label: 'Référence',
-        mandatory: true,
-        maxLength: 128
-      },
-      {
-        type: 'varchar',
-        name: 'product_label',
-        label: 'Libellé',
-        mandatory: false,
-        maxLength: 255
-      },
-      deeeField,
-      {
-        type: 'text',
-        name: 'product_description',
-        label: 'Notes',
-        mandatory: false,
-        notes: {
-          load: 'pcat',
-          key: 'rowid',
-          basedOnValueOf: 'pcat',
-          field: 'notes'
-        }
-      }
-    ]
+    fields
   }
 }
 

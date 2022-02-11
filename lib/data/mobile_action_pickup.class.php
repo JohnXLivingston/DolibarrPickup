@@ -87,7 +87,7 @@ class DataMobileActionPickup extends DataMobileAction {
 
   public function action_save() {
     dol_syslog(__METHOD__, LOG_DEBUG);
-    global $user;
+    global $user, $conf;
 
     $date_pickup_input = GETPOST('date_pickup', 'alpha');
     $date_pickup_parts = explode('-', $date_pickup_input);

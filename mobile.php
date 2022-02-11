@@ -85,5 +85,6 @@ mobile_header();
   <div pickupmobileapp-container class="container"
     data-user-id="<?php print htmlspecialchars($user->id) ?>"
     data-entrepot-id="<?php if(!empty($conf->global->PICKUP_DEFAULT_STOCK)) { print $conf->global->PICKUP_DEFAULT_STOCK; } ?>"
+    <?php if (!empty($conf->global->PICKUP_USE_PBRAND)) { print ' data-use-pbrand="1" '; } ?>
   ></div>
 </body></html>
