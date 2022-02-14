@@ -38,6 +38,8 @@ PickupDate = Date de la collecte
 
 PICKUP_DEFAULT_STOCK = Entrepôt par défaut
 PICKUP_DEFAULT_STOCKTooltip = L'entrepôt à utiliser quand on créé une collecte depuis l'application mobile.
+PICKUP_USE_PCAT = Utiliser les tags produits
+PICKUP_USE_PCATTooltip = Si vous activez cette fonctionnalité, l'application mobile forcera l'usage de tags pour la création de fiches produit.
 PICKUP_USE_DEEE = Utiliser les champs DEEE
 PICKUP_USE_DEEETooltip = Ajoute les champs DEEE et Type DEEE sur les fiches produits.
 PICKUP_USE_PBRAND = Ajouter un champ «marque» à la fiche produit

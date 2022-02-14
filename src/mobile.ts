@@ -22,6 +22,7 @@ $(function () {
   const container = $('[pickupmobileapp-container]')
   let entrepotId = container.attr('data-entrepot-id')
   if (entrepotId === '') { entrepotId = undefined }
+  const usePCat = container.attr('data-use-pcat') === '1'
   const usePBrand = container.attr('data-use-pbrand') === '1'
   const useDEEE = container.attr('data-use-deee') === '1'
 
@@ -40,23 +41,31 @@ $(function () {
   definition.save_pickup = definitions.savePickup('show_pickup', entrepotId !== undefined ? 'societe' : 'entrepot')
   definition.show_pickup = definitions.showPickup(useDEEE, 'product')
 
-  definition.product = definitions.pickProduct(usePBrand, 'show_product', 'categorie')
-  definition.categorie = definitions.pickPCat('create_product') // Note: itemGotoField can override the goto
-  definition.create_product = definitions.createProduct(useDEEE, usePBrand, 'weight', '')
+  let saveUntilForProduct: string
+  if (usePCat) {
+    saveUntilForProduct = 'categorie'
+    definition.product = definitions.pickProduct(usePBrand, 'show_product', 'categorie')
+    definition.categorie = definitions.pickPCat('create_product') // Note: itemGotoField can override the goto
+    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', '')
+  } else {
+    saveUntilForProduct = 'create_product'
+    definition.product = definitions.pickProduct(usePBrand, 'show_product', 'create_product')
+    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', '')
+  }
   if (useDEEE) {
-    definition.create_product_deee_off = definitions.createProduct(useDEEE, usePBrand, 'weight', 'create_product_deee_off')
-    definition.create_product_deee_gef = definitions.createProduct(useDEEE, usePBrand, 'weight', 'create_product_deee_gef')
-    definition.create_product_deee_ghf = definitions.createProduct(useDEEE, usePBrand, 'weight', 'create_product_deee_ghf')
-    definition.create_product_deee_pam = definitions.createProduct(useDEEE, usePBrand, 'weight', 'create_product_deee_pam')
-    definition.create_product_deee_pampro = definitions.createProduct(useDEEE, usePBrand, 'weight', 'create_product_deee_pampro')
-    definition.create_product_deee_ecr = definitions.createProduct(useDEEE, usePBrand, 'weight', 'create_product_deee_ecr')
-    definition.create_product_deee_ecrpro = definitions.createProduct(useDEEE, usePBrand, 'weight', 'create_product_deee_ecrpro')
-    definition.create_product_deee_pam_or_pampro = definitions.createProduct(useDEEE, usePBrand, 'weight', 'create_product_deee_pam_or_pampro')
-    definition.create_product_deee_ecr_or_ecrpro = definitions.createProduct(useDEEE, usePBrand, 'weight', 'create_product_deee_ecr_or_ecrpro')
+    definition.create_product_deee_off = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_off')
+    definition.create_product_deee_gef = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_gef')
+    definition.create_product_deee_ghf = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_ghf')
+    definition.create_product_deee_pam = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_pam')
+    definition.create_product_deee_pampro = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_pampro')
+    definition.create_product_deee_ecr = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_ecr')
+    definition.create_product_deee_ecrpro = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_ecrpro')
+    definition.create_product_deee_pam_or_pampro = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_pam_or_pampro')
+    definition.create_product_deee_ecr_or_ecrpro = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_ecr_or_ecrpro')
   }
   definition.weight = definitions.createProductWeight('save_product')
-  definition.save_product = definitions.saveProduct('show_product', 'categorie')
-  definition.show_product = definitions.showProduct(useDEEE, usePBrand, 'qty')
+  definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)
+  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, 'qty')
 
   definition.qty = definitions.createPickupLine('save_pickupline')
   definition.save_pickupline = definitions.savePickupLine('show_pickup', 'init', 'show_pickup', true)

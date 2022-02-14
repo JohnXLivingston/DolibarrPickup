@@ -85,7 +85,7 @@ function getDeeeFieldMultiple (deeeForm: string): FormField {
   }
 }
 
-export function createProduct (useDEEE: boolean, usePBrand: boolean, goto: string, deeeForm: string): StateDefinition {
+export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: boolean, goto: string, deeeForm: string): StateDefinition {
   const fields: FormField[] = []
 
   if (usePBrand) {
@@ -122,17 +122,21 @@ export function createProduct (useDEEE: boolean, usePBrand: boolean, goto: strin
     fields.push(deeeField)
   }
 
-  fields.push({
-    type: 'text',
-    name: 'product_description',
-    label: 'Notes',
-    mandatory: false,
-    notes: {
+  let descriptionNotes
+  if (usePCat) {
+    descriptionNotes = {
       load: 'pcat',
       key: 'rowid',
       basedOnValueOf: 'pcat',
       field: 'notes'
     }
+  }
+  fields.push({
+    type: 'text',
+    name: 'product_description',
+    label: 'Notes',
+    mandatory: false,
+    notes: descriptionNotes
   })
 
   return {
@@ -174,13 +178,16 @@ export function saveProduct (goto: string, saveUntil: string): StateDefinition {
   }
 }
 
-export function showProduct (useDEEE: boolean, usePBrand: boolean, okGoto: string): StateDefinition {
+export function showProduct (usePCat: boolean, useDEEE: boolean, usePBrand: boolean, okGoto: string): StateDefinition {
   const fields: ShowFields = []
-  fields.push({
-    type: 'varchar',
-    name: 'pcats',
-    label: 'Catégorie'
-  })
+
+  if (usePCat) {
+    fields.push({
+      type: 'varchar',
+      name: 'pcats',
+      label: 'Catégorie'
+    })
+  }
 
   if (usePBrand) {
     fields.push({

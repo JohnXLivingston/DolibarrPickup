@@ -3,7 +3,14 @@ dol_include_once('/pickup/lib/data/mobile_action.class.php');
 
 class DataMobileActionPcat extends DataMobileAction {
   public function action_list() {
+    global $conf;
+
     dol_syslog(__METHOD__, LOG_DEBUG);
+
+    if (empty($conf->global->PICKUP_USE_PCAT)) {
+      return array();
+    }
+
     $db = $this->db;
     require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 

@@ -38,6 +38,8 @@ PickupDate = Pickup date
 
 PICKUP_DEFAULT_STOCK = Default stock
 PICKUP_DEFAULT_STOCKTooltip = The stock to use when creating a pickup from the pickup mobile application.
+PICKUP_USE_PCAT = Use product tags
+PICKUP_USE_PCATTooltip = If activated, you can choose some product tags that will be mandatory in the mobile app.
 PICKUP_USE_DEEE = Use French DEEE fields
 PICKUP_USE_DEEETooltip = Will add DEEE and DEEE type files to products.
 PICKUP_USE_PBRAND = Use a «brand» field on products

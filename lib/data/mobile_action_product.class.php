@@ -129,8 +129,10 @@ class DataMobileActionProduct extends DataMobileAction {
     }
 
     // Now we have to set the category
-    $pcat = GETPOST('pcat', 'int');
-    $product->setCategories(array($pcat));
+    if (!empty($conf->global->PICKUP_USE_PCAT)) {
+      $pcat = GETPOST('pcat', 'int');
+      $product->setCategories(array($pcat));
+    }
 
     $result = array("rowid" => $product_id, "ref" => $product->ref);
     if (!empty($conf->global->PICKUP_USE_PBRAND)) {
