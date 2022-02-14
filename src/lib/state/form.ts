@@ -176,6 +176,25 @@ class StateForm extends State {
     })
   }
 
+  postRenderAndBind (dom: JQuery, stack: Stack, bind: boolean, vars: any): void {
+    super.postRenderAndBind(dom, stack, bind, vars)
+
+    // Focus the first visible field.
+    if (vars?.useDefaultValues) {
+      // useDefaultValues seems a good test: only add focus if this is an empty form, not if it is already filled (error or nav back)
+      const el = dom.find('input:visible:not(disabled), checkbox:visible:not(disabled), textarea:visible:not(disabled)').first()
+      if (el.length) {
+        el.focus()
+      }
+    } else {
+      // focus to the first invalid field
+      const el = dom.find('input.is-invalid:visible:not(disabled), checkbox.is-invalid:visible:not(disabled), textarea.is-invalid:visible:not(disabled)').first()
+      if (el.length) {
+        el.focus()
+      }
+    }
+  }
+
   /**
    * Returns getData promises for each field that need async data.
    */

@@ -107,6 +107,7 @@ class Machine {
     this.content.html(s)
     this.postRender()
     if (bind) this.bindEvents()
+    currentState.postRenderAndBind(this.content, this.stack, bind, vars)
   }
 
   private unbindEvents (): void {

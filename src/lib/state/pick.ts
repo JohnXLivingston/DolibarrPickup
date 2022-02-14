@@ -185,6 +185,16 @@ class StatePick extends State {
     })
   }
 
+  // Not working. Keep this for later.
+  // postRenderAndBind (dom: JQuery, stack: Stack, bind: boolean, vars: any): void {
+  //   super.postRenderAndBind(dom, stack, bind, vars)
+
+  //   const el = dom.find('select[pickupmobile-pick-select]:not(disabled)').last()
+  //   if (el.length) {
+  //     el.select2('open')
+  //   }
+  // }
+
   getFormInfos (stack: Stack, data: any[]): PickFormInfos {
     const r: PickFormInfos = {
       fieldsInfos: [],

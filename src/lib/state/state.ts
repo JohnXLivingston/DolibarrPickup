@@ -47,6 +47,8 @@ abstract class State {
 
   abstract bindEvents (dom: JQuery, stack: Stack): void
 
+  postRenderAndBind (_dom: JQuery, _stack: Stack, _bind: boolean, _vars: any): void {}
+
   // unbindEvents (dom: JQuery): void {
   //   dom.off('.stateEvents')
   // }
