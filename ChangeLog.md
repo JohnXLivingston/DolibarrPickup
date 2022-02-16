@@ -17,6 +17,7 @@
 * Intégration des collectes au stock: en cas d'erreur, rollback des modifications.
 * Application mobile: on donne le focus aux premiers champs, pour éviter de devoir cliquer dedans pour commencer la saisie.
 * Application mobile: fiche Collecte, erreur sur le compteur DEEE.
+* Application mobile: nettoyage du localStorage pour retirer les versions obsolètes.
 
 ## 0.17.1
 

@@ -34,7 +34,8 @@ class Machine {
     }
 
     this.content = $('<div>')
-    const stackSerialized = localStorage.getItem(this.stackStoragePrefix() + this.name)
+    const currentLocalStorageKey = this.stackStoragePrefix() + this.name
+    const stackSerialized = localStorage.getItem(currentLocalStorageKey)
     if (stackSerialized) {
       try {
         this.stack = Stack.deserialize(stackSerialized)
@@ -44,6 +45,14 @@ class Machine {
       }
     } else {
       this.stack = new Stack('init')
+    }
+
+    // Cleaning localStorage to remove all deprecated stacks...
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const key = localStorage.key(i)
+      if (key?.startsWith('stack_') && key.endsWith(this.name) && key !== currentLocalStorageKey) {
+        localStorage.removeItem(key)
+      }
     }
   }
 
