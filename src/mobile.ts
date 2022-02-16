@@ -26,6 +26,14 @@ $(function () {
   const usePBrand = container.attr('data-use-pbrand') === '1'
   const useDEEE = container.attr('data-use-deee') === '1'
 
+  // version is a string that must be related to the Machine definition, and the backend configuration.
+  // It is used to clear the stack on page load, if the configuration changed.
+  let version = container.attr('data-modpickup-version') ?? '0'
+  version += '_e' + (entrepotId ?? '0')
+  version += '_c' + (usePCat ? '1' : '0')
+  version += '_b' + (usePBrand ? '1' : '0')
+  version += '_d' + (useDEEE ? '1' : '0')
+
   const definition: {[key: string]: StateDefinition} = {}
 
   definition.init = definitions.choosePickup('show_pickup', entrepotId !== undefined ? 'societe' : 'entrepot')
@@ -72,7 +80,7 @@ $(function () {
 
   const machine = new Machine(
     'myMachine',
-    2022021001, // this is the version number. Change it if there is no retro compatibility for existing stacks
+    version,
     container.attr('data-user-id') ?? '',
     definition
   )

@@ -83,6 +83,7 @@ mobile_header();
 ?>
 <body>
   <div pickupmobileapp-container class="container"
+    data-modpickup-version="<?php echo htmlspecialchars($modulePickup->version); ?>"
     data-user-id="<?php print htmlspecialchars($user->id) ?>"
     data-entrepot-id="<?php if(!empty($conf->global->PICKUP_DEFAULT_STOCK)) { print $conf->global->PICKUP_DEFAULT_STOCK; } ?>"
     <?php if (!empty($conf->global->PICKUP_USE_PCAT)) { print ' data-use-pcat="1" '; } ?>

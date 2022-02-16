@@ -6,13 +6,13 @@ import type { RemoveBetween } from './stack'
 
 class Machine {
   private readonly name: string
-  private readonly version: number
+  private readonly version: string
   private readonly content: JQuery
   private readonly states: {[key: string]: State}
   private stack: Stack
   private readonly userId: string
 
-  constructor (name: string, version: number, userId: string, definition: {[key: string]: StateDefinition}) {
+  constructor (name: string, version: string, userId: string, definition: {[key: string]: StateDefinition}) {
     this.name = name
     this.version = version
     this.userId = userId
