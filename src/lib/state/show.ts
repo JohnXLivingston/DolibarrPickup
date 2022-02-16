@@ -18,6 +18,7 @@ interface ShowFieldText extends ShowFieldBase {
 interface ShowFieldBoolean extends ShowFieldBase {
   type: 'boolean'
   total?: boolean
+  totalQtyFieldName?: string // Optional field name, to apply a quantity on true values
 }
 interface ShowFieldInteger extends ShowFieldBase {
   type: 'integer'

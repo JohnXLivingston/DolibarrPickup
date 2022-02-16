@@ -61,7 +61,11 @@
                 {% elif field.type === 'boolean' %}
                   {% for line in lines %}
                     {% if line[field.name]%}
-                      {% set lineTotal = lineTotal + 1 %}
+                      {% if field.totalQtyFieldName %}
+                        {% set lineTotal = lineTotal + line[field.totalQtyFieldName] %}
+                      {% else %}
+                        {% set lineTotal = lineTotal + 1 %}
+                      {% endif %}
                     {% endif %}
                   {% endfor %}
                 {% endif %}

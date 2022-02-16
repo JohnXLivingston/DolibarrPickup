@@ -62,7 +62,8 @@ export function showPickup (useDEEE: boolean, addGoto: string): StateDefinition 
       type: 'boolean',
       name: 'deee',
       label: 'DEEE',
-      total: true
+      total: true,
+      totalQtyFieldName: 'qty'
     })
   }
   lineCols.push({
