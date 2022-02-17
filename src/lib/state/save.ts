@@ -1,5 +1,6 @@
+import type { NunjucksVars } from '../nunjucks'
 import { RenderReason } from '../constants'
-import { State, StateDefinitionBase } from './state'
+import { State, StateDefinitionBase, StateRetrievedData } from './state'
 import { Stack, RemoveBetween } from '../stack'
 import { setData } from '../data'
 import { waitingOn, waitingOff } from '../waiting'
@@ -39,12 +40,10 @@ class StateSave extends State {
     this.dependingCacheKey = definition.dependingCacheKey
   }
 
-  renderVars (stack: Stack): {[key: string]: any} {
-    const h = super.renderVars(stack)
+  _renderVars (stack: Stack, retrievedData: StateRetrievedData, h: NunjucksVars): void {
     h.stackValues = stack.previous?.getStackValuesUntil(this.saveUntil)
     h.displayStackValue = Stack.displayStackValue
     h.getDisplayStackValue = Stack.getDisplayStackValue
-    return h
   }
 
   renderVeto1 (reason: RenderReason, stack: Stack): Veto | undefined {

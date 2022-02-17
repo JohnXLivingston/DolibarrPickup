@@ -1,4 +1,5 @@
 import type { NunjucksVars } from '../nunjucks'
+import type { ResultData } from '../data'
 import { Stack } from '../stack'
 import { RenderReason } from '../constants'
 import { Veto } from '../veto'
@@ -6,6 +7,8 @@ import { Veto } from '../veto'
 interface StateDefinitionBase {
   label: string
 }
+
+type StateRetrievedData = Map<string, ResultData | false> // false means «missing key»
 
 abstract class State {
   readonly type: string
@@ -16,10 +19,52 @@ abstract class State {
     this.label = definition.label
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  renderVars (stack: Stack): NunjucksVars {
-    return {}
+  retrieveData (_stack: Stack, _force: boolean): StateRetrievedData {
+    return new Map<string, ResultData>()
   }
+
+  renderVars (stack: Stack, retrievedData: StateRetrievedData): NunjucksVars {
+    let isMissingKey = false
+    let isError = false
+    let isPending = false
+    retrievedData.forEach((result) => {
+      if (result === false) {
+        isMissingKey = true
+      } else if (result.status === 'rejected') {
+        isError = true
+      } else if (result.status === 'pending') {
+        isPending = true
+      }
+    })
+
+    if (!isMissingKey && !isError && isPending) {
+      setTimeout(() => {
+        const div = $('[pickupmobile-pending]')
+        if (div.length) {
+          div.trigger('rerender-state')
+        } else {
+          console.log('The pending div is not in the dom anymore.')
+        }
+      }, 500)
+    }
+
+    const vars = {
+      retrievedData: {
+        map: retrievedData,
+        isMissingKey,
+        isError,
+        isPending
+      }
+    }
+
+    if (!isError && !isPending) {
+      this._renderVars(stack, retrievedData, vars)
+    }
+
+    return vars
+  }
+
+  _renderVars (_stack: Stack, _retrievedData: StateRetrievedData, _vars: NunjucksVars): void {}
 
   /**
    * Before calling renderVars a call of renderVeto1 is made.
@@ -83,5 +128,6 @@ interface PossibleNunjucks {
 export {
   State,
   StateDefinitionBase,
+  StateRetrievedData,
   PossibleNunjucks
 }

@@ -1,5 +1,5 @@
 import type { NunjucksVars } from '../nunjucks'
-import { State, StateDefinitionBase } from './state'
+import { State, StateDefinitionBase, StateRetrievedData } from './state'
 import { Stack } from '../stack'
 import { getData } from '../data'
 
@@ -63,36 +63,23 @@ class StateShow extends State {
     return stack.searchValue(this.primaryKey)
   }
 
-  renderVars (stack: Stack): NunjucksVars {
-    const h = super.renderVars(stack)
-    h.fields = this.fields
+  retrieveData (stack: Stack, force: boolean): StateRetrievedData {
+    const r = super.retrieveData(stack, force)
+
     const value = this._getValue(stack)
     if (value === undefined) {
-      h.missingKey = true
-      return h
+      r.set('data', false)
+      return r
     }
-    h.data = getData(this.key, 'get', false, { id: value })
-    if (h.data.status === 'pending') {
-      setTimeout(() => {
-        const div = $('[pickupmobile-show-pending]')
-        if (div.length) {
-          div.trigger('rerender-state')
-        } else {
-          console.log('The pending div is not in the dom anymore.')
-        }
-      }, 500)
-    }
-    return h
+    r.set('data', getData(this.key, 'get', force, { id: value }))
+    return r
   }
 
-  bindEvents (dom: JQuery, stack: Stack): void {
-    dom.on('click.stateEvents', '[pickupmobile-show-reload]', () => {
-      const value = this._getValue(stack)
-      if (value !== undefined) {
-        getData(this.key, 'get', true, { id: value }) // force reload
-        dom.trigger('rerender-state')
-      }
-    })
+  _renderVars (stack: Stack, retrievedData: StateRetrievedData, h: NunjucksVars): void {
+    h.fields = this.fields
+  }
+
+  bindEvents (dom: JQuery, _stack: Stack): void {
     dom.on('click.stateEvents', '[pickupmobile-show-add]', () => {
       if (this.addGoto) {
         dom.trigger('goto-state', [this.addGoto])

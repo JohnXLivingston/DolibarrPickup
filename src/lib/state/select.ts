@@ -1,3 +1,4 @@
+import type { Stack } from '../stack'
 import { State, StateDefinitionBase } from './state'
 
 interface Option {
@@ -20,7 +21,7 @@ class StateSelect extends State {
     this.options = definition.options
   }
 
-  bindEvents (_dom: JQuery): void {
+  bindEvents (_dom: JQuery, _stack: Stack): void {
     console.error('not implemented yet')
   }
 

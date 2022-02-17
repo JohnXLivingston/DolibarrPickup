@@ -1,5 +1,5 @@
 import type { NunjucksVars } from '../nunjucks'
-import { State, StateDefinitionBase } from './state'
+import { State, StateDefinitionBase, StateRetrievedData } from './state'
 import { Stack, StackValue } from '../stack'
 import { getData } from '../data'
 import { RenderReason } from '../constants'
@@ -63,25 +63,17 @@ class StatePick extends State {
     this.creationLabel = definition.creationLabel
   }
 
-  renderVars (stack: Stack): NunjucksVars {
-    const h = super.renderVars(stack)
-    h.data = getData(this.key, 'list')
-    if (h.data.status === 'pending') {
-      setTimeout(() => {
-        const div = $('[pickupmobile-pick-pending]')
-        if (div.length) {
-          div.trigger('rerender-state')
-        } else {
-          console.log('The pending div is not in the dom anymore.')
-        }
-      }, 500)
-    }
+  retrieveData (stack: Stack, force: boolean): StateRetrievedData {
+    const r = super.retrieveData(stack, force)
+    r.set('data', getData(this.key, 'list', force))
+    return r
+  }
 
-    if (h.data.status === 'resolved') {
-      h.formInfos = this.getFormInfos(stack, h.data.data)
+  _renderVars (stack: Stack, retrievedData: StateRetrievedData, h: NunjucksVars): void {
+    const dataResult = retrievedData.get('data')
+    if (dataResult && dataResult.status === 'resolved' && dataResult?.data) {
+      h.formInfos = this.getFormInfos(stack, dataResult.data)
     }
-
-    return h
   }
 
   renderVeto2 (reason: RenderReason, stack: Stack, vars: any): Veto | undefined {
@@ -122,11 +114,6 @@ class StatePick extends State {
   }
 
   bindEvents (dom: JQuery, stack: Stack): void {
-    dom.on('click.stateEvents', '[pickupmobile-pick-reload]', () => {
-      getData(this.key, 'list', true) // force reload
-      dom.trigger('rerender-state')
-    })
-
     dom.on('change.stateEvents', '[pickupmobile-pick-select]', (ev) => {
       const select = $(ev.currentTarget)
       const option = select.find('option:selected:first')

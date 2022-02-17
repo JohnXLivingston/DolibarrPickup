@@ -15,7 +15,21 @@
   </nav>
 
   <h1 class="col-auto">{{ currentState.label }}</h1>
-  {% if currentState.type === 'unknown' %}
+  {% if retrievedData.isError %}
+    <div class="alert alert-danger">
+      {{ translate('Error retrieving data.') }}
+    </div>
+    <div class="row justify-content-center">
+      <a class="col-4 btn btn-primary" pickupmobile-reloaddata>
+        {{ translate('Try again') }}
+      </a>
+    </div>
+  {% elif retrievedData.isPending %}
+    <div class="alert alert-secondary" pickupmobile-pending>
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      {{ translate('Waiting...') }}
+    </div>
+  {% elif currentState.type === 'unknown' %}
     <div class="alert alert-danger">
       {{ translate('Not configured yet.') }}
     </div>

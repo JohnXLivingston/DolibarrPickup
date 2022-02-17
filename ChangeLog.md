@@ -22,6 +22,7 @@
 * Application mobile: Demo mode.
 * Application mobile: fix styling for choice states.
 * Application mobile: les states «compute» peuvent calculer via JS.
+* Application mobile: nettoyage du code, pour mettre en commun la gestion de la remontées des données.
 
 ## 0.17.1
 

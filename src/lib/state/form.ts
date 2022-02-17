@@ -1,7 +1,7 @@
 import type { NunjucksVars } from '../nunjucks'
-import { State, StateDefinitionBase } from './state'
+import { State, StateDefinitionBase, StateRetrievedData } from './state'
 import { Stack, StackValue } from '../stack'
-import { ResultData, getData, GetDataParams } from '../data'
+import { getData, GetDataParams } from '../data'
 import { translate } from '../translate'
 import { uniqAndSort, Filter } from '../utils/filters'
 
@@ -119,45 +119,12 @@ class StateForm extends State {
     this.fields = definition.fields
   }
 
-  renderVars (stack: Stack): NunjucksVars {
-    const h = super.renderVars(stack)
-
-    // Is there any field that needs data?
-    const dataPerKey = this.asyncFieldsData(stack, false)
-    h.dataPerKey = dataPerKey
-    h.dataStatus = 'resolved'
-    for (const fieldName in dataPerKey) {
-      const data = dataPerKey[fieldName]
-      if (data.status === 'pending') {
-        // at least one field pending... waiting...
-        h.dataStatus = 'pending'
-        setTimeout(() => {
-          const div = $('[pickupmobile-form-pending]')
-          if (div.length) {
-            div.trigger('rerender-state')
-          } else {
-            console.log('The pending div is not in the dom anymore.')
-          }
-        }, 500)
-
-        // no need to go further
-        break
-      } else if (data.status === 'rejected') {
-        h.dataStatus = 'rejected'
-      }
-    }
-
+  _renderVars (stack: Stack, retrievedData: StateRetrievedData, h: NunjucksVars): void {
     this.initDateDefaults()
     h.useDefaultValues = !stack.isAnyValue()
-    return h
   }
 
   bindEvents (dom: JQuery, stack: Stack): void {
-    dom.on('click.stateEvents', '[pickupmobile-form-reload]', () => {
-      this.asyncFieldsData(stack, true) // force reload
-      dom.trigger('rerender-state')
-    })
-
     dom.on('submit.stateEvents', 'form', (ev) => {
       const form = $(ev.currentTarget)
       const dataArray = form.serializeArray()
@@ -195,17 +162,15 @@ class StateForm extends State {
     }
   }
 
-  /**
-   * Returns getData promises for each field that need async data.
-   */
-  private asyncFieldsData (stack: Stack, force: boolean): {[key: string]: ResultData} {
-    const r: {[key: string]: ResultData} = {}
+  retrieveData (stack: Stack, force: boolean): StateRetrievedData {
+    const r = super.retrieveData(stack, force)
+
     for (let i = 0; i < this.fields.length; i++) {
       const field = this.fields[i]
       if (field.notes && 'load' in field.notes) {
         const notes: FormFieldNotesLoad = field.notes
         const data = getData(notes.load, 'list', force)
-        r['__notes_' + field.name] = data
+        r.set('__notes_' + field.name, data)
         if (data.status === 'resolved') {
           const value = stack.searchValue(notes.basedOnValueOf)
           if (value !== undefined) {
@@ -221,7 +186,7 @@ class StateForm extends State {
 
       if (field.type === 'varchar' && 'loadSuggestions' in field && field.loadSuggestions) {
         const data = getData(field.loadSuggestions.dataKey, 'list', force)
-        r[field.name + '.suggestions'] = data
+        r.set(field.name + '.suggestions', data)
         if (data.status === 'resolved') {
           field.suggestions = uniqAndSort(data.data, field.loadSuggestions.field, field.loadSuggestions.filter, true).values
         }
@@ -246,7 +211,7 @@ class StateForm extends State {
           }
         }
         const data = getData(field.load, 'list', force, loadParams)
-        r[field.name] = data
+        r.set(field.name, data)
         if (data.status === 'resolved') {
           field.options = data.data.map((d: any) => {
             return { value: d[field.map.value], label: d[field.map.label] }

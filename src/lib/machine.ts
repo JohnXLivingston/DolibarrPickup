@@ -78,8 +78,8 @@ class Machine {
     this._render(reason, true)
   }
 
-  rerender (): void {
-    this._render(RenderReason.REFRESHING, false)
+  rerender (reloadData: boolean = false): void {
+    this._render(reloadData ? RenderReason.RELOADDATA : RenderReason.REFRESHING, false)
   }
 
   private _render (reason: RenderReason, bind: boolean): void {
@@ -96,7 +96,8 @@ class Machine {
       return
     }
 
-    const vars = Object.assign({}, commonNunjucksVars(), currentState.renderVars(this.stack), {
+    const retrievedData = currentState.retrieveData(this.stack, reason === RenderReason.RELOADDATA)
+    const vars = Object.assign({}, commonNunjucksVars(), currentState.renderVars(this.stack, retrievedData), {
       stack: this.stack,
       currentState: currentState
     })
@@ -136,6 +137,11 @@ class Machine {
     this.content.on('rerender-state.machineEvents', () => {
       console.log('Asking to render again...')
       this.rerender()
+    })
+
+    this.content.on('click', '[pickupmobile-reloaddata]', () => {
+      console.log('Asking to reload data...')
+      this.rerender(true)
     })
 
     this.content.on('goto-state.machineEvents', (ev, stateName: string, removeBetween?: RemoveBetween) => {

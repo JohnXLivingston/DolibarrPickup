@@ -1,77 +1,61 @@
-{% if data.status === 'pending' %}
-  <div class="alert alert-secondary" pickupmobile-pick-pending>
-    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-    {{ translate('Waiting...') }}
-  </div>
-{% elif data.status === 'rejected' %}
-  <div class="alert alert-danger">
-    {{ translate('Error retrieving data.') }}
-  </div>
-  <div class="row justify-content-center">
-    <a class="col-4 btn btn-primary" pickupmobile-pick-reload>
-      {{ translate('Try again') }}
-    </a>
-  </div>
-{% elif data.status === 'resolved' %}
-  <div class="pickupmobile-scrollzone">
-    <table class="table table-striped table-bordered"><tbody>
-      {% for fieldInfo in formInfos.fieldsInfos %}
-        {% set field = fieldInfo.field %}
-        <tr>
-          <td>
-            <label for="{{ field.name }}">
-              {{ field.label }}
-            </label>
-          </td>
-          <td>
-            <select class="form-select" pickupmobile-select2 pickupmobile-pick-select name="{{ field.name }}" {% if fieldInfo.disabled %}disabled="disabled"{% endif %}>
-              {% for option in fieldInfo.options %}
-                <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %}>
-                  {{ option.label }}
-                </option>
-              {% endfor %}
-            </select>
-          </td>
-        </tr>
+<div class="pickupmobile-scrollzone">
+  <table class="table table-striped table-bordered"><tbody>
+    {% for fieldInfo in formInfos.fieldsInfos %}
+      {% set field = fieldInfo.field %}
+      <tr>
+        <td>
+          <label for="{{ field.name }}">
+            {{ field.label }}
+          </label>
+        </td>
+        <td>
+          <select class="form-select" pickupmobile-select2 pickupmobile-pick-select name="{{ field.name }}" {% if fieldInfo.disabled %}disabled="disabled"{% endif %}>
+            {% for option in fieldInfo.options %}
+              <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %}>
+                {{ option.label }}
+              </option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody></table>
+  {% set pickedItems = formInfos.pickedItems %}
+  {% if pickedItems.length %}
+    <hr>
+    <div class="alert alert-info">
+      <p>{{ translate('There are {items} items that match your selection.', {items: pickedItems.length}) }}</p>
+      <ul class="list-group">
+      {% for item in pickedItems %}
+        <li class="list-group-item">
+          {{ item[currentState.primaryKey] }}.
+          <a class="btn btn-primary"
+            pickupmobile-pick-pick="{{ item[currentState.primaryKey] }}"
+            {% if currentState.itemGotoField and item[currentState.itemGotoField] %}
+              pickupmobile-pick-pick-goto="{{ item[currentState.itemGotoField] }}"
+            {% endif %}
+          >
+            {{ translate('Pick this one') }}
+          </a>
+        </li>
       {% endfor %}
-    </tbody></table>
-    {% set pickedItems = formInfos.pickedItems %}
-    {% if pickedItems.length %}
-      <hr>
-      <div class="alert alert-info">
-        <p>{{ translate('There are {items} items that match your selection.', {items: pickedItems.length}) }}</p>
-        <ul class="list-group">
-        {% for item in pickedItems %}
-          <li class="list-group-item">
-            {{ item[currentState.primaryKey] }}.
-            <a class="btn btn-primary"
-              pickupmobile-pick-pick="{{ item[currentState.primaryKey] }}"
-              {% if currentState.itemGotoField and item[currentState.itemGotoField] %}
-                pickupmobile-pick-pick-goto="{{ item[currentState.itemGotoField] }}"
-              {% endif %}
-            >
-              {{ translate('Pick this one') }}
-            </a>
-          </li>
-        {% endfor %}
-        </ul>
-        <a class="btn btn-danger" role="button" pickupmobile-pick-empty>
-            {{ translate('Empty the selection') }}
-        </a>
-      </div>
-    {% endif %}
-  </div>
-
-  <nav class="">
-    {% if formInfos.creation %}
-      <a class="btn btn-primary" role="button" pickupmobile-pick-create>
-        {% if formInfos.creationLabel %}
-          {{ formInfos.creationLabel }}
-        {% else %}
-          {{ translate('Create a new one') }}
-        {% endif %}
+      </ul>
+      <a class="btn btn-danger" role="button" pickupmobile-pick-empty>
+          {{ translate('Empty the selection') }}
       </a>
-    {% endif %}
-    <a class="btn btn-secondary" role="button" pickupmobile-pick-reload>{{ translate('Reload') }}</a>
-  </nav>
-{% endif %}
+    </div>
+  {% endif %}
+</div>
+
+<nav class="">
+  {% if formInfos.creation %}
+    <a class="btn btn-primary" role="button" pickupmobile-pick-create>
+      {% if formInfos.creationLabel %}
+        {{ formInfos.creationLabel }}
+      {% else %}
+        {{ translate('Create a new one') }}
+      {% endif %}
+    </a>
+  {% endif %}
+  <a class="btn btn-secondary" role="button" pickupmobile-reloaddata>{{ translate('Reload') }}</a>
+</nav>
