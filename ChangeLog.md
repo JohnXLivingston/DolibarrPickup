@@ -18,6 +18,7 @@
 * Application mobile: on donne le focus aux premiers champs, pour éviter de devoir cliquer dedans pour commencer la saisie.
 * Application mobile: fiche Collecte, erreur sur le compteur DEEE.
 * Application mobile: nettoyage du localStorage pour retirer les versions obsolètes.
+* Application mobile: Demo mode.
 
 ## 0.17.1
 

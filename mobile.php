@@ -83,6 +83,7 @@ mobile_header();
 ?>
 <body>
   <div pickupmobileapp-container class="container"
+    <?php if (!empty(GETPOST('demo', 'alpha'))) { ?>data-demo="1"<?php } ?>
     data-modpickup-version="<?php echo htmlspecialchars($modulePickup->version); ?>"
     data-user-id="<?php print htmlspecialchars($user->id) ?>"
     data-entrepot-id="<?php if(!empty($conf->global->PICKUP_DEFAULT_STOCK)) { print $conf->global->PICKUP_DEFAULT_STOCK; } ?>"
