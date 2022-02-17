@@ -1,20 +1,20 @@
-<nav class="pickupmobile-top">
-  {% if stack.previous %}
-    <a class="btn btn-primary" role="button" pickupmobile-goto-previous>&larr; </a>
-    <div>
-      {% set previousLabel = stack.previous.displayStackValues() %}
-      {% if previousLabel %}
-        {{ previousLabel }}
-      {% endif %}
-    </div>
-  {% endif %}
-  {% if stack.stateName !== 'init' %}
-    <a class="btn btn-primary" role="button" pickupmobile-reset-stack>{{ translate('Return to Home') }}</a>
-  {% endif %}
-</nav>
-<hr>
-<h1 class="col-auto">{{ currentState.label }}</h1>
-<form action="">
+<form action="" class="pickupmobile-page">
+  <nav class="pickupmobile-top">
+    {% if stack.previous %}
+      <a class="btn btn-primary" role="button" pickupmobile-goto-previous>&larr; </a>
+      <div>
+        {% set previousLabel = stack.previous.displayStackValues() %}
+        {% if previousLabel %}
+          {{ previousLabel }}
+        {% endif %}
+      </div>
+    {% endif %}
+    {% if stack.stateName !== 'init' %}
+      <a class="btn btn-primary" role="button" pickupmobile-reset-stack>{{ translate('Return to Home') }}</a>
+    {% endif %}
+  </nav>
+
+  <h1 class="col-auto">{{ currentState.label }}</h1>
   {% if currentState.type === 'unknown' %}
     <div class="alert alert-danger">
       {{ translate('Not configured yet.') }}

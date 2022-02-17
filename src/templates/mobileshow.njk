@@ -17,82 +17,83 @@
     </a>
   </div>
 {% elif data.status === 'resolved' %}
-  {% macro printFieldContent(field, data) %}
-    {% if field.type === 'varchar' or field.type === 'integer'%}
-      {{ data[field.name] }}
-    {% elif field.type === 'text' %}
-      {{ data[field.name] | safe }}
-    {% elif field.type === 'boolean' %}
-      <input type="checkbox" disabled="disabled" {% if (data[field.name]) %}checked="checked"{% endif %}>
-    {% elif field.type === 'lines' %}
-      {{ printLines(field.lines, data[field.name]) }}
-    {% endif %}
-  {% endmacro %}
-  {% macro printLines(fields, lines) %}
-    {% set isLineTotals = 0 %}
-    <table class="table">
-      <thead>
-        <tr>
-          {% for field in fields %}
-            {% if field.total %}{% set isLineTotals = 1 %}{% endif %}
-            <th>{{ field.label }}</th>
-          {% endfor%}
-        </tr>
-      </thead>
-      <tbody>
-        {% for line in lines %}
+  <div class="pickupmobile-scrollzone">
+    {% macro printFieldContent(field, data) %}
+      {% if field.type === 'varchar' or field.type === 'integer'%}
+        {{ data[field.name] }}
+      {% elif field.type === 'text' %}
+        {{ data[field.name] | safe }}
+      {% elif field.type === 'boolean' %}
+        <input type="checkbox" disabled="disabled" {% if (data[field.name]) %}checked="checked"{% endif %}>
+      {% elif field.type === 'lines' %}
+        {{ printLines(field.lines, data[field.name]) }}
+      {% endif %}
+    {% endmacro %}
+    {% macro printLines(fields, lines) %}
+      {% set isLineTotals = 0 %}
+      <table class="table">
+        <thead>
           <tr>
             {% for field in fields %}
-              <td>{{ printFieldContent(field, line) }}</td>
+              {% if field.total %}{% set isLineTotals = 1 %}{% endif %}
+              <th>{{ field.label }}</th>
             {% endfor%}
           </tr>
-        {% endfor %}
-      </tbody>
-      {% if isLineTotals %}
+        </thead>
         <tbody>
-          {% for field in fields %}
-            <td>
-              {% if field.total %}
-                {% set lineTotal = 0 %}
-                {% if field.type === 'integer' %}
-                  {% for line in lines %}
-                    {% set lineTotal = lineTotal + line[field.name] %}
-                  {% endfor %}
-                {% elif field.type === 'boolean' %}
-                  {% for line in lines %}
-                    {% if line[field.name]%}
-                      {% if field.totalQtyFieldName %}
-                        {% set lineTotal = lineTotal + line[field.totalQtyFieldName] %}
-                      {% else %}
-                        {% set lineTotal = lineTotal + 1 %}
-                      {% endif %}
-                    {% endif %}
-                  {% endfor %}
-                {% endif %}
-                {{ lineTotal }}
-              {% endif %}
-            </td>
+          {% for line in lines %}
+            <tr>
+              {% for field in fields %}
+                <td>{{ printFieldContent(field, line) }}</td>
+              {% endfor%}
+            </tr>
           {% endfor %}
         </tbody>
-      {% endif %}
-    </table>
-  {% endmacro %}
-  <table class="table table-striped table-bordered"><tbody>
-    {% for field in fields %}
-      <tr>
-        <td>
-          <label>
-            {{ field.label }}
-          </label>
-        </td>
-        <td>
-          {{ printFieldContent(field, data.data) }}
-        </td>
-      </tr>
-    {% endfor %}
-  </tbody></table>
+        {% if isLineTotals %}
+          <tbody>
+            {% for field in fields %}
+              <td>
+                {% if field.total %}
+                  {% set lineTotal = 0 %}
+                  {% if field.type === 'integer' %}
+                    {% for line in lines %}
+                      {% set lineTotal = lineTotal + line[field.name] %}
+                    {% endfor %}
+                  {% elif field.type === 'boolean' %}
+                    {% for line in lines %}
+                      {% if line[field.name]%}
+                        {% if field.totalQtyFieldName %}
+                          {% set lineTotal = lineTotal + line[field.totalQtyFieldName] %}
+                        {% else %}
+                          {% set lineTotal = lineTotal + 1 %}
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                  {{ lineTotal }}
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tbody>
+        {% endif %}
+      </table>
+    {% endmacro %}
+    <table class="table table-striped table-bordered"><tbody>
+      {% for field in fields %}
+        <tr>
+          <td>
+            <label>
+              {{ field.label }}
+            </label>
+          </td>
+          <td>
+            {{ printFieldContent(field, data.data) }}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody></table>
+  </div>
 
-  <hr>
   <nav class="">
     {% if currentState.addGoto %}
       <a class="btn btn-primary" role="button" pickupmobile-show-add>

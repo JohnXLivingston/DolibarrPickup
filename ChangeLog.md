@@ -9,7 +9,8 @@
   * Les champs customs DEEE, type DEEE et marque deviennent optionnels. Les champs sont créé à l'activation depuis les paramètres du module.
   * Script de migration de ces champs customs pour LRDS.
   * On peut désactiver l'utilisation des tags/catégories de produit.
-* Application Mobile: libellés des boutons de création et d'ajout personnalisables.
+* Application mobile: libellés des boutons de création et d'ajout personnalisables.
+* Application mobile: boutons de validation toujours en bas de l'écran, pour une meilleure ergonomie.
 
 ### Corrections et changements mineurs
 

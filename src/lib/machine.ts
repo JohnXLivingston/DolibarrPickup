@@ -33,7 +33,8 @@ class Machine {
       throw new Error('Definition constains an invalid entry for "???"')
     }
 
-    this.content = $('<div>')
+    this.content = $('<div style="height: 100%"></div>')
+
     const currentLocalStorageKey = this.stackStoragePrefix() + this.name
     const stackSerialized = localStorage.getItem(currentLocalStorageKey)
     if (stackSerialized) {

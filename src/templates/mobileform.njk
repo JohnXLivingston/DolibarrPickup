@@ -13,108 +13,109 @@
     </a>
   </div>
 {% elif dataStatus === 'resolved' %}
-  {% for field in currentState.fields %}
-    {% if useDefaultValues %}
-      {% set currentValue = field.default %}
-    {% else %}
-      {% set currentValue = stack.getValue(field.name) %}
-    {% endif %}
-    {% set invalid = stack.isValueInvalid(field.name) %}
-    <div class="row mb-3">
-      <label
-        class="col-sm-2 col-form-label {% if field.mandatory %}pickupmobile-mandatory{% endif %}"
-        for="{{ field.name }}"
-      >
-        {{ field.label }}
-      </label>
+  <div class="pickupmobile-scrollzone">
+    {% for field in currentState.fields %}
+      {% if useDefaultValues %}
+        {% set currentValue = field.default %}
+      {% else %}
+        {% set currentValue = stack.getValue(field.name) %}
+      {% endif %}
+      {% set invalid = stack.isValueInvalid(field.name) %}
+      <div class="row mb-3">
+        <label
+          class="col-sm-2 col-form-label {% if field.mandatory %}pickupmobile-mandatory{% endif %}"
+          for="{{ field.name }}"
+        >
+          {{ field.label }}
+        </label>
 
-      <div class="col-sm-10">
-        {% if field.notes and field.notes.label %}
-          {% for noteLine in field.notes.label.split('\n') %}
-            <div class="form-text">{{ noteLine }}</div>
-          {% endfor %}
-        {% endif %}
-        {% if field.type === 'varchar' %}
-          <input type="text"
-            name="{{ field.name }}"
-            value="{{ currentValue }}"
-            class="form-control {% if invalid %}is-invalid{% endif %}"
-            {% if field.maxLength %} maxlength="{{ field.maxLength }}" {% endif %}
-            {% if field.suggestions %} autocomplete="off" list="{{ field.name }}.suggestions" {% endif %}
-          />
-          {% if field.suggestions %}
-            <datalist id="{{ field.name }}.suggestions">
-            {% for suggestion in field.suggestions %}
-              <option value="{{ suggestion }}">
+        <div class="col-sm-10">
+          {% if field.notes and field.notes.label %}
+            {% for noteLine in field.notes.label.split('\n') %}
+              <div class="form-text">{{ noteLine }}</div>
             {% endfor %}
-            </datalist>
           {% endif %}
-        {% elif field.type === 'integer' or field.type === 'float' %}
-          <input type="number"
-            name="{{ field.name }}"
-            value="{{ currentValue }}"
-            class="form-control {% if invalid %}is-invalid{% endif %}"
-            min="{{ field.min }}"
-            max="{{ field.max }}"
-            {% if field.type === 'float' %}step="{{ field.step }}"{% endif %}
-          />
-        {% elif field.type === 'text' %}
-          <textarea
-            name="{{ field.name }}"
-            class="form-control {% if invalid %}is-invalid{% endif %}"
-          >{{ currentValue }}</textarea>
-        {% elif field.type === 'select' %}
-          <select
-            name="{{ field.name }}"
-            class="form-select {% if invalid %}is-invalid{% endif %}"
-            {% if field.readonly %}disabled="disabled"{% endif %}
-          >
-          {% for option in field.options %}
-            <option value="{{ option.value }}" {% if option.value === currentValue %}selected="selected"{% endif %}>
-              {{ option.label }}
-            </option>
-          {% endfor %}
-          </select>
-          {% if field.readonly %}
-            <input type="hidden" name="{{ field.name }}" value="{{ currentValue }}">
+          {% if field.type === 'varchar' %}
+            <input type="text"
+              name="{{ field.name }}"
+              value="{{ currentValue }}"
+              class="form-control {% if invalid %}is-invalid{% endif %}"
+              {% if field.maxLength %} maxlength="{{ field.maxLength }}" {% endif %}
+              {% if field.suggestions %} autocomplete="off" list="{{ field.name }}.suggestions" {% endif %}
+            />
+            {% if field.suggestions %}
+              <datalist id="{{ field.name }}.suggestions">
+              {% for suggestion in field.suggestions %}
+                <option value="{{ suggestion }}">
+              {% endfor %}
+              </datalist>
+            {% endif %}
+          {% elif field.type === 'integer' or field.type === 'float' %}
+            <input type="number"
+              name="{{ field.name }}"
+              value="{{ currentValue }}"
+              class="form-control {% if invalid %}is-invalid{% endif %}"
+              min="{{ field.min }}"
+              max="{{ field.max }}"
+              {% if field.type === 'float' %}step="{{ field.step }}"{% endif %}
+            />
+          {% elif field.type === 'text' %}
+            <textarea
+              name="{{ field.name }}"
+              class="form-control {% if invalid %}is-invalid{% endif %}"
+            >{{ currentValue }}</textarea>
+          {% elif field.type === 'select' %}
+            <select
+              name="{{ field.name }}"
+              class="form-select {% if invalid %}is-invalid{% endif %}"
+              {% if field.readonly %}disabled="disabled"{% endif %}
+            >
+            {% for option in field.options %}
+              <option value="{{ option.value }}" {% if option.value === currentValue %}selected="selected"{% endif %}>
+                {{ option.label }}
+              </option>
+            {% endfor %}
+            </select>
+            {% if field.readonly %}
+              <input type="hidden" name="{{ field.name }}" value="{{ currentValue }}">
+            {% endif %}
+          {% elif field.type === 'radio' %}
+            {% for option in field.options %}
+              <label class="form-check-label">
+                <input name="{{ field.name }}"
+                  type="radio"
+                  value="{{ option.value }}"
+                  class="form-check-input {% if invalid %}is-invalid{% endif %}"
+                  {% if currentValue === option.value %}checked="checked"{% endif %}
+                />
+                {{ option.label }}
+              </label>
+            {% endfor %}
+          {% elif field.type === 'boolean' %}
+            <input type="checkbox"
+              name="{{ field.name }}"
+              value="1"
+              class="form-check-input {% if invalid %}is-invalid{% endif %}"
+              {% if currentValue === '1' %}checked="checked"{% endif %}
+            />
+          {% elif field.type === 'date' %}
+            <input type="date"
+              name="{{ field.name }}"
+              value="{{ currentValue }}"
+              class="form-control {% if invalid %}is-invalid{% endif %}"
+            />
           {% endif %}
-        {% elif field.type === 'radio' %}
-          {% for option in field.options %}
-            <label class="form-check-label">
-              <input name="{{ field.name }}"
-                type="radio"
-                value="{{ option.value }}"
-                class="form-check-input {% if invalid %}is-invalid{% endif %}"
-                {% if currentValue === option.value %}checked="checked"{% endif %}
-              />
-              {{ option.label }}
-            </label>
-          {% endfor %}
-        {% elif field.type === 'boolean' %}
-          <input type="checkbox"
-            name="{{ field.name }}"
-            value="1"
-            class="form-check-input {% if invalid %}is-invalid{% endif %}"
-            {% if currentValue === '1' %}checked="checked"{% endif %}
-          />
-        {% elif field.type === 'date' %}
-          <input type="date"
-            name="{{ field.name }}"
-            value="{{ currentValue }}"
-            class="form-control {% if invalid %}is-invalid{% endif %}"
-          />
+        </div>
+
+        {% if invalid %}
+          <div class="invalid-feedback">
+            {{ invalid }}
+          </div>
         {% endif %}
       </div>
+    {% endfor %}
+  </div>
 
-      {% if invalid %}
-        <div class="invalid-feedback">
-          {{ invalid }}
-        </div>
-      {% endif %}
-    </div>
-  {% endfor %}
-
-  <hr>
   <nav class="">
     <input type="submit" value="{{ translate('Ok') }}" class="btn btn-primary" />
   </nav>

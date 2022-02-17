@@ -22,18 +22,39 @@
 @import "select2/src/scss/core";
 @import "select2-bootstrap-5-theme/src/include-all";
 
+html,
+body,
+div.container {
+  height: 100%;
+}
+
+.pickupmobile-page {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-flow: column nowrap;
+  height: 100%;
+
+  .pickupmobile-scrollzone {
+    flex-grow: 2;
+    padding: $spacer;
+    overflow: auto;
+  }
+}
+
 nav {
   display: flex;
   flex: row nowrap;
   justify-content: space-between;
   padding: 10px 0;
-  width: 100%;
   text-align: center;
 
   &.pickupmobile-top {
-    background-color: $body-bg;
-    position: sticky;
-    top: 0;
+    border-bottom: 1px solid $body-color;
+  }
+
+  &:not(.pickupmobile-top) {
+    border-top: 1px solid $body-color;
   }
 
   & > * {
