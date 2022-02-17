@@ -15,7 +15,11 @@
   </nav>
 
   <h1 class="col-auto">{{ currentState.label }}</h1>
-  {% if retrievedData.isError %}
+  {% if retrievedData.isMissingKey %}
+    <div class="alert alert-danger">
+      {{ translate('Error retrieving data. Missing key') }}
+    </div>
+  {% elif retrievedData.isError %}
     <div class="alert alert-danger">
       {{ translate('Error retrieving data.') }}
     </div>

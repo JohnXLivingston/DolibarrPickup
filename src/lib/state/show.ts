@@ -77,6 +77,7 @@ class StateShow extends State {
 
   _renderVars (stack: Stack, retrievedData: StateRetrievedData, h: NunjucksVars): void {
     h.fields = this.fields
+    h.data = retrievedData.get('data')
   }
 
   bindEvents (dom: JQuery, _stack: Stack): void {
