@@ -103,60 +103,13 @@ function demoMode (container: JQuery): void {
   const version = container.attr('data-modpickup-version') ?? '0'
   const definition: {[key: string]: StateDefinition} = {}
 
-  definition.init = {
-    type: 'choice',
-    label: 'Accueil',
-    choices: [
-      {
-        label: 'Pick',
-        value: 'pick',
-        goto: 'pick'
-      },
-      {
-        label: 'Form',
-        value: 'form',
-        goto: 'form'
-      },
-      {
-        label: 'Show',
-        value: 'show',
-        goto: 'show'
-      },
-      {
-        label: 'Select',
-        value: 'select',
-        goto: 'select'
-      },
-      {
-        label: 'Unknown',
-        value: 'unknown',
-        goto: 'dontexist'
-      }
-    ]
-  }
-
-  definition.pick = {
-    type: 'pick',
-    label: 'Pick test',
-    key: 'demo',
-    primaryKey: 'rowid',
-    goto: 'unknown',
-    creationGoto: 'unknown',
-    creationLabel: 'New XXX',
-    fields: [
-      { name: 'field1', label: 'Demo 1', applyFilter: 'localeUpperCase' },
-      { name: 'field2', label: 'Demo 2' }
-    ]
-  }
-
-  definition.select = {
-    type: 'select',
-    label: 'Select test (not fully implemented)',
-    options: [
-      { label: 'Option 1', value: '1' },
-      { label: 'Option 2', value: '2' }
-    ]
-  }
+  definition.init = definitions.demoInit()
+  definition.pick = definitions.demoPick('show', 'form')
+  definition.select = definitions.demoSelect()
+  definition.form = definitions.demoForm('save')
+  definition.save = definitions.demoSave('show', 'form')
+  definition.compute = definitions.demoCompute('init', 'show')
+  definition.show = definitions.demoShow()
 
   const machine = new Machine(
     'Demo',

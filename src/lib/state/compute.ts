@@ -10,22 +10,27 @@ interface ComputeNunjucks {
   format: string
 }
 
+type ComputeFunction = (stack: Stack, vars: any) => undefined | StackValue | StackValue[]
+
 interface StateComputeDefinition extends StateDefinitionBase {
   type: 'compute'
   goto: string
   computeUntil: string
   nunjucks?: ComputeNunjucks
+  func?: ComputeFunction
 }
 
 class StateCompute extends State {
   private readonly goto: string
   private readonly computeUntil: string
   private readonly nunjucks?: ComputeNunjucks
+  private readonly func?: ComputeFunction
 
   constructor (definition: StateComputeDefinition) {
     super('compute', definition)
     this.goto = definition.goto
     this.nunjucks = definition.nunjucks
+    this.func = definition.func
     this.computeUntil = definition.computeUntil
   }
 
@@ -42,6 +47,7 @@ class StateCompute extends State {
     }
 
     console.log('Im on a compute state, and we are not going backward. Computing...')
+    const valuesToPush: StackValue[] = []
     if (this.nunjucks) {
       console.log('I have to render a nunjucks string')
       const r = this.renderNunjucks(stack)
@@ -51,8 +57,29 @@ class StateCompute extends State {
           name: this.nunjucks.name,
           value: r
         }
-        stack.setValues(sv)
+        valuesToPush.push(sv)
       }
+    }
+
+    if (this.func) {
+      console.log('I have to call a compute function')
+      const vars: any = {}
+      const sva = stack.getStackValuesUntil(this.computeUntil) ?? []
+      for (let i = 0; i < sva.length; i++) {
+        const va: StackValue = sva[i]
+        vars[va.name] = va.display ?? va.value
+      }
+      const r = this.func(stack, vars)
+      if (r) {
+        if (Array.isArray(r)) {
+          valuesToPush.push(...r)
+        } else {
+          valuesToPush.push(r)
+        }
+      }
+    }
+    if (valuesToPush.length > 0) {
+      stack.setValues(valuesToPush)
     }
 
     return {

@@ -20,6 +20,7 @@
 * Application mobile: nettoyage du localStorage pour retirer les versions obsolètes.
 * Application mobile: Demo mode.
 * Application mobile: fix styling for choice states.
+* Application mobile: les states «compute» peuvent calculer via JS.
 
 ## 0.17.1
 
