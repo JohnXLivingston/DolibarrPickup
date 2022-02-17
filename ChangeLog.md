@@ -19,6 +19,7 @@
 * Application mobile: fiche Collecte, erreur sur le compteur DEEE.
 * Application mobile: nettoyage du localStorage pour retirer les versions obsolètes.
 * Application mobile: Demo mode.
+* Application mobile: fix styling for choice states.
 
 ## 0.17.1
 

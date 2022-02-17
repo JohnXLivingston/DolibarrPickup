@@ -1,6 +1,6 @@
 <ul>
 {% for choice in currentState.choices %}
-  <li class="row justify-content-center">
+  <li class="row justify-content-center mt-3">
     <button class="col-4 btn btn-primary" pickupmobile-button="{{ choice.value }}">{{ choice.label }}</button>
   </li>
 {% endfor %}
