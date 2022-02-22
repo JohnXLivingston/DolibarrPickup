@@ -90,5 +90,6 @@ mobile_header();
     <?php if (!empty($conf->global->PICKUP_USE_PCAT)) { print ' data-use-pcat="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PBRAND)) { print ' data-use-pbrand="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_DEEE)) { print ' data-use-deee="1" '; } ?>
+    <?php if (!empty($conf->productbatch->enabled) && $conf->global->PICKUP_DEFAULT_HASBATCH === 'ask') { print ' data-ask-hasbatch="1" '; } ?>
   ></div>
 </body></html>

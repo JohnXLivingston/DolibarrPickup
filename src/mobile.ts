@@ -30,6 +30,7 @@ $(function () {
   const usePCat = container.attr('data-use-pcat') === '1'
   const usePBrand = container.attr('data-use-pbrand') === '1'
   const useDEEE = container.attr('data-use-deee') === '1'
+  const askHasBatch = container.attr('data-ask-hasbatch') === '1'
 
   // version is a string that must be related to the Machine definition, and the backend configuration.
   // It is used to clear the stack on page load, if the configuration changed.
@@ -38,6 +39,7 @@ $(function () {
   version += '_c' + (usePCat ? '1' : '0')
   version += '_b' + (usePBrand ? '1' : '0')
   version += '_d' + (useDEEE ? '1' : '0')
+  version += '_hb' + (askHasBatch ? '1' : '0')
 
   const definition: {[key: string]: StateDefinition} = {}
 
@@ -59,22 +61,22 @@ $(function () {
     saveUntilForProduct = 'categorie'
     definition.product = definitions.pickProduct(usePBrand, 'show_product', 'categorie')
     definition.categorie = definitions.pickPCat('create_product') // Note: itemGotoField can override the goto
-    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', '')
+    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'weight', '')
   } else {
     saveUntilForProduct = 'create_product'
     definition.product = definitions.pickProduct(usePBrand, 'show_product', 'create_product')
-    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', '')
+    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'weight', '')
   }
   if (useDEEE) {
-    definition.create_product_deee_off = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_off')
-    definition.create_product_deee_gef = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_gef')
-    definition.create_product_deee_ghf = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_ghf')
-    definition.create_product_deee_pam = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_pam')
-    definition.create_product_deee_pampro = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_pampro')
-    definition.create_product_deee_ecr = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_ecr')
-    definition.create_product_deee_ecrpro = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_ecrpro')
-    definition.create_product_deee_pam_or_pampro = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_pam_or_pampro')
-    definition.create_product_deee_ecr_or_ecrpro = definitions.createProduct(usePCat, useDEEE, usePBrand, 'weight', 'create_product_deee_ecr_or_ecrpro')
+    definition.create_product_deee_off = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'weight', 'create_product_deee_off')
+    definition.create_product_deee_gef = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'weight', 'create_product_deee_gef')
+    definition.create_product_deee_ghf = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'weight', 'create_product_deee_ghf')
+    definition.create_product_deee_pam = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'weight', 'create_product_deee_pam')
+    definition.create_product_deee_pampro = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'weight', 'create_product_deee_pampro')
+    definition.create_product_deee_ecr = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'weight', 'create_product_deee_ecr')
+    definition.create_product_deee_ecrpro = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'weight', 'create_product_deee_ecrpro')
+    definition.create_product_deee_pam_or_pampro = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'weight', 'create_product_deee_pam_or_pampro')
+    definition.create_product_deee_ecr_or_ecrpro = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'weight', 'create_product_deee_ecr_or_ecrpro')
   }
   definition.weight = definitions.createProductWeight('save_product')
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)

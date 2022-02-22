@@ -4,7 +4,8 @@
 
 ### Fonctionnalités
 
-* 
+* Prise en compte des produits avec numéro de lot/série:
+  * Si le module «lot/série» est activé, on peut choisir si les produits depuis l'application mobiles ont l'option activée ou non.
 
 ## 1.0.0
 

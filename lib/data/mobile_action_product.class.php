@@ -120,7 +120,15 @@ class DataMobileActionProduct extends DataMobileAction {
         $product->array_options['options_pickup_deee_type'] = $deee_type;
       }
     }
-    // FIXME: see specifications for missing fields
+    if (!empty($conf->productbatch->enabled)) {
+      if ($conf->global->PICKUP_DEFAULT_HASBATCH === '1') {
+        $product->status_batch = 1;
+      } else if ($conf->global->PICKUP_DEFAULT_HASBATCH === 'ask') {
+        $product->status_batch = GETPOST('product_hasbatch') === '1' ? 1 : 0;
+      } else {
+        $product->status_batch = 0;
+      }
+    }
   
     $product_id = $product->create($user);
     if (!$product_id || $product_id <= 0) {

@@ -85,7 +85,7 @@ function getDeeeFieldMultiple (deeeForm: string): FormField {
   }
 }
 
-export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: boolean, goto: string, deeeForm: string): StateDefinition {
+export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: boolean, askHasBatch: boolean, goto: string, deeeForm: string): StateDefinition {
   const fields: FormField[] = []
 
   if (usePBrand) {
@@ -116,6 +116,15 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bo
     mandatory: false,
     maxLength: 255
   })
+
+  if (askHasBatch) {
+    fields.push({
+      type: 'boolean',
+      name: 'product_hasbatch',
+      label: 'Utiliser les numéros de lots/série',
+      mandatory: false
+    })
+  }
 
   if (useDEEE) {
     const deeeField: FormField = getDeeeField(deeeForm)

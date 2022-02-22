@@ -45,7 +45,7 @@ require_once '../lib/pickup.lib.php';
 //require_once "../class/myclass.class.php";
 
 // Translations
-$langs->loadLangs(array("admin", "pickup@pickup"));
+$langs->loadLangs(array("admin", "pickup@pickup", "productbatch"));
 
 // Access control
 if (! $user->admin) accessforbidden();
@@ -139,9 +139,20 @@ foreach ($pickup_extrafields as $key => $val) {
 
 $arrayofparameters=array(
 	'PICKUP_DEFAULT_STOCK' => array('enabled'=>1),
-	'PICKUP_USE_PCAT' => array('enabled' => 1, 'type' => 'boolean'),
-	'PICKUP_USE_DEEE' => array('enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_deee', 'pickup_deee_type')),
-	'PICKUP_USE_PBRAND' => array('enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand'))
+	'PICKUP_USE_PCAT' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
+	'PICKUP_USE_DEEE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_deee', 'pickup_deee_type')),
+	'PICKUP_USE_PBRAND' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand')),
+	'PICKUP_DEFAULT_HASBATCH' => array(
+		'table' => 'batch',
+		'enabled' => !empty($conf->productbatch->enabled),
+		'type' => 'select',
+		'label' => $langs->trans('ManageLotSerial'),
+		'options' => array(
+			'0' => $langs->trans('PICKUP_DEFAULT_HASBATCH_OPTIONS_0'),
+			'ask' =>  $langs->trans('PICKUP_DEFAULT_HASBATCH_OPTIONS_ask'),
+			'1' => $langs->trans('PICKUP_DEFAULT_HASBATCH_OPTIONS_1')
+		)
+	)
 );
 
 
@@ -252,8 +263,9 @@ if ($action == 'update' && is_array($arrayofparameters))
 	$db->begin();
 
 	$ok = true;
-	foreach ($arrayofparameters as $key => $val)
-	{
+	foreach ($arrayofparameters as $key => $val) {
+		if ($val['enabled'] != 1) { continue; }
+
 		if ($val['type'] === 'boolean') {
 			if (GETPOSTISSET($key.'_hidden')) {
 				// Modify constant only if key was posted (avoid resetting key to the null value)
@@ -299,6 +311,11 @@ if ($action == 'update' && is_array($arrayofparameters))
 				}
 			}
 		} else if (GETPOSTISSET($key)) {
+			if ($val['type'] === 'select') {
+				if (!array_key_exists(GETPOST($key, 'alpha'), $val['options'])) { // test if option exists
+					continue;
+				}
+			}
 			// Modify constant only if key was posted (avoid resetting key to the null value)
 			$result = dolibarr_set_const($db, $key, GETPOST($key, 'alpha'), 'chaine', 0, '', $conf->entity);
 			if ($result < 0) {
@@ -404,34 +421,62 @@ dol_fiche_head($head, 'settings', '', -1, "pickup@pickup");
 // Setup page goes here
 echo '<span class="opacitymedium">'.$langs->trans("PickupSetupPage").'</span><br><br>';
 
-
 if ($action == 'edit')
 {
 	print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
 	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	print '<input type="hidden" name="action" value="update">';
 
-	print '<table class="noborder" width="100%">';
-	print '<tr class="liste_titre"><td class="titlefield">'.$langs->trans("Parameter").'</td><td>'.$langs->trans("Value").'</td></tr>';
+	function draw_edit_table($table, $title) {
+		global $arrayofparameters, $entrepot, $form, $conf, $langs, $pickup_extrafields;
 
-	foreach($arrayofparameters as $key => $val)
-	{
-		print '<tr class="oddeven"><td>';
-		print $form->textwithpicto($langs->trans($key), $langs->trans($key.'Tooltip'));
-		print '</td><td>';
-		if ($key == 'PICKUP_DEFAULT_STOCK') {
-			dol_include_once('/pickup/class/pickup.class.php');
-			$pickup = new Pickup($db);
-			print $pickup->showInputField($pickup->fields['fk_entrepot'], 'fk_entrepot', $conf->global->$key);
-		} else if ($val['type'] === 'boolean') {
-			print '<input type="hidden" name="'.$key.'_hidden" value="1">';
-			print '<input type="checkbox" name="'.$key.'"  class="flat '.(empty($val['css'])?'':$val['css']).'" value="1" ' . ($conf->global->$key ? 'checked':'') . '>';
-		} else {
-			print '<input name="'.$key.'"  class="flat '.(empty($val['css'])?'minwidth200':$val['css']).'" value="' . $conf->global->$key . '">';
+		$filtered_arrayofparameters = array_filter($arrayofparameters, function ($val) use ($table) {
+			return $val['enabled'] == 1 && $val['table'] == $table;
+		});
+		if (count($filtered_arrayofparameters) == 0) {
+			return;
 		}
-		print '</td></tr>';
+
+		print load_fiche_titre($title, '', '');
+
+		print '<table class="noborder" width="100%">';
+		print '<tr class="liste_titre"><td class="titlefield">'.$langs->trans("Parameter").'</td><td>'.$langs->trans("Value").'</td></tr>';
+
+		foreach($filtered_arrayofparameters as $key => $val) {
+			print '<tr class="oddeven"><td>';
+			$tooltip = $langs->trans($key.'Tooltip');
+			if ($tooltip !== $key.'Tooltip') {
+				print $form->textwithpicto($val['label'] ?? $langs->trans($key), $tooltip);
+			} else {
+				print $val['label'] ?? $langs->trans($key);
+			}
+			print '</td><td>';
+			if ($key == 'PICKUP_DEFAULT_STOCK') {
+				dol_include_once('/pickup/class/pickup.class.php');
+				$pickup = new Pickup($db);
+				print $pickup->showInputField($pickup->fields['fk_entrepot'], 'fk_entrepot', $conf->global->$key);
+			} else if ($val['type'] === 'boolean') {
+				print '<input type="hidden" name="'.$key.'_hidden" value="1">';
+				print '<input type="checkbox" name="'.$key.'"  class="flat '.(empty($val['css'])?'':$val['css']).'" value="1" ' . ($conf->global->$key ? 'checked':'') . '>';
+			} else if ($val['type'] === 'select') {
+				print '<select name="'.$key.'">';
+				foreach ($val['options'] as $ok => $ov) {
+					print '<option ';
+					print 'value="' . htmlspecialchars($ok) . '"';
+					if (($conf->global->$key ?? '0') === $ok) { print ' selected '; }
+					print '>';
+					print $ov . '</option>';
+				}
+				print '</select>';
+			} else {
+				print '<input name="'.$key.'"  class="flat '.(empty($val['css'])?'minwidth200':$val['css']).'" value="' . $conf->global->$key . '">';
+			}
+			print '</td></tr>';
+		}
+		print '</table>';
 	}
-	print '</table>';
+	draw_edit_table('main', $langs->trans("PickupSetup"));
+	draw_edit_table('batch', $langs->trans("PickupSetupBatch"));
 
 	print '<br><div class="center">';
 	print '<input class="button" type="submit" value="'.$langs->trans("Save").'">';
@@ -442,65 +487,87 @@ if ($action == 'edit')
 }
 else
 {
-	if (! empty($arrayofparameters))
-	{
-		print '<table class="noborder centpercent">';
-		print '<tr class="liste_titre"><td class="titlefield">'.$langs->trans("Parameter").'</td><td>'.$langs->trans("Value").'</td></tr>';
+	if (! empty($arrayofparameters)) {
 
-		foreach($arrayofparameters as $key => $val)
-		{
-			print '<tr class="oddeven"><td>';
-			print $form->textwithpicto($langs->trans($key), $langs->trans($key.'Tooltip'));
-			print '</td><td>';
-			if ($key == 'PICKUP_DEFAULT_STOCK') {
-				if (!empty($conf->global->$key)) {
-					dol_include_once('/product/stock/class/entrepot.class.php');
-					$entrepot = new Entrepot($db);
-					$entrepot->fetch($conf->global->$key);
-					print $entrepot->getNomUrl(1);
+		function draw_view_table($table, $title) {
+			global $arrayofparameters, $entrepot, $form, $conf, $langs, $pickup_extrafields;
+
+			$filtered_arrayofparameters = array_filter($arrayofparameters, function ($val) use ($table) {
+				return $val['enabled'] == 1 && $val['table'] == $table;
+			});
+			if (count($filtered_arrayofparameters) == 0) {
+				return;
+			}
+
+			print load_fiche_titre($title, '', '');
+
+			print '<table class="noborder centpercent">';
+			print '<tr class="liste_titre"><td class="titlefield">'.$langs->trans("Parameter").'</td><td>'.$langs->trans("Value").'</td></tr>';
+
+			foreach($filtered_arrayofparameters as $key => $val) {
+				print '<tr class="oddeven"><td>';
+				$tooltip = $langs->trans($key.'Tooltip');
+				if ($tooltip !== $key.'Tooltip') {
+					print $form->textwithpicto($val['label'] ?? $langs->trans($key), $tooltip);
+				} else {
+					print $val['label'] ?? $langs->trans($key);
 				}
-			} else if ($val['type'] === 'boolean') {
-				print '<input type="checkbox" disabled name="'.$key.'"  class="flat '.(empty($val['css'])?'':$val['css']).'" ' . ($conf->global->$key ? 'checked':'') . '>';
+				print '</td><td>';
+				if ($key == 'PICKUP_DEFAULT_STOCK') {
+					if (!empty($conf->global->$key)) {
+						dol_include_once('/product/stock/class/entrepot.class.php');
+						$entrepot = new Entrepot($db);
+						$entrepot->fetch($conf->global->$key);
+						print $entrepot->getNomUrl(1);
+					}
+				} else if ($val['type'] === 'boolean') {
+					print '<input type="checkbox" disabled name="'.$key.'"  class="flat '.(empty($val['css'])?'':$val['css']).'" ' . ($conf->global->$key ? 'checked':'') . '>';
 
-				if (!empty($val['extrafields']) && $conf->global->$key) {
-					print '&nbsp;<form style="display:inline" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
-					print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-					print '<input type="hidden" name="action" value="updateExtraFields">';
-					print '<input type="hidden" name="extrafields_for" value="'.$key.'">';
-					print '<input type="submit" name="" value="'.dol_escape_htmltag($langs->trans("PICKUP_UPDATE_EXTRAFIELDS")).'">';
-					print img_help(1, $langs->trans('PICKUP_UPDATE_EXTRAFIELDS_Tooltip'));
-					print '</form>';
+					if (!empty($val['extrafields']) && $conf->global->$key) {
+						print '&nbsp;<form style="display:inline" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
+						print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+						print '<input type="hidden" name="action" value="updateExtraFields">';
+						print '<input type="hidden" name="extrafields_for" value="'.$key.'">';
+						print '<input type="submit" name="" value="'.dol_escape_htmltag($langs->trans("PICKUP_UPDATE_EXTRAFIELDS")).'">';
+						print img_help(1, $langs->trans('PICKUP_UPDATE_EXTRAFIELDS_Tooltip'));
+						print '</form>';
 
-					foreach ($val['extrafields'] as $extrafield_name) {
-						if (!empty($pickup_extrafields[$extrafield_name])) {
-							$count = count_extra_fields_to_migrate($extrafield_name);
-							if ($count) {
-								print ' <form style="display:inline" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
-								print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-								print '<input type="hidden" name="action" value="migrateExtraFields">';
-								print '<input type="hidden" name="extrafield" value="'.$extrafield_name.'">';
-								print '<input type="submit" name="" value="'.dol_escape_htmltag($langs->trans("PICKUP_MIGRATE_EXTRAFIELDS").' ('.$pickup_extrafields[$extrafield_name]['label'].': '.$count.')').'">';
-								print img_help(1, $langs->trans('PICKUP_MIGRATE_EXTRAFIELDS_Tooltip'));
-								print '</form>';
+						foreach ($val['extrafields'] as $extrafield_name) {
+							if (!empty($pickup_extrafields[$extrafield_name])) {
+								$count = count_extra_fields_to_migrate($extrafield_name);
+								if ($count) {
+									print ' <form style="display:inline" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
+									print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+									print '<input type="hidden" name="action" value="migrateExtraFields">';
+									print '<input type="hidden" name="extrafield" value="'.$extrafield_name.'">';
+									print '<input type="submit" name="" value="'.dol_escape_htmltag($langs->trans("PICKUP_MIGRATE_EXTRAFIELDS").' ('.$pickup_extrafields[$extrafield_name]['label'].': '.$count.')').'">';
+									print img_help(1, $langs->trans('PICKUP_MIGRATE_EXTRAFIELDS_Tooltip'));
+									print '</form>';
+								}
 							}
 						}
 					}
-				}
 
-			} else {
-				print $conf->global->$key;
+				} else if ($val['type'] === 'select') {
+					if (array_key_exists($conf->global->$key ?? '0', $val['options'])) {
+						print $val['options'][$conf->global->$key ?? '0'];
+					}
+				} else {
+					print $conf->global->$key;
+				}
+				print '</td></tr>';
 			}
-			print '</td></tr>';
+
+			print '</table>';
 		}
 
-		print '</table>';
+		draw_view_table('main', $langs->trans("PickupSetup"));
+		draw_view_table('batch', $langs->trans("PickupSetupBatch"));
 
 		print '<div class="tabsAction">';
 		print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit">'.$langs->trans("Modify").'</a>';
 		print '</div>';
-	}
-	else
-	{
+	} else {
 		print '<br>'.$langs->trans("NothingToSetup");
 	}
 }
