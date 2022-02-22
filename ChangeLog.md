@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## 1.1.0 (Unreleased yet)
+
+### Fonctionnalités
+
+* 
+
 ## 1.0.0
 
 ### Fonctionnalités
