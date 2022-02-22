@@ -89,11 +89,12 @@ class PickupLine extends CommonObjectLine
 		'fk_pickup' => array('type'=>'integer:Pickup:custom/pickup/class/pickup.class.php', 'label'=>'Pickup', 'enabled'=>'1', 'position'=>15, 'notnull'=>1, 'visible'=>-1, 'index'=>1, 'foreignkey'=>'pickup_pickup.rowid',),
 		'fk_product' => array(
 			// FIXME: seems that filters do not work (dolibarr 12.0.4)
-			'type'=>'integer:Product:product/class/product.class.php:1:(fk_product_type=0 and tobatch<>1)',
+			'type'=>'integer:Product:product/class/product.class.php:1:(fk_product_type=0)',
 			'label'=>'Product', 'enabled'=>'1', 'position'=>32, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'foreignkey'=>'product.rowid',
 		),
 		'description' => array('type'=>'html', 'label'=>'Description', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>-1,),
 		'qty' => array('type'=>'integer', 'label'=>'Quantité', 'enabled'=>'1', 'position'=>45, 'notnull'=>1, 'visible'=>1, 'default'=>'1', 'isameasure'=>'1', 'css'=>'maxwidth75imp',),
+		'batch' => array('type' => 'varchar(128)', 'label' => 'Batch', 'enabled' => '1', 'position' => 50, 'visible' => 1, 'notnull' => -1),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>140, 'notnull'=>1, 'visible'=>-1,),
 		'fk_user_creat' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>45, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'fk_user_modif' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>50, 'notnull'=>-1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
@@ -109,6 +110,7 @@ class PickupLine extends CommonObjectLine
 	public $fk_product;
 	public $description;
 	public $qty;
+	public $batch;
 	public $tms;
 	public $fk_user_creat;
 	public $fk_user_modif;

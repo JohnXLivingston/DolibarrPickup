@@ -812,6 +812,10 @@ class Pickup extends CommonObject
 				$line->deee = $product->array_options['options_pickup_deee'];
 				$line->deee_type = $product->array_options['options_pickup_deee_type'];
 			}
+
+			if ($product->hasbatch() && !empty($conf->global->PICKUP_DEFAULT_BATCH_PICKUP_REF)) {
+				$line->batch = $this->ref;
+			}
 		}
 
 		return $line;

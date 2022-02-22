@@ -65,6 +65,12 @@ $coldisplay = 0;
 
 			// print $line->showInputField(null, 'description', GETPOSTISSET("description") ? GETPOST('description', 'none') : $line->description);
 		?>
+		<?php
+			if ($line_product->hasbatch() || !empty($line->batch)) {
+				print $langs->trans('Batch') . ': ';
+				print $line->showInputField(null, 'batch', GETPOSTISSET("batch") ? GETPOST('batch', 'alpha') : $line->batch);
+			}
+		?>
 	</td>
 	<td class="right">
 		<?php $coldisplay++;

@@ -151,6 +151,7 @@ class ActionsPickup
 			$weight = price2num(GETPOST('weight'));
 			$weight_units = GETPOST('weight_units', 'int');
 			$deee_type = GETPOST('options_pickup_deee_type', 'alpha');
+			$batch = GETPOSTISSET('batch') ? GETPOST('batch', 'alpha') : null;
 
 			if ($qty == '') {
 				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')));
@@ -184,6 +185,8 @@ class ActionsPickup
 							$line->deee_type = $deee_type;
 						}
 					}
+
+					$line->batch = $batch;
 
 					$result = $line->update($user);
 					if ($result <= 0) {
@@ -289,7 +292,11 @@ class ActionsPickup
 						continue;
 					}
 
-					$result = $product->correct_stock($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, $inventorycode);
+					if (!empty($conf->productbatch->enabled) && ($product->hasbatch() || !empty($line->batch))) {
+						$result = $product->correct_stock_batch($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, '', '', $line->batch, $inventorycode);
+					} else {
+						$result = $product->correct_stock($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, $inventorycode);
+					}
 					if ($result <= 0) {
 						$nb_error++;
 						setEventMessages($product->error, $product->errors, 'errors');

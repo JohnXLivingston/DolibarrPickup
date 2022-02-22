@@ -152,6 +152,11 @@ $arrayofparameters=array(
 			'ask' =>  $langs->trans('PICKUP_DEFAULT_HASBATCH_OPTIONS_ask'),
 			'1' => $langs->trans('PICKUP_DEFAULT_HASBATCH_OPTIONS_1')
 		)
+	),
+	'PICKUP_DEFAULT_BATCH_PICKUP_REF' => array(
+		'table' => 'batch',
+		'enabled' => !empty($conf->productbatch->enabled),
+		'type' => 'boolean'
 	)
 );
 

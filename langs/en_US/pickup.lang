@@ -51,6 +51,7 @@ PICKUP_MIGRATE_EXTRAFIELDS_Tooltip = Il semblerait que vous utilisez encore les 
 PICKUP_DEFAULT_HASBATCH_OPTIONS_0 = Products created with the mobile app have option activated.
 PICKUP_DEFAULT_HASBATCH_OPTIONS_ask = Ask if the option should be activated in the mobile app.
 PICKUP_DEFAULT_HASBATCH_OPTIONS_1 = Products created with the mobile app have option deactivated.
+PICKUP_DEFAULT_BATCH_PICKUP_REF = Use pickup reference as default Lot/Serial number.
 
 #
 # Menus
@@ -111,6 +112,7 @@ ConfirmPickupActionSign = Are you sure you want to set this pickup as signed?
 #
 
 PickupFixLine = Get product information
+PickupFixLineBatch = Missing batch number
 DEEE = DEEE
 DEEEType = DEEE Type
 DEEETotal = DEEE total

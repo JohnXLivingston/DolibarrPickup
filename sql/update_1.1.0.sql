@@ -1,4 +1,4 @@
--- Copyright (C) 2021		Jonathan Dollé		<license@jonathandolle.fr>
+-- Copyright (C) 2022		Jonathan Dollé		<license@jonathandolle.fr>
 --
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -13,17 +13,4 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see https://www.gnu.org/licenses/.
 
-
-CREATE TABLE llx_pickup_pickupline(
-	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
-	fk_pickup integer NOT NULL, 
-	fk_product integer NOT NULL, 
-	description text, 
-	qty integer DEFAULT 1 NOT NULL, 
-	batch varchar(128) DEFAULT NULL,
-	tms timestamp NOT NULL, 
-	fk_user_creat integer NOT NULL, 
-	fk_user_modif integer, 
-	position integer NOT NULL,
-	fk_stock_movement integer
-) ENGINE=innodb;
+ALTER TABLE llx_pickup_pickupline ADD batch varchar(128) DEFAULT NULL AFTER qty;

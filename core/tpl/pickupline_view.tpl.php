@@ -60,6 +60,19 @@ $coldisplay = 0; ?>
         }
         // print $form->textwithtooltip($line_product->getNomUrl(1), '', 3, '', '', $i, 0, '');
         print $form->textwithtooltip($line_product->getNomUrl(1), '');
+
+        if ($line_product->hasbatch() || !empty($line->batch)) {
+          print '<br>';
+          if ($object->status == $object::STATUS_PROCESSING && empty($line->batch)) {
+            print '<div style="color: orange;">';
+            print $langs->trans('Batch') . ': ';
+            print img_warning($langs->trans('PickupFixLineBatch'));
+            print '</div>';
+          } else {
+            print $langs->trans('Batch') . ': ';
+            print htmlspecialchars($line->batch ?? '');
+          }
+        }
       }
 
       // print '<br>';

@@ -51,6 +51,7 @@ PICKUP_MIGRATE_EXTRAFIELDS_Tooltip = Il semblerait que vous utilisez encore les 
 PICKUP_DEFAULT_HASBATCH_OPTIONS_0 = Les produits crées depuis l'application mobile ont l'option désactivée.
 PICKUP_DEFAULT_HASBATCH_OPTIONS_ask = Demander s'il faut activer l'option dans l'appli mobile.
 PICKUP_DEFAULT_HASBATCH_OPTIONS_1 = Les produits créés depuis l'application mobile ont l'option activée.
+PICKUP_DEFAULT_BATCH_PICKUP_REF = Utiliser la référence de la collecte comme numéro Lot/Série par défaut.
 
 #
 # Menus
@@ -112,6 +113,7 @@ ConfirmPickupActionSign = Êtes-vous sûr de vouloir passer cette collecte en st
 
 
 PickupFixLine = Remonter les informations du produit
+PickupFixLineBatch = Numéro de Lot/Série manquant
 DEEE = DEEE
 DEEEType = Type DEEE
 DEEETotal = Total DEEE
