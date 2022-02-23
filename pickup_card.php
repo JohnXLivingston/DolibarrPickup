@@ -391,9 +391,9 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		// Show object lines
 		$result = $object->getLinesArray();
 
-		print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '#addline' : '#line_'.GETPOST('lineid', 'int')).'" method="POST">
+		print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline' && $action != 'editlinebatch') ? '#addline' : '#line_'.GETPOST('lineid', 'int')).'" method="POST">
 		<input type="hidden" name="token" value="' . newToken().'">
-		<input type="hidden" name="action" value="' . (($action != 'editline') ? 'addline' : 'updateline').'">
+		<input type="hidden" name="action" value="' . ($action == 'editlinebatch' ? 'setlinebatch': (($action != 'editline') ? 'addline' : 'updateline')).'">
 		<input type="hidden" name="mode" value="">
 		<input type="hidden" name="id" value="' . $object->id.'">
 		';
@@ -455,7 +455,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		// Form to add new line
 		if ($object->status == Pickup::STATUS_DRAFT && $permissionedit && $action != 'selectlines')
 		{
-			if ($action != 'editline')
+			if ($action != 'editline' && $action != 'editlinebatch')
 			{
 				$parameters = array('table_element_line' => $object->table_element_line);
 				$reshook = $hookmanager->executeHooks('formAddObjectLine', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
@@ -471,7 +471,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	// Buttons for actions
 
-	if ($action != 'presend' && $action != 'editline') {
+	if ($action != 'presend' && $action != 'editline' && $action != 'editlinebatch') {
     	print '<div class="tabsAction">'."\n";
     	$parameters=array(
 				'permissiontoadd' => $permissiontoadd,

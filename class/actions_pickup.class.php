@@ -170,7 +170,7 @@ class ActionsPickup
 						$errors = array_merge($errors, $line->errors);
 					}
 				} else if ($line->fk_pickup !== $object->id) {
-					dol_syslog(__METHOD__ . ' ' . 'Line '.$line->fk_pickup.' is not from pickup '.$object->id, LOG_ERR);
+					dol_syslog(__METHOD__ . ' ' . 'Line '.$line->id.' is not from pickup '.$object->id, LOG_ERR);
 				} else {
 					$line->qty = $qty;
 					// $line->description = $line_desc;
@@ -214,6 +214,41 @@ class ActionsPickup
 			}
 		}
 
+		if ($action == 'setlinebatch' && $parameters['permissionedit'] && !empty($object->id)) {
+			dol_syslog(__METHOD__ . ' ' . 'setlinebatch action', LOG_DEBUG);
+
+			$lineid   = GETPOST('lineid', 'int');
+
+			$line = new PickupLine($db);
+			if ($line->fetch($lineid) <= 0) {
+				dol_syslog(__METHOD__ . ' ' . 'Line '.$lineid.' not fetched', LOG_ERR);
+				if (!empty($line->error)) {
+					array_push($errors, $line->error);
+				}
+				if (!empty($line->errors)) {
+					$errors = array_merge($errors, $line->errors);
+				}
+			} else if ($line->fk_pickup !== $object->id) {
+				dol_syslog(__METHOD__ . ' ' . 'Line '.$line->id.' is not from pickup '.$object->id, LOG_ERR);
+			} else {
+				$line->batch = GETPOST('batch', 'alpha');
+				dol_syslog(__METHOD__ . ' ' . 'Line '.$line->is. ' changing batch to '.$line->batch, LOG_DEBUG);
+				$result = $line->update($user);
+				if ($result <= 0) {
+					if (!empty($line->error)) {
+						array_push($errors, $line->error);
+					}
+					if (!empty($line->errors)) {
+						$errors = array_merge($errors, $line->errors);
+					}
+				}
+			}
+			if (!count($errors)) {
+				header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+				exit;
+			}
+		}
+
 		if ($action == 'fixline' && $parameters['permissionedit'] && !empty($object->id)) {
 			dol_syslog(__METHOD__ . ' ' . 'fixline action', LOG_DEBUG);
 
@@ -228,7 +263,7 @@ class ActionsPickup
 					$errors = array_merge($errors, $line->errors);
 				}
 			} else if ($line->fk_pickup !== $object->id) {
-				dol_syslog(__METHOD__ . ' ' . 'Line '.$line->fk_pickup.' is not from pickup '.$object->id, LOG_ERR);
+				dol_syslog(__METHOD__ . ' ' . 'Line '.$line->id.' is not from pickup '.$object->id, LOG_ERR);
 			} else {
 				require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 				$product = new Product($db);

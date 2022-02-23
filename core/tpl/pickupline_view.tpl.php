@@ -18,6 +18,7 @@
  * $object (pickup)
  * $conf
  * $form
+ * $action
  * $disableedit, $disablemove (not used for now because of bugs in dolibarr), $disableremove
  *
  * $line (pickupline)
@@ -63,15 +64,37 @@ $coldisplay = 0; ?>
 
         if ($line_product->hasbatch() || !empty($line->batch)) {
           print '<br>';
-          if ($object->status == $object::STATUS_PROCESSING && empty($line->batch)) {
-            print '<div style="color: orange;">';
-            print $langs->trans('Batch') . ': ';
-            print img_warning($langs->trans('PickupFixLineBatch'));
-            print '</div>';
-          } else {
-            print $langs->trans('Batch') . ': ';
+          $batch_warning = ($object->status == $object::STATUS_PROCESSING && empty($line->batch));
+          $hide_batch_number = false;
+
+          print '<div style="white-space: nowrap; '.($batch_warning ? 'color: orange;' : '').'">';
+
+          print $langs->trans('Batch') . ': ';
+
+          if (($object->status == $object::STATUS_PROCESSING || $object->status == $object::STATUS_DRAFT) && $object->canEditPickup()) {
+            if ($action === 'editlinebatch' && GETPOST('lineid', 'int') == $line->id) {
+              $hide_batch_number = true;
+              // Note: the <form> is printed by pickup_card.php
+              print '<input type="hidden" name="lineid" value="'.$line->id.'">';
+              print $line->showInputField(null, 'batch', GETPOSTISSET("batch") ? GETPOST('batch') : $line->batch);
+              print '<input type="submit" class="button valignmiddle" value="'.$langs->trans("Modify").'">';
+            } else {
+              print ' <a class="editfielda" href="';
+              print $_SERVER["PHP_SELF"];
+              print '?id='.$object->id.'&amp;action=editlinebatch&amp;lineid='.$line->id.'#line_'.$line->id;
+              print '"">'.img_edit($langs->transnoentitiesnoconv('Batch'), 0).'</a> ';
+            }
+          }
+
+          if (!$hide_batch_number) {
             print htmlspecialchars($line->batch ?? '');
           }
+
+          if ($batch_warning) {
+            print img_warning($langs->trans('PickupFixLineBatch'));
+          }
+
+          print '</div>';
         }
       }
 
