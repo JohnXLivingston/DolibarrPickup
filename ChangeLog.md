@@ -8,6 +8,7 @@
   * Si le module «lot/série» est activé, on peut choisir si les produits depuis l'application mobiles ont l'option activée ou non.
   * Pour les produits avec n° lot/série, il faut renseigner celui-ci avant de pouvoir intégrer la collecte au stock.
   * On peut choisir d'appliquer par défaut un numéro de lot égal à la réf de la collecte.
+* Fiche produit: affichage d'un onglet Collecte.
 
 ## 1.0.0
 
