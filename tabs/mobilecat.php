@@ -263,7 +263,7 @@ if ($object->id)
 
   print '</div>';
 
-  dol_fiche_end();
+  dol_fiche_end(-1);
 
   /*
   * Boutons actions

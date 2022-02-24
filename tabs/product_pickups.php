@@ -15,8 +15,12 @@ if (! $res && file_exists("../../main.inc.php")) $res=@include "../../main.inc.p
 if (! $res && file_exists("../../../main.inc.php")) $res=@include "../../../main.inc.php";
 if (! $res) die("Include of main fails");
 
-require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT . '/core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/pickup.class.php';
+require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/pickupline.class.php';
 
 $langs->loadLangs(array("pickup@pickup", "products", "other"));
 
@@ -69,21 +73,123 @@ if ($user->socid && !in_array('product', explode(',', $conf->global->MAIN_MODULE
 }
 dol_banner_tab($object, 'ref', $linkback, $shownav, 'ref');
 
+function print_pickup_title($object, $key) {
+  $val = $object->fields[$key];
+  $cssforfield=(empty($val['css'])?'':$val['css']);
+  if ($key == 'status') $cssforfield.=($cssforfield?' ':'').'center';
+  elseif (in_array($val['type'], array('date','datetime','timestamp'))) $cssforfield.=($cssforfield?' ':'').'center';
+  elseif (in_array($val['type'], array('timestamp'))) $cssforfield.=($cssforfield?' ':'').'nowrap';
+  elseif (in_array($val['type'], array('double(24,8)', 'double(6,3)', 'integer', 'real', 'price'))) $cssforfield.=($cssforfield?' ':'').'right';
+  print getTitleFieldOfList($val['label'], 0, '', '', '', '', ($cssforfield?'class="'.$cssforfield.'"':''), '', '', ($cssforfield?$cssforfield.' ':''), 1)."\n";
+}
+function print_pickup_line($object, $key) {
+  global $db;
+  $val = $object->fields[$key];
+  $cssforfield=(empty($val['css'])?'':$val['css']);
+  if (in_array($val['type'], array('date','datetime','timestamp'))) $cssforfield.=($cssforfield?' ':'').'center';
+  elseif ($key == 'status') $cssforfield.=($cssforfield?' ':'').'center';
+
+  if (in_array($val['type'], array('timestamp'))) $cssforfield.=($cssforfield?' ':'').'nowrap';
+  elseif ($key == 'ref') $cssforfield.=($cssforfield?' ':'').'nowrap';
+
+  if (in_array($val['type'], array('double(24,8)', 'double(6,3)', 'integer', 'real', 'price')) && $key != 'status') $cssforfield.=($cssforfield?' ':'').'right';
+
+  print '<td'.($cssforfield ? ' class="'.$cssforfield.'"' : '').'>';
+  if ($key == 'status') print $object->getLibStatut(5);
+  elseif (in_array($val['type'], array('date','datetime','timestamp'))) print $object->showOutputField($val, $key, $db->jdate($object->$key), '');
+  else print $object->showOutputField($val, $key, $object->$key, '');
+  print '</td>';
+  // if (! $i) $totalarray['nbfield']++;
+  // if (! empty($val['isameasure'])) {
+  //   if (! $i) $totalarray['pos'][$totalarray['nbfield']]='t.'.$key;
+  //   $totalarray['val']['t.'.$key] += $object->$key;
+  // }
+}
+
+$pickup = new Pickup($db);
+$pickupline = new PickupLine($db);
+
+$columns = array(
+  array('type' => 'pickup', 'col' => 'ref'),
+  array('type' => 'pickup', 'col' => 'label'),
+  array('type' => 'pickup', 'col' => 'fk_soc'),
+  array('type' => 'pickup', 'col' => 'date_pickup'),
+  array('type' => 'pickupline', 'col' => 'batch', 'hide' => !$object->hasbatch()),
+  array('type' => 'pickupline', 'col' => 'fk_stock_movement'),
+  array('type' => 'pickupline', 'col' => 'qty'),
+  array(
+    'type' => 'pickupline',
+    'label' => 'Weight',
+    'css' => 'right nowrap',
+    'func' => function ($pickuplinestatic) {
+      return ($pickuplinestatic->weight * $pickuplinestatic->qty) . ' ' . measuringUnitString(0, "weight", $pickuplinestatic->weight_units);
+    }
+  ),
+  array('type' => 'pickup', 'col' => 'status'),
+);
+
 print '<div class="fichecenter">';
 print '<div class="underbanner clearboth"></div>';
-print '<table class="border tableforfield" width="100%">';
+print '<div class="div-table-responsive">';
+print '<table class="noborder centpercent">';
+print '<tr class="liste_titre">';
+foreach ($columns as $def) {
+  if ($def['hide']) { continue; }
+  if (empty($def['col'])) {
+    $cssforfield = $def['css'];
+    print getTitleFieldOfList($def['label'], 0, '', '', '', '', ($cssforfield?'class="'.$cssforfield.'"':''), '', '', ($cssforfield?$cssforfield.' ':''), 1)."\n";
+    continue;
+  }
+  print_pickup_title($def['type'] === 'pickupline' ? $pickupline : $pickup, $def['col']);
+}
+print '</tr>';
 
-
-$sql = 'SELECT pl.rowid as plid, p.rowid as pid ';
+$sql = 'SELECT ';
+foreach($pickup->fields as $key => $val) {
+	$sql.='p.'.$key.' as p_'.$key.', ';
+}
+foreach($pickupline->fields as $key => $val) {
+	$sql.='pl.'.$key.' as pl_'.$key.', ';
+}
+$sql =preg_replace('/,\s*$/', '', $sql);
 $sql.= ' FROM '.MAIN_DB_PREFIX.'pickup_pickup as p ';
-$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'pickup_pickupline as pl ON pl.fk_pickup = p.rowid ';
+$sql.= ' JOIN '.MAIN_DB_PREFIX.'pickup_pickupline as pl ON pl.fk_pickup = p.rowid ';
 $sql.= ' WHERE ';
 $sql.= " pl.fk_product = '".$db->escape($object->id)."' ";
-$sql.= $db->order('date_pickup,plid', 'DESC,DESC');
+$sql.= $db->order('date_pickup,pl.position,pl.rowid', 'DESC,DESC,DESC');
 $result = $db->query($sql);
 
 if ($result > 0) {
-  
+  while ($data = $db->fetch_object($result)) {
+    $pickupstatic = new Pickup($db);
+    $pickupstatic->id = $data->p_id;
+    foreach($pickupstatic->fields as $key => $val) {
+      $sql_key = 'p_'.$key;
+      if (property_exists($data, $sql_key)) $pickupstatic->$key = $data->$sql_key;
+    }
+    $pickuplinestatic = new PickupLine($db);
+    $pickuplinestatic->id = $data->p_id;
+    foreach($pickuplinestatic->fields as $key => $val) {
+      $sql_key = 'pl_'.$key;
+      if (property_exists($data, $sql_key)) $pickuplinestatic->$key = $data->$sql_key;
+    }
+
+    print '<tr class="oddeven">';
+    foreach ($columns as $def) {
+      if ($def['hide']) { continue; }
+      $line_obj = $def['type'] === 'pickupline' ? $pickuplinestatic : $pickupstatic;
+      if (empty($def['col'])) {
+        $cssforfield = $def['css'];
+        $content = $def['func']($line_obj);
+        print '<td'.($cssforfield ? ' class="'.$cssforfield.'"' : '').'>';
+        print $content;
+        print '</td>';
+        continue;
+      }
+      print_pickup_line($line_obj, $def['col']);
+    }
+    print '</tr>';
+  }
 } else {
   dol_print_error($db);
 }
@@ -92,9 +198,10 @@ $db->free($result);
 print "</table>";
 
 print '</div>';
+print '</div>';
 print '<div style="clear:both"></div>';
 
-dol_fiche_end();
+dol_fiche_end(-1);
 
 
 // End of page
