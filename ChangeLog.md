@@ -10,6 +10,10 @@
   * On peut choisir d'appliquer par défaut un numéro de lot égal à la réf de la collecte.
 * Fiche produit: affichage d'un onglet Collecte.
 
+### Corrections et changements mineurs
+
+* Traduction des libellés des permissions d'accès.
+
 ## 1.0.0
 
 ### Fonctionnalités

@@ -120,3 +120,13 @@ DEEETotal = Total DEEE
 PickupTotalWeight = Poids total
 
 PBrand = Marque
+
+Permission469001 = Consulter les collectes
+Permission469002 = Créer des collectes, créer des tiers/produits depuis l'application mobile
+Permission469003 = Créer et modifier toutes les collectes
+Permission469004 = Supprimer des collectes
+Permission469005 = Passer les collectes en statut «en cours de traitement»
+Permission469006 = Passer les collectes en statut «en stock», créer les mouvements de stock associés
+Permission469007 = Passer les collectes en statut «signée»
+Permission469008 = Configurer le module Collecte
+Permission469009 = Accéder aux rapports

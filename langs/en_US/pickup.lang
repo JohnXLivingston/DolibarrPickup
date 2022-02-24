@@ -119,3 +119,13 @@ DEEETotal = DEEE total
 PickupTotalWeight = Total weight
 
 PBrand = Brand
+
+Permission469001 = View pickups
+Permission469002 = Create pickups, create third parties/product from the mobile application
+Permission469003 = Create/Update all Pickups
+Permission469004 = Delete pickups
+Permission469005 = Set pickups to «processing» state
+Permission469006 = Set pickups to «in stock» state, create associated stock movements
+Permission469007 = Set pickups to «signed» state
+Permission469008 = Configure the pickup module
+Permission469009 = Access to reports
