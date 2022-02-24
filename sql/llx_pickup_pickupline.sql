@@ -16,10 +16,15 @@
 
 CREATE TABLE llx_pickup_pickupline(
 	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
-	fk_pickup integer NOT NULL, 
-	fk_product integer NOT NULL, 
-	description text, 
-	qty integer DEFAULT 1 NOT NULL, 
+	fk_pickup integer NOT NULL,
+	fk_product integer NOT NULL,
+	description text,
+	weight double(24,8) DEFAULT NULL,
+	weight_units tinyint DEFAULT NULL,
+	deee tinyint DEFAULT NULL,
+	-- NB: deee_type should be a tinyint, but it seems it is a varchar on llx_product_extrafields
+	deee_type varchar(255) DEFAULT NULL,
+	qty integer DEFAULT 1 NOT NULL,
 	batch varchar(128) DEFAULT NULL,
 	tms timestamp NOT NULL, 
 	fk_user_creat integer NOT NULL, 
