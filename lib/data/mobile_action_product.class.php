@@ -95,7 +95,7 @@ class DataMobileActionProduct extends DataMobileAction {
   public function action_save() {
     dol_syslog(__METHOD__, LOG_DEBUG);
     $db = $this->db;
-    global $user, $conf;
+    global $user, $conf, $langs;
 
     require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
     $product = new Product($db);
@@ -133,6 +133,10 @@ class DataMobileActionProduct extends DataMobileAction {
     $product_id = $product->create($user);
     if (!$product_id || $product_id <= 0) {
       $this->_log_object_errors(__METHOD__, $product);
+      if ($product->error === 'ErrorProductAlreadyExists') {
+        $langs->loadLangs(array('products'));
+        return $this->_error_response('ErrorProductAlreadyExists', $langs->transnoentitiesnoconv('ErrorProductAlreadyExists', $product->ref));
+      }
       return 0;
     }
 

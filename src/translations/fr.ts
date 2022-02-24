@@ -20,5 +20,6 @@ export const fr: {[key: string]: string} = {
   'Invalid number': 'Nombre invalide',
   'Minimum is {min}': 'Le minimum est {min}',
   'Maximum is {max}': 'Le maximum est {max}',
-  'Invalid date': 'Date invalide'
+  'Invalid date': 'Date invalide',
+  'Error:': 'Erreur :'
 }

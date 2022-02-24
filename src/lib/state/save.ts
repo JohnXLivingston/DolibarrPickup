@@ -5,6 +5,7 @@ import { Stack, RemoveBetween } from '../stack'
 import { setData } from '../data'
 import { waitingOn, waitingOff } from '../waiting'
 import { Veto } from '../veto'
+import { translate } from '../translate'
 
 interface StateSaveDefinition extends StateDefinitionBase {
   type: 'save'
@@ -16,6 +17,7 @@ interface StateSaveDefinition extends StateDefinitionBase {
   labelKey: string
   goto: string
   dependingCacheKey?: string
+  errorLabels?: Map<string, string>
 }
 
 class StateSave extends State {
@@ -27,6 +29,7 @@ class StateSave extends State {
   private readonly labelKey: string
   private readonly goto: string
   private readonly dependingCacheKey?: string
+  private readonly errorLabels: Map<string, string>
 
   constructor (definition: StateSaveDefinition) {
     super('save', definition)
@@ -38,6 +41,7 @@ class StateSave extends State {
     this.labelKey = definition.labelKey
     this.goto = definition.goto
     this.dependingCacheKey = definition.dependingCacheKey
+    this.errorLabels = definition.errorLabels ?? new Map<string, string>()
   }
 
   _renderVars (stack: Stack, retrievedData: StateRetrievedData, h: NunjucksVars): void {
@@ -102,10 +106,12 @@ class StateSave extends State {
           txt = err
         } else if (typeof err === 'object' && ('statusText' in err)) {
           txt = err.statusText
+        } else if (typeof err === 'object' && ('_pickup_error' in err)) {
+          txt = this.errorLabels.get(err._pickup_error) ?? (err._pickup_error_message ?? 'Unknown error')
         } else {
           txt = '' + (err as string)
         }
-        $('[pickupmobile-save-error-container]').text('Error: ' + txt).removeClass('d-none')
+        $('[pickupmobile-save-error-container]').text(translate('Error:') + ' ' + txt).removeClass('d-none')
       }
 
       // If the object was already saved... Do not save again!

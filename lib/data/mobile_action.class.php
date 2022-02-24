@@ -15,4 +15,11 @@ abstract class DataMobileAction {
   protected function _log_sql_errors($db) {
     dol_syslog($method.' '.$db->lasterror(), LOG_ERR);
   }
+
+  protected function _error_response($error_code, $error_message) {
+    return array(
+      '_pickup_error' => $error_code,
+      '_pickup_error_message' => $error_message
+    );
+  }
 }

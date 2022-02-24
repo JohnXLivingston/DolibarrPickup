@@ -13,6 +13,7 @@
 ### Corrections et changements mineurs
 
 * Traduction des libellés des permissions d'accès.
+* Application mobile : message d'erreur spécifique pour les produits déjà existants.
 
 ## 1.0.0
 

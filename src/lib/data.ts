@@ -126,6 +126,10 @@ function setData (dataKey: string, data: {[key: string]: string}, dependingCache
     }).then((response) => {
       deleteCache(dataKey)
       if (dependingCacheKey !== undefined) { deleteCache(dependingCacheKey) }
+      if ((typeof response === 'object') && ('_pickup_error' in response) && response._pickup_error) {
+        reject(response)
+        return
+      }
       resolve(response)
     }, (err) => {
       deleteCache(dataKey)
