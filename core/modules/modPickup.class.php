@@ -2,7 +2,7 @@
 /* Copyright (C) 2004-2018  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2018-2019  Nicolas ZABOURI         <info@inovea-conseil.com>
  * Copyright (C) 2019       Frédéric France         <frederic.france@netlogic.fr>
- * Copyright (C) 2021		Jonathan Dollé		<license@jonathandolle.fr>
+ * Copyright (C) 2021-2022		John Livingston		<license@john-livingston.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ class modPickup extends DolibarrModules
         $this->description = "Pickup Module";
         // Used only if file README.md and README-LL.md not found.
         $this->descriptionlong = "Pickup Module";
-        $this->editor_name = 'Jonathan Dollé';
+        $this->editor_name = 'John Livingston';
         $this->editor_url = 'https://github.com/JohnXLivingston';
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
         $this->version = '1.1.0';

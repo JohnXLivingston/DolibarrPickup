@@ -18,7 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/JohnXLivingston/DolibarrPickup.git"
   },
-  "author": "Jonathan Dollé",
+  "author": "John Livingston",
   "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/JohnXLivingston/DolibarrPickup/issues"

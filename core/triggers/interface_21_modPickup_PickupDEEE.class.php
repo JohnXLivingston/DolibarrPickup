@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2022		Jonathan Dollé		<license@jonathandolle.fr>
+/* Copyright (C) 2022		John Livingston		<license@john-livingston.fr>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

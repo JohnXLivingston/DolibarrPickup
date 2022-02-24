@@ -2,7 +2,7 @@
 #----------------------------------------------------------------------------
 # \file         build/makepack-Pickup.pl
 # \brief        Package builder
-# \author       (c)2021		Jonathan Dollé		<license@jonathandolle.fr>
+# \author       (c)2021-2022		John Livingston		<license@john-livingston.fr>
 # \contributor  (c)2005-2014 Laurent Destailleur  <eldy@users.sourceforge.net>
 # \contributor  (c)2017 Nicolas ZABOURI <info@inovea-conseil.com>
 #----------------------------------------------------------------------------
