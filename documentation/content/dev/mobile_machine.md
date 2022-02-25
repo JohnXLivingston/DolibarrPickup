@@ -1,3 +1,10 @@
++++
+title = "API de l'application Mobile"
+date = 2022-02-25T16:54:00+01:00
+weight = 5
+chapter = false
++++
+
 # Application mobile : Automate
 
 L'application mobile utilise un automate à état fini pour son fonctionnement.

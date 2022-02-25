@@ -1,0 +1,29 @@
+baseURL = "/"
+languageCode = "fr-fr"
+defaultContentLanguage = "fr"
+title = "Documentation DolibarrPickup"
+theme = "hugo-theme-learn"
+
+[outputs]
+home = [ "HTML", "RSS", "JSON"]
+
+[params]
+  author = "John Livingston"
+  description = "Documentation du module Dolibarr DolibarrPickup"
+  showVisitedLinks = true
+  disableSearch = false
+  disableLandingPageButton = false
+  themeVariant = "blue"
+  landingPageURL = "/"
+  landingPageName = "<i class='fas fa-home'></i> Accueil"
+
+[[menu.shortcuts]] 
+name = "<i class='fab fa-github'></i> Dépot Github"
+url = "https://github.com/JohnXLivingston/DolibarrPickup"
+weight = 10
+
+[[menu.shortcuts]] 
+name = "<i class='fab fa-git'></i> Dépot Globenet"
+url = "https://code.globenet.org/john/DolibarrPickup"
+weight = 20
+
