@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## 1.1.1 (Not Released Yet)
+
+### Corrections et changements mineurs
+
+* Éditions de tags, onglet collecte: affichage des boutons «précédant» et «suivant».
+
 ## 1.1.0
 
 ### Fonctionnalités
