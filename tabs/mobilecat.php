@@ -189,11 +189,11 @@ if ($object->id)
   dol_fiche_head($head, 'pickupmobilecat', $title, -1, 'category');
 
   if ($backtopage === 'mobilecat_list') $linkback = '<a href="'.DOL_URL_ROOT.'/custom/pickup/mobilecat_list.php">'.$langs->trans("BackToList").'</a>';
-  else $linkback = '<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type.'">'.$langs->trans("BackToList").'</a>';
+  else $linkback = '<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.urlencode($type).'">'.$langs->trans("BackToList").'</a>';
 
   $object->ref = $object->label;
   $object->next_prev_filter=" type = ".$object->type;
-	$morehtmlref='<br><div class="refidno"><a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type.'">'.$langs->trans("Root").'</a> >> ';
+	$morehtmlref='<br><div class="refidno"><a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.urlencode($type).'">'.$langs->trans("Root").'</a> >> ';
 	$ways = $object->print_all_ways(' &gt;&gt; ', '', 1);
 	foreach ($ways as $way)
 	{
@@ -290,7 +290,7 @@ if ($object->id)
       print '</form>';
     }
   //   // $socid = ($object->socid ? "&amp;socid=".$object->socid : "");
-  //   // print "<a class='butAction' href='edit.php?id=".$object->id.$socid."&amp;type=".$type."'>".$langs->trans("Modify")."</a>";
+  //   // print "<a class='butAction' href='edit.php?id=".$object->id.$socid."&amp;type=".urlencode($type)."'>".$langs->trans("Modify")."</a>";
   }
 
   print "</div>";
