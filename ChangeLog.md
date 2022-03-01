@@ -4,7 +4,7 @@
 
 ### Corrections et changements mineurs
 
-* Éditions de tags, onglet collecte: affichage des boutons «précédant» et «suivant».
+* Éditions de tags, onglet collecte: affichage des boutons «précédent» et «suivant».
 
 ## 1.1.0
 
