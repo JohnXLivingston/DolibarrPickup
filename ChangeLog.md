@@ -10,6 +10,7 @@
 * Impossibilité de saisir une collecte avec une date dans le futur.
 * Possibilité d'autoriser les dates de collectes dans le futur (mais pas dans l'application mobile).
 * Fix régression: le choix du stock par défaut avait disparu des paramètres.
+* Les numéros de collectes repartent à 1 pour chaque nouvelle année fiscale.
 
 ## 1.1.0
 
