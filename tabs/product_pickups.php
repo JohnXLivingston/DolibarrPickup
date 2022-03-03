@@ -84,6 +84,7 @@ function print_pickup_title($object, $key) {
 }
 function print_pickup_line($object, $key) {
   global $db;
+
   $val = $object->fields[$key];
   $cssforfield=(empty($val['css'])?'':$val['css']);
   if (in_array($val['type'], array('date','datetime','timestamp'))) $cssforfield.=($cssforfield?' ':'').'center';
@@ -144,7 +145,7 @@ foreach ($columns as $def) {
 }
 print '</tr>';
 
-$sql = 'SELECT ';
+$sql = 'SELECT p.rowid as p_rowid, pl.rowid as pl_rowid, ';
 foreach($pickup->fields as $key => $val) {
 	$sql.='p.'.$key.' as p_'.$key.', ';
 }
@@ -162,13 +163,13 @@ $result = $db->query($sql);
 if ($result > 0) {
   while ($data = $db->fetch_object($result)) {
     $pickupstatic = new Pickup($db);
-    $pickupstatic->id = $data->p_id;
+    $pickupstatic->id = $data->p_rowid;
     foreach($pickupstatic->fields as $key => $val) {
       $sql_key = 'p_'.$key;
       if (property_exists($data, $sql_key)) $pickupstatic->$key = $data->$sql_key;
     }
     $pickuplinestatic = new PickupLine($db);
-    $pickuplinestatic->id = $data->p_id;
+    $pickuplinestatic->id = $data->p_rowid;
     foreach($pickuplinestatic->fields as $key => $val) {
       $sql_key = 'pl_'.$key;
       if (property_exists($data, $sql_key)) $pickuplinestatic->$key = $data->$sql_key;

@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## 1.1.2
+
+### Correction et changements mineurs
+
+* Fix #41: Fiche produit, onglet Collectes: le lien vers les collectes ne fonctionne pas.
+
 ## 1.1.1
 
 ### Corrections et changements mineurs
