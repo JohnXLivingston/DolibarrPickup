@@ -5,6 +5,7 @@
 ### Corrections et changements mineurs
 
 * Éditions de tags, onglet collecte: affichage des boutons «précédent» et «suivant».
+* Possibilité de modifier les références des collectes.
 
 ## 1.1.0
 

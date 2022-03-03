@@ -270,7 +270,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 		}
 		*/
 		
-		if ($conf->pickup->dir_output.'/pickup')
+		if ($conf->pickup->dir_output)
 		{
 			$object->fetch_thirdparty();
 			
