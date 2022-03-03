@@ -88,6 +88,8 @@
             name="{{ field.name }}"
             value="{{ currentValue }}"
             class="form-control {% if invalid %}is-invalid{% endif %}"
+            {% if field.min %} min="{{ field.min }}" {% endif %}
+            {% if field.max %} max="{{ field.max }}" {% endif %}
           />
         {% endif %}
       </div>

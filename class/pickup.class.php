@@ -92,7 +92,7 @@ class Pickup extends CommonObject
 	 */
 	public $fields=array(
 		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>'1', 'position'=>1, 'notnull'=>1, 'visible'=>0, 'index'=>1, 'comment'=>"Id"),
-		'ref' => array('type'=>'varchar(128)', 'label'=>'Ref', 'enabled'=>'1', 'position'=>10, 'notnull'=>1, 'visible'=>1, 'default'=>'(PROV)', 'index'=>1, 'searchall'=>1, 'showoncombobox'=>'1', 'comment'=>"Reference of object", 'noteditable' => 1),
+		'ref' => array('type'=>'varchar(128)', 'label'=>'Ref', 'enabled'=>'1', 'position'=>10, 'notnull'=>1, 'visible'=>1, 'default'=>'(PROV)', 'index'=>1, 'searchall'=>1, 'showoncombobox'=>'1', 'comment'=>"Reference of object", 'noteditable' => 0),
 		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>30, 'notnull'=>1, 'visible'=>4, 'searchall'=>1, 'showoncombobox'=>'1',),
 		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php:1', 'label'=>'ThirdParty', 'enabled'=>'1', 'position'=>50, 'notnull'=>1, 'visible'=>1, 'index'=>1,),
 		'date_pickup' => array('type'=>'date', 'label'=>'PickupDate', 'enabled'=>'1', 'position'=>55, 'notnull'=>1, 'visible'=>1, 'index'=>1,),
@@ -210,6 +210,26 @@ class Pickup extends CommonObject
 	}
 
 	/**
+	 *    Check properties of pickup are ok.
+	 *    All properties must be already loaded on object.
+	 *
+	 * @return int        0 if OK, <0 if KO
+	 */
+	public function verify() {
+		global $conf;
+
+		if (!empty($this->date_pickup) && empty($conf->global->PICKUP_ALLOW_FUTURE)) {
+			$now = dol_print_date(dol_now(), '%Y-%m-%d');
+			$val = dol_print_date($this->date_pickup, '%Y-%m-%d');
+			if ($val > $now) {
+				array_push($this->errors, 'PickupCantBeInFutureError');
+				return -1;
+			}
+		}
+		return 0;
+	}
+
+	/**
 	 * Create object into database
 	 *
 	 * @param  User $user      User that creates
@@ -234,6 +254,13 @@ class Pickup extends CommonObject
 			}
 			$this->label .= dol_print_date($this->date_pickup, '%d/%m/%Y');
 		}
+
+		$result = $this->verify();
+		if ($result < 0) {
+			dol_syslog(get_class($this)."::create fails verify ".join(',', $this->errors), LOG_WARNING);
+			return $result;
+		}
+
 		return $this->createCommon($user, $notrigger);
 	}
 
@@ -444,6 +471,19 @@ class Pickup extends CommonObject
 	 */
 	public function update(User $user, $notrigger = false)
 	{
+		if (empty($this->oldcopy)) {
+			// This will be used in a trigger to rename the dir_output if ref changes.
+			$oldcopy = new self($this->db);
+			$oldcopy->fetch($this->id);
+			$this->oldcopy = $oldcopy;
+		}
+
+		$result = $this->verify();
+		if ($result < 0) {
+			dol_syslog(get_class($this)."::update fails verify ".join(',', $this->errors), LOG_WARNING);
+			return $result;
+		}
+
 		return $this->updateCommon($user, $notrigger);
 	}
 

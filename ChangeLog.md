@@ -1,5 +1,17 @@
 # DolibarrPickup
 
+## 1.1.1
+
+### Corrections et changements mineurs
+
+* Éditions de tags, onglet collecte: affichage des boutons «précédent» et «suivant».
+* Possibilité de modifier les références des collectes.
+* Ajout d'un index UNIQUE sur la référence collecte.
+* Impossibilité de saisir une collecte avec une date dans le futur.
+* Possibilité d'autoriser les dates de collectes dans le futur (mais pas dans l'application mobile).
+* Fix régression: le choix du stock par défaut avait disparu des paramètres.
+* Les numéros de collectes repartent à 1 pour chaque nouvelle année fiscale.
+
 ## 1.1.0
 
 ### Fonctionnalités

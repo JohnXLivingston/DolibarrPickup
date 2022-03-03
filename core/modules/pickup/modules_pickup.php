@@ -89,7 +89,7 @@ class ModeleNumRefPickup {
     require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
     // Get Mask value
-    $mask = 'P{yyyy}{mm}-{0000}';
+    $mask = 'P{yyyy}{mm}-{0000@0}';
     $where = '';
 
     $numFinal = get_next_value($db, $mask, 'pickup_pickup', 'ref', $where, '', $pickup->date_pickup, $mode, false, null, null);

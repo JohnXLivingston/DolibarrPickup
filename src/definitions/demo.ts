@@ -113,7 +113,8 @@ export function demoForm (goto: string): StateDefinition {
         name: 'fielddate',
         label: 'Date',
         mandatory: false,
-        defaultToToday: true
+        defaultToToday: true,
+        maxToToday: true
       },
       {
         type: 'integer',

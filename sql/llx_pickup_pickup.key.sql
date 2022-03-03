@@ -14,7 +14,9 @@
 -- along with this program.  If not, see http://www.gnu.org/licenses/.
 
 ALTER TABLE llx_pickup_pickup ADD INDEX idx_pickup_pickup_rowid (rowid);
-ALTER TABLE llx_pickup_pickup ADD INDEX idx_pickup_pickup_ref (ref);
+-- NB: Before version 1.1.1, the index idx_pickup_pickup_ref was not unique. Dropping it to replace by idx_pickup_pickup_ref_unique.
+ALTER TABLE llx_pickup_pickup DROP INDEX IF EXISTS idx_pickup_pickup_ref;
+ALTER TABLE llx_pickup_pickup ADD UNIQUE INDEX idx_pickup_pickup_ref_unique (ref);
 ALTER TABLE llx_pickup_pickup ADD INDEX idx_pickup_pickup_fk_soc (fk_soc);
 ALTER TABLE llx_pickup_pickup ADD INDEX idx_pickup_pickup_date_pickup (date_pickup);
 ALTER TABLE llx_pickup_pickup ADD CONSTRAINT llx_pickup_pickup_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);

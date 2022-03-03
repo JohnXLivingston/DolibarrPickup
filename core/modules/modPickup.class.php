@@ -64,7 +64,7 @@ class modPickup extends DolibarrModules
         $this->editor_name = 'John Livingston';
         $this->editor_url = 'https://github.com/JohnXLivingston';
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         // Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
 
@@ -433,6 +433,7 @@ class modPickup extends DolibarrModules
                 'sql' => "UPDATE ".MAIN_DB_PREFIX."pickup_pickupline as l LEFT OUTER JOIN ".MAIN_DB_PREFIX."product as p ON l.fk_product = p.rowid set l.weight = IFNULL(p.weight, 0), l.weight_units = IFNULL(p.weight_units, 0) where l.weight is null and l.weight_units is null",
                 'ignoreerror' => true
             ),
+            // migration for version 1.0.0:
             array(
                 'sql' => "UPDATE ".MAIN_DB_PREFIX."pickup_pickupline as l LEFT OUTER JOIN ".MAIN_DB_PREFIX."product_extrafields as e ON l.fk_product = e.fk_object set l.deee = IFNULL(e.deee, 0), l.deee_type = e.type_deee where l.deee is null and l.deee_type is null",
                 'ignoreerror' => true

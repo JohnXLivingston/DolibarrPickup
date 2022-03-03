@@ -16,9 +16,9 @@
  */
 
 /**
- * \file    core/triggers/interface_21_modProduct_PickupDEEE.class
+ * \file    core/triggers/interface_99_modPickup_PickupOutputDir.class
  *
- * This trigger computes the product DEEE field if necessary.
+ * This trigger change the directory where documents are stored if the ref is changed.
  *
  */
 
@@ -29,7 +29,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
 /**
  *  Class of triggers for MyModule module
  */
-class InterfacePickupDEEE extends DolibarrTriggers
+class InterfacePickupOutputDir extends DolibarrTriggers
 {
 	/**
 	 * @var DoliDB Database handler
@@ -46,7 +46,7 @@ class InterfacePickupDEEE extends DolibarrTriggers
 		$this->db = $db;
 
 		$this->name = preg_replace('/^Interface/i', '', get_class($this));
-		$this->family = "product";
+		$this->family = "pickup";
 		$this->description = "Pickup module triggers.";
 		// 'development', 'experimental', 'dolibarr' or version
 		$this->version = 'development';
@@ -93,33 +93,25 @@ class InterfacePickupDEEE extends DolibarrTriggers
 
 		switch ($action) {
 			// Products
-			case 'PRODUCT_CREATE':
-			case 'PRODUCT_MODIFY':
+			case 'PICKUP_MODIFY':
 				dol_syslog("Trigger '".$this->name."' for action '$action' launched by ".__FILE__.". id=".$object->id);
-				if (empty($object->array_options)) {
-					dol_syslog("Trigger '".$this->name."': no array_options, assuming extrafields where not modified.");
-					return 0;
-				}
-				// This test is not valid: when creating from mobile app, the key is missing...
-				// if (!array_key_exists('options_pickup_deee', $object->array_options)) {
-				// 	dol_syslog("Trigger '".$this->name."': no options_pickup_deee fields. Dont recompute.");
-				// 	return 0;
-				// }
-				if (!array_key_exists('options_pickup_deee_type', $object->array_options)) {
-					dol_syslog("Trigger '".$this->name."': no options_pickup_deee_type fields. Dont recompute.");
-					return 0;
-				}
-				$new_deee = !empty($object->array_options['options_pickup_deee_type']) && $object->array_options['options_pickup_deee_type'] != '0' ? '1' : '0';
-				dol_syslog("Trigger '".$this->name."': Recompte pickup_deee to ".$new_deee.".");
-				$object->array_options['options_pickup_deee'] = $new_deee;
-				$sql = 'UPDATE ' . MAIN_DB_PREFIX . 'product_extrafields ';
-				$sql.= ' SET pickup_deee = \''.$db->escape($new_deee).'\' ';
-				$sql.= ' WHERE fk_object = \'' . $db->escape($object->id) . '\'';
-				$resql = $db->query($sql);
-				if (!$resql) {
-					dol_syslog("Trigger '".$this->name."' for action '$action' failed on id=".$object->id.': '.$db->lasterror(), LOG_ERR);
-					return -1;
-				}
+        if (!is_object($object->oldcopy)) { return 0; }
+        if ($object->oldcopy->ref === $object->ref) { return 0; }
+				if (empty($conf->pickup->dir_output)) { return 0; }
+
+        $olddir = $conf->pickup->dir_output.'/pickup/'.dol_sanitizeFileName($object->oldcopy->ref);
+        $newdir = $conf->pickup->dir_output.'/pickup/'.dol_sanitizeFileName($object->ref);
+        if (!file_exists($olddir)) { return 0; }
+        if ($olddir === $newdir) { return 0; }
+
+        dol_syslog("Trigger '".$this->name."': renaming document dir from .".$olddir." to ".$newdir.".");
+        $res = @rename($olddir, $newdir);
+        if (!$res) {
+          dol_syslog("Trigger '".$this->name."': failed to rename document dir from .".$olddir." to ".$newdir.".", LOG_ERR);
+          $langs->load("errors");
+          $object->error = $langs->trans('ErrorFailToRenameDir', $olddir, $newdir);
+          return -1;
+        }
 				return 1;
 			default:
 				//dol_syslog("Trigger '".$this->name."' for action '$action' launched by ".__FILE__.". id=".$object->id);

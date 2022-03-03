@@ -25,12 +25,11 @@ require_once DOL_DOCUMENT_ROOT.'/custom/pickup/lib/mobile_forms.php';
 $langs->loadLangs(array("pickup@pickup", "categories", "other"));
 
 $id=GETPOST('id', 'int');
-$type = Categorie::TYPE_PRODUCT;
+$label = GETPOST('label', 'alpha');
 $action = GETPOST('action', 'aZ09');
 $backtopage = GETPOST('backto', 'alpha');
 
-if ($id == "")
-{
+if (empty($id) && empty($label)) {
     dol_print_error('', 'Missing parameter id');
     exit();
 }
@@ -45,24 +44,22 @@ $result = restrictedArea($user, 'categorie', $id, '&category');
 
 $object = new Categorie($db);
 $mobilecat = new PickupMobileCat($db);
-if ($id > 0)
-{
-  $result = $object->fetch($id);
-  if ($result < 0) {
-    dol_print_error($db);
-    exit;
-  }
-  if ($mobilecat->fetchByCategory($object->id) < 0)
-	{
-		dol_print_error($db);
-		exit;
-	}
+$result = $object->fetch($id, $label);
+if ($result < 0) {
+  dol_print_error($db);
+  exit;
 }
-else
-{
-  dol_print_error('', 'Invalid parameter id');
-  exit();
+if (empty($id)) {
+  $id = $object->id;
+  // Previous call to restrictedArea didn't test the right for this tag. So calling again...
+  $result = restrictedArea($user, 'categorie', $id, '&category');
 }
+if ($mobilecat->fetchByCategory($object->id) < 0)
+{
+  dol_print_error($db);
+  exit;
+}
+
 
 $type=$object->type;
 if (is_numeric($type)) $type=Categorie::$MAP_ID_TO_CODE[$type];	// For backward compatibility
@@ -192,11 +189,11 @@ if ($object->id)
   dol_fiche_head($head, 'pickupmobilecat', $title, -1, 'category');
 
   if ($backtopage === 'mobilecat_list') $linkback = '<a href="'.DOL_URL_ROOT.'/custom/pickup/mobilecat_list.php">'.$langs->trans("BackToList").'</a>';
-  else $linkback = '<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type.'">'.$langs->trans("BackToList").'</a>';
+  else $linkback = '<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.urlencode($type).'">'.$langs->trans("BackToList").'</a>';
 
   $object->ref = $object->label;
-  // $object->next_prev_filter=" type = ".$object->type;
-	$morehtmlref='<br><div class="refidno"><a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type.'">'.$langs->trans("Root").'</a> >> ';
+  $object->next_prev_filter=" type = ".$object->type;
+	$morehtmlref='<br><div class="refidno"><a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.urlencode($type).'">'.$langs->trans("Root").'</a> >> ';
 	$ways = $object->print_all_ways(' &gt;&gt; ', '', 1);
 	foreach ($ways as $way)
 	{
@@ -207,7 +204,7 @@ if ($object->id)
   // dol_banner_tab($object, 'ref', $linkback, ($user->societe_id?0:1), 'ref', 'ref', $morehtmlref, '', 0, '', '', 1);
   // dol_banner_tab($object, 'id', $linkback, ($user->societe_id?0:1), '', '', $morehtmlref, '', 0, '', '', 1);
   // dol_banner_tab($object, 'id', $linkback, ($user->societe_id?0:1), 'rowid', 'id', $morehtmlref, '', 0, '', '', 1);
-  dol_banner_tab($object, 'id', $linkback, 0, '', '', $morehtmlref, '', 0, '', '', 1);
+  dol_banner_tab($object, 'label', $linkback, ($user->socid ? 0 : 1), 'label', 'label', $morehtmlref, '&type='.urlencode($type), 0, '', '', 1);
   
   print '<br>';
 
@@ -293,7 +290,7 @@ if ($object->id)
       print '</form>';
     }
   //   // $socid = ($object->socid ? "&amp;socid=".$object->socid : "");
-  //   // print "<a class='butAction' href='edit.php?id=".$object->id.$socid."&amp;type=".$type."'>".$langs->trans("Modify")."</a>";
+  //   // print "<a class='butAction' href='edit.php?id=".$object->id.$socid."&amp;type=".urlencode($type)."'>".$langs->trans("Modify")."</a>";
   }
 
   print "</div>";
