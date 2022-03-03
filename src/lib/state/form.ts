@@ -99,6 +99,9 @@ interface FormFieldRadioOption {
 interface FormFieldDate extends FormFieldBase {
   type: 'date'
   defaultToToday?: boolean
+  maxToToday?: boolean
+  min?: string
+  max?: string
 }
 
 type FormField = FormFieldSelect | FormFieldVarchar | FormFieldText | FormFieldInteger | FormFieldFloat | FormFieldBoolean | FormFieldRadio | FormFieldDate
@@ -107,6 +110,16 @@ interface StateFormDefinition extends StateDefinitionBase {
   type: 'form'
   goto: string
   fields: FormField[]
+}
+
+function todayString (): string {
+  const today = new Date(Date.now())
+  const y: string = today.getFullYear().toString()
+  let m: string = (today.getMonth() + 1).toString()
+  if (m.length < 2) m = '0' + m
+  let d: string = today.getDate().toString()
+  if (d.length < 2) d = '0' + d
+  return y + '-' + m + '-' + d
 }
 
 class StateForm extends State {
@@ -236,13 +249,10 @@ class StateForm extends State {
         continue
       }
       if (field.defaultToToday) {
-        const today = new Date(Date.now())
-        const y: string = today.getFullYear().toString()
-        let m: string = (today.getMonth() + 1).toString()
-        if (m.length < 2) m = '0' + m
-        let d: string = today.getDate().toString()
-        if (d.length < 2) d = '0' + d
-        field.default = y + '-' + m + '-' + d
+        field.default = todayString()
+      }
+      if (field.maxToToday) {
+        field.max = todayString()
       }
     }
   }

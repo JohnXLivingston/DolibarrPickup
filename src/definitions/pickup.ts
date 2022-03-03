@@ -26,7 +26,8 @@ export function createPickup (goto: string): StateDefinition {
         type: 'date',
         label: 'Date de la collecte',
         mandatory: true,
-        defaultToToday: true
+        defaultToToday: true,
+        maxToToday: true
       },
       {
         type: 'text',

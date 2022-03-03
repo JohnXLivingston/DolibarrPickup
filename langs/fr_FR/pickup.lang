@@ -100,6 +100,7 @@ MobileCatEnable = Utiliser dans l'application mobile
 MobileCatDisable = Désactiver dans l'application mobile
 MobileCatNotEnabled = Ce tag n'est actuellement pas utilisé dans l'application mobile
 
+PickupCantBeInFutureError = La collecte ne peut pas être dans le futur.
 
 #
 ConfirmPickupActionProcessing = Êtes-vous sûr de vouloir traiter cette collecte ?

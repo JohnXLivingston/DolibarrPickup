@@ -100,6 +100,7 @@ MobileCatEnable = Use in mobile application
 MobileCatDisable = Disable in mobile application
 MobileCatNotEnabled = This tag is currently not used in mobile application
 
+PickupCantBeInFutureError = Pickup cant be in future.
 
 #
 ConfirmPickupActionProcessing = Are you sure you want to process this pickup?

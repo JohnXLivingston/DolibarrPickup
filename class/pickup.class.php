@@ -210,6 +210,24 @@ class Pickup extends CommonObject
 	}
 
 	/**
+	 *    Check properties of pickup are ok.
+	 *    All properties must be already loaded on object.
+	 *
+	 * @return int        0 if OK, <0 if KO
+	 */
+	public function verify() {
+		if (!empty($this->date_pickup)) {
+			$now = dol_print_date(dol_now(), '%Y-%m-%d');
+			$val = dol_print_date($this->date_pickup, '%Y-%m-%d');
+			if ($val > $now) {
+				array_push($this->errors, 'PickupCantBeInFutureError');
+				return -1;
+			}
+		}
+		return 0;
+	}
+
+	/**
 	 * Create object into database
 	 *
 	 * @param  User $user      User that creates
@@ -234,6 +252,13 @@ class Pickup extends CommonObject
 			}
 			$this->label .= dol_print_date($this->date_pickup, '%d/%m/%Y');
 		}
+
+		$result = $this->verify();
+		if ($result < 0) {
+			dol_syslog(get_class($this)."::create fails verify ".join(',', $this->errors), LOG_WARNING);
+			return $result;
+		}
+
 		return $this->createCommon($user, $notrigger);
 	}
 
@@ -450,6 +475,13 @@ class Pickup extends CommonObject
 			$oldcopy->fetch($this->id);
 			$this->oldcopy = $oldcopy;
 		}
+
+		$result = $this->verify();
+		if ($result < 0) {
+			dol_syslog(get_class($this)."::update fails verify ".join(',', $this->errors), LOG_WARNING);
+			return $result;
+		}
+
 		return $this->updateCommon($user, $notrigger);
 	}
 
