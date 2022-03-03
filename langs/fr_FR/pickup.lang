@@ -60,6 +60,7 @@ PICKUP_ALLOW_FUTURETooltip = Ce paramètre ne s'applique pas à l'application mo
 #
 PickupMenuList = Liste des collectes
 PickupMenuTags = Configuration des tags
+PickupMenuHelp = Aide
 PickupNew = Nouvelle collecte
 PickupMenuReports = Rapports
 PickupMenuSocReports = Rapports par Tiers

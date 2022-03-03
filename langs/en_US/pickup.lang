@@ -60,6 +60,7 @@ PICKUP_ALLOW_FUTURETooltip = This parameter does not apply to the mobile applica
 #
 PickupMenuList = Pickups list
 PickupMenuTags = Configure tags
+PickupMenuHelp = Help
 PickupNew = New pickup
 PickupMenuReports = Reports
 PickupMenuSocReports = Reports by third party
