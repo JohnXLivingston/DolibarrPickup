@@ -23,3 +23,21 @@ Dans la fiche en mode lecture, ce champs est complété d'une case à cochée «
 Dans les listes de produits, les colonnes «DEEE» et «Type DEEE» sont ajoutées (on peut choisir de les afficher/masquer).
 
 ![Liste des produits](./images/produit_liste.png)
+
+## Sur la fiche de collecte
+
+Les informations de DEEE, ainsi que les poids de chaque catégories sont repris sur la fiche de collecte et sur le bon de collecte.
+
+| | |
+|---|---|
+| ![Fiche Collecte](./images/collecte_fiche.png) | ![Bon de collecte](./images/collecte_bon.png)
+
+## Dans les rapports
+
+Il est ensuite possible de faire des rapports reprenant les poids collectés pour chaque catégorie.
+
+![Rapports](./images/rapport.png)
+
+{{% notice warning %}}
+Des évolutions sont à venir sur les écrans de rapports. Si vous avez des besoins spécifiques, n'hésitez pas à me contacter pour en discuter.
+{{% /notice %}}
