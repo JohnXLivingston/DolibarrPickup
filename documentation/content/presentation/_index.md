@@ -1,8 +1,10 @@
 +++
-title = "Présentation"
-date = 2022-02-25T16:54:00+01:00
+title = "Présentation du module"
 weight = 5
 chapter = true
 +++
 
-# Présentation du module
+# Fonctionnalités
+
+Le module de Collecte est destiné à des ressourceries/recycleries,
+et permet de gérer les entrées de matériaux ou matériels.
