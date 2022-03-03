@@ -138,7 +138,7 @@ foreach ($pickup_extrafields as $key => $val) {
 
 
 $arrayofparameters=array(
-	'PICKUP_DEFAULT_STOCK' => array('enabled'=>1),
+	'PICKUP_DEFAULT_STOCK' => array('table' => 'main', 'enabled'=>1),
 	'PICKUP_ALLOW_FUTURE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_PCAT' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_DEEE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_deee', 'pickup_deee_type')),
@@ -434,7 +434,7 @@ if ($action == 'edit')
 	print '<input type="hidden" name="action" value="update">';
 
 	function draw_edit_table($table, $title) {
-		global $arrayofparameters, $entrepot, $form, $conf, $langs, $pickup_extrafields;
+		global $arrayofparameters, $entrepot, $form, $conf, $langs, $pickup_extrafields, $db;
 
 		$filtered_arrayofparameters = array_filter($arrayofparameters, function ($val) use ($table) {
 			return $val['enabled'] == 1 && $val['table'] == $table;
@@ -496,7 +496,7 @@ else
 	if (! empty($arrayofparameters)) {
 
 		function draw_view_table($table, $title) {
-			global $arrayofparameters, $entrepot, $form, $conf, $langs, $pickup_extrafields;
+			global $arrayofparameters, $entrepot, $form, $conf, $langs, $pickup_extrafields, $db;
 
 			$filtered_arrayofparameters = array_filter($arrayofparameters, function ($val) use ($table) {
 				return $val['enabled'] == 1 && $val['table'] == $table;
