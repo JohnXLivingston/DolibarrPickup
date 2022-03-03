@@ -6,6 +6,7 @@
 
 * Éditions de tags, onglet collecte: affichage des boutons «précédent» et «suivant».
 * Possibilité de modifier les références des collectes.
+* Ajout d'un index UNIQUE sur la référence collecte.
 
 ## 1.1.0
 
