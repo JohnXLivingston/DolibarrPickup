@@ -139,6 +139,7 @@ foreach ($pickup_extrafields as $key => $val) {
 
 $arrayofparameters=array(
 	'PICKUP_DEFAULT_STOCK' => array('enabled'=>1),
+	'PICKUP_ALLOW_FUTURE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_PCAT' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_DEEE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_deee', 'pickup_deee_type')),
 	'PICKUP_USE_PBRAND' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand')),

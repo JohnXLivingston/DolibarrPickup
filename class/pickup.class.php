@@ -216,7 +216,9 @@ class Pickup extends CommonObject
 	 * @return int        0 if OK, <0 if KO
 	 */
 	public function verify() {
-		if (!empty($this->date_pickup)) {
+		global $conf;
+
+		if (!empty($this->date_pickup) && empty($conf->global->PICKUP_ALLOW_FUTURE)) {
 			$now = dol_print_date(dol_now(), '%Y-%m-%d');
 			$val = dol_print_date($this->date_pickup, '%Y-%m-%d');
 			if ($val > $now) {

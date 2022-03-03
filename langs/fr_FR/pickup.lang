@@ -52,6 +52,8 @@ PICKUP_DEFAULT_HASBATCH_OPTIONS_0 = Les produits crées depuis l'application mob
 PICKUP_DEFAULT_HASBATCH_OPTIONS_ask = Demander s'il faut activer l'option dans l'appli mobile.
 PICKUP_DEFAULT_HASBATCH_OPTIONS_1 = Les produits créés depuis l'application mobile ont l'option activée.
 PICKUP_DEFAULT_BATCH_PICKUP_REF = Utiliser la référence de la collecte comme numéro Lot/Série par défaut.
+PICKUP_ALLOW_FUTURE = Autoriser la création de collectes avec une date dans le futur.
+PICKUP_ALLOW_FUTURETooltip = Ce paramètre ne s'applique pas à l'application mobile.
 
 #
 # Menus

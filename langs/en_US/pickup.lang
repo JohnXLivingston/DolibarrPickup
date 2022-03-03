@@ -52,6 +52,8 @@ PICKUP_DEFAULT_HASBATCH_OPTIONS_0 = Products created with the mobile app have op
 PICKUP_DEFAULT_HASBATCH_OPTIONS_ask = Ask if the option should be activated in the mobile app.
 PICKUP_DEFAULT_HASBATCH_OPTIONS_1 = Products created with the mobile app have option deactivated.
 PICKUP_DEFAULT_BATCH_PICKUP_REF = Use pickup reference as default Lot/Serial number.
+PICKUP_ALLOW_FUTURE = Allow creation of pickups in the future.
+PICKUP_ALLOW_FUTURETooltip = This parameter does not apply to the mobile application.
 
 #
 # Menus

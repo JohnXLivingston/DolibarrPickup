@@ -8,6 +8,7 @@
 * Possibilité de modifier les références des collectes.
 * Ajout d'un index UNIQUE sur la référence collecte.
 * Impossibilité de saisir une collecte avec une date dans le futur.
+* Possibilité d'autoriser les dates de collectes dans le futur (mais pas dans l'application mobile).
 
 ## 1.1.0
 
