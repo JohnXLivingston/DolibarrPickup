@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Contribuer on Documentation DolibarrPickup</title><link>https://JohnXLivingston.github.io/DolibarrPickup/dev/</link><description>Recent content in Contribuer on Documentation DolibarrPickup</description><generator>Hugo -- gohugo.io</generator><language>fr-fr</language><lastBuildDate>Fri, 25 Feb 2022 16:54:00 +0100</lastBuildDate><atom:link href="https://JohnXLivingston.github.io/DolibarrPickup/dev/index.xml" rel="self" type="application/rss+xml"/><item><title>API de l'application Mobile</title><link>https://JohnXLivingston.github.io/DolibarrPickup/dev/mobile_machine/</link><pubDate>Fri, 25 Feb 2022 16:54:00 +0100</pubDate><guid>https://JohnXLivingston.github.io/DolibarrPickup/dev/mobile_machine/</guid><description>Application mobile : Automate L&amp;rsquo;application mobile utilise un automate à état fini pour son fonctionnement.
+L&amp;rsquo;automate est décrit dans le fichier mobile.ts.
+À l&amp;rsquo;exécution, on aura une pile (stack) qui retiendra tous les choix successifs, et toutes les valeurs des différents formulaires rencontrés.
+Définition de l&amp;rsquo;automate La définition de l&amp;rsquo;automate est un object javascript.
+Chaque clé de cet objet représente un écran.
+L&amp;rsquo;écran initial doit avoir pour clé «init».
+Chaque état est ensuite décrit par un object javascript.</description></item></channel></rss>
