@@ -29,7 +29,7 @@ Cliquez sur le bouton **«Parcourir...»** et sélectionnez le fichier que vous 
 Rendez-vous ensuite dans l'onglet **«Modules/Applications disponibles»** et recherchez le module de collecte
 (vous pouvez éventuellement vous aider de l'un des champ de recherche pour le trouver plus rapidement) :
 
-![Déployer/Installer un module externe](./images/install_0.png)
+![Déployer/Installer un module externe](./images/install_1.png)
 
 Vérifiez que le module est bien activé. Ou activez-le le cas échéant.
 

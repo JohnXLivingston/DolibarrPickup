@@ -1,7 +1,7 @@
 +++
 title="Documentation utilisateur⋅rice"
 weight=40
-chapter=true
+chapter=false
 +++
 
 {{% notice warning %}}
