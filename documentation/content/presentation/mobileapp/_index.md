@@ -5,3 +5,5 @@ chapter = true
 +++
 
 # L'application mobile
+
+![L'application mobile](./images/mobile_fiche_collecte.png)

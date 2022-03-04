@@ -1,3 +1,8 @@
++++
+title="DolibarrPickup"
+chapter=false
++++
+
 # DolibarrPickup
 
 DolibarrPickup est un module pour l'ERP/CRM [Dolibarr](https://www.dolibarr.org/) destiné à gérer les collectes que font des ressourceries/recycleries.
