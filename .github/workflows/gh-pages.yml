@@ -22,7 +22,7 @@ jobs:
           # extended: true
 
       - name: Build
-        run: hugo --minify --baseURL='https://JohnXLivingston.github.io/DolibarrPickup' -s documentation
+        run: hugo --minify --baseURL='https://johnxlivingston.github.io/DolibarrPickup' -s documentation
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
