@@ -410,7 +410,6 @@ class modPickup extends DolibarrModules
             // 'perms'=>'$user->rights->pickup->read',               // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
             'target'=>'',
             'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
-            
         /* END LEFTMENU PICKUP */
     }
 
