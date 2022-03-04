@@ -1,7 +1,7 @@
 +++
-title = "Contribuer"
-weight = 90
-chapter = false
+title="Administration/Configuration"
+weight=60
+chapter=false
 +++
 
 {{% notice warning %}}
