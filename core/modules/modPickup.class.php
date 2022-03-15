@@ -454,7 +454,13 @@ class modPickup extends DolibarrModules
                 // Update pickup_deee_type if needed. May fail if fields does not exists.
                 'sql' => "UPDATE ".MAIN_DB_PREFIX."product_extrafields SET pickup_deee = IF(pickup_deee_type is not null and pickup_deee_type != '' and pickup_deee_type != '0','1','0')",
                 'ignoreerror' => true
-            )
+            ),
+            // migration for version 1.2.0:
+            array(
+                // set origintype and fk_origin on llx_stock_mouvement
+                'sql' => "UPDATE ".MAIN_DB_PREFIX."stock_mouvement as mov INNER JOIN ".MAIN_DB_PREFIX."pickup_pickupline as pl ON pl.fk_stock_movement = mov.rowid set mov.origintype='Pickup@pickup', mov.fk_origin = pl.fk_pickup WHERE mov.origintype = '' and mov.fk_origin = 0",
+                'ignoreerror' => true
+            ),
         );
 
         return $this->_init($sql, $options);
