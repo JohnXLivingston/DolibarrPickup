@@ -328,9 +328,9 @@ class ActionsPickup
 					}
 
 					if (!empty($conf->productbatch->enabled) && ($product->hasbatch() || !empty($line->batch))) {
-						$result = $product->correct_stock_batch($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, '', '', $line->batch, $inventorycode);
+						$result = $product->correct_stock_batch($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, '', '', $line->batch, $inventorycode, 'Pickup@pickup', $object->id);
 					} else {
-						$result = $product->correct_stock($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, $inventorycode);
+						$result = $product->correct_stock($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, $inventorycode, 'Pickup@pickup', $object->id);
 					}
 					if ($result <= 0) {
 						$nb_error++;
@@ -341,17 +341,32 @@ class ActionsPickup
 						// Now we have to find the stock_movement.... because correct_stock does not return it.
 						require_once DOL_DOCUMENT_ROOT.'/product/stock/class/mouvementstock.class.php';
 						$stock_movement = new MouvementStock($db);
-						$sql = 'SELECT t.rowid FROM '.MAIN_DB_PREFIX.$stock_movement->table_element.' as t';
+						$sql = 'SELECT t.rowid, t.origintype, t.fk_origin FROM '.MAIN_DB_PREFIX.$stock_movement->table_element.' as t';
 						$sql.= " WHERE t.inventorycode = '".$db->escape($inventorycode)."'";
 						$sql.= " AND t.fk_product = '".$db->escape($line->fk_product)."'";
 						$sql.= " ORDER BY t.rowid DESC"; // if the same product is there multiple times, last inserted should be first.
 
 						$resql = $db->query($sql);
         		if ($resql && $db->num_rows($resql) > 0) {
-              $obj = $this->db->fetch_object($resql);
-							$line->fk_stock_movement = $obj->rowid;
+              $mov_obj = $this->db->fetch_object($resql);
+							$line->fk_stock_movement = $mov_obj->rowid;
 							if ($line->update($user) <= 0) {
 								$nb_error++;
+							}
+							if ($mov_obj->origintype === '' && $mov_obj->fk_origin == 0) {
+								// Before Dolibarr 15, there is a bug in correct_stock and correct_stock_batch, that does not save these informations...
+								// Fixing it...
+								dol_syslog(__METHOD__ . ' ' . 'confirm_includeinstock action: correcting the movement '.$mov_obj->rowid.' origin', LOG_DEBUG);
+								$sql_mov = "UPDATE " . MAIN_DB_PREFIX."stock_mouvement SET ";
+								$sql_mov.= " origintype = '".$db->escape('Pickup@pickup')."' , ";
+								$sql_mov.= " fk_origin = '".$db->escape($object->id)."' ";
+								$sql_mov.= " WHERE rowid = '".$db->escape($mov_obj->rowid)."'";
+								$resql_mov = $db->query($sql_mov);
+								if (!$resql_mov) {
+									dol_syslog(__METHOD__ . ' ' . 'confirm_includeinstock action: Failed to fix movement origin : '.$db->lasterror(), LOG_ERR);
+								}
+							} else {
+								dol_syslog(__METHOD__ . ' ' . 'confirm_includeinstock action: no need to correct movement '.$mov_obj->rowid.' origin', LOG_DEBUG);
 							}
 						} else {
 							$nb_error++;

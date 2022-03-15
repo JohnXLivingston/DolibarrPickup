@@ -5,6 +5,7 @@
 ### Fonctionnalités
 
 * Documentation en ligne.
+* Mouvements de stock: on ajoute comme «origine» la collecte.
 
 ## 1.1.2
 
