@@ -11,6 +11,7 @@ Pour les appliquer, il faut désactiver puis réactiver le module.
 
 * Documentation en ligne.
 * Mouvements de stock: on ajoute comme «origine» la collecte.
+* Passage en license AGPL.
 
 ## 1.1.2
 
