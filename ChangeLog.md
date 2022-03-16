@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## 1.2.0 (Not Released Yet)
+## 1.2.0
 
 ### Procédure de mise à jour
 
