@@ -5,6 +5,14 @@ chapter=false
 
 # DolibarrPickup
 
+{{< inlinedoc_toggler >}}
+{{% notice warning %}}
+Vous êtes actuellement entrain de lire la documentation incluse dans votre version du module.
+Pour voir la documentation la plus à jour, vous pouvez vous rendre sur la
+[documentation en ligne](https://johnxlivingston.github.io/DolibarrPickup/).
+{{% /notice %}}
+{{< /inlinedoc_toggler >}}
+
 DolibarrPickup est un module pour l'ERP/CRM [Dolibarr](https://www.dolibarr.org/) destiné à gérer les collectes que font des ressourceries/recycleries.
 
 Le projet a été initié par [La Ressourcerie Du Spectacle](https://www.ressourcerieduspectacle.fr).
