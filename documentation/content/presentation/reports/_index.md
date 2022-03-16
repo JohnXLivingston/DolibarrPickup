@@ -15,4 +15,4 @@ Des évolutions sont à venir sur les écrans de rapports. Si vous avez des beso
 
 | | |
 |---|---|
-| ![Rapports](./images/rapports_1.png) | ![Rapports par tiers](./images/rapports_2.png)
+| ![Rapports](./images/rapports_1.png?classes=shadow,border) | ![Rapports par tiers](./images/rapports_2.png?classes=shadow,border)

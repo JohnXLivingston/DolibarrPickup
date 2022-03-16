@@ -26,7 +26,7 @@ Les mouvements de stocks associés sont créés.
 
 |  |  |
 | ------ | ----------- |
-| ![Stocks](./images/stocks.png) | ![Mouvements](./images/mouvements.png)
+| ![Stocks](./images/stocks.png?classes=shadow,border) | ![Mouvements](./images/mouvements.png?classes=shadow,border)
 
 {{% notice warning %}}
 Une fois la fiche de collecte en attente de signature, il n'est plus possible de revenir en arrière.
@@ -34,7 +34,7 @@ Une fois la fiche de collecte en attente de signature, il n'est plus possible de
 
 Un bon de collecte au format PDF est généré.
 
-![Bon de collecte](./images/bon_collecte.png)
+![Bon de collecte](./images/bon_collecte.png?classes=shadow,border)
 
 ### Signée
 

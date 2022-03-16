@@ -14,7 +14,7 @@ Il est probable qu'une mailing-list soit créé très prochainement.
 Avant toute mise à jour, il faut vérifier la version qui est actuellement utilisée sur votre Dolibarr.
 Celle-ci est affichée sous l'icone du module (ici il s'agit de la «1.1.2») :
 
-![Version de l'application](./images/update_0.png)
+![Version de l'application](./images/update_0.png?classes=shadow,border)
 
 Ensuite, aller voir le fichier «Changelog» (journaux des modifications) sur l'un des liens ci-dessous :
 
@@ -23,7 +23,7 @@ Ensuite, aller voir le fichier «Changelog» (journaux des modifications) sur l'
 
 Ce fichier liste pour chaque numéro de version les modifications qui ont été effectuées.
 
-![Changelog](./images/update_1.png)
+![Changelog](./images/update_1.png?classes=shadow,border)
 
 {{% notice info %}}
 Parcourez ce fichier en remontant de votre version actuelle jusqu'à la version que vous comptez installer.
@@ -46,7 +46,7 @@ puis dans l'onglet **«Déployer/Installer un module externe»**, et envoyez le 
 
 | | |
 |---|---|
-| ![Déployer/Installer un module externe](./images/install_0.png) | ![Déployer/Installer un module externe](./images/install_1.png)
+| ![Déployer/Installer un module externe](./images/install_0.png?classes=shadow,border) | ![Déployer/Installer un module externe](./images/install_1.png?classes=shadow,border)
 
 {{% notice info %}}
 Il vous faut ensuite désactiver puis réactiver le module.

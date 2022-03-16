@@ -6,4 +6,4 @@ chapter = true
 
 # L'application mobile
 
-![L'application mobile](./images/mobile_fiche_collecte.png)
+![L'application mobile](./intro/images/mobile_fiche_collecte.png?classes=shadow,border)

@@ -15,4 +15,4 @@ La fiche de collecte permet de renseigner les éléments suivants:
 
 |  |  |
 | ------ | ----------- |
-| ![Liste des collectes](./images/liste_collectes.png) | ![Fiche collecte](./images/fiche_collecte.png) |
+| ![Liste des collectes](./images/liste_collectes.png?classes=shadow,border) | ![Fiche collecte](./images/fiche_collecte.png?classes=shadow,border) |
