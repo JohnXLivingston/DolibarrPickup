@@ -1,4 +1,4 @@
-{{ $inlinedoc := getenv "DOLIBARRPICKUP_INLINEDOC" }}
+{{ $inlinedoc := getenv "HUGO_DOLIBARRPICKUP_INLINEDOC" }}
 {{ if eq $inlinedoc "1" }}
   {{ .Inner }}
 {{ end }}

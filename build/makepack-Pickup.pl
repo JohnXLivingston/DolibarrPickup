@@ -278,7 +278,7 @@ foreach my $PROJECT (@PROJECTLIST) {
     my $olddir=getcwd();
     chdir($SOURCE);
 
-    my $hugo_command = "DOLIBARRPICKUP_INLINEDOC=1 hugo -s documentation --baseURL='/custom/pickup/documentation/public/' |";
+    my $hugo_command = "HUGO_DOLIBARRPICKUP_INLINEDOC=1 hugo -s documentation --baseURL='/custom/pickup/documentation/public/' |";
     open HUGO, $hugo_command or die "Cant call hugo to compile documentation, have you installed the hugo package?\n";
     while (my $line = <HUGO>) {
       print $line;
