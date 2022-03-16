@@ -5,5 +5,5 @@ chapter=false
 +++
 
 {{% notice warning %}}
-Cette documentation n'a pas encore été rédigée. Elle arrivera prochainement.
+Cette partie est encore en cours de rédaction, et est très incomplète
 {{% /notice %}}
