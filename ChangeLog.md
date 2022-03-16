@@ -2,6 +2,11 @@
 
 ## 1.2.0 (Not Released Yet)
 
+### Procédure de mise à jour
+
+**Important** : cette mise à jour contient des modifications de base de données.
+Pour les appliquer, il faut désactiver puis réactiver le module.
+
 ### Fonctionnalités
 
 * Documentation en ligne.
