@@ -64,7 +64,7 @@ class modPickup extends DolibarrModules
         $this->editor_name = 'John Livingston';
         $this->editor_url = 'https://github.com/JohnXLivingston';
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '1.2.0';
+        $this->version = '1.2.1';
         // Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
 
@@ -403,7 +403,8 @@ class modPickup extends DolibarrModules
             'titre'=>'PickupMenuHelp',
             'mainmenu'=>'pickup',
             'leftmenu'=>'pickup_help',
-            'url'=>'/pickup/documentation/public/index.html',
+            // 'url'=>'/pickup/documentation/public/index.html',
+            'url' => 'https://johnxlivingston.github.io/DolibarrPickup/',
             'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
             'position'=>1100+$r,
             'enabled'=>'$conf->pickup->enabled',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.

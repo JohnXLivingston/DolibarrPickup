@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## 1.2.1
+
+### Changements mineurs
+
+* Retrait de la documentation en ligne du module, et remplacement par un lien vers la documentation sur github pages. Le fichier généré était trop volumineux, et ne respectait pas les standards du Dolistore (doit pouvoir marcher depuis le dossier htdocs).
+
 ## 1.2.0
 
 ### Procédure de mise à jour

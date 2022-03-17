@@ -273,21 +273,21 @@ foreach my $PROJECT (@PROJECTLIST) {
     chdir($olddir);
   }
 
-  if ((-d "$SOURCE/documentation") && (-f "$SOURCE/documentation/config.toml")) {
-    print "Generating hugo documentation...\n";
-    my $olddir=getcwd();
-    chdir($SOURCE);
+  # if ((-d "$SOURCE/documentation") && (-f "$SOURCE/documentation/config.toml")) {
+  #   print "Generating hugo documentation...\n";
+  #   my $olddir=getcwd();
+  #   chdir($SOURCE);
 
-    my $hugo_command = "HUGO_DOLIBARRPICKUP_INLINEDOC=1 hugo -s documentation --baseURL='/custom/pickup/documentation/public/' |";
-    open HUGO, $hugo_command or die "Cant call hugo to compile documentation, have you installed the hugo package?\n";
-    while (my $line = <HUGO>) {
-      print $line;
-    }
-    close HUGO;
-    if ($? != 0) { die "Failed to run hugo in $SOURCE.\n"; }
+  #   my $hugo_command = "HUGO_DOLIBARRPICKUP_INLINEDOC=1 hugo -s documentation --baseURL='/custom/pickup/documentation/public/' |";
+  #   open HUGO, $hugo_command or die "Cant call hugo to compile documentation, have you installed the hugo package?\n";
+  #   while (my $line = <HUGO>) {
+  #     print $line;
+  #   }
+  #   close HUGO;
+  #   if ($? != 0) { die "Failed to run hugo in $SOURCE.\n"; }
 
-    chdir($olddir);
-  }
+  #   chdir($olddir);
+  # }
 
 	# Check if there is at least one target to build
 	#----------------------------------------------
