@@ -64,7 +64,7 @@ $coldisplay = 0; ?>
 
         if ($line_product->hasbatch() || !empty($line->batch)) {
           print '<br>';
-          $batch_warning = ($object->status == $object::STATUS_PROCESSING && empty($line->batch));
+          $batch_warning = (($object->status == $object::STATUS_PROCESSING || $object->status == $object::STATUS_DRAFT) && empty($line->batch));
           $hide_batch_number = false;
 
           print '<div style="white-space: nowrap; '.($batch_warning ? 'color: orange;' : '').'">';

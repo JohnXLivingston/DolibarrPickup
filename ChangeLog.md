@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## 1.3.0 (Unreleased yet)
+
+### Fonctionnalités
+
+* Possibilité de passer directement du statut «Brouillon» à l'intégration dans le stock.
+
 ## 1.2.1
 
 ### Changements mineurs

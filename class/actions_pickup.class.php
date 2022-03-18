@@ -753,7 +753,7 @@ class ActionsPickup
 				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=processing">'.$langs->trans("PickupStatusProcessing").'</a>'."\n";
 			}
 		}
-		if ($object->status == Pickup::STATUS_PROCESSING && $pickup_rights->workflow->stock) {
+		if (($object->status == Pickup::STATUS_DRAFT || $object->status == Pickup::STATUS_PROCESSING) && $pickup_rights->workflow->stock) {
 			if (!empty($object->lines)) { // assuming lines were fetched before. If not, no button, thats not a problem.
 				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=includeinstock">'.$langs->trans("PickupActionIncludeInStock").'</a>'."\n";
 			}
