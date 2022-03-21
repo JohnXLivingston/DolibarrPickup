@@ -77,16 +77,56 @@ $coldisplay = 0;
 			print $line->showInputField(null, 'qty', GETPOSTISSET("qty") ? GETPOST('qty', 'int') : $line->qty);
 		?>
 	</td>
-	<td class="nowrap right" colspan="2">
-    <?php $coldisplay++; ?><?php $coldisplay++; ?>
-		<?php
-			print $line->showInputField(null, 'weight', GETPOSTISSET("weight") ? price2num(GETPOST('weight')) : $line->weight);
 
-			require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
-			$formproduct = new FormProduct($db);
-			print $formproduct->selectMeasuringUnits('weight_units', 'weight', GETPOSTISSET('weight_units') ? GETPOST('weight_units', 'int') : $line->weight_units, 0, 2);
-		?>
-  </td>
+	<?php if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) { ?>
+		<td class="nowrap right" colspan="2">
+			<?php $coldisplay++; ?><?php $coldisplay++; ?>
+			<?php
+				print $line->showInputField(null, 'weight', GETPOSTISSET("weight") ? price2num(GETPOST('weight')) : $line->weight);
+
+				require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
+				$formproduct = new FormProduct($db);
+				print $formproduct->selectMeasuringUnits('weight_units', 'weight', GETPOSTISSET('weight_units') ? GETPOST('weight_units', 'int') : $line->weight_units, 0, 2);
+			?>
+		</td>
+	<?php } ?>
+	<?php if (!empty($conf->global->PICKUP_UNITS_LENGTH)) { ?>
+		<td class="nowrap right" colspan="2">
+			<?php $coldisplay++; ?><?php $coldisplay++; ?>
+			<?php
+				print $line->showInputField(null, 'length', GETPOSTISSET("length") ? price2num(GETPOST('length')) : $line->length);
+
+				require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
+				$formproduct = new FormProduct($db);
+				print $formproduct->selectMeasuringUnits('length_units', 'size', GETPOSTISSET('length_units') ? GETPOST('length_units', 'int') : $line->length_units, 0, 2);
+			?>
+		</td>
+	<?php } ?>
+	<?php if (!empty($conf->global->PICKUP_UNITS_SURFACE)) { ?>
+		<td class="nowrap right" colspan="2">
+			<?php $coldisplay++; ?><?php $coldisplay++; ?>
+			<?php
+				print $line->showInputField(null, 'surface', GETPOSTISSET("surface") ? price2num(GETPOST('surface')) : $line->surface);
+
+				require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
+				$formproduct = new FormProduct($db);
+				print $formproduct->selectMeasuringUnits('surface_units', 'surface', GETPOSTISSET('surface_units') ? GETPOST('surface_units', 'int') : $line->surface_units, 0, 2);
+			?>
+		</td>
+	<?php } ?>
+	<?php if (!empty($conf->global->PICKUP_UNITS_VOLUME)) { ?>
+		<td class="nowrap right" colspan="2">
+			<?php $coldisplay++; ?><?php $coldisplay++; ?>
+			<?php
+				print $line->showInputField(null, 'volume', GETPOSTISSET("volume") ? price2num(GETPOST('volume')) : $line->volume);
+
+				require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
+				$formproduct = new FormProduct($db);
+				print $formproduct->selectMeasuringUnits('volume_units', 'volume', GETPOSTISSET('volume_units') ? GETPOST('volume_units', 'int') : $line->volume_units, 0, 2);
+			?>
+		</td>
+	<?php } ?>
+
 	<?php if (!empty($conf->global->PICKUP_USE_DEEE)) { ?>
 		<td class="nowrap" colspan="2">
 			<?php $coldisplay++; ?><?php $coldisplay++; ?>

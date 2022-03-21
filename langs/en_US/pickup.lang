@@ -50,7 +50,6 @@ PICKUP_UPDATE_EXTRAFIELDS_Tooltip = If you accidentaly modified extrafields para
 PICKUP_MIGRATE_EXTRAFIELDS = Migrate old LRDS fields
 PICKUP_MIGRATE_EXTRAFIELDS_Tooltip = Il semblerait que vous utilisez encore les anciens champs LRDS et que ceux-ci n'ont pas été migré. Cliquez ici pour les migrer. Vous pourrez ensuite les supprimer.
 PICKUP_DEFAULT_HASBATCH_OPTIONS_0 = Products created with the mobile app have option activated.
-PICKUP_UNITS_OPTIONS_MANDATORY = Mandatory in mobile application
 PICKUP_DEFAULT_HASBATCH_OPTIONS_ask = Ask if the option should be activated in the mobile app.
 PICKUP_DEFAULT_HASBATCH_OPTIONS_1 = Products created with the mobile app have option deactivated.
 PICKUP_DEFAULT_BATCH_PICKUP_REF = Use pickup reference as default Lot/Serial number.
@@ -117,6 +116,8 @@ PickupIncludeInStockMovementNotFoundError = An error occured. The movement was n
 PickupActionSign = Validate signature
 ConfirmPickupActionSign = Are you sure you want to set this pickup as signed?
 #
+
+PickupUnitValue = Per unit
 
 PickupFixLine = Get product information
 PickupFixLineBatch = Missing batch number

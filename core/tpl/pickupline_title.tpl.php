@@ -31,24 +31,40 @@ print "<!-- BEGIN PHP TEMPLATE pickup/pickupline_title.tpl.php -->\n";
 ?>
 <thead>
 	<tr class="liste_titre nodrag nodrop">
-		<td class="linecoldescription">
+		<td rowspan="2" class="linecoldescription">
 			<?php print $langs->trans('Description'); ?>
 		</td>
-		<td class="right">
+		<td rowspan="2" class="right">
 			<?php print $langs->trans('Qty'); ?>
 		</td>
-		<td class="right">
-			<?php print $langs->trans('ProductWeight'); ?>
-		</td>
-		<td class="right">
-			<?php print $langs->trans('Weight'); ?>
-		</td>
+
+		<?php if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) { ?>
+			<td rowspan="1" colspan="2" class="center">
+				<?php print $langs->trans('Weight'); ?>
+			</td>
+		<?php } ?>
+		<?php if (!empty($conf->global->PICKUP_UNITS_LENGTH)) { ?>
+			<td rowspan="1" colspan="2" class="center">
+				<?php print $langs->trans('Length'); ?>
+			</td>
+		<?php } ?>
+		<?php if (!empty($conf->global->PICKUP_UNITS_SURFACE)) { ?>
+			<td rowspan="1" colspan="2" class="center">
+				<?php print $langs->trans('Surface'); ?>
+			</td>
+		<?php } ?>
+		<?php if (!empty($conf->global->PICKUP_UNITS_VOLUME)) { ?>
+			<td rowspan="1" colspan="2" class="center">
+				<?php print $langs->trans('Volume'); ?>
+			</td>
+		<?php } ?>
+
 		<?php if (!empty($conf->global->PICKUP_USE_DEEE)) { ?>
-			<td class="">
+			<td rowspan="2" class="">
 				<?php print $langs->trans('DEEE'); ?>
 			</td>
 		<?php } ?>
-		<td class="">
+		<td rowspan="2" class="">
 			<?php if ($object->status == Pickup::STATUS_STOCK) { ?>
 				<a href="<?php print dol_buildpath('product/stock/movement_card.php', 1) ?>?id=<?php print $object->fk_entrepot ?>&search_inventorycode=<?php print urlencode($object->ref) ?>">
 					<?php print $langs->trans('StockMovement'); ?>
@@ -57,11 +73,11 @@ print "<!-- BEGIN PHP TEMPLATE pickup/pickupline_title.tpl.php -->\n";
 				<?php print $langs->trans('StockMovement'); ?>
 			<?php } ?>
 		</td>
-		<td class="linecoledit" style="width: 10px"></td>
-		<td class="linecoledit" style="width: 10px"></td>
-		<td class="linecoldelete" style="width: 10px"></td>
+		<td rowspan="2" class="linecoledit" style="width: 10px"></td>
+		<td rowspan="2" class="linecoledit" style="width: 10px"></td>
+		<td rowspan="2" class="linecoldelete" style="width: 10px"></td>
 		<?php if ($action == 'selectlines') { ?>
-			<td class="linecolcheckall center">
+			<td rowspan="2" class="linecolcheckall center">
 				<input type="checkbox" class="linecheckboxtoggle" />
 				<script>
 					$(document).ready(function() {
@@ -72,6 +88,24 @@ print "<!-- BEGIN PHP TEMPLATE pickup/pickupline_title.tpl.php -->\n";
 					});
 				</script>
 			</td>
+		<?php } ?>
+	</tr>
+	<tr class="liste_titre nodrag nodrop">
+		<?php if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) { ?>
+			<td class="right"><?php print $langs->trans('PickupUnitValue'); ?></td>
+			<td class="right"><?php print $langs->trans('Total'); ?></td>
+		<?php } ?>
+		<?php if (!empty($conf->global->PICKUP_UNITS_LENGTH)) { ?>
+			<td class="right"><?php print $langs->trans('PickupUnitValue'); ?></td>
+			<td class="right"><?php print $langs->trans('Total'); ?></td>
+		<?php } ?>
+		<?php if (!empty($conf->global->PICKUP_UNITS_SURFACE)) { ?>
+			<td class="right"><?php print $langs->trans('PickupUnitValue'); ?></td>
+			<td class="right"><?php print $langs->trans('Total'); ?></td>
+		<?php } ?>
+		<?php if (!empty($conf->global->PICKUP_UNITS_VOLUME)) { ?>
+			<td class="right"><?php print $langs->trans('PickupUnitValue'); ?></td>
+			<td class="right"><?php print $langs->trans('Total'); ?></td>
 		<?php } ?>
 	</tr>
 </thead>

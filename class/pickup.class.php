@@ -853,11 +853,26 @@ class Pickup extends CommonObject
 		if ($product->fetch($fk_product) <= 0) {
 			dol_syslog(__METHOD__ . ' ' . 'Product '.$fk_product.' not found', LOG_ERR);
 		} else {
-			$line->weight = $product->weight;
-			$line->weight_units = $product->weight_units;
 			if (!empty($conf->global->PICKUP_USE_DEEE)) {
 				$line->deee = $product->array_options['options_pickup_deee'];
 				$line->deee_type = $product->array_options['options_pickup_deee_type'];
+			}
+			
+			if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+				$line->weight = $product->weight;
+				$line->weight_units = $product->weight_units;
+			}
+			if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+				$line->length = $product->length;
+				$line->length_units = $product->length_units;
+			}
+			if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+				$line->surface = $product->surface;
+				$line->surface_units = $product->surface_units;
+			}
+			if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+				$line->volume = $product->volume;
+				$line->volume_units = $product->volume_units;
 			}
 
 			if ($product->hasbatch() && !empty($conf->global->PICKUP_DEFAULT_BATCH_PICKUP_REF)) {
@@ -919,6 +934,15 @@ class Pickup extends CommonObject
 			'weights' => array(
 				0 => 0 // 0 = kg
 			),
+			'lengths' => array(
+				0 => 0
+			),
+			'surfaces' => array(
+				0 => 0
+			),
+			'volumes' => array(
+				-3 => 0 // -3 = L
+			),
 			'deee_type_weights' => array(), // deee_type label => array(unit => value)
 			'deee_weights' => array(0 => 0)
 		);
@@ -926,7 +950,9 @@ class Pickup extends CommonObject
 			return $result;
 		}
 
-		$sql = 'SELECT l.qty, l.weight, l.weight_units, l.deee, l.deee_type';
+		$sql = 'SELECT l.qty, ';
+		$sql.= ' l.weight, l.weight_units, l.length, l.length_units, l.surface, l.surface_units, l.volume, l.volume_units, ';
+		$sql.= ' l.deee, l.deee_type ';
 		$sql.= ' FROM ' . MAIN_DB_PREFIX . $this->table_element_line. ' as l';
 		$sql.= ' WHERE';
 		$sql.= ' l.fk_pickup = \'' . $this->db->escape($this->id).'\'';
@@ -945,30 +971,34 @@ class Pickup extends CommonObject
 					$qty = (int) $line->qty;
 					$result['qty']+= (int) $line->qty;
 
-					if (!empty($line->weight)) {
-						$weight = (double) $line->weight;
-						$weight_units = (int) $line->weight_units;
-						$line_weight = $qty * $weight;
-						if (!array_key_exists($weight_units, $result['weights'])) {
-							$result['weights'][$weight_units] = 0;
-						}
-						$result['weights'][$weight_units]+= $line_weight;
-
-						if (!empty($conf->global->PICKUP_USE_DEEE) && $line->deee) {
-							$deee_type = strval($line->deee_type);
-							$deee_type = trim($extrafields->showOutputField('pickup_deee_type', $deee_type, '', 'product'));
-							if (!array_key_exists($weight_units, $result['deee_weights'])) {
-								$result['deee_weights'][$weight_units] = 0;
+					foreach (['weight', 'length', 'surface', 'volume'] as $unit) {
+						$unit_units = $unit . '_units';
+						$total_key = $unit . 's';
+						if (!empty($line->$unit)) {
+							$value = (double) $line->$unit;
+							$value_units = (int) $line->$unit_units;
+							$line_value = $qty * $value;
+							if (!array_key_exists($value_units, $result[$total_key])) {
+								$result[$total_key][$value_units] = 0;
 							}
-							$result['deee_weights'][$weight_units]+= $line_weight;
-
-							if (!array_key_exists($deee_type, $result['deee_type_weights'])) {
-								$result['deee_type_weights'][$deee_type] = array(0 => 0);
+							$result[$total_key][$value_units]+= $line_value;
+	
+							if ($unit === 'weight' && !empty($conf->global->PICKUP_USE_DEEE) && $line->deee) {
+								$deee_type = strval($line->deee_type);
+								$deee_type = trim($extrafields->showOutputField('pickup_deee_type', $deee_type, '', 'product'));
+								if (!array_key_exists($value_units, $result['deee_weights'])) {
+									$result['deee_weights'][$value_units] = 0;
+								}
+								$result['deee_weights'][$value_units]+= $line_value;
+	
+								if (!array_key_exists($deee_type, $result['deee_type_weights'])) {
+									$result['deee_type_weights'][$deee_type] = array(0 => 0);
+								}
+								if (!array_key_exists($value_units, $result['deee_type_weights'][$deee_type])) {
+									$result['deee_type_weights'][$deee_type][$value_units] = 0;
+								}
+								$result['deee_type_weights'][$deee_type][$value_units]+= $line_value;
 							}
-							if (!array_key_exists($weight_units, $result['deee_type_weights'][$deee_type])) {
-								$result['deee_type_weights'][$deee_type][$weight_units] = 0;
-							}
-							$result['deee_type_weights'][$deee_type][$weight_units]+= $line_weight;
 						}
 					}
 				}

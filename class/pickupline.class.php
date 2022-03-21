@@ -100,10 +100,48 @@ class PickupLine extends CommonObjectLine
 		'fk_user_modif' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>50, 'notnull'=>-1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'position' => array('type'=>'integer', 'label'=>'Rank', 'enabled'=>'1', 'position'=>200, 'notnull'=>1, 'visible'=>0,),
 		'fk_stock_movement' => array('type'=>'integer:MouvementStock:product/stock/class/mouvementstock.class.php', 'label'=>'StockMovement', 'enabled'=>'1', 'position'=>300, 'notnull'=>0, 'visible'=>5, 'index'=>1, 'foreignkey'=>'stock_mouvement.rowid',),
-		'weight' => array('type' => 'double(24,8)', 'label'=>'ProductWeight', 'enabled'=>1, 'position'=>100, 'notnull'=>0,'visible'=>1,'isameasure'=>'1'),
-		'weight_units' => array('type' => 'integer', 'label'=>'', 'enabled'=>1,'position'=>101,'notnull'=>0,'visible'=>1),
-		'deee' => array('type' => 'integer', 'label'=>'DEEE', 'enabled'=>1,'position'=>102,'notnull'=>0,'visible'=>1),
-		'deee_type' => array('type' => 'varchar(255)', 'label'=>'DEEEType', 'position'=>103,'enabled'=>1,'notnull'=>0,'visible'=>1),
+		'weight' => array(
+			'type' => 'double(24,8)', 'label'=>'ProductWeight',
+			'enabled'=>'$conf->global->PICKUP_UNITS_WEIGHT',
+			'position'=>100, 'notnull'=>0,'visible'=>1,'isameasure'=>'1'
+		),
+		'weight_units' => array(
+			'type' => 'integer', 'label'=>'',
+			'enabled'=>'$conf->global->PICKUP_UNITS_WEIGHT',
+			'position'=>101,'notnull'=>0,'visible'=>1
+		),
+		'length' => array(
+			'type' => 'double(24,8)', 'label'=>'',
+			'enabled'=>'$conf->global->PICKUP_UNITS_LENGTH',
+			'position'=>102, 'notnull'=>0,'visible'=>1,'isameasure'=>'1'
+		),
+		'length_units' => array(
+			'type' => 'integer', 'label'=>'',
+			'enabled'=>'$conf->global->PICKUP_UNITS_LENGTH',
+			'position'=>103,'notnull'=>0,'visible'=>1
+		),
+		'surface' => array(
+			'type' => 'double(24,8)', 'label'=>'',
+			'enabled'=>'$conf->global->PICKUP_UNITS_SURFACE',
+			'position'=>104, 'notnull'=>0,'visible'=>1,'isameasure'=>'1'
+		),
+		'surface_units' => array(
+			'type' => 'integer', 'label'=>'',
+			'enabled'=>'$conf->global->PICKUP_UNITS_SURFACE',
+			'position'=>105,'notnull'=>0,'visible'=>1
+		),
+		'volume' => array(
+			'type' => 'double(24,8)', 'label'=>'ProductVolume',
+			'enabled'=>'$conf->global->PICKUP_UNITS_VOLUME',
+			'position'=>106, 'notnull'=>0,'visible'=>1,'isameasure'=>'1'
+		),
+		'volume_units' => array(
+			'type' => 'integer', 'label'=>'',
+			'enabled'=>'$conf->global->PICKUP_UNITS_VOLUME',
+			'position'=>107,'notnull'=>0,'visible'=>1
+		),
+		'deee' => array('type' => 'integer', 'label'=>'DEEE', 'enabled'=>1,'position'=>108,'notnull'=>0,'visible'=>1),
+		'deee_type' => array('type' => 'varchar(255)', 'label'=>'DEEEType', 'position'=>109,'enabled'=>1,'notnull'=>0,'visible'=>1),
 	);
 	public $rowid;
 	public $fk_pickup;

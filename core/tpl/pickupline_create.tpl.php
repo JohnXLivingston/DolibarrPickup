@@ -59,12 +59,38 @@ $coldisplay = 0;
 			print $line->showInputField(null, 'qty', GETPOSTISSET("qty") ? GETPOST('qty', 'int') : 1);
 		?>
 	</td>
-	<td class="bordertop nobottom right">
-		<?php $coldisplay++; ?>
-	</td>
-	<td class="bordertop nobottom right">
-		<?php $coldisplay++; ?>
-	</td>
+	<?php if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) { ?>
+		<td class="bordertop nobottom">
+			<?php $coldisplay++; ?>
+		</td>
+		<td class="bordertop nobottom">
+			<?php $coldisplay++; ?>
+		</td>
+	<?php } ?>
+	<?php if (!empty($conf->global->PICKUP_UNITS_LENGTH)) { ?>
+		<td class="bordertop nobottom">
+			<?php $coldisplay++; ?>
+		</td>
+		<td class="bordertop nobottom">
+			<?php $coldisplay++; ?>
+		</td>
+	<?php } ?>
+	<?php if (!empty($conf->global->PICKUP_UNITS_SURFACE)) { ?>
+		<td class="bordertop nobottom">
+			<?php $coldisplay++; ?>
+		</td>
+		<td class="bordertop nobottom">
+			<?php $coldisplay++; ?>
+		</td>
+	<?php } ?>
+	<?php if (!empty($conf->global->PICKUP_UNITS_VOLUME)) { ?>
+		<td class="bordertop nobottom">
+			<?php $coldisplay++; ?>
+		</td>
+		<td class="bordertop nobottom">
+			<?php $coldisplay++; ?>
+		</td>
+	<?php } ?>
 	<td class="bordertop nobottom">
 		<?php $coldisplay++; ?>
 	</td>

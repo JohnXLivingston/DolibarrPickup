@@ -153,7 +153,7 @@ $arrayofparameters=array(
 		'options' => array(
 			'0' => $langs->trans('Disabled'),
 			'optional' =>  $langs->trans('Enabled'),
-			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('PICKUP_UNITS_OPTIONS_MANDATORY')
+			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('Mandatory')
 		)
 	),
 	'PICKUP_UNITS_LENGTH' => array(
@@ -164,7 +164,7 @@ $arrayofparameters=array(
 		'options' => array(
 			'0' => $langs->trans('Disabled'),
 			'optional' =>  $langs->trans('Enabled'),
-			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('PICKUP_UNITS_OPTIONS_MANDATORY')
+			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('Mandatory')
 		)
 	),
 	'PICKUP_UNITS_SURFACE' => array(
@@ -175,7 +175,7 @@ $arrayofparameters=array(
 		'options' => array(
 			'0' => $langs->trans('Disabled'),
 			'optional' =>  $langs->trans('Enabled'),
-			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('PICKUP_UNITS_OPTIONS_MANDATORY')
+			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('Mandatory')
 		)
 	),
 	'PICKUP_UNITS_VOLUME' => array(
@@ -186,7 +186,7 @@ $arrayofparameters=array(
 		'options' => array(
 			'0' => $langs->trans('Disabled'),
 			'optional' =>  $langs->trans('Enabled'),
-			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('PICKUP_UNITS_OPTIONS_MANDATORY')
+			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('Mandatory')
 		)
 	),
 	'PICKUP_UNITS_PIECE' => array(

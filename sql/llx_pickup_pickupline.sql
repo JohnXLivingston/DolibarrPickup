@@ -21,6 +21,12 @@ CREATE TABLE llx_pickup_pickupline(
 	description text,
 	weight double(24,8) DEFAULT NULL,
 	weight_units tinyint DEFAULT NULL,
+	length double(24,8) DEFAULT NULL,
+	length_units tinyint DEFAULT NULL,
+	surface double(24,8) DEFAULT NULL,
+	surface_units tinyint DEFAULT NULL,
+	volume double(24,8) DEFAULT NULL,
+	volume_units tinyint DEFAULT NULL,
 	deee tinyint DEFAULT NULL,
 	-- NB: deee_type should be a tinyint, but it seems it is a varchar on llx_product_extrafields
 	deee_type varchar(255) DEFAULT NULL,

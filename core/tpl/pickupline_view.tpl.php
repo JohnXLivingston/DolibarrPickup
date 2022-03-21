@@ -108,25 +108,92 @@ $coldisplay = 0; ?>
 	    print price($line->qty, 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
     ?>
   </td>
-  <td class="nowrap right"
-    <?php if (floatval($line->weight) != floatval($line_product->weight) || intval($line->weight_units) != intval($line_product->weight_units)) {
-      $product_warnings = 1;
-      ?>
-      style="color: orange;"
-      title="<?php print htmlentities($langs->trans('Product') . ': ' . $line_product->weight . ' ' . measuringUnitString(0, "weight", $line_product->weight_units)); ?>"
-    <?php } ?>
-  >
-    <?php $coldisplay++; ?>
-    <?php if (!empty($line->weight)) {
-      print $line->weight . ' ' . measuringUnitString(0, "weight", $line->weight_units);
-    } ?>
-  </td>
-  <td class="nowrap right">
-    <?php $coldisplay++; ?>
-    <?php if (!empty($line->weight)) {
-      print ($line->weight * $line->qty) . ' ' . measuringUnitString(0, "weight", $line->weight_units);
-    } ?>
-  </td>
+
+  <?php if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) { ?>
+    <td class="nowrap right"
+      <?php if (floatval($line->weight) != floatval($line_product->weight) || intval($line->weight_units) != intval($line_product->weight_units)) {
+        $product_warnings = 1;
+        ?>
+        style="color: orange;"
+        title="<?php print htmlentities($langs->trans('Product') . ': ' . $line_product->weight . ' ' . measuringUnitString(0, "weight", $line_product->weight_units)); ?>"
+      <?php } ?>
+    >
+      <?php $coldisplay++; ?>
+      <?php if (!empty($line->weight)) {
+        print $line->weight . ' ' . measuringUnitString(0, "weight", $line->weight_units);
+      } ?>
+    </td>
+    <td class="nowrap right">
+      <?php $coldisplay++; ?>
+      <?php if (!empty($line->weight)) {
+        print ($line->weight * $line->qty) . ' ' . measuringUnitString(0, "weight", $line->weight_units);
+      } ?>
+    </td>
+  <?php } ?>
+  <?php if (!empty($conf->global->PICKUP_UNITS_LENGTH)) { ?>
+    <td class="nowrap right"
+      <?php if (floatval($line->length) != floatval($line_product->length) || intval($line->length_units) != intval($line_product->length_units)) {
+        $product_warnings = 1;
+        ?>
+        style="color: orange;"
+        title="<?php print htmlentities($langs->trans('Product') . ': ' . $line_product->length . ' ' . measuringUnitString(0, "size", $line_product->length_units)); ?>"
+      <?php } ?>
+    >
+      <?php $coldisplay++; ?>
+      <?php if (!empty($line->length)) {
+        print $line->length . ' ' . measuringUnitString(0, "size", $line->length_units);
+      } ?>
+    </td>
+    <td class="nowrap right">
+      <?php $coldisplay++; ?>
+      <?php if (!empty($line->length)) {
+        print ($line->length * $line->qty) . ' ' . measuringUnitString(0, "size", $line->length_units);
+      } ?>
+    </td>
+  <?php } ?>
+  <?php if (!empty($conf->global->PICKUP_UNITS_SURFACE)) { ?>
+    <td class="nowrap right"
+      <?php if (floatval($line->surface) != floatval($line_product->surface) || intval($line->surface_units) != intval($line_product->surface_units)) {
+        $product_warnings = 1;
+        ?>
+        style="color: orange;"
+        title="<?php print htmlentities($langs->trans('Product') . ': ' . $line_product->surface . ' ' . measuringUnitString(0, "surface", $line_product->surface_units)); ?>"
+      <?php } ?>
+    >
+      <?php $coldisplay++; ?>
+      <?php if (!empty($line->surface)) {
+        print $line->surface . ' ' . measuringUnitString(0, "surface", $line->surface_units);
+      } ?>
+    </td>
+    <td class="nowrap right">
+      <?php $coldisplay++; ?>
+      <?php if (!empty($line->surface)) {
+        print ($line->surface * $line->qty) . ' ' . measuringUnitString(0, "surface", $line->surface_units);
+      } ?>
+    </td>
+  <?php } ?>
+  <?php if (!empty($conf->global->PICKUP_UNITS_VOLUME)) { ?>
+    <td class="nowrap right"
+      <?php if (floatval($line->volume) != floatval($line_product->volume) || intval($line->volume_units) != intval($line_product->volume_units)) {
+        $product_warnings = 1;
+        ?>
+        style="color: orange;"
+        title="<?php print htmlentities($langs->trans('Product') . ': ' . $line_product->volume . ' ' . measuringUnitString(0, "volume", $line_product->volume_units)); ?>"
+      <?php } ?>
+    >
+      <?php $coldisplay++; ?>
+      <?php if (!empty($line->volume)) {
+        print $line->volume . ' ' . measuringUnitString(0, "volume", $line->volume_units);
+      } ?>
+    </td>
+    <td class="nowrap right">
+      <?php $coldisplay++; ?>
+      <?php if (!empty($line->volume)) {
+        print ($line->volume * $line->qty) . ' ' . measuringUnitString(0, "volume", $line->volume_units);
+      } ?>
+    </td>
+  <?php } ?>
+
   <?php if (!empty($conf->global->PICKUP_USE_DEEE)) { ?>
     <td class="nowrap"
       <?php if (intval($line->deee) != intval($line_product->array_options['options_pickup_deee']) || strval($line->deee_type) != strval($line_product->array_options['options_pickup_deee_type'])) {

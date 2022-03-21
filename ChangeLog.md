@@ -2,6 +2,11 @@
 
 ## 1.3.0 (Unreleased yet)
 
+### Procédure de mise à jour
+
+**Important** : cette mise à jour contient des modifications de base de données.
+Pour les appliquer, il faut désactiver puis réactiver le module.
+
 ### Fonctionnalités
 
 * Possibilité de passer directement du statut «Brouillon» à l'intégration dans le stock.

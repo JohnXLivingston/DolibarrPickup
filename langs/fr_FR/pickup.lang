@@ -49,7 +49,6 @@ PICKUP_UPDATE_EXTRAFIELDS = Réinitialiser les attributs supplémentaires
 PICKUP_UPDATE_EXTRAFIELDS_Tooltip = Si vous avez accidentellement modifié la configuration des champs supplémentaires, cliquez ici pour les réinitialiser.
 PICKUP_MIGRATE_EXTRAFIELDS = Migrer les anciens champs LRDS
 PICKUP_MIGRATE_EXTRAFIELDS_Tooltip = Il semblerait que vous utilisez encore les anciens champs LRDS et que ceux-ci n'ont pas été migré. Cliquez ici pour les migrer. Vous pourrez ensuite les supprimer.
-PICKUP_UNITS_OPTIONS_MANDATORY = Obligatoire dans l'application mobile
 PICKUP_DEFAULT_HASBATCH_OPTIONS_0 = Les produits crées depuis l'application mobile ont l'option désactivée.
 PICKUP_DEFAULT_HASBATCH_OPTIONS_ask = Demander s'il faut activer l'option dans l'appli mobile.
 PICKUP_DEFAULT_HASBATCH_OPTIONS_1 = Les produits créés depuis l'application mobile ont l'option activée.
@@ -118,6 +117,7 @@ PickupActionSign = Valider signature
 ConfirmPickupActionSign = Êtes-vous sûr de vouloir passer cette collecte en statut «signée»
 #
 
+PickupUnitValue = Unitaire
 
 PickupFixLine = Remonter les informations du produit
 PickupFixLineBatch = Numéro de Lot/Série manquant

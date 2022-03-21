@@ -121,19 +121,19 @@ class DataMobileActionProduct extends DataMobileAction {
     $product->label = $product_label;
     $product->description = htmlentities(trim(GETPOST('product_description')));
 
-    if (!empty($conf->global->PICKUP_UNITS_WEIGHT) && $conf->global->PICKUP_UNITS_WEIGHT !== '0') {
+    if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
       $product->weight = GETPOST('weight', 'int'); // yes... for dolibarr floats are 'int'
       $product->weight_units = 0;
     }
-    if (!empty($conf->global->PICKUP_UNITS_LENGTH) && $conf->global->PICKUP_UNITS_LENGTH !== '0') {
+    if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
       $product->length = GETPOST('length', 'int'); // yes... for dolibarr floats are 'int'
       $product->length_units = 0;
     }
-    if (!empty($conf->global->PICKUP_UNITS_SURFACE) && $conf->global->PICKUP_UNITS_SURFACE !== '0') {
+    if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
       $product->surface = GETPOST('surface', 'int'); // yes... for dolibarr floats are 'int'
       $product->surface_units = 0;
     }
-    if (!empty($conf->global->PICKUP_UNITS_VOLUME) && $conf->global->PICKUP_UNITS_VOLUME !== '0') {
+    if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
       $product->volume = GETPOST('volume', 'int'); // yes... for dolibarr floats are 'int'
       $product->volume_units = -3; // L
     }

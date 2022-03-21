@@ -417,15 +417,52 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 					<td class="right">
 						<?php print price($totals['qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price ?>
 					</td>
-					<td class="right">
-					</td>
-					<td class="right nowrap">
-						<?php
-							foreach ($totals['weights'] as $weights_units => $weights) {
-								print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
-							}
-						?>
-					</td>
+
+					<?php if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) { ?>
+						<td class="right">
+						</td>
+						<td class="right nowrap">
+							<?php
+								foreach ($totals['weights'] as $weights_units => $weights) {
+									print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
+								}
+							?>
+						</td>
+					<?php } ?>
+					<?php if (!empty($conf->global->PICKUP_UNITS_LENGTH)) { ?>
+						<td class="right">
+						</td>
+						<td class="right nowrap">
+							<?php
+								foreach ($totals['lengths'] as $lengths_units => $lengths) {
+									print ($lengths) . ' ' . measuringUnitString(0, "size", $lengths_units) . '<br>';
+								}
+							?>
+						</td>
+					<?php } ?>
+					<?php if (!empty($conf->global->PICKUP_UNITS_SURFACE)) { ?>
+						<td class="right">
+						</td>
+						<td class="right nowrap">
+							<?php
+								foreach ($totals['surfaces'] as $surfaces_units => $surfaces) {
+									print ($surfaces) . ' ' . measuringUnitString(0, "surface", $surfaces_units) . '<br>';
+								}
+							?>
+						</td>
+					<?php } ?>
+					<?php if (!empty($conf->global->PICKUP_UNITS_VOLUME)) { ?>
+						<td class="right">
+						</td>
+						<td class="right nowrap">
+							<?php
+								foreach ($totals['volumes'] as $volumes_units => $volumes) {
+									print ($volumes) . ' ' . measuringUnitString(0, "volume", $volumes_units) . '<br>';
+								}
+							?>
+						</td>
+					<?php } ?>
+
 					<?php if (!empty($conf->global->PICKUP_USE_DEEE)) { ?>
 						<td class="nowrap">
 							<?php

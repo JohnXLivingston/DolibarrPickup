@@ -148,16 +148,33 @@ class ActionsPickup
 
 			// $line_desc = GETPOST('description', 'none');
 			$qty = price2num(GETPOST('qty', 'int'));
+
 			$weight = price2num(GETPOST('weight'));
 			$weight_units = GETPOST('weight_units', 'int');
+			$length = price2num(GETPOST('length'));
+			$length_units = GETPOST('length_units', 'int');
+			$surface = price2num(GETPOST('surface'));
+			$surface_units = GETPOST('surface_units', 'int');
+			$volume = price2num(GETPOST('volume'));
+			$volume_units = GETPOST('volume_units', 'int');
+
 			$deee_type = GETPOST('options_pickup_deee_type', 'alpha');
 			$batch = GETPOSTISSET('batch') ? GETPOST('batch', 'alpha') : null;
 
 			if ($qty == '') {
 				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')));
 			}
-			if ($weight == '') {
+			if ($conf->global->PICKUP_UNITS_WEIGHT === 'mandatory' && $weight == '') {
 				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Weight')));
+			}
+			if ($conf->global->PICKUP_UNITS_LENGTH === 'mandatory' && $length == '') {
+				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Length')));
+			}
+			if ($conf->global->PICKUP_UNITS_SURFACE === 'mandatory' && $surface == '') {
+				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Surfance')));
+			}
+			if ($conf->global->PICKUP_UNITS_VOLUME === 'mandatory' && $volume == '') {
+				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Volume')));
 			}
 
 			if (!count($errors)) {
@@ -174,8 +191,6 @@ class ActionsPickup
 				} else {
 					$line->qty = $qty;
 					// $line->description = $line_desc;
-					$line->weight = $weight;
-					$line->weight_units = $weight_units;
 					if (!empty($conf->global->PICKUP_USE_DEEE)) {
 						if (!$deee_type) {
 							$line->deee = 0;
@@ -184,6 +199,23 @@ class ActionsPickup
 							$line->deee = 1;
 							$line->deee_type = $deee_type;
 						}
+					}
+
+					if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+						$line->weight = $weight;
+						$line->weight_units = $weight_units;
+					}
+					if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+						$line->length = $length;
+						$line->length_units = $length_units;
+					}
+					if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+						$line->surface = $surface;
+						$line->surface_units = $surface_units;
+					}
+					if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+						$line->volume = $volume;
+						$line->volume_units = $volume_units;
 					}
 
 					$line->batch = $batch;
@@ -200,6 +232,12 @@ class ActionsPickup
 						unset($_POST['qty']);
 						unset($_POST['weight']);
 						unset($_POST['weight_units']);
+						unset($_POST['length']);
+						unset($_POST['length_units']);
+						unset($_POST['surface']);
+						unset($_POST['surface_units']);
+						unset($_POST['volume']);
+						unset($_POST['volume_units']);
 						// unset($_POST['description']);
 
 						$object->fetchLines();
@@ -270,11 +308,26 @@ class ActionsPickup
 				if ($product->fetch($line->fk_product) <= 0) {
 					dol_syslog(__METHOD__ . ' ' . 'Product '.$line->fk_product.' not found', LOG_ERR);
 				} else {
-					$line->weight = $product->weight;
-					$line->weight_units = $product->weight_units;
 					if (!empty($conf->global->PICKUP_USE_DEEE)) {
 						$line->deee = $product->array_options['options_pickup_deee'];
 						$line->deee_type = $product->array_options['options_pickup_deee_type'];
+					}
+
+					if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+						$line->weight = $product->weight;
+						$line->weight_units = $product->weight_units;
+					}
+					if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+						$line->length = $product->length;
+						$line->length_units = $product->length_units;
+					}
+					if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+						$line->surface = $product->surface;
+						$line->surface_units = $product->surface_units;
+					}
+					if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+						$line->volume = $product->volume;
+						$line->volume_units = $product->volume_units;
 					}
 
 					$result = $line->update($user);
