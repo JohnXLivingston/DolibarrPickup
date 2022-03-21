@@ -158,7 +158,13 @@ if (empty($reshook))
 	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
 
 	// Actions for pdf and attachments
+	// Dirty Fix: when «signed status» is disabled, here $permissiontoadd is false when «in stock».
+	// 		But we need to generate the pdf anyway!
+	//		So we are overriding its value when calling actions_builddoc.
+	$previous_permissiontoadd = $permissiontoadd;
+	$permissiontoadd = $object->canCreatePickupPdf();
 	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+	$permissiontoadd = $previous_permissiontoadd;
 
 	// // Actions to send emails
 	// $trigger_name='PICKUP_SENTBYMAIL';
