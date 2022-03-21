@@ -5,6 +5,8 @@
 ### Fonctionnalités
 
 * Possibilité de passer directement du statut «Brouillon» à l'intégration dans le stock.
+* Renommage du statut «en attente signature» en «en stock».
+* Possibilité de désactiver le statut «signé», auquel cas l'état «en stock» est considéré final.
 
 ## 1.2.1
 

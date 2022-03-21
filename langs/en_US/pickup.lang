@@ -31,8 +31,8 @@ PickupSignatureOfExternalContact = Name and signature of donnator
 PickupNumRefModelDesc = Return the pickup reference
 PickupStatusProcessing = Processing
 PickupStatusShortProcessing = Processing
-PickupStatusStock = Waiting signature
-PickupStatusShortStock = Waiting signature
+PickupStatusStock = In stock
+PickupStatusShortStock = Stock
 PickupStatusSigned = Signed
 PickupDate = Pickup date
 
@@ -44,6 +44,7 @@ PICKUP_USE_DEEE = Use French DEEE fields
 PICKUP_USE_DEEETooltip = Will add DEEE and DEEE type files to products.
 PICKUP_USE_PBRAND = Use a «brand» field on products
 PICKUP_USE_PBRANDTooltip = Will add a brand field to products.
+PICKUP_NO_SIGN_STATUS = Disable «signed» state
 PICKUP_UPDATE_EXTRAFIELDS = Reset extra fields
 PICKUP_UPDATE_EXTRAFIELDS_Tooltip = If you accidentaly modified extrafields parameters, you can reinit them by clicking on this button.
 PICKUP_MIGRATE_EXTRAFIELDS = Migrate old LRDS fields
@@ -108,7 +109,7 @@ PickupCantBeInFutureError = Pickup cant be in future.
 #
 ConfirmPickupActionProcessing = Are you sure you want to process this pickup?
 PickupActionIncludeInStock = Insert in stock
-ConfirmPickupActionIncludeInStock = Are you sure you want to insert products in stocks and set the pickup as «waiting signature»?
+ConfirmPickupActionIncludeInStock = Are you sure you want to insert products in stocks and set the pickup as «in stocks»?
 PickupIncludeInStockOk = Products where inserted in stock
 PickupIncludeInStockMovementNotFoundError = An error occured. The movement was not found
 PickupActionSign = Validate signature

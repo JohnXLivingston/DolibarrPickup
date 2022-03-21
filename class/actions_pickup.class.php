@@ -746,7 +746,7 @@ class ActionsPickup
 		if ($object->table_element != 'pickup_pickup') {
 			return 0;
 		}
-		global $langs;
+		global $langs, $conf;
 		$pickup_rights = $object->getRights();
 		if ($object->status == Pickup::STATUS_DRAFT && $pickup_rights->workflow->processing) {
 			if (!empty($object->lines)) { // assuming lines were fetched before. If not, no button, thats not a problem.
@@ -761,7 +761,7 @@ class ActionsPickup
 		if ($object->status == Pickup::STATUS_PROCESSING && $pickup_rights->workflow->processing) {
 			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=settodraft">'.$langs->trans("SetToDraft").'</a>'."\n";
 		}
-		if ($object->status == Pickup::STATUS_STOCK && $pickup_rights->workflow->sign) {
+		if ($object->status == Pickup::STATUS_STOCK && $pickup_rights->workflow->sign && empty($conf->global->PICKUP_NO_SIGN_STATUS)) {
 			// FIXME: there must be at least one attachment...
 			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=sign">'.$langs->trans("PickupActionSign").'</a>'."\n";
 		}

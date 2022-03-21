@@ -143,6 +143,7 @@ $arrayofparameters=array(
 	'PICKUP_USE_PCAT' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_DEEE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_deee', 'pickup_deee_type')),
 	'PICKUP_USE_PBRAND' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand')),
+	'PICKUP_NO_SIGN_STATUS' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_DEFAULT_HASBATCH' => array(
 		'table' => 'batch',
 		'enabled' => !empty($conf->productbatch->enabled),

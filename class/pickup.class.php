@@ -613,6 +613,7 @@ class Pickup extends CommonObject
 	public function LibStatut($status, $mode = 0)
 	{
 		// phpcs:enable
+		global $conf;
 		if (empty($this->labelStatus) || empty($this->labelStatusShort))
 		{
 			global $langs;
@@ -630,7 +631,11 @@ class Pickup extends CommonObject
 			$this->labelStatusShort[self::STATUS_DISABLED] = $langs->trans('Disabled');
 		}
 
-		$statusType = 'status'.$status;
+		if (!empty($conf->global->PICKUP_NO_SIGN_STATUS) && $status == self::STATUS_STOCK) {
+			$statusType = 'status4';
+		} else {
+			$statusType = 'status'.$status;
+		}
 
 		return dolGetStatus($this->labelStatus[$status], $this->labelStatusShort[$status], '', $statusType, $mode);
 	}
@@ -790,7 +795,7 @@ class Pickup extends CommonObject
 
 
 	public function canEditPickup() {
-		global $user;
+		global $user, $conf;
 
 		$pickup_rights = $this->getRights();
 
@@ -809,7 +814,9 @@ class Pickup extends CommonObject
 		} else if ($this->status == Pickup::STATUS_PROCESSING) {
 			if ($pickup_rights->write) return 1;
 		} else if ($this->status == Pickup::STATUS_STOCK) {
-			if ($pickup_rights->write) return 1;
+			if (empty($conf->global->PICKUP_NO_SIGN_STATUS)) {
+				if ($pickup_rights->write) return 1;
+			}
 		} else if ($this->status == Pickup::STATUS_SIGNED) {
 
 		} else if ($this->status == Pickup::STATUS_DISABLED) {

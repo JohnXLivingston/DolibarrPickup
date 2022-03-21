@@ -31,8 +31,8 @@ PickupSignatureOfExternalContact = Nom et signature du donateur
 PickupNumRefModelDesc = Retourne le numéro de collecte
 PickupStatusProcessing = En cours de traitement
 PickupStatusShortProcessing = Traitement
-PickupStatusStock = En attente de signature
-PickupStatusShortStock = Attente signature
+PickupStatusStock = En stock
+PickupStatusShortStock = Stock
 PickupStatusSigned = Signée
 PickupDate = Date de la collecte
 
@@ -44,6 +44,7 @@ PICKUP_USE_DEEE = Utiliser les champs DEEE
 PICKUP_USE_DEEETooltip = Ajoute les champs DEEE et Type DEEE sur les fiches produits.
 PICKUP_USE_PBRAND = Ajouter un champ «marque» à la fiche produit
 PICKUP_USE_PBRANDTooltip = Ajoute un champ «marque» aux fiches produits.
+PICKUP_NO_SIGN_STATUS = Désactiver le statut «Signée»
 PICKUP_UPDATE_EXTRAFIELDS = Réinitialiser les attributs supplémentaires
 PICKUP_UPDATE_EXTRAFIELDS_Tooltip = Si vous avez accidentellement modifié la configuration des champs supplémentaires, cliquez ici pour les réinitialiser.
 PICKUP_MIGRATE_EXTRAFIELDS = Migrer les anciens champs LRDS
@@ -108,7 +109,7 @@ PickupCantBeInFutureError = La collecte ne peut pas être dans le futur.
 #
 ConfirmPickupActionProcessing = Êtes-vous sûr de vouloir traiter cette collecte ?
 PickupActionIncludeInStock = Intégrer au stock
-ConfirmPickupActionIncludeInStock = Êtes-vous sûr de vouloir intégrer ces produits au stock et mettre la collecte en statut «en attente de signature» ?
+ConfirmPickupActionIncludeInStock = Êtes-vous sûr de vouloir intégrer ces produits au stock et mettre la collecte en statut «en stock» ?
 PickupIncludeInStockOk = Produits intégrés au stock
 PickupIncludeInStockMovementNotFoundError = Une erreur a eu lieu, le mouvement n'a pas été trouvé
 PickupActionSign = Valider signature

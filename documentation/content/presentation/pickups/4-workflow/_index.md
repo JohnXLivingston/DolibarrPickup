@@ -19,9 +19,9 @@ Chacun de ces statuts est accompagné de droits associés, permettant ainsi de d
 Ici il n'est plus possible de modifier le contenu de la collecte, uniquement ses méta-données.
 Il est possible de revenir au statut Brouillon si nécessaire.
 
-### En attente de signature
+### En stock
 
-À partir du moment où l'on passe dans cet état, les produits récoltés sont intégrés au module de Stock de Dolibarr.
+À partir du moment où l'on passe dans cet état, les produits récoltés sont intégrés au module Stock de Dolibarr.
 Les mouvements de stocks associés sont créés.
 
 |  |  |
@@ -29,7 +29,7 @@ Les mouvements de stocks associés sont créés.
 | ![Stocks](./images/stocks.png?classes=shadow,border) | ![Mouvements](./images/mouvements.png?classes=shadow,border)
 
 {{% notice warning %}}
-Une fois la fiche de collecte en attente de signature, il n'est plus possible de revenir en arrière.
+Une fois la fiche de collecte entrée en stock, il n'est plus possible de revenir en arrière.
 {{% /notice %}}
 
 Un bon de collecte au format PDF est généré.
@@ -39,3 +39,7 @@ Un bon de collecte au format PDF est généré.
 ### Signée
 
 Le tiers a signé le bon de collecte, le cycle de celle-ci est donc terminé.
+
+{{% notice tip %}}
+Il est possible de désactiver ce statut, auquel cas le statut «En stock» est le statut final.
+{{% /notice %}}
