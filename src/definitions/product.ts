@@ -1,4 +1,5 @@
 import type { StateDefinition, FormField, FormFieldSelectLoadFilter, PickFields, ShowFields } from '../lib/state/index'
+import type { UseUnit } from '../lib/utils/units'
 
 export function pickProduct (usePBrand: boolean, goto: string, creationGoto: string): StateDefinition {
   const fields: PickFields = []
@@ -156,23 +157,69 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bo
   }
 }
 
-export function createProductWeight (goto: string): StateDefinition {
-  return {
+export function createProductSpecifications (
+  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  goto: string
+): StateDefinition {
+  const r: StateDefinition = {
     type: 'form',
-    label: 'Poids unitaire',
+    label: 'Caractéristiques',
     goto,
-    fields: [
-      {
-        type: 'float',
-        name: 'weight',
-        label: 'Poids unitaire (kg)',
-        mandatory: true,
-        min: 0,
-        max: 1000,
-        step: 0.1
-      }
-    ]
+    fields: []
   }
+  if (useUnitWeight !== '0') {
+    r.fields.push({
+      type: 'float',
+      name: 'weight',
+      label: 'Poids unitaire (kg)',
+      mandatory: useUnitWeight === 'mandatory',
+      min: 0,
+      max: 1000,
+      step: 0.1
+    })
+  }
+  if (useUnitLength !== '0') {
+    r.fields.push({
+      type: 'float',
+      name: 'length',
+      label: 'Longueur (m)',
+      mandatory: useUnitLength === 'mandatory',
+      min: 0,
+      max: 1000,
+      step: 0.01
+    })
+  }
+  if (useUnitSurface !== '0') {
+    r.fields.push({
+      type: 'float',
+      name: 'surface',
+      label: 'Surface (m²)',
+      mandatory: useUnitSurface === 'mandatory',
+      min: 0,
+      max: 1000,
+      step: 0.0001
+    })
+  }
+  if (useUnitVolume !== '0') {
+    r.fields.push({
+      type: 'float',
+      name: 'volume',
+      label: 'Volume (L)',
+      mandatory: useUnitVolume === 'mandatory',
+      min: 0,
+      max: 100000,
+      step: 0.01
+    })
+  }
+
+  if (r.fields.length === 0) {
+    return {
+      type: 'virtual',
+      goto,
+      label: 'Caractéristiques'
+    }
+  }
+  return r
 }
 
 export function saveProduct (goto: string, saveUntil: string): StateDefinition {
@@ -187,7 +234,11 @@ export function saveProduct (goto: string, saveUntil: string): StateDefinition {
   }
 }
 
-export function showProduct (usePCat: boolean, useDEEE: boolean, usePBrand: boolean, okGoto: string): StateDefinition {
+export function showProduct (
+  usePCat: boolean, useDEEE: boolean, usePBrand: boolean,
+  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  okGoto: string
+): StateDefinition {
   const fields: ShowFields = []
 
   if (usePCat) {
@@ -230,11 +281,37 @@ export function showProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bool
     })
   }
 
-  fields.push({
-    type: 'varchar',
-    name: 'weight_txt',
-    label: 'Poids'
-  })
+  if (useUnitWeight !== '0') {
+    fields.push({
+      type: 'varchar',
+      name: 'weight_txt',
+      label: 'Poids'
+    })
+  }
+
+  if (useUnitLength !== '0') {
+    fields.push({
+      type: 'varchar',
+      name: 'length_txt',
+      label: 'Longueur'
+    })
+  }
+
+  if (useUnitSurface !== '0') {
+    fields.push({
+      type: 'varchar',
+      name: 'surface_txt',
+      label: 'Surface'
+    })
+  }
+
+  if (useUnitVolume !== '0') {
+    fields.push({
+      type: 'varchar',
+      name: 'volume_txt',
+      label: 'Volume'
+    })
+  }
 
   return {
     type: 'show',

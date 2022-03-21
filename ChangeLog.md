@@ -7,6 +7,7 @@
 * Possibilité de passer directement du statut «Brouillon» à l'intégration dans le stock.
 * Renommage du statut «en attente signature» en «en stock».
 * Possibilité de désactiver le statut «signé», auquel cas l'état «en stock» est considéré final.
+* Ajout de nouveaux types d'unités à prendre en compte (m, m², m³, l, ...). On peut paramétrer les unités à utiliser.
 
 ## 1.2.1
 

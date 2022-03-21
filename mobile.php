@@ -91,5 +91,9 @@ mobile_header();
     <?php if (!empty($conf->global->PICKUP_USE_PBRAND)) { print ' data-use-pbrand="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_DEEE)) { print ' data-use-deee="1" '; } ?>
     <?php if (!empty($conf->productbatch->enabled) && $conf->global->PICKUP_DEFAULT_HASBATCH === 'ask') { print ' data-ask-hasbatch="1" '; } ?>
+    data-units-weight="<?php echo $conf->global->PICKUP_UNITS_WEIGHT ?? '0' ?>"
+    data-units-length="<?php echo $conf->global->PICKUP_UNITS_LENGTH ?? '0' ?>"
+    data-units-surface="<?php echo $conf->global->PICKUP_UNITS_SURFACE ?? '0' ?>"
+    data-units-volume="<?php echo $conf->global->PICKUP_UNITS_VOLUME ?? '0' ?>"
   ></div>
 </body></html>

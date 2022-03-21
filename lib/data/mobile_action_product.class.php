@@ -70,7 +70,15 @@ class DataMobileActionProduct extends DataMobileAction {
 
     require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php'; // for measuringUnitString
     $langs->loadLangs(array("other"));
-    $weight = $object->weight . ' ' . measuringUnitString(0, "weight", $object->weight_units);
+    $weight = $object->weight;
+    if (!empty($weight)) { $weight.= ' ' . measuringUnitString(0, "weight", $object->weight_units); }
+    $length = $object->length;
+    if (!empty($length)) { $length.= ' ' . measuringUnitString(0, 'size', $object->length_units); }
+    $surface = $object->surface;
+    if (!empty($surface)) { $surface.= ' ' . measuringUnitString(0, 'surface', $object->surface_units); }
+    $volume = $object->volume;
+    if (!empty($volume)) { $volume.= ' ' . measuringUnitString(0, 'volume', $object->volume_units); }
+    
 
     $result = array(
       'rowid' => $object->id,
@@ -78,7 +86,11 @@ class DataMobileActionProduct extends DataMobileAction {
       'description' => $object->description,
       'label' => $object->label,
       'pcats' => join(', ', $cats_labels),
-      'weight_txt' => $weight // FIXME: should be weight + weight_units... Be it is simplier like that for now
+      // FIXME: should be weight + weight_units (and so on...)... But it is simplier like that for now
+      'weight_txt' => $weight,
+      'length_txt' => $length,
+      'surface_txt' => $surface,
+      'volume_txt' => $volume
     );
     if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $result['pbrand'] = $object->array_options['options_pickup_pbrand'];
@@ -108,8 +120,23 @@ class DataMobileActionProduct extends DataMobileAction {
     }
     $product->label = $product_label;
     $product->description = htmlentities(trim(GETPOST('product_description')));
-    $product->weight = GETPOST('weight', 'int'); // yes... for dolibarr floats are 'int'
-    $product->weight_units = 0;
+
+    if (!empty($conf->global->PICKUP_UNITS_WEIGHT) && $conf->global->PICKUP_UNITS_WEIGHT !== '0') {
+      $product->weight = GETPOST('weight', 'int'); // yes... for dolibarr floats are 'int'
+      $product->weight_units = 0;
+    }
+    if (!empty($conf->global->PICKUP_UNITS_LENGTH) && $conf->global->PICKUP_UNITS_LENGTH !== '0') {
+      $product->length = GETPOST('length', 'int'); // yes... for dolibarr floats are 'int'
+      $product->length_units = 0;
+    }
+    if (!empty($conf->global->PICKUP_UNITS_SURFACE) && $conf->global->PICKUP_UNITS_SURFACE !== '0') {
+      $product->surface = GETPOST('surface', 'int'); // yes... for dolibarr floats are 'int'
+      $product->surface_units = 0;
+    }
+    if (!empty($conf->global->PICKUP_UNITS_VOLUME) && $conf->global->PICKUP_UNITS_VOLUME !== '0') {
+      $product->volume = GETPOST('volume', 'int'); // yes... for dolibarr floats are 'int'
+      $product->volume_units = -3; // L
+    }
     
     if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $product->array_options['options_pickup_pbrand'] = GETPOST('product_pbrand');

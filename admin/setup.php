@@ -45,7 +45,7 @@ require_once '../lib/pickup.lib.php';
 //require_once "../class/myclass.class.php";
 
 // Translations
-$langs->loadLangs(array("admin", "pickup@pickup", "productbatch"));
+$langs->loadLangs(array("admin", "pickup@pickup", "products", "productbatch", "other"));
 
 // Access control
 if (! $user->admin) accessforbidden();
@@ -144,6 +144,62 @@ $arrayofparameters=array(
 	'PICKUP_USE_DEEE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_deee', 'pickup_deee_type')),
 	'PICKUP_USE_PBRAND' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand')),
 	'PICKUP_NO_SIGN_STATUS' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
+
+	'PICKUP_UNITS_WEIGHT' => array(
+		'table' => 'units',
+		'enabled' => 1,
+		'type' => 'select',
+		'label' => $langs->trans('Weight'),
+		'options' => array(
+			'0' => $langs->trans('Disabled'),
+			'optional' =>  $langs->trans('Enabled'),
+			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('PICKUP_UNITS_OPTIONS_MANDATORY')
+		)
+	),
+	'PICKUP_UNITS_LENGTH' => array(
+		'table' => 'units',
+		'enabled' => 1,
+		'type' => 'select',
+		'label' => $langs->trans('Length'),
+		'options' => array(
+			'0' => $langs->trans('Disabled'),
+			'optional' =>  $langs->trans('Enabled'),
+			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('PICKUP_UNITS_OPTIONS_MANDATORY')
+		)
+	),
+	'PICKUP_UNITS_SURFACE' => array(
+		'table' => 'units',
+		'enabled' => 1,
+		'type' => 'select',
+		'label' => $langs->trans('Surface'),
+		'options' => array(
+			'0' => $langs->trans('Disabled'),
+			'optional' =>  $langs->trans('Enabled'),
+			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('PICKUP_UNITS_OPTIONS_MANDATORY')
+		)
+	),
+	'PICKUP_UNITS_VOLUME' => array(
+		'table' => 'units',
+		'enabled' => 1,
+		'type' => 'select',
+		'label' => $langs->trans('Volume'),
+		'options' => array(
+			'0' => $langs->trans('Disabled'),
+			'optional' =>  $langs->trans('Enabled'),
+			'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('PICKUP_UNITS_OPTIONS_MANDATORY')
+		)
+	),
+	'PICKUP_UNITS_PIECE' => array(
+		'table' => 'units',
+		'enabled' => 1,
+		'type' => 'select',
+		'label' => $langs->trans('unitP'),
+		'options' => array(
+			'0' => $langs->trans('Disabled'),
+			'1' =>  $langs->trans('Enabled'),
+		)
+	),
+
 	'PICKUP_DEFAULT_HASBATCH' => array(
 		'table' => 'batch',
 		'enabled' => !empty($conf->productbatch->enabled),
@@ -483,6 +539,7 @@ if ($action == 'edit')
 		print '</table>';
 	}
 	draw_edit_table('main', $langs->trans("PickupSetup"));
+	draw_edit_table('units', $langs->trans("PickupSetupUnits"));
 	draw_edit_table('batch', $langs->trans("PickupSetupBatch"));
 
 	print '<br><div class="center">';
@@ -569,6 +626,7 @@ else
 		}
 
 		draw_view_table('main', $langs->trans("PickupSetup"));
+		draw_view_table('units', $langs->trans("PickupSetupUnits"));
 		draw_view_table('batch', $langs->trans("PickupSetupBatch"));
 
 		print '<div class="tabsAction">';

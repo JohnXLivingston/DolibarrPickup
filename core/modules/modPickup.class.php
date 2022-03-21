@@ -462,6 +462,12 @@ class modPickup extends DolibarrModules
                 'sql' => "UPDATE ".MAIN_DB_PREFIX."stock_mouvement as mov INNER JOIN ".MAIN_DB_PREFIX."pickup_pickupline as pl ON pl.fk_stock_movement = mov.rowid set mov.origintype='Pickup@pickup', mov.fk_origin = pl.fk_pickup WHERE mov.origintype = '' and mov.fk_origin = 0",
                 'ignoreerror' => true
             ),
+            // migration for version 1.3.0:
+            array(
+                // Activating Weight units if there is no line in database (will fail if the line exists)
+                'sql' => "INSERT INTO ".MAIN_DB_PREFIX."const (name, entity, value, type, visible) VALUES('PICKUP_UNITS_WEIGHT',".$conf->entity.", 'mandatory', 'chaine', 0)",
+                'ignoreerror' => true
+            ),
         );
 
         return $this->_init($sql, $options);
