@@ -125,6 +125,10 @@ DEEE = DEEE
 DEEEType = Type DEEE
 DEEETotal = Total DEEE
 PickupTotalWeight = Poids total
+PickupTotalLength = Longueur totale
+PickupTotalSurface = Surface totale
+PickupTotalVolume = Volume total
+PickupTotalPiece = Quantité totale
 
 PBrand = Marque
 
