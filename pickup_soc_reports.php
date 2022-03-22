@@ -326,19 +326,49 @@ $data = retrieve_data();
 print '<div class="div-table-responsive">';
 print '<table class="tagtable liste">'."\n";
 
+print '<thead>';
 print '<tr class="liste_titre">';
-print '<td align="" class="liste_titre">' . $langs->trans('Ref') . '</td>';
-print '<td align="" class="liste_titre">' . $langs->trans('Date') . '</td>';
-print '<td align="" class="liste_titre">' . $langs->trans('Status') . '</td>';
-print '<td align="" class="liste_titre">' . $langs->trans('Description') . '</td>';
-print '<td align="" class="liste_titre">' . $langs->trans('Qty') . '</td>';
-print '<td align="" class="liste_titre right">' . $langs->trans('ProductWeight') . '</td>';
-print '<td align="" class="liste_titre right">' . $langs->trans('Weight') . '</td>';
-if (!empty($conf->global->PICKUP_USE_DEEE)) {
-  print '<td align="" class="liste_titre">' . $langs->trans('DEEE') . '</td>';
+print '<td rowspan="2" align="" class="liste_titre">' . $langs->trans('Ref') . '</td>';
+print '<td rowspan="2" align="" class="liste_titre">' . $langs->trans('Date') . '</td>';
+print '<td rowspan="2" align="" class="liste_titre">' . $langs->trans('Status') . '</td>';
+print '<td rowspan="2" align="" class="liste_titre">' . $langs->trans('Description') . '</td>';
+print '<td rowspan="2" align="" class="liste_titre">' . $langs->trans('Qty') . '</td>';
+if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+  print '<td colspan="2" align="" class="liste_titre center">' . $langs->trans('Weight') . '</td>';
 }
-print '<td align="" class="liste_titre">' . $langs->trans('StockMovement') . '</td>';
+if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+  print '<td colspan="2" align="" class="liste_titre center">' . $langs->trans('Length') . '</td>';
+}
+if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+  print '<td colspan="2" align="" class="liste_titre center">' . $langs->trans('Surface') . '</td>';
+}
+if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+  print '<td colspan="2" align="" class="liste_titre center">' . $langs->trans('Volume') . '</td>';
+}
+if (!empty($conf->global->PICKUP_USE_DEEE)) {
+  print '<td rowspan="2" align="" class="liste_titre">' . $langs->trans('DEEE') . '</td>';
+}
+print '<td rowspan="2" align="" class="liste_titre">' . $langs->trans('StockMovement') . '</td>';
 print '</tr>';
+print '<tr class="liste_titre">';
+if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+  ?><td class="right"><?php print $langs->trans('PickupUnitValue'); ?></td>
+  <td class="right"><?php print $langs->trans('Total'); ?></td><?php
+}
+if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+  ?><td class="right"><?php print $langs->trans('PickupUnitValue'); ?></td>
+  <td class="right"><?php print $langs->trans('Total'); ?></td><?php
+}
+if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+  ?><td class="right"><?php print $langs->trans('PickupUnitValue'); ?></td>
+  <td class="right"><?php print $langs->trans('Total'); ?></td><?php
+}
+if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+  ?><td class="right"><?php print $langs->trans('PickupUnitValue'); ?></td>
+  <td class="right"><?php print $langs->trans('Total'); ?></td><?php
+}
+print '</tr>';
+print '</thead>';
 
 foreach ($data as $line) {
   $pickup = $line['pickup'];
@@ -375,16 +405,54 @@ foreach ($data as $line) {
   print '<td class="nowrap right">';
     print price($pickupline->qty, 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
   print '</td>';
-  print '<td class="nowrap right">';
-  if (!empty($pickupline->weight)) {
-    print $pickupline->weight . ' ' . measuringUnitString(0, "weight", $pickupline->weight_units);
+  if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+    print '<td class="nowrap right">';
+    if (!empty($pickupline->weight)) {
+      print $pickupline->weight . ' ' . measuringUnitString(0, "weight", $pickupline->weight_units);
+    }
+    print '</td>';
+    print '<td class="nowrap right">';
+    if (!empty($pickupline->weight)) {
+      print ($pickupline->qty * $pickupline->weight) . ' ' . measuringUnitString(0, "weight", $pickupline->weight_units);
+    }
+    print '</td>';
   }
-  print '</td>';
-  print '<td class="nowrap right">';
-  if (!empty($pickupline->weight)) {
-    print ($pickupline->qty * $pickupline->weight) . ' ' . measuringUnitString(0, "weight", $pickupline->weight_units);
+  if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+    print '<td class="nowrap right">';
+    if (!empty($pickupline->length)) {
+      print $pickupline->length . ' ' . measuringUnitString(0, "size", $pickupline->length_units);
+    }
+    print '</td>';
+    print '<td class="nowrap right">';
+    if (!empty($pickupline->length)) {
+      print ($pickupline->qty * $pickupline->length) . ' ' . measuringUnitString(0, "size", $pickupline->length_units);
+    }
+    print '</td>';
   }
-  print '</td>';
+  if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+    print '<td class="nowrap right">';
+    if (!empty($pickupline->surface)) {
+      print $pickupline->surface . ' ' . measuringUnitString(0, "surface", $pickupline->surface_units);
+    }
+    print '</td>';
+    print '<td class="nowrap right">';
+    if (!empty($pickupline->surface)) {
+      print ($pickupline->qty * $pickupline->surface) . ' ' . measuringUnitString(0, "surface", $pickupline->surface_units);
+    }
+    print '</td>';
+  }
+  if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+    print '<td class="nowrap right">';
+    if (!empty($pickupline->volume)) {
+      print $pickupline->volume . ' ' . measuringUnitString(0, "volume", $pickupline->volume_units);
+    }
+    print '</td>';
+    print '<td class="nowrap right">';
+    if (!empty($pickupline->volume)) {
+      print ($pickupline->qty * $pickupline->volume) . ' ' . measuringUnitString(0, "volume", $pickupline->volume_units);
+    }
+    print '</td>';
+  }
   if (!empty($conf->global->PICKUP_USE_DEEE)) {
     print '<td class="nowrap">';
     if ($pickupline->deee) {
