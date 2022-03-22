@@ -124,7 +124,35 @@ $columns = array(
     'css' => 'right nowrap',
     'func' => function ($pickuplinestatic) {
       return ($pickuplinestatic->weight * $pickuplinestatic->qty) . ' ' . measuringUnitString(0, "weight", $pickuplinestatic->weight_units);
-    }
+    },
+    'hide' => empty($conf->global->PICKUP_UNITS_WEIGHT)
+  ),
+  array(
+    'type' => 'pickupline',
+    'label' => 'Length',
+    'css' => 'right nowrap',
+    'func' => function ($pickuplinestatic) {
+      return ($pickuplinestatic->length * $pickuplinestatic->qty) . ' ' . measuringUnitString(0, "size", $pickuplinestatic->length_units);
+    },
+    'hide' => empty($conf->global->PICKUP_UNITS_LENGTH)
+  ),
+  array(
+    'type' => 'pickupline',
+    'label' => 'Surface',
+    'css' => 'right nowrap',
+    'func' => function ($pickuplinestatic) {
+      return ($pickuplinestatic->surface * $pickuplinestatic->qty) . ' ' . measuringUnitString(0, "surface", $pickuplinestatic->surface_units);
+    },
+    'hide' => empty($conf->global->PICKUP_UNITS_SURFACE)
+  ),
+  array(
+    'type' => 'pickupline',
+    'label' => 'Volume',
+    'css' => 'right nowrap',
+    'func' => function ($pickuplinestatic) {
+      return ($pickuplinestatic->volume * $pickuplinestatic->qty) . ' ' . measuringUnitString(0, "volume", $pickuplinestatic->volume_units);
+    },
+    'hide' => empty($conf->global->PICKUP_UNITS_VOLUME)
   ),
   array('type' => 'pickup', 'col' => 'status'),
 );
