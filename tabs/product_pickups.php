@@ -22,7 +22,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/pickup.class.php';
 require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/pickupline.class.php';
 
-$langs->loadLangs(array("pickup@pickup", "products", "other"));
+$langs->loadLangs(array("pickup@pickup", "products", "other", "stocks"));
 
 $id=GETPOST('id', 'int');
 $ref=GETPOST('ref','alpha');
