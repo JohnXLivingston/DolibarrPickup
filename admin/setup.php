@@ -526,7 +526,7 @@ if ($action == 'edit')
 				foreach ($val['options'] as $ok => $ov) {
 					print '<option ';
 					print 'value="' . htmlspecialchars($ok) . '"';
-					if (($conf->global->$key ?? '0') === $ok) { print ' selected '; }
+					if (strval(($conf->global->$key) ?? '0') === strval($ok)) { print ' selected '; }
 					print '>';
 					print $ov . '</option>';
 				}
