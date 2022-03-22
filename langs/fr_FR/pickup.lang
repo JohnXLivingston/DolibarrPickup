@@ -33,6 +33,8 @@ PickupStatusProcessing = En cours de traitement
 PickupStatusShortProcessing = Traitement
 PickupStatusStock = En stock
 PickupStatusShortStock = Stock
+PickupStatusStockBis = En attente de signature
+PickupStatusShortStockBis = Attente signature
 PickupStatusSigned = Signée
 PickupDate = Date de la collecte
 

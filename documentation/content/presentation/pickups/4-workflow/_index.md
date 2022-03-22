@@ -19,7 +19,12 @@ Chacun de ces statuts est accompagné de droits associés, permettant ainsi de d
 Ici il n'est plus possible de modifier le contenu de la collecte, uniquement ses méta-données.
 Il est possible de revenir au statut Brouillon si nécessaire.
 
-### En stock
+### En stock / En attente de signature
+
+{{% notice note %}}
+Le nom de ce statut dépend de la configuration de votre module. Si vous avez disactivé le statut «Signée» (voir plus loin),
+ce sera «En stock», sinon «En attente de signature».
+{{% /notice %}}
 
 À partir du moment où l'on passe dans cet état, les produits récoltés sont intégrés au module Stock de Dolibarr.
 Les mouvements de stocks associés sont créés.

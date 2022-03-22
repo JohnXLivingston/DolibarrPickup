@@ -629,6 +629,11 @@ class Pickup extends CommonObject
 			$this->labelStatusShort[self::STATUS_STOCK] = $langs->trans('PickupStatusShortStock');
 			$this->labelStatusShort[self::STATUS_SIGNED] = $langs->trans('PickupStatusSigned');
 			$this->labelStatusShort[self::STATUS_DISABLED] = $langs->trans('Disabled');
+
+			if (empty($conf->global->PICKUP_NO_SIGN_STATUS)) {
+				$this->labelStatus[self::STATUS_STOCK] = $langs->trans('PickupStatusStockBis');
+				$this->labelStatusShort[self::STATUS_STOCK] = $langs->trans('PickupStatusShortStockBis');
+			}
 		}
 
 		if (!empty($conf->global->PICKUP_NO_SIGN_STATUS) && $status == self::STATUS_STOCK) {

@@ -10,8 +10,9 @@ Pour les appliquer, il faut désactiver puis réactiver le module.
 ### Fonctionnalités
 
 * Possibilité de passer directement du statut «Brouillon» à l'intégration dans le stock.
-* Renommage du statut «en attente signature» en «en stock».
-* Possibilité de désactiver le statut «signé», auquel cas l'état «en stock» est considéré final.
+* Possibilité de désactiver le statut «signé». Dans ce cas:
+  * Le statut «en attente signature» est renommé en «en stock».
+  * Ce statut «en stock» est considéré final.
 * Ajout de nouveaux types d'unités à prendre en compte (m, m², m³, l, ...). On peut paramétrer les unités à utiliser.
 
 ## 1.2.1

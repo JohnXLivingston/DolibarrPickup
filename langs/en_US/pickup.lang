@@ -33,6 +33,8 @@ PickupStatusProcessing = Processing
 PickupStatusShortProcessing = Processing
 PickupStatusStock = In stock
 PickupStatusShortStock = Stock
+PickupStatusStockBis = Waiting signature
+PickupStatusShortStockBis = Waiting signature
 PickupStatusSigned = Signed
 PickupDate = Pickup date
 
