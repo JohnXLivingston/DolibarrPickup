@@ -648,6 +648,66 @@ class pdf_standard_pickup extends ModelePDFPickup
 						$nexY = max($pdf->GetY(), $nexY);
 					}
 
+					// Length
+					if ($this->getColumnStatus('length')) {
+						$length = '';
+						if (!empty($currentLine->length)) {
+							$length = $currentLine->length . ' ' . measuringUnitString(0, "size", $currentLine->length_units);
+						}
+						$this->printStdColumnContent($pdf, $curY, 'length', $length);
+						$nexY = max($pdf->GetY(), $nexY);
+					}
+
+					// Line Length
+					if ($this->getColumnStatus('line_length')) {
+						$length = '';
+						if (!empty($currentLine->length) && !empty($currentLine->qty)) {
+							$length = ($currentLine->length * $currentLine->qty) . ' ' . measuringUnitString(0, "size", $currentLine->length_units);
+						}
+						$this->printStdColumnContent($pdf, $curY, 'line_length', $length);
+						$nexY = max($pdf->GetY(), $nexY);
+					}
+
+					// Surface
+					if ($this->getColumnStatus('surface')) {
+						$surface = '';
+						if (!empty($currentLine->surface)) {
+							$surface = $currentLine->surface . ' ' . measuringUnitString(0, "surface", $currentLine->surface_units);
+						}
+						$this->printStdColumnContent($pdf, $curY, 'surface', $surface);
+						$nexY = max($pdf->GetY(), $nexY);
+					}
+
+					// Line Surface
+					if ($this->getColumnStatus('line_surface')) {
+						$surface = '';
+						if (!empty($currentLine->surface) && !empty($currentLine->qty)) {
+							$surface = ($currentLine->surface * $currentLine->qty) . ' ' . measuringUnitString(0, "surface", $currentLine->surface_units);
+						}
+						$this->printStdColumnContent($pdf, $curY, 'line_surface', $weight);
+						$nexY = max($pdf->GetY(), $nexY);
+					}
+
+					// Volume
+					if ($this->getColumnStatus('volume')) {
+						$volume = '';
+						if (!empty($currentLine->volume)) {
+							$volume = $currentLine->volume . ' ' . measuringUnitString(0, "volume", $currentLine->volume_units);
+						}
+						$this->printStdColumnContent($pdf, $curY, 'volume', $volume);
+						$nexY = max($pdf->GetY(), $nexY);
+					}
+
+					// Line Volume
+					if ($this->getColumnStatus('line_volume')) {
+						$volume = '';
+						if (!empty($currentLine->volume) && !empty($currentLine->qty)) {
+							$volume = ($currentLine->volume * $currentLine->qty) . ' ' . measuringUnitString(0, "volume", $currentLine->volume_units);
+						}
+						$this->printStdColumnContent($pdf, $curY, 'line_volume', $volume);
+						$nexY = max($pdf->GetY(), $nexY);
+					}
+
 					if ($this->getColumnStatus('deee')) {
 						$deee = $currentLine->deee ? $langs->trans('yes') : $langs->trans('no');
 						$this->printStdColumnContent($pdf, $curY, 'deee', $deee);
@@ -1241,7 +1301,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 		$this->cols['weight'] = array(
 			'rank' => $rank,
 			'width' => 16, // in mm
-			'status' => true,
+			'status' => !empty($conf->global->PICKUP_UNITS_WEIGHT) ? true : false,
 			'title' => array(
 				'textkey' => 'ProductWeight'
 			),
@@ -1252,9 +1312,75 @@ class pdf_standard_pickup extends ModelePDFPickup
 		$this->cols['line_weight'] = array(
 			'rank' => $rank,
 			'width' => 16, // in mm
-			'status' => true,
+			'status' => !empty($conf->global->PICKUP_UNITS_WEIGHT) ? true : false,
 			'title' => array(
 				'textkey' => 'Weight'
+			),
+			'border-left' => true, // add left line separator
+		);
+
+		$rank = $rank + 10;
+		$this->cols['length'] = array(
+			'rank' => $rank,
+			'width' => 16, // in mm
+			'status' => !empty($conf->global->PICKUP_UNITS_LENGTH) ? true : false,
+			'title' => array(
+				'textkey' => 'PickupProductLength'
+			),
+			'border-left' => true, // add left line separator
+		);
+
+		$rank = $rank + 10;
+		$this->cols['line_length'] = array(
+			'rank' => $rank,
+			'width' => 16, // in mm
+			'status' => !empty($conf->global->PICKUP_UNITS_LENGTH) ? true : false,
+			'title' => array(
+				'textkey' => 'Length'
+			),
+			'border-left' => true, // add left line separator
+		);
+
+		$rank = $rank + 10;
+		$this->cols['surface'] = array(
+			'rank' => $rank,
+			'width' => 16, // in mm
+			'status' => !empty($conf->global->PICKUP_UNITS_SURFACE) ? true : false,
+			'title' => array(
+				'textkey' => 'PickupProductSurface'
+			),
+			'border-left' => true, // add left line separator
+		);
+
+		$rank = $rank + 10;
+		$this->cols['line_surface'] = array(
+			'rank' => $rank,
+			'width' => 16, // in mm
+			'status' => !empty($conf->global->PICKUP_UNITS_SURFACE) ? true : false,
+			'title' => array(
+				'textkey' => 'Surface'
+			),
+			'border-left' => true, // add left line separator
+		);
+
+		$rank = $rank + 10;
+		$this->cols['volume'] = array(
+			'rank' => $rank,
+			'width' => 16, // in mm
+			'status' => !empty($conf->global->PICKUP_UNITS_VOLUME) ? true : false,
+			'title' => array(
+				'textkey' => 'ProductVolume'
+			),
+			'border-left' => true, // add left line separator
+		);
+
+		$rank = $rank + 10;
+		$this->cols['line_volume'] = array(
+			'rank' => $rank,
+			'width' => 16, // in mm
+			'status' => !empty($conf->global->PICKUP_UNITS_VOLUME) ? true : false,
+			'title' => array(
+				'textkey' => 'Volume'
 			),
 			'border-left' => true, // add left line separator
 		);
@@ -1288,34 +1414,71 @@ class pdf_standard_pickup extends ModelePDFPickup
 	public function drawTotalTable(&$pdf, $object, $posy, $outputlangs) {
 		global $conf;
 
-		if (empty($conf->global->PICKUP_USE_DEEE)) {
+		if (
+			empty($conf->global->PICKUP_USE_DEEE)
+			&& empty($conf->global->PICKUP_UNITS_WEIGHT)
+			&& empty($conf->global->PICKUP_UNITS_LENGTH)
+			&& empty($conf->global->PICKUP_UNITS_SURFACE)
+			&& empty($conf->global->PICKUP_UNITS_VOLUME)
+			&& empty($conf->global->PICKUP_UNITS_PIECE)
+		) {
 			return;
 		}
 
 		$txt = '';
 		$totals = $object->computeTotals();
 
-		foreach ($totals['deee_type_weights'] as $deee_type => $deee_type_weights) {
+		if (!empty($conf->global->PICKUP_USE_DEEE)) {
+			foreach ($totals['deee_type_weights'] as $deee_type => $deee_type_weights) {
+				$tmp = array();
+				$txt.= $deee_type . ': ';
+				foreach ($totals['deee_type_weights'][$deee_type] as $weights_units => $weights) {
+					array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
+				}
+				$txt.= join(', ', $tmp);
+				$txt.= "\n";
+			}
+
 			$tmp = array();
-			$txt.= $deee_type . ': ';
-			foreach ($totals['deee_type_weights'][$deee_type] as $weights_units => $weights) {
+			foreach ($totals['deee_weights'] as $weights_units => $weights) {
 				array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
 			}
-			$txt.= join(', ', $tmp);
+			$txt.= $outputlangs->transnoentities('DEEETotal') . ': '. join(', ', $tmp) . "\n";
+		}
+
+		if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+			$tmp = array();
+			foreach ($totals['weights'] as $weights_units => $weights) {
+				array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
+			}
+			$txt.= $outputlangs->transnoentities('PickupTotalWeight') . ': '. join(', ', $tmp) . "\n";
+		}
+		if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+			$tmp = array();
+			foreach ($totals['lengths'] as $lengths_units => $lengths) {
+				array_push($tmp, ($lengths) . ' ' . measuringUnitString(0, "size", $lengths_units));
+			}
+			$txt.= $outputlangs->transnoentities('PickupTotalLength') . ': '. join(', ', $tmp) . "\n";
+		}
+		if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+			$tmp = array();
+			foreach ($totals['surfaces'] as $surfaces_units => $surfaces) {
+				array_push($tmp, ($surfaces) . ' ' . measuringUnitString(0, "surface", $surfaces_units));
+			}
+			$txt.= $outputlangs->transnoentities('PickupTotalSurface') . ': '. join(', ', $tmp) . "\n";
+		}
+		if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+			$tmp = array();
+			foreach ($totals['volumes'] as $volumes_units => $volumes) {
+				array_push($tmp, ($volumes) . ' ' . measuringUnitString(0, "volume", $volumes_units));
+			}
+			$txt.= $outputlangs->transnoentities('PickupTotalVolume') . ': '. join(', ', $tmp) . "\n";
+		}
+		if (!empty($conf->global->PICKUP_UNITS_PIECE)) {
+			$txt.= $outputlangs->transnoentities('PickupTotalPiece') . ': ';
+			$txt.= price($totals['qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
 			$txt.= "\n";
 		}
-
-		$tmp = array();
-		foreach ($totals['deee_weights'] as $weights_units => $weights) {
-			array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
-		}
-		$txt.= $outputlangs->transnoentities('DEEETotal') . ': '. join(', ', $tmp) . "\n";
-
-		$tmp = array();
-		foreach ($totals['weights'] as $weights_units => $weights) {
-			array_push($tmp, ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units));
-		}
-		$txt.= $outputlangs->transnoentities('PickupTotalWeight') . ': '. join(', ', $tmp) . "\n";
 
 		$pdf->SetXY(20, 230);
 		$pdf->MultiCell(80, 5, $txt, 0, 'L', 0);

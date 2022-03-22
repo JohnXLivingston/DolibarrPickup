@@ -130,6 +130,9 @@ PickupTotalSurface = Total surface
 PickupTotalVolume = Total volume
 PickupTotalPiece = Total qty
 
+PickupProductLength = Length for 1 product
+PickupProductSurface = Surface for 1 product
+
 PBrand = Brand
 
 Permission469001 = View pickups

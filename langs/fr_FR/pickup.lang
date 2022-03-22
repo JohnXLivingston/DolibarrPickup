@@ -130,6 +130,9 @@ PickupTotalSurface = Surface totale
 PickupTotalVolume = Volume total
 PickupTotalPiece = Quantité totale
 
+PickupProductLength = Longueur pour 1 article
+PickupProductSurface = Surface pour 1 article
+
 PBrand = Marque
 
 Permission469001 = Consulter les collectes
