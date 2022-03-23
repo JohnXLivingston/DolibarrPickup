@@ -51,7 +51,7 @@ export function savePickup (goto: string, saveUntil: string): StateDefinition {
   }
 }
 
-export function showPickup (useDEEE: boolean, addGoto: string): StateDefinition {
+export function showPickup (useDEEE: boolean, addGoto: string, editLineGoto: string): StateDefinition {
   const lineCols: ShowFields = []
   lineCols.push({
     type: 'varchar',
@@ -72,6 +72,27 @@ export function showPickup (useDEEE: boolean, addGoto: string): StateDefinition 
     name: 'qty',
     label: 'Quantité',
     total: true
+  })
+  lineCols.push({
+    type: 'edit',
+    name: 'pickupline',
+    label: 'Modifier',
+    pushToStack: [
+      {
+        fromDataKey: 'rowid', // when on showCollecte page, rowid is the pickup_line id.
+        pushOnStackKey: 'pickup_line_id', // pushing the id in this key
+        silent: false,
+        invisible: true
+      },
+      {
+        fromDataKey: 'name', // this is the product ref. Pushing it as silent, so we can see it in the save page.
+        pushOnStackKey: 'pickup_line_product_ref',
+        stackLabel: 'Produit',
+        silent: true,
+        invisible: false
+      }
+    ],
+    goto: editLineGoto
   })
 
   return {

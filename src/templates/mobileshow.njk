@@ -6,6 +6,15 @@
       {{ data[field.name] | safe }}
     {% elif field.type === 'boolean' %}
       <input type="checkbox" disabled="disabled" {% if (data[field.name]) %}checked="checked"{% endif %}>
+    {% elif field.type === 'edit' %}
+      <a
+        class="btn btn-primary" role="button"
+        pickupmobile-show-edit-goto="{{ field.goto }}"
+        pickupmobile-show-edit-data="{{ data | dump }}"
+        pickupmobile-show-edit-push-to-stack="{{ field.pushToStack | dump }}"
+      >
+        {{ field.label }}
+      </a>
     {% elif field.type === 'lines' %}
       {{ printLines(field.lines, data[field.name]) }}
     {% endif %}
@@ -17,7 +26,7 @@
         <tr>
           {% for field in fields %}
             {% if field.total %}{% set isLineTotals = 1 %}{% endif %}
-            <th>{{ field.label }}</th>
+            <th>{% if field.type !== 'edit' %}{{ field.label }}{% endif %}</th>
           {% endfor%}
         </tr>
       </thead>
@@ -64,7 +73,7 @@
       <tr>
         <td>
           <label>
-            {{ field.label }}
+            {% if field.type !== 'edit' %}{{ field.label }}{% endif %}
           </label>
         </td>
         <td>

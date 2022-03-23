@@ -106,9 +106,16 @@ interface FormFieldDate extends FormFieldBase {
 
 type FormField = FormFieldSelect | FormFieldVarchar | FormFieldText | FormFieldInteger | FormFieldFloat | FormFieldBoolean | FormFieldRadio | FormFieldDate
 
+interface StateFormEditDefinition {
+  stackKey: string
+  getDataKey: string
+  convertData: (key: string, v: any) => JQuery.NameValuePair | false // | StackValue
+}
+
 interface StateFormDefinition extends StateDefinitionBase {
   type: 'form'
   goto: string
+  edit?: StateFormEditDefinition
   fields: FormField[]
 }
 
@@ -124,11 +131,13 @@ function todayString (): string {
 
 class StateForm extends State {
   private readonly goto: string
+  private readonly edit?: StateFormEditDefinition
   readonly fields: FormField[]
 
   constructor (definition: StateFormDefinition) {
     super('form', definition)
     this.goto = definition.goto
+    this.edit = definition.edit
     this.fields = definition.fields
   }
 
@@ -177,6 +186,31 @@ class StateForm extends State {
 
   retrieveData (stack: Stack, force: boolean): StateRetrievedData {
     const r = super.retrieveData(stack, force)
+
+    if (this.edit?.stackKey) {
+      const value = stack.searchValue(this.edit.stackKey)
+      if (value) {
+        const data = getData(this.edit.getDataKey, 'get', force, { id: value })
+        r.set('__edit', data)
+        const sva1: StackValue[] = []
+        if (!stack.isAnyValue() && data.status === 'resolved') {
+          const dataArray: JQuery.NameValuePair[] = []
+          for (const key in data.data) {
+            let v = data.data[key]
+            v = this.edit.convertData(key, v)
+            if (v === false) {
+              continue
+            // } else if ('label' in v) {
+            //   sva1.push(v)
+            } else {
+              dataArray.push(v)
+            }
+          }
+          const sva2: StackValue[] = this.checkForm(dataArray)
+          stack.setValues(sva1.concat(sva2))
+        }
+      }
+    }
 
     for (let i = 0; i < this.fields.length; i++) {
       const field = this.fields[i]

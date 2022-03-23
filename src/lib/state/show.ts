@@ -1,6 +1,6 @@
 import type { NunjucksVars } from '../nunjucks'
 import { State, StateDefinitionBase, StateRetrievedData } from './state'
-import { Stack } from '../stack'
+import { Stack, StackValue } from '../stack'
 import { getData } from '../data'
 
 interface ShowFieldBase {
@@ -29,7 +29,21 @@ interface ShowFieldLines extends ShowFieldBase {
   lines: ShowFields
 }
 
-type ShowField = ShowFieldVarchar | ShowFieldText | ShowFieldBoolean | ShowFieldLines | ShowFieldInteger
+interface ShowFieldEditPushToStack {
+  fromDataKey: string // get the value from the current data using this key
+  pushOnStackKey: string // name to use when pushing value in stack
+  stackLabel?: string
+  silent?: boolean // if true, the value will not be sent to backend
+  invisible?: boolean // if true, the value will not be shown by displayStackValue
+}
+
+interface ShowFieldEdit extends ShowFieldBase {
+  type: 'edit'
+  goto: string
+  pushToStack: ShowFieldEditPushToStack[]
+}
+
+type ShowField = ShowFieldVarchar | ShowFieldText | ShowFieldBoolean | ShowFieldLines | ShowFieldInteger | ShowFieldEdit
 type ShowFields = ShowField[]
 interface StateShowDefinition extends StateDefinitionBase {
   type: 'show'
@@ -66,6 +80,11 @@ class StateShow extends State {
   retrieveData (stack: Stack, force: boolean): StateRetrievedData {
     const r = super.retrieveData(stack, force)
 
+    // Erasing current stack values.
+    // Indeed, Show states can only have values when using an edit button.
+    // So we clean values (in case of history back, or return after save).
+    stack.setValues(null)
+
     const value = this._getValue(stack)
     if (value === undefined) {
       r.set('data', false)
@@ -80,7 +99,7 @@ class StateShow extends State {
     h.data = retrievedData.get('data')
   }
 
-  bindEvents (dom: JQuery, _stack: Stack): void {
+  bindEvents (dom: JQuery, stack: Stack): void {
     dom.on('click.stateEvents', '[pickupmobile-show-add]', () => {
       if (this.addGoto) {
         dom.trigger('goto-state', [this.addGoto])
@@ -90,6 +109,25 @@ class StateShow extends State {
       if (this.okGoto) {
         dom.trigger('goto-state', [this.okGoto])
       }
+    })
+    dom.on('click.StateEvents', '[pickupmobile-show-edit-goto]', ev => {
+      const a = $(ev.currentTarget)
+      const goto = a.attr('pickupmobile-show-edit-goto')
+      const data: any = JSON.parse(a.attr('pickupmobile-show-edit-data') ?? '{}')
+      const pushToStacks: ShowFieldEditPushToStack[] = JSON.parse(a.attr('pickupmobile-show-edit-push-to-stack') ?? '[]')
+
+      const svs: StackValue[] = []
+      for (const pushToStack of pushToStacks) {
+        svs.push({
+          label: pushToStack.stackLabel ?? pushToStack.pushOnStackKey,
+          name: pushToStack.pushOnStackKey,
+          value: data[pushToStack.fromDataKey],
+          invisible: pushToStack.invisible,
+          silent: pushToStack.silent
+        })
+      }
+      stack.setValues(svs)
+      dom.trigger('goto-state', [goto])
     })
   }
 
@@ -101,6 +139,16 @@ class StateShow extends State {
     if (this.okGoto) {
       a.push(this.okGoto)
     }
+    function searchFieldGoto (fields: ShowFields): void {
+      fields.forEach(field => {
+        if (field.type === 'edit' && field.goto) {
+          a.push(field.goto)
+        } else if (field.type === 'lines') {
+          searchFieldGoto(field.lines)
+        }
+      })
+    }
+    searchFieldGoto(this.fields)
     return a
   }
 }

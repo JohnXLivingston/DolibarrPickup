@@ -63,7 +63,7 @@ $(function () {
 
   definition.create_pickup = definitions.createPickup('save_pickup')
   definition.save_pickup = definitions.savePickup('show_pickup', entrepotId !== undefined ? 'societe' : 'entrepot')
-  definition.show_pickup = definitions.showPickup(useDEEE, 'product')
+  definition.show_pickup = definitions.showPickup(useDEEE, 'product', 'qty')
 
   let saveUntilForProduct: string
   if (usePCat) {

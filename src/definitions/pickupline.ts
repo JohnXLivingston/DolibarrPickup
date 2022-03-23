@@ -1,3 +1,4 @@
+// import type { StackValue } from '../lib/stack'
 import { StateDefinition } from '../lib/state/index'
 
 export function createPickupLine (goto: string): StateDefinition {
@@ -5,6 +6,29 @@ export function createPickupLine (goto: string): StateDefinition {
     type: 'form',
     label: 'Quantité',
     goto,
+    edit: {
+      stackKey: 'pickup_line_id',
+      getDataKey: 'pickupline',
+      convertData: (key: string, v: any) => {
+        // if (key === 'name') {
+        //   const r: StackValue = {
+        //     label: 'Produit',
+        //     name: 'dummy_product_name',
+        //     value: v,
+        //     silent: true,
+        //     invisible: false
+        //   }
+        //   return r
+        // }
+        if (key === 'qty') {
+          return {
+            value: v,
+            name: key
+          }
+        }
+        return false
+      }
+    },
     fields: [
       {
         type: 'integer',
@@ -12,7 +36,7 @@ export function createPickupLine (goto: string): StateDefinition {
         label: 'Quantité',
         mandatory: true,
         default: '1',
-        min: 1,
+        min: 0,
         max: 1000
       }
     ]

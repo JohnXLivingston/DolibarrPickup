@@ -14,6 +14,11 @@ Pour les appliquer, il faut désactiver puis réactiver le module.
   * Le statut «en attente signature» est renommé en «en stock».
   * Ce statut «en stock» est considéré final.
 * Ajout de nouveaux types d'unités à prendre en compte (m, m², m³, l, ...). On peut paramétrer les unités à utiliser.
+* Application mobile: possibilité d'éditer une ligne de collecte (pour corriger la quantité, ...)
+
+### Corrections et changements mineurs
+
+* Application mobile: on peut mettre une quantité à 0. Permet de corriger une ligne ajoutée par erreur. À noter que j'ai fait le choix de ne pas permettre de la supprimer, pour qu'une personne qualifiée puisse supprimer le produit si nécessaire.
 
 ## 1.2.1
 
