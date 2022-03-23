@@ -6,14 +6,16 @@ import type { RemoveBetween } from './stack'
 
 class Machine {
   private readonly name: string
+  private readonly clearStackOnGotoInit: boolean
   private readonly version: string
   private readonly content: JQuery
   private readonly states: {[key: string]: State}
   private stack: Stack
   private readonly userId: string
 
-  constructor (name: string, version: string, userId: string, definition: {[key: string]: StateDefinition}) {
+  constructor (name: string, version: string, userId: string, clearStackOnGotoInit: boolean, definition: {[key: string]: StateDefinition}) {
     this.name = name
+    this.clearStackOnGotoInit = clearStackOnGotoInit
     this.version = version
     this.userId = userId
     this.states = {}
@@ -186,7 +188,9 @@ class Machine {
    */
   gotoState (name: string, removeBetween?: RemoveBetween): void {
     let stack: Stack | undefined = this.stack
-    if (removeBetween) {
+    if (this.clearStackOnGotoInit && name === 'init') {
+      stack = undefined
+    } else if (removeBetween) {
       if (removeBetween.from) {
         const from = stack.findByStateName(removeBetween.from)
         if (from) {

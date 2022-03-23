@@ -51,7 +51,30 @@ export function savePickup (goto: string, saveUntil: string): StateDefinition {
   }
 }
 
-export function showPickup (useDEEE: boolean, addGoto: string, editLineGoto: string): StateDefinition {
+export function showPickup (
+  useDEEE: boolean,
+  addGoto: string,
+  editLineGoto: string,
+  setProcessingStatusGoto: null | {processingStatus: string, goto: string}
+): StateDefinition {
+  const fields: ShowFields = [
+    {
+      type: 'varchar',
+      name: 'display',
+      label: 'Collecte'
+    },
+    {
+      type: 'varchar',
+      name: 'date',
+      label: 'Date'
+    },
+    {
+      type: 'text',
+      name: 'description',
+      label: 'Description'
+    }
+  ]
+
   const lineCols: ShowFields = []
   lineCols.push({
     type: 'varchar',
@@ -95,6 +118,57 @@ export function showPickup (useDEEE: boolean, addGoto: string, editLineGoto: str
     goto: editLineGoto
   })
 
+  fields.push({
+    type: 'lines',
+    name: 'lines',
+    label: 'Produits',
+    lines: lineCols
+  })
+
+  if (setProcessingStatusGoto !== null) {
+    fields.push({
+      type: 'edit',
+      name: 'pickup',
+      disabledFunc: (data: any) => { return !(data?.lines?.length > 0) },
+      label: 'Fin de la saisie',
+      pushToStack: [
+        {
+          // L'id de la collecte à sauvegarder
+          fromDataKey: 'rowid',
+          pushOnStackKey: 'pickup_id',
+          stackLabel: 'ID Collecte',
+          silent: false,
+          invisible: true
+        },
+        {
+          // De quoi afficher la collecte concernée sur l'écran de sauvegarde
+          fromDataKey: 'display',
+          pushOnStackKey: 'pickup_display',
+          stackLabel: 'Collecte',
+          silent: true,
+          invisible: false
+        },
+        {
+          // Le nouveau statut (valeur pour le backend)
+          value: setProcessingStatusGoto.processingStatus,
+          pushOnStackKey: 'pickup_status',
+          stackLabel: 'Statut',
+          silent: false,
+          invisible: true
+        },
+        {
+          // Le nouveau statut (libellé pour le frontend)
+          value: 'En cours de traitement',
+          pushOnStackKey: 'pickup_status_label',
+          stackLabel: 'Statut',
+          silent: true,
+          invisible: false
+        }
+      ],
+      goto: setProcessingStatusGoto.goto
+    })
+  }
+
   return {
     type: 'show',
     label: 'Collecte',
@@ -102,28 +176,18 @@ export function showPickup (useDEEE: boolean, addGoto: string, editLineGoto: str
     primaryKey: 'pickup', // FIXME: should be less ambigous
     addGoto,
     addLabel: 'Ajouter un produit',
-    fields: [
-      {
-        type: 'varchar',
-        name: 'display',
-        label: 'Collecte'
-      },
-      {
-        type: 'varchar',
-        name: 'date',
-        label: 'Date'
-      },
-      {
-        type: 'text',
-        name: 'description',
-        label: 'Description'
-      },
-      {
-        type: 'lines',
-        name: 'lines',
-        label: 'Produits',
-        lines: lineCols
-      }
-    ]
+    fields
+  }
+}
+
+export function savePickupStatus (goto: string, saveUntil: string): StateDefinition {
+  return {
+    type: 'save',
+    label: 'Fin de la saisie',
+    key: 'pickup',
+    primaryKey: 'rowid', // FIXME: to check.
+    labelKey: 'Collecte',
+    saveUntil,
+    goto
   }
 }

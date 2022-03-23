@@ -15,6 +15,7 @@ Pour les appliquer, il faut désactiver puis réactiver le module.
   * Ce statut «en stock» est considéré final.
 * Ajout de nouveaux types d'unités à prendre en compte (m, m², m³, l, ...). On peut paramétrer les unités à utiliser.
 * Application mobile: possibilité d'éditer une ligne de collecte (pour corriger la quantité, ...)
+* Possibilité de passer la collecte «en cours de traitement» depuis l'application mobile. Note: l'utilisateur⋅rice doit avoir le droit associé.
 
 ### Corrections et changements mineurs
 

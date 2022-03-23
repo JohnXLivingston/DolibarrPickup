@@ -29,17 +29,25 @@ interface ShowFieldLines extends ShowFieldBase {
   lines: ShowFields
 }
 
-interface ShowFieldEditPushToStack {
-  fromDataKey: string // get the value from the current data using this key
+interface ShowFieldEditPushToStackBase {
   pushOnStackKey: string // name to use when pushing value in stack
   stackLabel?: string
   silent?: boolean // if true, the value will not be sent to backend
   invisible?: boolean // if true, the value will not be shown by displayStackValue
 }
+interface ShowFieldEditPushToStackFromData extends ShowFieldEditPushToStackBase {
+  fromDataKey: string // get the value from the current data using this key
+}
+interface ShowFieldEditPushToStackFixed extends ShowFieldEditPushToStackBase {
+  value: string
+}
+
+type ShowFieldEditPushToStack = ShowFieldEditPushToStackFromData | ShowFieldEditPushToStackFixed
 
 interface ShowFieldEdit extends ShowFieldBase {
   type: 'edit'
   goto: string
+  disabledFunc?: (data: any) => boolean
   pushToStack: ShowFieldEditPushToStack[]
 }
 
@@ -118,10 +126,18 @@ class StateShow extends State {
 
       const svs: StackValue[] = []
       for (const pushToStack of pushToStacks) {
+        let value
+        if ('fromDataKey' in pushToStack) {
+          value = data[pushToStack.fromDataKey]
+        } else if ('value' in pushToStack) {
+          value = pushToStack.value
+        } else {
+          continue
+        }
         svs.push({
           label: pushToStack.stackLabel ?? pushToStack.pushOnStackKey,
           name: pushToStack.pushOnStackKey,
-          value: data[pushToStack.fromDataKey],
+          value,
           invisible: pushToStack.invisible,
           silent: pushToStack.silent
         })

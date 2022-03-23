@@ -45,6 +45,10 @@ $conf->dol_hide_leftmenu = 1; // hide left menu
 
 dol_include_once('/pickup/core/modules/modPickup.class.php');
 $modulePickup = new modPickup($db);
+dol_include_once('/pickup/class/pickup.class.php');
+$objectPickup = new Pickup($db);
+$processing_status = $objectPickup->getRights()->workflow->processing ? $objectPickup::STATUS_PROCESSING : false;
+
 
 function mobile_header () {
   global $langs, $conf;
@@ -95,5 +99,6 @@ mobile_header();
     data-units-length="<?php echo $conf->global->PICKUP_UNITS_LENGTH ?? '0' ?>"
     data-units-surface="<?php echo $conf->global->PICKUP_UNITS_SURFACE ?? '0' ?>"
     data-units-volume="<?php echo $conf->global->PICKUP_UNITS_VOLUME ?? '0' ?>"
+    <?php if (!empty($processing_status)) { print 'data-processing-status="'.$processing_status.'"'; } ?>
   ></div>
 </body></html>

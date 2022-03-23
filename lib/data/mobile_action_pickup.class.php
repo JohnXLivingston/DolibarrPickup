@@ -93,6 +93,44 @@ class DataMobileActionPickup extends DataMobileAction {
     dol_syslog(__METHOD__, LOG_DEBUG);
     global $user, $conf;
 
+    dol_include_once('/pickup/class/pickup.class.php');
+    $object = new Pickup($this->db);
+
+    $pickup_id = GETPOST('pickup_id', 'int');
+    if (!empty($pickup_id)) {
+      dol_syslog(__METHOD__ . ': modifing an existing pickup.', LOG_DEBUG);
+      // We are on an edit.
+
+      // NB: for now, the only edit allowed from mobile app is to set status to STATUS_PROCESSING.
+      $status_change = GETPOST('pickup_status', 'int');
+      if (intval($status_change) !== Pickup::STATUS_PROCESSING) {
+        dol_syslog(__METHOD__ . ': invalid status: ' . strval($status_change), LOG_DEBUG);
+        return 0;
+      }
+
+      // Checking user rights.
+      if (!$object->getRights()->workflow->processing) {
+        dol_syslog(__METHOD__ . ': the user has not the right to do so', LOG_DEBUG);
+        return 0;
+      }
+
+      if ($object->fetch($pickup_id) <= 0) {
+        $this->_log_object_errors(__METHOD__, $object);
+        return 0;
+      }
+
+      $object->status = Pickup::STATUS_PROCESSING;
+      if ($object->update($user) <= 0) {
+				$this->_log_object_errors(__METHOD__, $object);
+        return 0;
+			}
+      
+      dol_syslog(__METHOD__ . ': status changed.', LOG_DEBUG);
+      return $this->pickup2json($object);
+    }
+
+    dol_syslog(__METHOD__ . ': creating a new pickup...', LOG_DEBUG);
+
     $date_pickup_input = GETPOST('date_pickup', 'alpha');
     $date_pickup_parts = explode('-', $date_pickup_input);
     $date_pickup = dol_mktime(12, 0, 0, $date_pickup_parts[1], $date_pickup_parts[2], $date_pickup_parts[0], true, 1);
@@ -100,9 +138,6 @@ class DataMobileActionPickup extends DataMobileAction {
       dol_syslog('Invalid date: ' . $date_pickup_input, LOG_ERR);
       return 0;
     }
-
-    dol_include_once('/pickup/class/pickup.class.php');
-    $object = new Pickup($this->db);
 
     $object->fk_entrepot = GETPOSTISSET('entrepot') ? GETPOST('entrepot') : $conf->global->PICKUP_DEFAULT_STOCK;
     $object->fk_soc = GETPOST('soc', 'int');

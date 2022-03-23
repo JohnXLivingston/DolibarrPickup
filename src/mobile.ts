@@ -36,6 +36,7 @@ $(function () {
   const useUnitLength = readUseUnit(container.attr('data-units-length'))
   const useUnitSurface = readUseUnit(container.attr('data-units-surface'))
   const useUnitVolume = readUseUnit(container.attr('data-units-volume'))
+  const processingStatus = container.attr('data-processing-status') ?? null
 
   // version is a string that must be related to the Machine definition, and the backend configuration.
   // It is used to clear the stack on page load, if the configuration changed.
@@ -49,6 +50,7 @@ $(function () {
   version += '_ul' + useUnitLength[0]
   version += '_us' + useUnitSurface[0]
   version += '_uv' + useUnitVolume[0]
+  version += '_csps' + (processingStatus ?? 'x')
 
   const definition: {[key: string]: StateDefinition} = {}
 
@@ -63,7 +65,10 @@ $(function () {
 
   definition.create_pickup = definitions.createPickup('save_pickup')
   definition.save_pickup = definitions.savePickup('show_pickup', entrepotId !== undefined ? 'societe' : 'entrepot')
-  definition.show_pickup = definitions.showPickup(useDEEE, 'product', 'qty')
+  definition.show_pickup = definitions.showPickup(
+    useDEEE, 'product', 'qty',
+    processingStatus ? { goto: 'save_pickup_status', processingStatus: processingStatus } : null
+  )
 
   let saveUntilForProduct: string
   if (usePCat) {
@@ -94,10 +99,15 @@ $(function () {
   definition.qty = definitions.createPickupLine('save_pickupline')
   definition.save_pickupline = definitions.savePickupLine('show_pickup', 'init', 'show_pickup', true)
 
+  if (processingStatus) {
+    definition.save_pickup_status = definitions.savePickupStatus('init', 'show_pickup')
+  }
+
   const machine = new Machine(
     'myMachine',
     version,
     container.attr('data-user-id') ?? '',
+    true,
     definition
   )
   machine.init(container)
@@ -126,6 +136,7 @@ function demoMode (container: JQuery): void {
     'Demo',
     version,
     container.attr('data-user-id') ?? '',
+    true,
     definition
   )
   machine.init(container)
