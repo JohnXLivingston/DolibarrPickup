@@ -16,6 +16,8 @@ Pour les appliquer, il faut désactiver puis réactiver le module.
 * Ajout de nouveaux types d'unités à prendre en compte (m, m², m³, l, ...). On peut paramétrer les unités à utiliser.
 * Application mobile: possibilité d'éditer une ligne de collecte (pour corriger la quantité, ...)
 * Possibilité de passer la collecte «en cours de traitement» depuis l'application mobile. Note: l'utilisateur⋅rice doit avoir le droit associé.
+* Envoi par e-mail des bons de collecte.
+  * Note: à cause d'une contrainte dans Dolibarr, cette fonctionnalité est optionnelle. Le fait de l'activer change le format des noms de PDF (car ceux-ci doivent contenir la référence)
 
 ### Corrections et changements mineurs
 

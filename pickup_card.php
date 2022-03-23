@@ -166,11 +166,13 @@ if (empty($reshook))
 	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 	$permissiontoadd = $previous_permissiontoadd;
 
-	// // Actions to send emails
-	// $trigger_name='PICKUP_SENTBYMAIL';
-	// $autocopy='MAIN_MAIL_AUTOCOPY_PICKUP_TO';
-	// $trackid='pickup'.$object->id;
-	// include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+	if (!empty($conf->global->PICKUP_SEND_MAIL)) {
+		// // Actions to send emails
+		$triggersendname = 'PICKUP_SENTBYMAIL';
+		$autocopy = 'MAIN_MAIL_AUTOCOPY_PICKUP_TO';
+		$trackid = 'pickup'.$object->id;
+		include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+	}
 }
 
 
@@ -525,10 +527,12 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
     	if (empty($reshook))
     	{
-    	    // Send
-          //  print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&action=presend&mode=init#formmailbeforetitle">' . $langs->trans('SendMail') . '</a>'."\n";
+    	  // Send
+				if (empty($user->socid) && $object->canCreatePickupPdf()) { // Considering you can send mail if you can generate PDF
+					print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&action=presend&mode=init#formmailbeforetitle">'.$langs->trans('SendMail').'</a>'."\n";
+				}
 
-            // Modify
+        // Modify
     		if ($permissionedit)
     		{
     			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n";
@@ -637,18 +641,18 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		print '</div></div></div>';
 	}
 
-	//Select mail models is same action as presend
-	/*
-	 if (GETPOST('modelselected')) $action = 'presend';
+	if (!empty($conf->global->PICKUP_SEND_MAIL)) {
+		if ($action === 'presend') {
+			$object->fetchLines(); // could be called for PDF generation (if the file does not exist yet).
+		}
+		// Presend form
+		$modelmail = 'pickup';
+		$defaulttopic = 'PickupMailTopic';
+		$diroutput = $conf->pickup->dir_output.'/pickup';
+		$trackid = 'pickup'.$object->id;
 
-	 // Presend form
-	 $modelmail='inventory';
-	 $defaulttopic='InformationMessage';
-	 $diroutput = $conf->product->dir_output.'/inventory';
-	 $trackid = 'stockinv'.$object->id;
-
-	 include DOL_DOCUMENT_ROOT.'/core/tpl/card_presend.tpl.php';
-	 */
+		include DOL_DOCUMENT_ROOT.'/core/tpl/card_presend.tpl.php';
+	}
 }
 
 // End of page

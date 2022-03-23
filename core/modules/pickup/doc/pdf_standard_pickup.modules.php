@@ -282,7 +282,13 @@ class pdf_standard_pickup extends ModelePDFPickup
 			} else {
 				$objectref = dol_sanitizeFileName($object->ref);
 				$dir = $conf->pickup->dir_output.'/pickup/'.$objectref;
-				$pdffilename = dol_sanitizeFileName($langs->transnoentities("PickupPdfTitle").' '.$object->label);
+				// Because of a weird Dolibarr behaviour (file card_presend.tpl.php), if we want to send emails,
+				// the file must contain the reference...
+				if (!empty($conf->global->PICKUP_SEND_MAIL)) {
+					$pdffilename = dol_sanitizeFileName($langs->transnoentities("PickupPdfTitle").' '.$object->ref);
+				} else {
+					$pdffilename = dol_sanitizeFileName($langs->transnoentities("PickupPdfTitle").' '.$object->label);
+				}
 				$file = $dir."/".$pdffilename.".pdf";
 			}
 			if (!file_exists($dir))

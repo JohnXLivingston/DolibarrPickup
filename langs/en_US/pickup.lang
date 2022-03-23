@@ -47,6 +47,8 @@ PICKUP_USE_DEEETooltip = Will add DEEE and DEEE type files to products.
 PICKUP_USE_PBRAND = Use a «brand» field on products
 PICKUP_USE_PBRANDTooltip = Will add a brand field to products.
 PICKUP_NO_SIGN_STATUS = Disable «signed» state
+PICKUP_SEND_MAIL = Activate «Send Email» feature
+PICKUP_SEND_MAILTooltip = This will change the pickup receipt filenames (to be compatible with Dolibarr).
 PICKUP_UPDATE_EXTRAFIELDS = Reset extra fields
 PICKUP_UPDATE_EXTRAFIELDS_Tooltip = If you accidentaly modified extrafields parameters, you can reinit them by clicking on this button.
 PICKUP_MIGRATE_EXTRAFIELDS = Migrate old LRDS fields
@@ -146,3 +148,5 @@ Permission469006 = Set pickups to «in stock» state, create associated stock mo
 Permission469007 = Set pickups to «signed» state
 Permission469008 = Configure the pickup module
 Permission469009 = Access to reports
+
+PickupMailTopic = Pickup receipt __REF__
