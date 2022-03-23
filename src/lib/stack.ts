@@ -186,12 +186,24 @@ class Stack {
     return d
   }
 
-  serialize (): string {
-    return JSON.stringify(this.dump())
+  serialize (version: string): string {
+    return JSON.stringify({
+      version,
+      dump: this.dump()
+    })
   }
 
-  static deserialize (s: string): Stack {
-    const dump = JSON.parse(s)
+  static deserialize (s: string, version: string): Stack | null {
+    const o = JSON.parse(s)
+    if (typeof o !== 'object') {
+      return null
+    }
+    if (o.version !== version) {
+      return null
+    }
+    if (!o.dump) {
+      return null
+    }
     function createObject (d: any): Stack {
       if (typeof d !== 'object') {
         throw new Error('Unable to deserialize')
@@ -204,7 +216,7 @@ class Stack {
       s.setValues(d.values)
       return s
     }
-    return createObject(dump)
+    return createObject(o.dump)
   }
 
   dumpForHuman (): string[] {

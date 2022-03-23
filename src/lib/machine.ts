@@ -41,7 +41,7 @@ class Machine {
     const stackSerialized = localStorage.getItem(currentLocalStorageKey)
     if (stackSerialized) {
       try {
-        this.stack = Stack.deserialize(stackSerialized)
+        this.stack = Stack.deserialize(stackSerialized, version) ?? new Stack('init')
       } catch (err) {
         console.error(err)
         this.stack = new Stack('init')
@@ -221,11 +221,11 @@ class Machine {
   }
 
   stackStoragePrefix (): string {
-    return 'stack_' + (this.version.toString()) + '_' + this.userId + '_'
+    return 'stack_' + this.userId + '_'
   }
 
   saveStack (): void {
-    localStorage.setItem(this.stackStoragePrefix() + this.name, this.stack.serialize())
+    localStorage.setItem(this.stackStoragePrefix() + this.name, this.stack.serialize(this.version))
   }
 
   async findMissingStates (name?: string): Promise<string[]> {
