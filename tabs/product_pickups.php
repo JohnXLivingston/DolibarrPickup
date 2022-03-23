@@ -19,8 +19,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/pickup.class.php';
-require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/pickupline.class.php';
+dol_include_once('/pickup/class/pickup.class.php');
+dol_include_once('/pickup/class/pickupline.class.php');
 
 $langs->loadLangs(array("pickup@pickup", "products", "other", "stocks"));
 

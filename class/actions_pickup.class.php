@@ -23,7 +23,7 @@
  * Put detailed description here.
  */
 
-require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/pickup.class.php';
+dol_include_once('/pickup/class/pickup.class.php');
 
 /**
  * Class ActionsPickup

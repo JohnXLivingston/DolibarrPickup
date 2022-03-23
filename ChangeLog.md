@@ -20,6 +20,7 @@ Pour les appliquer, il faut désactiver puis réactiver le module.
 ### Corrections et changements mineurs
 
 * Application mobile: on peut mettre une quantité à 0. Permet de corriger une ligne ajoutée par erreur. À noter que j'ai fait le choix de ne pas permettre de la supprimer, pour qu'une personne qualifiée puisse supprimer le produit si nécessaire.
+* Suppression des utilisations de la constante DOL_DOCUMENT_ROOT bannies par le Dolistore.
 
 ## 1.2.1
 

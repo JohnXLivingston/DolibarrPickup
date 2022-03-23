@@ -90,7 +90,7 @@ if (!$user->rights->pickup->configure) {
 }
 
 
-require_once DOL_DOCUMENT_ROOT.'/custom/pickup/lib/mobile_forms.php';
+dol_include_once('/pickup/lib/mobile_forms.php');
 
 $mobileforms = mobileListProductForms();
 

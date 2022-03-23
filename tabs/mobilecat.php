@@ -17,9 +17,9 @@ if (! $res) die("Include of main fails");
 
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/custom/pickup/class/mobilecat.class.php';
-require_once DOL_DOCUMENT_ROOT.'/custom/pickup/lib/pickup_mobilecat.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/custom/pickup/lib/mobile_forms.php';
+dol_include_once('/pickup/class/mobilecat.class.php');
+dol_include_once('/pickup/lib/pickup_mobilecat.lib.php');
+dol_include_once('/pickup/lib/mobile_forms.php');
 
 
 $langs->loadLangs(array("pickup@pickup", "categories", "other"));
