@@ -1045,4 +1045,39 @@ class Pickup extends CommonObject
 			return null;
 		}
 	}
+
+	public static function getPickupTypeOptions () {
+		global $db, $conf;
+		if (empty($conf->global->PICKUP_USE_PICKUP_TYPE)) {
+			return array();
+		}
+		$sql = 'SELECT rowid, label FROM '.MAIN_DB_PREFIX.'c_pickup_type';
+		$sql.= " WHERE active = '1' ";
+		if ($conf->entity) {
+			$sql.= " AND entity = '".$db->escape($conf->entity)."'";
+		}
+		$sql.= " ORDER BY label ASC";
+
+		$result = array();
+
+		$resql = $db->query($sql);
+		if ($resql) {
+			$num = $db->num_rows($resql);
+			$i = 0;
+			while ($i < $num) {
+				$row = $db->fetch_object($resql);
+
+				array_push($result, array(
+					'value' => $row->rowid,
+					'label' => $row->label
+				));
+				$i++;
+			}
+			$db->free($resql);
+		} else {
+			dol_print_error($db);
+		}
+
+		return $result;
+	}
 }

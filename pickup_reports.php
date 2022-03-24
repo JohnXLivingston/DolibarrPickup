@@ -54,6 +54,7 @@ if (isset($user->societe_id) && $user->societe_id > 0)
 }
 
 $status_filter = GETPOST('status', 'int');
+$pickup_type_filter = GETPOST('pickup_type', 'int');
 
 $date_startmonth = GETPOST('date_startmonth', 'int');
 $date_startday = GETPOST('date_startday', 'int');
@@ -137,9 +138,9 @@ $builddate = dol_now();
  *	@param 	integer	      $builddate      Date generation
  *	@return	void
  */
-function pickup_report_header($reportname, $period, $periodlink, $builddate, $status_filter)
+function pickup_report_header($reportname, $period, $periodlink, $builddate, $status_filter, $pickup_type_filter)
 {
-	global $langs, $db;
+	global $langs, $db, $conf;
 
 	print "\n\n<!-- start banner of report -->\n";
 
@@ -174,6 +175,28 @@ function pickup_report_header($reportname, $period, $periodlink, $builddate, $st
 	if ($periodlink) print '<td class="nowraponall">'.$periodlink.'</td>';
 	print '</td>';
 	print '</tr>'."\n";
+
+  // Pickup type
+  if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE)) {
+    print '<tr>';
+    print '<td>'.$langs->trans('PickupType').'</td>';
+    print '<td>';
+    $pickup_type_options = Pickup::getPickupTypeOptions();
+    print '<select name="pickup_type">';
+    print '<option value=""></option>';
+    foreach ($pickup_type_options as $pickup_type_option) {
+      print '<option ';
+      print ' value="'.htmlspecialchars($pickup_type_option['value']).'"';
+      if ($pickup_type_filter !== '' && intval($pickup_type_filter) === intval($pickup_type_option['value'])) {
+        print ' selected="selected" ';
+       }
+       print '>'.htmlspecialchars($pickup_type_option['label']).'</option>';
+    }
+    print '</select>';
+    print '</td>';
+    if ($periodlink) print '<td></td>';
+    print '</tr>'."\n";
+  }
 
   // Status
   print '<tr>';
@@ -214,7 +237,7 @@ function pickup_report_header($reportname, $period, $periodlink, $builddate, $st
 
 	print "\n<!-- end banner of report -->\n\n";
 }
-pickup_report_header($langs->trans("PickupMenuReports"), $period, $periodlink, $builddate, $status_filter);
+pickup_report_header($langs->trans("PickupMenuReports"), $period, $periodlink, $builddate, $status_filter, $pickup_type_filter);
 
 
 /*
@@ -257,7 +280,7 @@ function sum_line($row, &$data_for_soc, $default_unit, $row_col, $row_unit_col, 
 function retrieve_data() {
   // TODO: add indexes in DB?
   global $db, $conf;
-  global $date_start, $date_end, $deee_types, $status_filter;
+  global $date_start, $date_end, $deee_types, $status_filter, $pickup_type_filter;
 
   // NB: We can get deee and deee_type even if !PICKUP_USE_DEEE. Fields will just be empty or ignored later.
   $sql = 'SELECT p.fk_soc, ';
@@ -274,6 +297,9 @@ function retrieve_data() {
   $sql.= " AND p.date_pickup <= '".$db->escape(dol_print_date($date_end, "%Y-%m-%d"))."'";
   if ($status_filter !== '') {
     $sql.= " AND p.status = '".$db->escape($status_filter)."'";
+  }
+  if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE) && !empty($pickup_type_filter)) {
+    $sql.= " AND p.fk_pickup_type = '".$db->escape($pickup_type_filter)."'";
   }
   $sql.= ' GROUP BY p.fk_soc, pl.deee, pl.deee_type, pl.weight_units, pl.length_units, pl.surface_units, pl.volume_units';
 
