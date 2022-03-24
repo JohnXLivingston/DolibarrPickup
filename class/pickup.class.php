@@ -96,6 +96,7 @@ class Pickup extends CommonObject
 		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>30, 'notnull'=>1, 'visible'=>4, 'searchall'=>1, 'showoncombobox'=>'1',),
 		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php:1', 'label'=>'ThirdParty', 'enabled'=>'1', 'position'=>50, 'notnull'=>1, 'visible'=>1, 'index'=>1,),
 		'date_pickup' => array('type'=>'date', 'label'=>'PickupDate', 'enabled'=>'1', 'position'=>55, 'notnull'=>1, 'visible'=>1, 'index'=>1,),
+		'fk_pickup_type' => array('type' => 'sellist:c_pickup_type:label:rowid::active=1','label' => 'PickupType', 'enabled' => '$conf->global->PICKUP_USE_PICKUP_TYPE', 'position'=>57,'notnull'=>0,'visible'=>1,'index'=>1),
 		'description' => array('type'=>'html', 'label'=>'Description', 'enabled'=>'1', 'position'=>60, 'notnull'=>-1, 'visible'=>-1,),
 		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>'1', 'position'=>500, 'notnull'=>1, 'visible'=>-2,),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>-1, 'visible'=>-2,),
@@ -123,6 +124,7 @@ class Pickup extends CommonObject
 	public $label;
 	public $fk_soc;
 	public $date_pickup;
+	public $fk_pickup_type;
 	public $description;
 	public $date_creation;
 	public $tms;
@@ -185,6 +187,9 @@ class Pickup extends CommonObject
 
 		if (!empty($conf->global->PICKUP_DEFAULT_STOCK)) {
 			$this->fields['fk_entrepot']['default'] = $conf->global->PICKUP_DEFAULT_STOCK;
+		}
+		if (empty($conf->global->PICKUP_USE_PICKUP_TYPE)) {
+			$this->fields['fk_pickup_type']['visible'] = 0;
 		}
 
 		// Unset fields that are disabled
@@ -1016,5 +1021,28 @@ class Pickup extends CommonObject
 		}
 
 		return $result;
+	}
+
+	public function getPickupTypeLabel () {
+		global $db, $conf;
+		if (empty($conf->global->PICKUP_USE_PICKUP_TYPE)) {
+			return null;
+		}
+		if (empty($this->fk_pickup_type)) {
+			return null;
+		}
+		$sql = "SELECT label ";
+		$sql .= " FROM ".MAIN_DB_PREFIX.'c_pickup_type ';
+		$sql .= " WHERE rowid = '".$db->escape($this->fk_pickup_type)."'";
+
+		$resql = $db->query($sql);
+		if ($resql)	{
+			$obj = $db->fetch_object($resql);
+			$db->free($resql);
+			if ($obj) return $obj->label;
+			return null;
+		} else {
+			return null;
+		}
 	}
 }

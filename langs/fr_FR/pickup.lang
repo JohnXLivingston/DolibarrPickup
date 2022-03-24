@@ -37,7 +37,10 @@ PickupStatusStockBis = En attente de signature
 PickupStatusShortStockBis = Attente signature
 PickupStatusSigned = Signée
 PickupDate = Date de la collecte
+PickupType = Type de collecte
 
+PICKUP_USE_PICKUP_TYPE = Utiliser le champ «Type de collecte»
+PICKUP_USE_PICKUP_TYPETooltip = Si vous activez cette option, pensez à aller paramétrer le dictionnaire associé.
 PICKUP_DEFAULT_STOCK = Entrepôt par défaut
 PICKUP_DEFAULT_STOCKTooltip = L'entrepôt à utiliser quand on créé une collecte depuis l'application mobile.
 PICKUP_USE_PCAT = Utiliser les tags produits
@@ -150,3 +153,5 @@ Permission469008 = Configurer le module Collecte
 Permission469009 = Accéder aux rapports
 
 PickupMailTopic = Bon de collecte __REF__
+
+PickupDictType = Type de collecte

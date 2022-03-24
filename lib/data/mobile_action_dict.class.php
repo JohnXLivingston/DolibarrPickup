@@ -11,7 +11,12 @@ class DataMobileActionDict extends DataMobileAction {
     // FIXME: should use entity id?
     $what = GETPOST('what');
     $sql = '';
-    if ($what == 'forme_juridique_code') {
+    if ($what == 'pickup_type') {
+      $sql  = "SELECT f.rowid as id, f.label as label ";
+      $sql .= " FROM ".MAIN_DB_PREFIX."c_pickup_type as f ";
+      $sql .= " WHERE f.entity = '".$db->escape($conf->entity)."' AND f.active = 1 ";
+      $sql .= " ORDER BY label";
+    } else if ($what == 'forme_juridique_code') {
       $country_code = GETPOST('country');
 
       $sql  = "SELECT f.rowid, f.code as code , f.libelle as label, f.active, c.label as country, c.code as country_code";

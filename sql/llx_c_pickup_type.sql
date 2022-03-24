@@ -14,21 +14,10 @@
 -- along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
-CREATE TABLE llx_pickup_pickup(
-	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
-	ref varchar(128) DEFAULT '(PROV)' NOT NULL, 
-	label varchar(255), 
-	fk_soc integer NOT NULL,
-	date_pickup date NOT NULL,
-	fk_pickup_type integer DEFAULT NULL,
-	description text,
-	date_creation datetime NOT NULL, 
-	tms timestamp, 
-	fk_user_creat integer NOT NULL, 
-	fk_user_modif integer, 
-	status integer NOT NULL, 
-	fk_entrepot integer NOT NULL, 
-	note_public text, 
-	note_private text,
-	model_pdf varchar(255) DEFAULT NULL
+create table llx_c_pickup_type
+(
+  rowid			integer AUTO_INCREMENT PRIMARY KEY,
+  entity		integer DEFAULT 1 NOT NULL,
+  label			varchar(128)			NOT NULL,
+  active		integer DEFAULT 1
 ) ENGINE=innodb;

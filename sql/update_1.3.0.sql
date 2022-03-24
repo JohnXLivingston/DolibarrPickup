@@ -13,6 +13,8 @@
 -- You should have received a copy of the GNU Affero General Public License
 -- along with this program.  If not, see https://www.gnu.org/licenses/.
 
+ALTER TABLE llx_pickup_pickup ADD fk_pickup_type integer DEFAULT NULL AFTER date_pickup;
+
 ALTER TABLE llx_pickup_pickupline ADD length double(24,8) DEFAULT NULL AFTER weight_units;
 ALTER TABLE llx_pickup_pickupline ADD length_units tinyint DEFAULT NULL AFTER length;
 

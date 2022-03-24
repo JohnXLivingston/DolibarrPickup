@@ -22,5 +22,4 @@ ALTER TABLE llx_pickup_pickup ADD INDEX idx_pickup_pickup_date_pickup (date_pick
 ALTER TABLE llx_pickup_pickup ADD CONSTRAINT llx_pickup_pickup_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 ALTER TABLE llx_pickup_pickup ADD CONSTRAINT llx_pickup_pickup_fk_user_modif FOREIGN KEY (fk_user_modif) REFERENCES llx_user(rowid);
 ALTER TABLE llx_pickup_pickup ADD INDEX idx_pickup_pickup_status (status);
-
-
+ALTER TABLE llx_pickup_pickup ADD CONSTRAINT llx_pickup_pickup_fk_pickup_type FOREIGN KEY (fk_pickup_type) REFERENCES llx_c_pickup_type(rowid);

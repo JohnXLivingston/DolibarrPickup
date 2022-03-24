@@ -100,5 +100,6 @@ mobile_header();
     data-units-surface="<?php echo $conf->global->PICKUP_UNITS_SURFACE ?? '0' ?>"
     data-units-volume="<?php echo $conf->global->PICKUP_UNITS_VOLUME ?? '0' ?>"
     <?php if (!empty($processing_status)) { print 'data-processing-status="'.$processing_status.'"'; } ?>
+    <?php if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE)) { print ' data-use-pickup-type="1" '; } ?>
   ></div>
 </body></html>

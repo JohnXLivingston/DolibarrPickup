@@ -1,4 +1,4 @@
-import type { StateDefinition, ShowFields } from '../lib/state/index'
+import type { StateDefinition, ShowFields, FormField } from '../lib/state/index'
 
 export function choosePickup (goto: string, creationGoto: string): StateDefinition {
   return {
@@ -15,27 +15,47 @@ export function choosePickup (goto: string, creationGoto: string): StateDefiniti
   }
 }
 
-export function createPickup (goto: string): StateDefinition {
+export function createPickup (goto: string, usePickupType: boolean): StateDefinition {
+  const fields: FormField[] = [
+    {
+      name: 'date_pickup',
+      type: 'date',
+      label: 'Date de la collecte',
+      mandatory: true,
+      defaultToToday: true,
+      maxToToday: true
+    }
+  ]
+
+  if (usePickupType) {
+    fields.push({
+      name: 'pickup_type',
+      type: 'select',
+      label: 'Type de collecte',
+      options: [],
+      load: 'dict',
+      loadParams: {
+        what: 'pickup_type'
+      },
+      map: {
+        value: 'id',
+        label: 'label'
+      },
+      mandatory: false
+    })
+  }
+
+  fields.push({
+    type: 'text',
+    name: 'description',
+    label: 'Remarques',
+    mandatory: false
+  })
   return {
     type: 'form',
     label: 'Nouvelle collecte',
     goto,
-    fields: [
-      {
-        name: 'date_pickup',
-        type: 'date',
-        label: 'Date de la collecte',
-        mandatory: true,
-        defaultToToday: true,
-        maxToToday: true
-      },
-      {
-        type: 'text',
-        name: 'description',
-        label: 'Remarques',
-        mandatory: false
-      }
-    ]
+    fields
   }
 }
 
@@ -55,7 +75,8 @@ export function showPickup (
   useDEEE: boolean,
   addGoto: string,
   editLineGoto: string,
-  setProcessingStatusGoto: null | {processingStatus: string, goto: string}
+  setProcessingStatusGoto: null | {processingStatus: string, goto: string},
+  usePickupType: boolean
 ): StateDefinition {
   const fields: ShowFields = [
     {
@@ -67,13 +88,22 @@ export function showPickup (
       type: 'varchar',
       name: 'date',
       label: 'Date'
-    },
+    }
+  ]
+  if (usePickupType) {
+    fields.push({
+      type: 'varchar',
+      name: 'pickup_type_label',
+      label: 'Type de collecte'
+    })
+  }
+  fields.push(
     {
       type: 'text',
       name: 'description',
       label: 'Description'
     }
-  ]
+  )
 
   const lineCols: ShowFields = []
   lineCols.push({

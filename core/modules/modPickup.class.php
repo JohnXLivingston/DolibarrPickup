@@ -187,7 +187,6 @@ class modPickup extends DolibarrModules
         // 'user'             to add a tab in user view
 
         // Dictionaries
-        $this->dictionaries=array();
         /* Example:
         $this->dictionaries=array(
             'langs'=>'mylangfile@pickup',
@@ -211,6 +210,27 @@ class modPickup extends DolibarrModules
             'tabcond'=>array($conf->pickup->enabled,$conf->pickup->enabled,$conf->pickup->enabled)
         );
         */
+        $this->dictionaries=array(
+			'langs'=>'pickup@pickup',
+			// List of tables we want to see into dictonnary editor
+			'tabname'=>array(MAIN_DB_PREFIX."c_pickup_type"),
+			// Label of tables
+			'tablib'=>array('PickupDictType'),
+			// Request to select fields
+			'tabsql'=>array('SELECT f.rowid as rowid, f.label, f.active FROM '.MAIN_DB_PREFIX.'c_pickup_type as f'),
+			// Sort order
+			'tabsqlsort'=>array("label ASC"),
+			// List of fields (result of select to show dictionary)
+			'tabfield'=>array("label"),
+			// List of fields (list of fields to edit a record)
+			'tabfieldvalue'=>array("label"),
+			// List of fields (list of fields for insert)
+			'tabfieldinsert'=>array("label"),
+			// Name of columns with primary key (try to always name it 'rowid')
+			'tabrowid'=>array("rowid"),
+			// Condition to show each dictionary
+			'tabcond'=>array($conf->pickup->enabled && $conf->global->PICKUP_USE_PICKUP_TYPE)
+		);
 
         // Boxes/Widgets
         // Add here list of php file(s) stored in pickup/core/boxes that contains a class to show a widget.

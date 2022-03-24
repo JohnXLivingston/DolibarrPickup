@@ -37,7 +37,10 @@ PickupStatusStockBis = Waiting signature
 PickupStatusShortStockBis = Waiting signature
 PickupStatusSigned = Signed
 PickupDate = Pickup date
+PickupType = Pickup type
 
+PICKUP_USE_PICKUP_TYPE = Use «Pickup type» field
+PICKUP_USE_PICKUP_TYPETooltip = If you enable this feature, don't forget to setup the corresponding dictionnary.
 PICKUP_DEFAULT_STOCK = Default stock
 PICKUP_DEFAULT_STOCKTooltip = The stock to use when creating a pickup from the pickup mobile application.
 PICKUP_USE_PCAT = Use product tags
@@ -150,3 +153,5 @@ Permission469008 = Configure the pickup module
 Permission469009 = Access to reports
 
 PickupMailTopic = Pickup receipt __REF__
+
+PickupDictType = Pickup type

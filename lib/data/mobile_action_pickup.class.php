@@ -29,6 +29,9 @@ class DataMobileActionPickup extends DataMobileAction {
     $r['description'] = $pickup->description;
     $r['entrepot_name'] = $entrepot->ref;
     $r['lines'] = array();
+    if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE)) {
+      $r['pickup_type_label'] = $pickup->getPickupTypeLabel();
+    }
 
     require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
@@ -143,6 +146,10 @@ class DataMobileActionPickup extends DataMobileAction {
     $object->fk_soc = GETPOST('soc', 'int');
     $object->date_pickup = $date_pickup;
     $object->description = GETPOST('description', 'none');
+    if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE)) {
+      $pickup_type = GETPOST('pickup_type', 'int');
+      $object->fk_pickup_type = empty($pickup_type) ? null : $pickup_type;
+    }
   
     $id = $object->create($user);
     if (!$id || $id <= 0) {

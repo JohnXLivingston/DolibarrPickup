@@ -228,6 +228,12 @@ $label_searches = array(
 		'join' => MAIN_DB_PREFIX."user as user_creat ON user_creat.rowid = t.fk_user_creat"
 	)
 );
+if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE)) {
+	$label_searches['fk_pickup_type'] = array(
+		'key' => 'c_pickup_type.label',
+		'join' => MAIN_DB_PREFIX."c_pickup_type as c_pickup_type ON c_pickup_type.rowid = t.fk_pickup_type"
+	);
+}
 $sql = 'SELECT ';
 foreach($object->fields as $key => $val)
 {
