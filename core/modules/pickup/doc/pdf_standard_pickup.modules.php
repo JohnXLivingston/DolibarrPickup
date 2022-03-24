@@ -285,7 +285,16 @@ class pdf_standard_pickup extends ModelePDFPickup
 				// Because of a weird Dolibarr behaviour (file card_presend.tpl.php), if we want to send emails,
 				// the file must contain the reference...
 				if (!empty($conf->global->PICKUP_SEND_MAIL)) {
-					$pdffilename = dol_sanitizeFileName($langs->transnoentities("PickupPdfTitle").' '.$object->ref);
+					$pdffilename = $langs->transnoentities("PickupPdfTitle");
+					if (!empty($object->fk_soc)) {
+						dol_include_once('societe/class/societe.class.php');
+						$societe = new Societe($db);
+						$societe->fetch($object->fk_soc);
+						$pdffilename.= '_'.$societe->name;
+					}
+					$pdffilename.= '_'.$object->ref;
+					$pdffilename = preg_replace('/\s+/', '_', $pdffilename);
+					$pdffilename = dol_sanitizeFileName($pdffilename);
 				} else {
 					$pdffilename = dol_sanitizeFileName($langs->transnoentities("PickupPdfTitle").' '.$object->label);
 				}
