@@ -62,10 +62,6 @@ $coldisplay = 0;
 			// 	$parameters = array('line'=>$line, 'fk_parent_line'=>$fk_parent_line, 'var'=>$var, 'dateSelector'=>$dateSelector, 'seller'=>$seller, 'buyer'=>$buyer);
 			// 	$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $object, $action);
 			// }
-
-			if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
-				print $line->showInputField(null, 'description', GETPOSTISSET("description") ? GETPOST('description', 'none') : $line->description);
-			}
 		?>
 		<?php
 			if ($line_product->hasbatch() || !empty($line->batch)) {
@@ -148,7 +144,13 @@ $coldisplay = 0;
 		<input type="submit" class="button buttongen marginbottomonly" id="cancellinebutton" name="cancel" value="<?php echo $langs->trans("Cancel"); ?>">
 	</td>
 </tr>
-
+<?php if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) { ?>
+	<tr class="oddeven tredited">
+		<td colspan="<?php echo $coldisplay ?>">
+			<?php print $line->showInputField(null, 'description', GETPOSTISSET("description") ? GETPOST('description', 'none') : $line->description); ?>
+		</td>
+	</tr>
+<?php } ?>
 <?php
 if (!empty($extrafields)) {
 	print $line->showOptionals($extrafields, 'edit', array('class'=>'tredited', 'colspan'=>$coldisplay), '', '', 1);
