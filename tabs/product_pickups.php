@@ -115,6 +115,7 @@ $columns = array(
   array('type' => 'pickup', 'col' => 'label'),
   array('type' => 'pickup', 'col' => 'fk_soc'),
   array('type' => 'pickup', 'col' => 'date_pickup'),
+  array('type' => 'pickup', 'col' => 'fk_pickup_type', 'hide' => empty($conf->global->PICKUP_USE_PICKUP_TYPE)),
   array('type' => 'pickupline', 'col' => 'batch', 'hide' => !$object->hasbatch()),
   array('type' => 'pickupline', 'col' => 'fk_stock_movement'),
   array('type' => 'pickupline', 'col' => 'qty'),
