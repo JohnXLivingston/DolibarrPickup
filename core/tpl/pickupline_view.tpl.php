@@ -98,8 +98,10 @@ $coldisplay = 0; ?>
         }
       }
 
-      // print '<br>';
-      // print dol_htmlentitiesbr($line->description);
+      if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
+        print '<br>';
+        print dol_htmlentitiesbr($line->description);
+      }
     ?>
   </td>
 	<td class="nowrap right">

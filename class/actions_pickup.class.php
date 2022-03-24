@@ -20,7 +20,6 @@
  * \ingroup pickup
  * \brief   Example hook overload.
  *
- * Put detailed description here.
  */
 
 dol_include_once('/pickup/class/pickup.class.php');
@@ -146,7 +145,11 @@ class ActionsPickup
 
 			$lineid   = GETPOST('lineid', 'int');
 
-			// $line_desc = GETPOST('description', 'none');
+			$line_description = '';
+			if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
+				$line_description = GETPOST('description', 'none');
+			}
+
 			$qty = price2num(GETPOST('qty', 'int'));
 
 			$weight = price2num(GETPOST('weight'));
@@ -190,7 +193,9 @@ class ActionsPickup
 					dol_syslog(__METHOD__ . ' ' . 'Line '.$line->id.' is not from pickup '.$object->id, LOG_ERR);
 				} else {
 					$line->qty = $qty;
-					// $line->description = $line_desc;
+					if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
+						$line->description = $line_description;
+					}
 					if (!empty($conf->global->PICKUP_USE_DEEE)) {
 						if (!$deee_type) {
 							$line->deee = 0;
@@ -238,7 +243,7 @@ class ActionsPickup
 						unset($_POST['surface_units']);
 						unset($_POST['volume']);
 						unset($_POST['volume_units']);
-						// unset($_POST['description']);
+						unset($_POST['description']);
 
 						$object->fetchLines();
 					}
@@ -604,7 +609,7 @@ class ActionsPickup
 			return 0;
 		}
 
-		global $db;
+		global $db, $conf;
 		$pdf = $parameters['pdf'];
 		$i = $parameters['i'];
 		$outputlangs = $parameters['outputlangs'];
@@ -630,8 +635,10 @@ class ActionsPickup
 		}
 		$text.= $product->ref;
 
-		// $text.= '<br>';
-		// $text.= dol_htmlentitiesbr($line->description);
+		if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
+			$text.= '<br>';
+			$text.= dol_htmlentitiesbr($line->description);
+		}
 
 		// Fix bug of some HTML editors that replace links <img src="http://localhostgit/viewimage.php?modulepart=medias&file=image/efd.png" into <img src="http://localhostgit/viewimage.php?modulepart=medias&amp;file=image/efd.png"
 		// We make the reverse, so PDF generation has the real URL.

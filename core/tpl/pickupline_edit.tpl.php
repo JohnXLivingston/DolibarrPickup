@@ -63,7 +63,9 @@ $coldisplay = 0;
 			// 	$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $object, $action);
 			// }
 
-			// print $line->showInputField(null, 'description', GETPOSTISSET("description") ? GETPOST('description', 'none') : $line->description);
+			if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
+				print $line->showInputField(null, 'description', GETPOSTISSET("description") ? GETPOST('description', 'none') : $line->description);
+			}
 		?>
 		<?php
 			if ($line_product->hasbatch() || !empty($line->batch)) {

@@ -1,7 +1,26 @@
 // import type { StackValue } from '../lib/stack'
-import { StateDefinition } from '../lib/state/index'
+import { StateDefinition, FormField } from '../lib/state/index'
 
-export function createPickupLine (goto: string): StateDefinition {
+export function createPickupLine (usePickuplineDescription: boolean, goto: string): StateDefinition {
+  const fields: FormField[] = [
+    {
+      type: 'integer',
+      name: 'qty', // FIXME: is this correct?
+      label: 'Quantité',
+      mandatory: true,
+      default: '1',
+      min: 0,
+      max: 1000
+    }
+  ]
+  if (usePickuplineDescription) {
+    fields.push({
+      type: 'text',
+      name: 'line_description',
+      label: 'Remarques',
+      mandatory: false
+    })
+  }
   return {
     type: 'form',
     label: 'Quantité',
@@ -20,6 +39,12 @@ export function createPickupLine (goto: string): StateDefinition {
         //   }
         //   return r
         // }
+        if (usePickuplineDescription && key === 'line_description') {
+          return {
+            value: v,
+            name: 'line_description'
+          }
+        }
         if (key === 'qty') {
           return {
             value: v,
@@ -29,17 +54,7 @@ export function createPickupLine (goto: string): StateDefinition {
         return false
       }
     },
-    fields: [
-      {
-        type: 'integer',
-        name: 'qty', // FIXME: is this correct?
-        label: 'Quantité',
-        mandatory: true,
-        default: '1',
-        min: 0,
-        max: 1000
-      }
-    ]
+    fields
   }
 }
 

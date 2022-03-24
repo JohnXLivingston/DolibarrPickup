@@ -38,6 +38,7 @@ $(function () {
   const useUnitVolume = readUseUnit(container.attr('data-units-volume'))
   const processingStatus = container.attr('data-processing-status') ?? null
   const usePickupType = container.attr('data-use-pickup-type') === '1'
+  const usePickuplineDescription = container.attr('data-use-pickupline-description') === '1'
 
   // version is a string that must be related to the Machine definition, and the backend configuration.
   // It is used to clear the stack on page load, if the configuration changed.
@@ -53,6 +54,7 @@ $(function () {
   version += '_uv' + useUnitVolume[0]
   version += '_csps' + (processingStatus ?? 'x')
   version += '_pt' + (usePickupType ? '1' : '0')
+  version += '_pld' + (usePickuplineDescription ? '1' : '0')
 
   const definition: {[key: string]: StateDefinition} = {}
 
@@ -99,7 +101,7 @@ $(function () {
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)
   definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty')
 
-  definition.qty = definitions.createPickupLine('save_pickupline')
+  definition.qty = definitions.createPickupLine(usePickuplineDescription, 'save_pickupline')
   definition.save_pickupline = definitions.savePickupLine('show_pickup', 'init', 'show_pickup', true)
 
   if (processingStatus) {

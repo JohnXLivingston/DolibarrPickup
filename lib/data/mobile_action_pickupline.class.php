@@ -3,6 +3,7 @@ dol_include_once('/pickup/lib/data/mobile_action.class.php');
 
 class DataMobileActionPickupline extends DataMobileAction {
   public function action_get() {
+    global $conf;
     dol_syslog(__METHOD__, LOG_DEBUG);
 
     $id = GETPOST('id', 'int');
@@ -21,6 +22,9 @@ class DataMobileActionPickupline extends DataMobileAction {
       'name' => $product->ref,
       'qty' => $pickupline->qty
     );
+    if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
+      $r['line_description'] = $pickupline->description;
+    }
     // For now, no need to have more values.
 
     return $r;
@@ -28,7 +32,7 @@ class DataMobileActionPickupline extends DataMobileAction {
 
   public function action_save() {
     dol_syslog(__METHOD__, LOG_DEBUG);
-    global $user;
+    global $user, $conf;
     $db = $this->db;
 
     dol_include_once('/pickup/class/pickup.class.php');
@@ -41,6 +45,7 @@ class DataMobileActionPickupline extends DataMobileAction {
 
     $pickup_line_id = GETPOST('pickup_line_id', 'int');
     $qty = GETPOST('qty', 'int');
+    $line_description = GETPOST('line_description', 'none');
     if (!empty($pickup_line_id)) {
       // This is an edition
       $pickupline = new PickupLine($this->db);
@@ -50,6 +55,9 @@ class DataMobileActionPickupline extends DataMobileAction {
       }
 
       $pickupline->qty = $qty;
+      if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
+        $pickupline->description = $line_description;
+      }
       $result = $pickupline->update($user);
       if ($result <= 0) {
         $this->_log_object_errors(__METHOD__, $pickupline);
@@ -62,6 +70,9 @@ class DataMobileActionPickupline extends DataMobileAction {
       $product_id = GETPOST('product', 'int');
 
       $pickupline = $pickup->initPickupLine($product_id, $qty);
+      if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
+        $pickupline->description = $line_description;
+      }
       $id = $pickupline->create($user);
       if (!$id || $id <= 0) {
         $this->_log_object_errors(__METHOD__, $pickupline);

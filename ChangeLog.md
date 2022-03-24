@@ -19,6 +19,7 @@ Pour les appliquer, il faut désactiver puis réactiver le module.
 * Envoi par e-mail des bons de collecte.
   * Note: à cause d'une contrainte dans Dolibarr, cette fonctionnalité est optionnelle. Le fait de l'activer change le format des noms de PDF (car ceux-ci doivent contenir la référence)
 * Ajout du champ «Type de collecte» (optionnel). Basé sur un dictionnaire à paramétrer.
+* Ajout du champs «description» (optionnel) sur les lignes de collecte.
 
 ### Corrections et changements mineurs
 

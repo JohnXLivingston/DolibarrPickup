@@ -49,6 +49,7 @@ PICKUP_USE_DEEE = Use French DEEE fields
 PICKUP_USE_DEEETooltip = Will add DEEE and DEEE type files to products.
 PICKUP_USE_PBRAND = Use a «brand» field on products
 PICKUP_USE_PBRANDTooltip = Will add a brand field to products.
+PICKUP_USE_PICKUPLINE_DESCRIPTION = Add a «description» field on pickup's lines.
 PICKUP_NO_SIGN_STATUS = Disable «signed» state
 PICKUP_SEND_MAIL = Activate «Send Email» feature
 PICKUP_SEND_MAILTooltip = This will change the pickup receipt filenames (to be compatible with Dolibarr).
