@@ -156,3 +156,5 @@ Permission469009 = Access to reports
 PickupMailTopic = Pickup receipt __REF__
 
 PickupDictType = Pickup type
+
+MailToSendPickup = Pickup

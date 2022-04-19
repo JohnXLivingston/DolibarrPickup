@@ -850,4 +850,31 @@ class ActionsPickup
 		}
 		return 0;
 	}
+
+	/**
+	 * Hook to add email element template
+	 *
+	 * @param array 		$parameters   Parameters
+	 * @param 		$object       Object for action
+	 * @param string 		$action       Action string
+	 * @param HookManager 	$hookmanager  Hookmanager object
+	 * @return int
+	 */
+	public function emailElementlist($parameters, &$object, &$action, $hookmanager) {
+		global $langs, $conf;
+		$langs->load("pickup@pickup");
+
+		$error = 0;
+
+		if (!empty($conf->pickup->enabled) && !empty($conf->global->PICKUP_SEND_MAIL)) {
+			$this->results = array('pickup' => $langs->trans('MailToSendPickup'));
+		}
+
+		if (!$error) {
+			return 0; // or return 1 to replace standard code
+		} else {
+			$this->errors[] = 'Error message';
+			return -1;
+		}
+	}
 }

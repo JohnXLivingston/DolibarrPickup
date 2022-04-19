@@ -156,3 +156,5 @@ Permission469009 = Accéder aux rapports
 PickupMailTopic = Bon de collecte __REF__
 
 PickupDictType = Type de collecte
+
+MailToSendPickup = Collecte

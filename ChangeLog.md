@@ -1,5 +1,16 @@
 # DolibarrPickup
 
+## 1.3.1 (Not Released Yet)
+
+### Procédure de mise à jour
+
+**Important** : cette mise à jour contient des modifications dans la gestion des hooks Dolibarr.
+Pour les appliquer, il faut désactiver puis réactiver le module.
+
+### Fonctionnalités
+
+* Possibilité de créer des modèles d'e-mails spécifiques pour les Collectes.
+
 ## 1.3.0
 
 ### Procédure de mise à jour
