@@ -133,7 +133,7 @@ export function showPickup (
     lineCols.push({
       type: 'text',
       name: 'line_unitary_html',
-      label: 'Valeurs unitaire'
+      label: 'Valeurs unitaires'
     })
   }
 
