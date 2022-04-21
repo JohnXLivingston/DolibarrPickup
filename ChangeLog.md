@@ -10,6 +10,8 @@ Pour les appliquer, il faut désactiver puis réactiver le module.
 ### Fonctionnalités
 
 * Possibilité de créer des modèles d'e-mails spécifiques pour les Collectes.
+* Application mobile: affichage des poids/longueurs/... unitaires sur l'écran de collecte.
+* Application mobile: édition des poids/longueurs/... des ligne de collecte (activable via un paramètre).
 
 ## 1.3.0
 

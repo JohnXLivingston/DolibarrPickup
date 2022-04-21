@@ -202,6 +202,11 @@ $arrayofparameters=array(
 			'1' =>  $langs->trans('Enabled'),
 		)
 	),
+	'PICKUP_MOBILE_EDIT_UNITS' => array(
+		'table' => 'units',
+		'enabled' => 1,
+		'type' => 'boolean'
+	),
 
 	'PICKUP_DEFAULT_HASBATCH' => array(
 		'table' => 'batch',

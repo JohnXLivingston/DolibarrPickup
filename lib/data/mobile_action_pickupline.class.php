@@ -20,7 +20,12 @@ class DataMobileActionPickupline extends DataMobileAction {
     $r = array(
       'rowid' => $pickupline->id,
       'name' => $product->ref,
-      'qty' => $pickupline->qty
+      'qty' => $pickupline->qty,
+      // For weight/length/..., we only add the value if the unit is the standard one.
+      'line_weight' => $pickupline->weight_units == 0 ? $pickupline->weight : null,
+      'line_length' => $pickupline->length_units == 0 ? $pickupline->length : null,
+      'line_surface' => $pickupline->surface_units == 0 ? $pickupline->surface : null,
+      'line_volume' => $pickupline->volume_units == -3 ? $pickupline->volume : null
     );
     if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
       $r['line_description'] = $pickupline->description;
@@ -58,6 +63,9 @@ class DataMobileActionPickupline extends DataMobileAction {
       if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
         $pickupline->description = $line_description;
       }
+
+      $this->fill_units_values($pickupline);
+
       $result = $pickupline->update($user);
       if ($result <= 0) {
         $this->_log_object_errors(__METHOD__, $pickupline);
@@ -73,6 +81,7 @@ class DataMobileActionPickupline extends DataMobileAction {
       if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
         $pickupline->description = $line_description;
       }
+      $this->fill_units_values($pickupline);
       $id = $pickupline->create($user);
       if (!$id || $id <= 0) {
         $this->_log_object_errors(__METHOD__, $pickupline);
@@ -81,5 +90,30 @@ class DataMobileActionPickupline extends DataMobileAction {
     }
 
     return array("rowid" => $id);
+  }
+
+  protected function fill_units_values($pickupline) {
+    global $conf;
+
+    if (empty($conf->global->PICKUP_MOBILE_EDIT_UNITS)) {
+      return;
+    }
+
+    if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+      $pickupline->weight = GETPOST('line_weight', 'int'); // yes... for dolibarr floats are 'int'
+      $pickupline->weight_units = 0;
+    }
+    if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+      $pickupline->length = GETPOST('line_length', 'int'); // yes... for dolibarr floats are 'int'
+      $pickupline->length_units = 0;
+    }
+    if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+      $pickupline->surface = GETPOST('line_surface', 'int'); // yes... for dolibarr floats are 'int'
+      $pickupline->surface_units = 0;
+    }
+    if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+      $pickupline->volume = GETPOST('line_volume', 'int'); // yes... for dolibarr floats are 'int'
+      $pickupline->volume_units = -3; // L
+    }
   }
 }

@@ -102,5 +102,6 @@ mobile_header();
     <?php if (!empty($processing_status)) { print 'data-processing-status="'.$processing_status.'"'; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE)) { print ' data-use-pickup-type="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) { print ' data-use-pickupline-description="1" '; } ?>
+    <?php if (!empty($conf->global->PICKUP_MOBILE_EDIT_UNITS)) { print ' data-use-mobile-edit-units="1" '; } ?>
   ></div>
 </body></html>

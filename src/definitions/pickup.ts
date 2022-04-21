@@ -1,4 +1,5 @@
 import type { StateDefinition, ShowFields, FormField } from '../lib/state/index'
+import { UseUnit } from '../lib/utils/units'
 
 export function choosePickup (goto: string, creationGoto: string): StateDefinition {
   return {
@@ -73,6 +74,7 @@ export function savePickup (goto: string, saveUntil: string): StateDefinition {
 
 export function showPickup (
   useDEEE: boolean,
+  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   addGoto: string,
   editLineGoto: string,
   setProcessingStatusGoto: null | {processingStatus: string, goto: string},
@@ -126,6 +128,36 @@ export function showPickup (
     label: 'Quantité',
     total: true
   })
+
+  if (useUnitWeight) {
+    lineCols.push({
+      type: 'varchar',
+      name: 'line_weight_txt',
+      label: 'Poids unitaire'
+    })
+  }
+  if (useUnitLength) {
+    lineCols.push({
+      type: 'varchar',
+      name: 'line_length_txt',
+      label: 'Longueur unitaire'
+    })
+  }
+  if (useUnitSurface) {
+    lineCols.push({
+      type: 'varchar',
+      name: 'line_surface_txt',
+      label: 'Surface unitaire'
+    })
+  }
+  if (useUnitVolume) {
+    lineCols.push({
+      type: 'varchar',
+      name: 'line_volume_txt',
+      label: 'Volume unitaire'
+    })
+  }
+
   lineCols.push({
     type: 'edit',
     name: 'pickupline',

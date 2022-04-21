@@ -5,7 +5,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 class DataMobileActionPickup extends DataMobileAction {
   protected function pickup2json($pickup, $complete = false) {
-    global $conf;
+    global $conf, $langs;
 
     $r = array(
       'rowid' => $pickup->id,
@@ -35,14 +35,30 @@ class DataMobileActionPickup extends DataMobileAction {
 
     require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
+    require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php'; // for measuringUnitString
+    $langs->loadLangs(array("other"));
+    
     $pickup->getLinesArray();
     foreach ($pickup->lines as $line) {
+      $weight = $line->weight;
+      if (!empty($weight)) { $weight.= ' ' . measuringUnitString(0, "weight", $line->weight_units); }
+      $length = $line->length;
+      if (!empty($length)) { $length.= ' ' . measuringUnitString(0, 'size', $line->length_units); }
+      $surface = $line->surface;
+      if (!empty($surface)) { $surface.= ' ' . measuringUnitString(0, 'surface', $line->surface_units); }
+      $volume = $line->volume;
+      if (!empty($volume)) { $volume.= ' ' . measuringUnitString(0, 'volume', $line->volume_units); }
+
       $product = new Product($db);
       $product->fetch($line->fk_product);
       $rl = array(
         'rowid' => $line->id,
         'name' => $product->ref,
-        'qty' => $line->qty
+        'qty' => $line->qty,
+        'line_weight_txt' => $weight,
+        'line_length_txt' => $length,
+        'line_surface_txt' => $surface,
+        'line_volume_txt' => $volume
       );
       if (!empty($conf->global->PICKUP_USE_DEEE)) {
         $rl['deee'] = $line->deee ? true : false;

@@ -1,7 +1,14 @@
 // import type { StackValue } from '../lib/stack'
 import { StateDefinition, FormField } from '../lib/state/index'
+import { UseUnit } from '../lib/utils/units'
+import { pushUnitFields } from './common'
 
-export function createPickupLine (usePickuplineDescription: boolean, goto: string): StateDefinition {
+export function createPickupLine (
+  editMode: boolean,
+  useEditUnits: boolean,
+  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  usePickuplineDescription: boolean, goto: string
+): StateDefinition {
   const fields: FormField[] = [
     {
       type: 'integer',
@@ -13,6 +20,11 @@ export function createPickupLine (usePickuplineDescription: boolean, goto: strin
       max: 1000
     }
   ]
+
+  if (editMode && useEditUnits) {
+    pushUnitFields(fields, 'line_', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
+  }
+
   if (usePickuplineDescription) {
     fields.push({
       type: 'text',
@@ -21,11 +33,16 @@ export function createPickupLine (usePickuplineDescription: boolean, goto: strin
       mandatory: false
     })
   }
-  return {
+
+  const result: StateDefinition = {
     type: 'form',
     label: 'Quantité',
     goto,
-    edit: {
+    fields
+  }
+
+  if (editMode) {
+    result.edit = {
       stackKey: 'pickup_line_id',
       getDataKey: 'pickupline',
       convertData: (key: string, v: any) => {
@@ -42,7 +59,31 @@ export function createPickupLine (usePickuplineDescription: boolean, goto: strin
         if (usePickuplineDescription && key === 'line_description') {
           return {
             value: v,
-            name: 'line_description'
+            name: key
+          }
+        }
+        if (useEditUnits && useUnitWeight && key === 'line_weight' && v !== null) {
+          return {
+            value: v,
+            name: key
+          }
+        }
+        if (useEditUnits && useUnitLength && key === 'line_length' && v !== null) {
+          return {
+            value: v,
+            name: key
+          }
+        }
+        if (useEditUnits && useUnitSurface && key === 'line_surface' && v !== null) {
+          return {
+            value: v,
+            name: key
+          }
+        }
+        if (useEditUnits && useUnitVolume && key === 'line_volume' && v !== null) {
+          return {
+            value: v,
+            name: key
           }
         }
         if (key === 'qty') {
@@ -53,9 +94,10 @@ export function createPickupLine (usePickuplineDescription: boolean, goto: strin
         }
         return false
       }
-    },
-    fields
+    }
   }
+
+  return result
 }
 
 export function savePickupLine (goto: string, saveUntil: string, removeUntil: string, removeFromStack: boolean): StateDefinition {

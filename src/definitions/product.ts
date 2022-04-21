@@ -1,5 +1,6 @@
 import type { StateDefinition, FormField, FormFieldSelectLoadFilter, PickFields, ShowFields } from '../lib/state/index'
 import type { UseUnit } from '../lib/utils/units'
+import { pushUnitFields } from './common'
 
 export function pickProduct (usePBrand: boolean, goto: string, creationGoto: string): StateDefinition {
   const fields: PickFields = []
@@ -167,50 +168,8 @@ export function createProductSpecifications (
     goto,
     fields: []
   }
-  if (useUnitWeight !== '0') {
-    r.fields.push({
-      type: 'float',
-      name: 'weight',
-      label: 'Poids unitaire (kg)',
-      mandatory: useUnitWeight === 'mandatory',
-      min: 0,
-      max: 1000,
-      step: 0.1
-    })
-  }
-  if (useUnitLength !== '0') {
-    r.fields.push({
-      type: 'float',
-      name: 'length',
-      label: 'Longueur (m)',
-      mandatory: useUnitLength === 'mandatory',
-      min: 0,
-      max: 1000,
-      step: 0.01
-    })
-  }
-  if (useUnitSurface !== '0') {
-    r.fields.push({
-      type: 'float',
-      name: 'surface',
-      label: 'Surface (m²)',
-      mandatory: useUnitSurface === 'mandatory',
-      min: 0,
-      max: 1000,
-      step: 0.0001
-    })
-  }
-  if (useUnitVolume !== '0') {
-    r.fields.push({
-      type: 'float',
-      name: 'volume',
-      label: 'Volume (L)',
-      mandatory: useUnitVolume === 'mandatory',
-      min: 0,
-      max: 100000,
-      step: 0.01
-    })
-  }
+
+  pushUnitFields(r.fields, '', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
 
   if (r.fields.length === 0) {
     return {
