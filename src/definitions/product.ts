@@ -1,5 +1,5 @@
 import type { StateDefinition, FormField, FormFieldSelectLoadFilter, PickFields, ShowFields } from '../lib/state/index'
-import type { UseUnit } from '../lib/utils/units'
+import type { UnitsEditMode, UseUnit } from '../lib/utils/units'
 import { pushUnitFields } from './common'
 
 export function pickProduct (usePBrand: boolean, goto: string, creationGoto: string): StateDefinition {
@@ -159,6 +159,7 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bo
 }
 
 export function createProductSpecifications (
+  unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   goto: string
 ): StateDefinition {
@@ -169,7 +170,9 @@ export function createProductSpecifications (
     fields: []
   }
 
-  pushUnitFields(r.fields, '', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
+  if (unitsEditMode === 'product') {
+    pushUnitFields(r.fields, '', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
+  }
 
   if (r.fields.length === 0) {
     return {
@@ -195,6 +198,7 @@ export function saveProduct (goto: string, saveUntil: string): StateDefinition {
 
 export function showProduct (
   usePCat: boolean, useDEEE: boolean, usePBrand: boolean,
+  _unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   okGoto: string
 ): StateDefinition {

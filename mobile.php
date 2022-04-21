@@ -88,20 +88,20 @@ mobile_header();
 <body>
   <div pickupmobileapp-container class="container"
     <?php if (!empty(GETPOST('demo', 'alpha'))) { ?>data-demo="1"<?php } ?>
-    data-modpickup-version="<?php echo htmlspecialchars($modulePickup->version); ?>"
+    data-modpickup-version="<?php print htmlspecialchars($modulePickup->version); ?>"
     data-user-id="<?php print htmlspecialchars($user->id) ?>"
     data-entrepot-id="<?php if(!empty($conf->global->PICKUP_DEFAULT_STOCK)) { print $conf->global->PICKUP_DEFAULT_STOCK; } ?>"
     <?php if (!empty($conf->global->PICKUP_USE_PCAT)) { print ' data-use-pcat="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PBRAND)) { print ' data-use-pbrand="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_DEEE)) { print ' data-use-deee="1" '; } ?>
     <?php if (!empty($conf->productbatch->enabled) && $conf->global->PICKUP_DEFAULT_HASBATCH === 'ask') { print ' data-ask-hasbatch="1" '; } ?>
-    data-units-weight="<?php echo $conf->global->PICKUP_UNITS_WEIGHT ?? '0' ?>"
-    data-units-length="<?php echo $conf->global->PICKUP_UNITS_LENGTH ?? '0' ?>"
-    data-units-surface="<?php echo $conf->global->PICKUP_UNITS_SURFACE ?? '0' ?>"
-    data-units-volume="<?php echo $conf->global->PICKUP_UNITS_VOLUME ?? '0' ?>"
+    data-units-weight="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_WEIGHT ?? '0'); ?>"
+    data-units-length="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_LENGTH ?? '0'); ?>"
+    data-units-surface="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_SURFACE ?? '0'); ?>"
+    data-units-volume="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_VOLUME ?? '0'); ?>"
     <?php if (!empty($processing_status)) { print 'data-processing-status="'.$processing_status.'"'; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE)) { print ' data-use-pickup-type="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) { print ' data-use-pickupline-description="1" '; } ?>
-    <?php if (!empty($conf->global->PICKUP_MOBILE_EDIT_UNITS)) { print ' data-use-mobile-edit-units="1" '; } ?>
+    data-units-edit-mode="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_EDIT_MODE ?? '0'); ?>"
   ></div>
 </body></html>

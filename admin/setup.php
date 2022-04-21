@@ -202,10 +202,14 @@ $arrayofparameters=array(
 			'1' =>  $langs->trans('Enabled'),
 		)
 	),
-	'PICKUP_MOBILE_EDIT_UNITS' => array(
+	'PICKUP_UNITS_EDIT_MODE' => array(
 		'table' => 'units',
 		'enabled' => 1,
-		'type' => 'boolean'
+		'type' => 'select',
+		'options' => array(
+			'0' => $langs->trans('PICKUP_UNITS_EDIT_MODE_OPTIONS_0'),
+			'pickupline' => $langs->trans('PICKUP_UNITS_EDIT_MODE_OPTIONS_pickupline')
+		)
 	),
 
 	'PICKUP_DEFAULT_HASBATCH' => array(

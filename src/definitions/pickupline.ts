@@ -1,11 +1,11 @@
 // import type { StackValue } from '../lib/stack'
 import { StateDefinition, FormField } from '../lib/state/index'
-import { UseUnit } from '../lib/utils/units'
+import { UnitsEditMode, UseUnit } from '../lib/utils/units'
 import { pushUnitFields } from './common'
 
 export function createPickupLine (
   editMode: boolean,
-  useEditUnits: boolean,
+  unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   usePickuplineDescription: boolean, goto: string
 ): StateDefinition {
@@ -21,7 +21,7 @@ export function createPickupLine (
     }
   ]
 
-  if (editMode && useEditUnits) {
+  if (unitsEditMode === 'pickupline') {
     pushUnitFields(fields, 'line_', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
   }
 
@@ -62,28 +62,30 @@ export function createPickupLine (
             name: key
           }
         }
-        if (useEditUnits && useUnitWeight && key === 'line_weight' && v !== null) {
-          return {
-            value: v,
-            name: key
+        if (unitsEditMode === 'pickupline') {
+          if (useUnitWeight && key === 'line_weight' && v !== null) {
+            return {
+              value: v,
+              name: key
+            }
           }
-        }
-        if (useEditUnits && useUnitLength && key === 'line_length' && v !== null) {
-          return {
-            value: v,
-            name: key
+          if (useUnitLength && key === 'line_length' && v !== null) {
+            return {
+              value: v,
+              name: key
+            }
           }
-        }
-        if (useEditUnits && useUnitSurface && key === 'line_surface' && v !== null) {
-          return {
-            value: v,
-            name: key
+          if (useUnitSurface && key === 'line_surface' && v !== null) {
+            return {
+              value: v,
+              name: key
+            }
           }
-        }
-        if (useEditUnits && useUnitVolume && key === 'line_volume' && v !== null) {
-          return {
-            value: v,
-            name: key
+          if (useUnitVolume && key === 'line_volume' && v !== null) {
+            return {
+              value: v,
+              name: key
+            }
           }
         }
         if (key === 'qty') {

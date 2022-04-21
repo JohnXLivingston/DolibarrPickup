@@ -11,7 +11,9 @@ Pour les appliquer, il faut désactiver puis réactiver le module.
 
 * Possibilité de créer des modèles d'e-mails spécifiques pour les Collectes.
 * Application mobile: affichage des poids/longueurs/... unitaires sur l'écran de collecte.
-* Application mobile: édition des poids/longueurs/... des ligne de collecte (activable via un paramètre).
+* Pour les poids/longueurs/..., on propose 2 modes de saisies distincts dans les paramètres du module.
+  * Mode «sur la fiche produit». Ce mode correspond à l'usage de LRDS. Les valeurs sont saisies sur la fiche produit (application mobile) et reprises automatiquement à l'ajout sur la collecte.
+  * Mode «sur le bon de collecte». Ce mode correspond à l'usage de La Matière. Dans l'appli mobile, on ne saisie pas les valeurs à la création du produit, mais au moment de l'ajout sur la fiche collecte.
 
 ## 1.3.0
 

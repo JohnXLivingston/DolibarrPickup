@@ -95,7 +95,7 @@ class DataMobileActionPickupline extends DataMobileAction {
   protected function fill_units_values($pickupline) {
     global $conf;
 
-    if (empty($conf->global->PICKUP_MOBILE_EDIT_UNITS)) {
+    if ($conf->global->PICKUP_UNITS_EDIT_MODE !== 'pickupline') {
       return;
     }
 

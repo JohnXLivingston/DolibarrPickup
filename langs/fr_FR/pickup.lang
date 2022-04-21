@@ -63,8 +63,9 @@ PICKUP_DEFAULT_HASBATCH_OPTIONS_1 = Les produits créés depuis l'application mo
 PICKUP_DEFAULT_BATCH_PICKUP_REF = Utiliser la référence de la collecte comme numéro Lot/Série par défaut.
 PICKUP_ALLOW_FUTURE = Autoriser la création de collectes avec une date dans le futur.
 PICKUP_ALLOW_FUTURETooltip = Ce paramètre ne s'applique pas à l'application mobile.
-PICKUP_MOBILE_EDIT_UNITS = Permettre de modifier ces données dans l'application mobile.
-PICKUP_MOBILE_EDIT_UNITSTooltip = Si cette case est cochée, on pourra modifier les poids/longueurs/surfaces/volumes de chaque ligne de collecte depuis l'application mobile.
+PICKUP_UNITS_EDIT_MODE = Saisie des valeurs
+PICKUP_UNITS_EDIT_MODE_OPTIONS_0 = La saisie des valeurs se fait sur la fiche produit
+PICKUP_UNITS_EDIT_MODE_OPTIONS_pickupline = La saisie des valeurs se fait sur les bons de collecte
 
 #
 # Menus

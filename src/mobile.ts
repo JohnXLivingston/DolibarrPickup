@@ -4,7 +4,7 @@ import { initHistory } from './lib/history'
 import { initNunjucks } from './lib/nunjucks'
 import { Machine } from './lib/machine'
 import * as definitions from './definitions/index'
-import { readUseUnit } from './lib/utils/units'
+import { readUnitsEditMode, readUseUnit } from './lib/utils/units'
 
 // FIXME: only pick needed files.
 import '../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'
@@ -32,6 +32,7 @@ $(function () {
   const usePBrand = container.attr('data-use-pbrand') === '1'
   const useDEEE = container.attr('data-use-deee') === '1'
   const askHasBatch = container.attr('data-ask-hasbatch') === '1'
+  const unitsEditMode = readUnitsEditMode(container.attr('data-units-edit-mode'))
   const useUnitWeight = readUseUnit(container.attr('data-units-weight'))
   const useUnitLength = readUseUnit(container.attr('data-units-length'))
   const useUnitSurface = readUseUnit(container.attr('data-units-surface'))
@@ -39,7 +40,6 @@ $(function () {
   const processingStatus = container.attr('data-processing-status') ?? null
   const usePickupType = container.attr('data-use-pickup-type') === '1'
   const usePickuplineDescription = container.attr('data-use-pickupline-description') === '1'
-  const useEditUnits = container.attr('data-use-mobile-edit-units') === '1'
 
   // version is a string that must be related to the Machine definition, and the backend configuration.
   // It is used to clear the stack on page load, if the configuration changed.
@@ -56,7 +56,7 @@ $(function () {
   version += '_csps' + (processingStatus ?? 'x')
   version += '_pt' + (usePickupType ? '1' : '0')
   version += '_pld' + (usePickuplineDescription ? '1' : '0')
-  version += '_eu' + (useEditUnits ? '1' : '0')
+  version += '_eum' + unitsEditMode
 
   const definition: {[key: string]: StateDefinition} = {}
 
@@ -101,12 +101,12 @@ $(function () {
     definition.create_product_deee_pam_or_pampro = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'create_product_deee_pam_or_pampro')
     definition.create_product_deee_ecr_or_ecrpro = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'create_product_deee_ecr_or_ecrpro')
   }
-  definition.product_specifications = definitions.createProductSpecifications(useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_product')
+  definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_product')
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)
-  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty')
+  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty')
 
-  definition.qty = definitions.createPickupLine(false, useEditUnits, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')
-  definition.qty_edit = definitions.createPickupLine(true, useEditUnits, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')
+  definition.qty = definitions.createPickupLine(false, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')
+  definition.qty_edit = definitions.createPickupLine(true, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')
   definition.save_pickupline = definitions.savePickupLine('show_pickup', 'init', 'show_pickup', true)
 
   if (processingStatus) {

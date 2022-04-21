@@ -63,8 +63,9 @@ PICKUP_DEFAULT_HASBATCH_OPTIONS_1 = Products created with the mobile app have op
 PICKUP_DEFAULT_BATCH_PICKUP_REF = Use pickup reference as default Lot/Serial number.
 PICKUP_ALLOW_FUTURE = Allow creation of pickups in the future.
 PICKUP_ALLOW_FUTURETooltip = This parameter does not apply to the mobile application.
-PICKUP_MOBILE_EDIT_UNITS = Allow editing these values in the mobile app.
-PICKUP_MOBILE_EDIT_UNITSTooltip = If checked, users will be able to edit weight/length/surface/volume on a pickup in the mobile app.
+PICKUP_UNITS_EDIT_MODE = Input
+PICKUP_UNITS_EDIT_MODE_OPTIONS_0 = Values are entered on the product card
+PICKUP_UNITS_EDIT_MODE_OPTIONS_pickupline = Values are entered on the pickup card
 
 #
 # Menus
