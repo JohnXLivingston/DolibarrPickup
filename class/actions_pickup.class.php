@@ -116,8 +116,61 @@ class ActionsPickup
 				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Product')));
 			}
 
+			if ($conf->global->PICKUP_UNITS_EDIT_MODE === 'pickupline') {
+				$weight = price2num(GETPOST('weight'));
+				$weight_units = GETPOST('weight_units', 'int');
+				$length = price2num(GETPOST('length'));
+				$length_units = GETPOST('length_units', 'int');
+				$surface = price2num(GETPOST('surface'));
+				$surface_units = GETPOST('surface_units', 'int');
+				$volume = price2num(GETPOST('volume'));
+				$volume_units = GETPOST('volume_units', 'int');
+
+				if ($conf->global->PICKUP_UNITS_WEIGHT === 'mandatory' && $weight == '') {
+					array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Weight')));
+				}
+				if ($conf->global->PICKUP_UNITS_LENGTH === 'mandatory' && $length == '') {
+					array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Length')));
+				}
+				if ($conf->global->PICKUP_UNITS_SURFACE === 'mandatory' && $surface == '') {
+					array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Surfance')));
+				}
+				if ($conf->global->PICKUP_UNITS_VOLUME === 'mandatory' && $volume == '') {
+					array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Volume')));
+				}
+			} else {
+				$weight = '';
+				$weight_units = '';
+				$length = '';
+				$length_units = '';
+				$surface = '';
+				$surface_units = '';
+				$volume = '';
+				$volume_units = '';
+			}
+
 			if (!count($errors)) {
 				$line = $object->initPickupLine($fk_product, $qty);
+
+				if ($conf->global->PICKUP_UNITS_EDIT_MODE === 'pickupline') {
+					if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+						$line->weight = $weight;
+						$line->weight_units = $weight_units;
+					}
+					if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+						$line->length = $length;
+						$line->length_units = $length_units;
+					}
+					if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+						$line->surface = $surface;
+						$line->surface_units = $surface_units;
+					}
+					if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+						$line->volume = $volume;
+						$line->volume_units = $volume_units;
+					}
+				}
+
 				$result = $line->create($user);
 				if ($result <= 0) {
 					if (!empty($line->error)) {
@@ -130,6 +183,15 @@ class ActionsPickup
 					$action = '';
 					unset($_POST['fk_product']);
 					unset($_POST['qty']);
+					unset($_POST['weight']);
+					unset($_POST['weight_units']);
+					unset($_POST['length']);
+					unset($_POST['length_units']);
+					unset($_POST['surface']);
+					unset($_POST['surface_units']);
+					unset($_POST['volume']);
+					unset($_POST['volume_units']);
+					unset($_POST['description']);
 
 					$object->fetchLines();
 				}

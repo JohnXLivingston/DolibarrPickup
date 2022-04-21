@@ -13,7 +13,7 @@ Pour les appliquer, il faut désactiver puis réactiver le module.
 * Application mobile: affichage des poids/longueurs/... unitaires sur l'écran de collecte.
 * Pour les poids/longueurs/..., on propose 2 modes de saisies distincts dans les paramètres du module.
   * Mode «sur la fiche produit». Ce mode correspond à l'usage de LRDS. Les valeurs sont saisies sur la fiche produit (application mobile) et reprises automatiquement à l'ajout sur la collecte.
-  * Mode «sur le bon de collecte». Ce mode correspond à l'usage de La Matière. Dans l'appli mobile, on ne saisie pas les valeurs à la création du produit, mais au moment de l'ajout sur la fiche collecte.
+  * Mode «sur le bon de collecte». Ce mode correspond à l'usage de La Matière. Dans l'appli mobile, on ne saisie pas les valeurs à la création du produit, mais au moment de l'ajout sur la fiche collecte. Dans l'application Dolibarr, on saisi les valeurs dès l'ajout.
 
 ## 1.3.0
 
