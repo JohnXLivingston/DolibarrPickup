@@ -129,32 +129,11 @@ export function showPickup (
     total: true
   })
 
-  if (useUnitWeight) {
+  if (useUnitWeight || useUnitLength || useUnitSurface || useUnitVolume) {
     lineCols.push({
-      type: 'varchar',
-      name: 'line_weight_txt',
-      label: 'Poids unitaire'
-    })
-  }
-  if (useUnitLength) {
-    lineCols.push({
-      type: 'varchar',
-      name: 'line_length_txt',
-      label: 'Longueur unitaire'
-    })
-  }
-  if (useUnitSurface) {
-    lineCols.push({
-      type: 'varchar',
-      name: 'line_surface_txt',
-      label: 'Surface unitaire'
-    })
-  }
-  if (useUnitVolume) {
-    lineCols.push({
-      type: 'varchar',
-      name: 'line_volume_txt',
-      label: 'Volume unitaire'
+      type: 'text',
+      name: 'line_unitary_html',
+      label: 'Valeurs unitaire'
     })
   }
 

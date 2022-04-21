@@ -40,14 +40,27 @@ class DataMobileActionPickup extends DataMobileAction {
     
     $pickup->getLinesArray();
     foreach ($pickup->lines as $line) {
+      $unitary = '';
       $weight = $line->weight;
-      if (!empty($weight)) { $weight.= ' ' . measuringUnitString(0, "weight", $line->weight_units); }
+      if (!empty($weight)) {
+        $weight.= ' ' . measuringUnitString(0, "weight", $line->weight_units);
+        $unitary.= htmlspecialchars($weight)."<br>";
+      }
       $length = $line->length;
-      if (!empty($length)) { $length.= ' ' . measuringUnitString(0, 'size', $line->length_units); }
+      if (!empty($length)) {
+        $length.= ' ' . measuringUnitString(0, 'size', $line->length_units);
+        $unitary.= htmlspecialchars($length)."<br>";
+      }
       $surface = $line->surface;
-      if (!empty($surface)) { $surface.= ' ' . measuringUnitString(0, 'surface', $line->surface_units); }
+      if (!empty($surface)) {
+        $surface.= ' ' . measuringUnitString(0, 'surface', $line->surface_units);
+        $unitary.= htmlspecialchars($surface)."<br>";
+      }
       $volume = $line->volume;
-      if (!empty($volume)) { $volume.= ' ' . measuringUnitString(0, 'volume', $line->volume_units); }
+      if (!empty($volume)) {
+        $volume.= ' ' . measuringUnitString(0, 'volume', $line->volume_units);
+        $unitary.= htmlspecialchars($volume)."<br>";
+      }
 
       $product = new Product($db);
       $product->fetch($line->fk_product);
@@ -58,7 +71,8 @@ class DataMobileActionPickup extends DataMobileAction {
         'line_weight_txt' => $weight,
         'line_length_txt' => $length,
         'line_surface_txt' => $surface,
-        'line_volume_txt' => $volume
+        'line_volume_txt' => $volume,
+        'line_unitary_html' => $unitary
       );
       if (!empty($conf->global->PICKUP_USE_DEEE)) {
         $rl['deee'] = $line->deee ? true : false;
