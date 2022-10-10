@@ -1,5 +1,9 @@
 # DolibarrPickup
 
+## 1.3.2
+
+* Compatibilité Dolibarr v15: fix ajout de pièce jointes sur les collecte.
+
 ## 1.3.1
 
 ### Procédure de mise à jour
