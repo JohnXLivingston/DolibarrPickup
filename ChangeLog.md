@@ -1,8 +1,9 @@
 # DolibarrPickup
 
-## 1.3.3 (Not Released Yet)
+## 1.3.3
 
 * Fix: les rapports DEEE affichaient tous 0.
+* Rapports: ajout d'une ligne de total
 
 ## 1.3.2
 

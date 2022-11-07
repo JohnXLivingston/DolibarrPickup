@@ -304,6 +304,15 @@ function retrieve_data() {
   $sql.= ' GROUP BY p.fk_soc, pl.deee, pl.deee_type, pl.weight_units, pl.length_units, pl.surface_units, pl.volume_units';
 
   $data = array();
+  $data_total = array(
+    'qty' => 0,
+    'per_deee_type' => array(),
+    'deee_total' => init_values_array(),
+    'weight_total' => init_values_array(),
+    'length_total' => init_values_array(),
+    'surface_total' => init_values_array(),
+    'volume_total' => init_values_array(-3) // -3 = L
+  );
   $resql = $db->query($sql);
   if ($resql) {
     $num = $db->num_rows($resql);
@@ -326,15 +335,24 @@ function retrieve_data() {
         );
         foreach ($deee_types as $deee_type_key => $label) {
           $data[$fk_soc]['per_deee_type'][$deee_type_key] = init_values_array();
+          if (!array_key_exists($deee_type_key, $data_total['per_deee_type'])) {
+            $data_total['per_deee_type'][$deee_type_key] = init_values_array();
+          }
         }
       }
 
       $data[$fk_soc]['qty'] += $row->qty;
+      $data_total['qty'] += $row->qty;
 
       sum_line($row, $data[$fk_soc], 0, 'line_weight', 'weight_units', 'weight_total');
       sum_line($row, $data[$fk_soc], 0, 'line_length', 'length_units', 'length_total');
       sum_line($row, $data[$fk_soc], 0, 'line_surface', 'surface_units', 'surface_total');
       sum_line($row, $data[$fk_soc], -3, 'line_volume', 'volume_units', 'volume_total'); // -3 = L
+
+      sum_line($row, $data_total, 0, 'line_weight', 'weight_units', 'weight_total');
+      sum_line($row, $data_total, 0, 'line_length', 'length_units', 'length_total');
+      sum_line($row, $data_total, 0, 'line_surface', 'surface_units', 'surface_total');
+      sum_line($row, $data_total, -3, 'line_volume', 'volume_units', 'volume_total'); // -3 = L
 
       $deee_type = $row->deee ? strval($row->deee_type) : '';
       if (!empty($deee_type)) {
@@ -353,6 +371,21 @@ function retrieve_data() {
           $data[$fk_soc]['per_deee_type'][$deee_type][$weight_units] = 0.0;
         }
         $data[$fk_soc]['per_deee_type'][$deee_type][$weight_units] += $weight;
+
+
+        if (!array_key_exists($weight_units, $data_total['deee_total'])) {
+          $data_total['deee_total'][$weight_units] = 0.0;
+        }
+        $data_total['deee_total'][$weight_units] += $weight;
+
+        if (!array_key_exists($deee_type, $data_total['per_deee_type'])) {
+          $data_total['per_deee_type'][$deee_type] = init_values_array();
+        }
+
+        if (!array_key_exists($weight_units, $data_total['per_deee_type'][$deee_type])) {
+          $data_total['per_deee_type'][$deee_type][$weight_units] = 0.0;
+        }
+        $data_total['per_deee_type'][$deee_type][$weight_units] += $weight;
       }
 
       $i++;
@@ -363,9 +396,9 @@ function retrieve_data() {
   }
 
   usort($data, "sort_pickup_report_lines");
-  return $data;
+  return [$data, $data_total];
 }
-$data = retrieve_data();
+list ($data, $data_total) = retrieve_data();
 
 
 
@@ -459,7 +492,60 @@ foreach ($data as $line) {
   print '</tr>';
 }
 
-// TODO: total line?
+// Total line
+print '<tr class="liste_total">';
+print '<td>';
+print '</td>';
+if (!empty($conf->global->PICKUP_USE_DEEE)) {
+  foreach ($deee_types as $deee_type_key => $label) {
+    print '<td align="center" class="nowrap">';
+      foreach ($data_total['per_deee_type'][$deee_type_key] as $weights_units => $weights) {
+        print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
+      }
+    print '</td>';
+  }
+  print '<td align="center" class="nowrap">';
+    foreach ($data_total['deee_total'] as $weights_units => $weights) {
+      print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
+    }
+  print '</td>';
+}
+
+if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+  print '<td align="center" class="nowrap">';
+    foreach ($data_total['weight_total'] as $weights_units => $weights) {
+      print ($weights) . ' ' . measuringUnitString(0, "weight", $weights_units) . '<br>';
+    }
+  print '</td>';
+}
+if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+  print '<td align="center" class="nowrap">';
+    foreach ($data_total['length_total'] as $lengths_units => $lengths) {
+      print ($lengths) . ' ' . measuringUnitString(0, "size", $lengths_units) . '<br>';
+    }
+  print '</td>';
+}
+if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+  print '<td align="center" class="nowrap">';
+    foreach ($data_total['surface_total'] as $surfaces_units => $surfaces) {
+      print ($surfaces) . ' ' . measuringUnitString(0, "surface", $surfaces_units) . '<br>';
+    }
+  print '</td>';
+}
+if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+  print '<td align="center" class="nowrap">';
+    foreach ($data_total['volume_total'] as $volumes_units => $volumes) {
+      print ($volumes) . ' ' . measuringUnitString(0, "volume", $volumes_units) . '<br>';
+    }
+  print '</td>';
+}
+if (!empty($conf->global->PICKUP_UNITS_PIECE)) {
+  print '<td align="center" class="nowrap">';
+  print price($data_total['qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
+  print '</td>';
+}
+
+print '</tr>';
 
 print "</table>";
 print '</div>';
