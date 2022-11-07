@@ -339,7 +339,7 @@ function retrieve_data() {
       $deee_type = $row->deee ? strval($row->deee_type) : '';
       if (!empty($deee_type)) {
         $weight_units = empty($row->weight_units) ? 0 : intval($row->weight_units);
-        $weight = empty($row->weight) ? 0.0 : $row->weight;
+        $weight = empty($row->line_weight) ? 0.0 : $row->line_weight;
         if (!array_key_exists($weight_units, $data[$fk_soc]['deee_total'])) {
           $data[$fk_soc]['deee_total'][$weight_units] = 0.0;
         }

@@ -1,5 +1,9 @@
 # DolibarrPickup
 
+## 1.3.3 (Not Released Yet)
+
+* Fix: les rapports DEEE affichaient tous 0.
+
 ## 1.3.2
 
 * Compatibilité Dolibarr v15: fix ajout de pièce jointes sur les collecte.
