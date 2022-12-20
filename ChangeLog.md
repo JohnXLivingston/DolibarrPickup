@@ -3,6 +3,7 @@
 ## ???
 
 * Fix #61: un improbable conflit de nom de variable faisait échouer l'activation de catégories pour l'application mobile, quand le module «marquepage» est activé.
+* NPM dependencies: install security fix.
 
 ## 1.3.3
 
