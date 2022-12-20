@@ -1,5 +1,9 @@
 # DolibarrPickup
 
+## ???
+
+* Fix #61: un improbable conflit de nom de variable faisait échouer l'activation de catégories pour l'application mobile, quand le module «marquepage» est activé.
+
 ## 1.3.3
 
 * Fix: les rapports DEEE affichaient tous 0.
