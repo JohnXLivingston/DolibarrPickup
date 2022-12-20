@@ -6,6 +6,14 @@
       {{ data[field.name] | safe }}
     {% elif field.type === 'boolean' %}
       <input type="checkbox" disabled="disabled" {% if (data[field.name]) %}checked="checked"{% endif %}>
+    {% elif field.type === 'concatenate' %}
+      {% for subfield in field.fields %}
+        {% set tmpSubFieldContent = printFieldContent(subfield, data) %}
+        {{ tmpSubFieldContent | safe }}
+        {% if (not field.ignoreEmpty or r/\S/.test(tmpSubFieldContent)) %}
+          {{ field.separatorHTML | safe }}
+        {% endif %}
+      {% endfor %}
     {% elif field.type === 'edit' %}
       {% if field.disabledFunc and field.disabledFunc(data) %}
         <a

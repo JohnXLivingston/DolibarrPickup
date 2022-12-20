@@ -75,6 +75,7 @@ class DataMobileActionPickup extends DataMobileAction {
       $rl = array(
         'rowid' => $line->id,
         'name' => $product->ref,
+        'label' => $product->label,
         'qty' => $line->qty,
         'line_weight_txt' => $weight,
         'line_length_txt' => $length,
@@ -82,6 +83,9 @@ class DataMobileActionPickup extends DataMobileAction {
         'line_volume_txt' => $volume,
         'line_unitary_html' => $unitary
       );
+      if (!empty($conf->global->PICKUP_USE_PBRAND)) {
+        $rl['pbrand'] = $product->array_options['options_pickup_pbrand'];
+      }
       if (!empty($conf->global->PICKUP_USE_DEEE)) {
         $rl['deee'] = $line->deee ? true : false;
       }

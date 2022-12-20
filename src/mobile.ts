@@ -73,6 +73,7 @@ $(function () {
   definition.save_pickup = definitions.savePickup('show_pickup', entrepotId !== undefined ? 'societe' : 'entrepot')
   definition.show_pickup = definitions.showPickup(
     useDEEE,
+    usePBrand,
     useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume,
     'product', 'qty_edit',
     processingStatus ? { goto: 'save_pickup_status', processingStatus: processingStatus } : null,

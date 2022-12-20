@@ -74,6 +74,7 @@ export function savePickup (goto: string, saveUntil: string): StateDefinition {
 
 export function showPickup (
   useDEEE: boolean,
+  usePBrand: boolean,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   addGoto: string,
   editLineGoto: string,
@@ -107,11 +108,33 @@ export function showPickup (
     }
   )
 
-  const lineCols: ShowFields = []
-  lineCols.push({
+  const productShowFields: ShowFields = []
+  if (usePBrand) {
+    productShowFields.push({
+      type: 'varchar',
+      name: 'pbrand',
+      label: 'Marque'
+    })
+  }
+  productShowFields.push({
     type: 'varchar',
     name: 'name',
-    label: 'Produit'
+    label: 'Ref'
+  })
+  productShowFields.push({
+    type: 'varchar',
+    name: 'label',
+    label: 'Label'
+  })
+
+  const lineCols: ShowFields = []
+  lineCols.push({
+    type: 'concatenate',
+    name: 'name',
+    label: 'Produit',
+    separatorHTML: '<br>',
+    ignoreEmpty: true,
+    fields: productShowFields
   })
   if (useDEEE) {
     lineCols.push({

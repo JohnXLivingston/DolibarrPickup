@@ -2,6 +2,7 @@
 
 ## ???
 
+* Fix #14: affichage du libellé et de la marque dans l'application mobile et dans les collectes.
 * Fix #61: un improbable conflit de nom de variable faisait échouer l'activation de catégories pour l'application mobile, quand le module «marquepage» est activé.
 * NPM dependencies: install security fix.
 

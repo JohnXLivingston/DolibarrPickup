@@ -28,6 +28,15 @@ interface ShowFieldLines extends ShowFieldBase {
   type: 'lines'
   lines: ShowFields
 }
+/**
+ * Concatenates multiple fields values
+ */
+interface ShowFieldConcatenate extends ShowFieldBase {
+  type: 'concatenate'
+  separatorHTML?: string // separator between values
+  ignoreEmpty?: boolean // if a value is empty, dont append the separator
+  fields: ShowFields
+}
 
 interface ShowFieldEditPushToStackBase {
   pushOnStackKey: string // name to use when pushing value in stack
@@ -51,7 +60,7 @@ interface ShowFieldEdit extends ShowFieldBase {
   pushToStack: ShowFieldEditPushToStack[]
 }
 
-type ShowField = ShowFieldVarchar | ShowFieldText | ShowFieldBoolean | ShowFieldLines | ShowFieldInteger | ShowFieldEdit
+type ShowField = ShowFieldVarchar | ShowFieldText | ShowFieldBoolean | ShowFieldLines | ShowFieldInteger | ShowFieldEdit | ShowFieldConcatenate
 type ShowFields = ShowField[]
 interface StateShowDefinition extends StateDefinitionBase {
   type: 'show'

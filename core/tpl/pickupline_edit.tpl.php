@@ -52,6 +52,15 @@ $coldisplay = 0;
       // print $form->textwithtooltip($line_product->getNomUrl(1), '', 3, '', '', $i, 0, '');
 			print $form->textwithtooltip($line_product->getNomUrl(1), '');
 			print '<br>';
+			if (!empty($conf->global->PICKUP_USE_PBRAND)) {
+				if (!empty($line_product->array_options['options_pickup_pbrand'])) {
+					print htmlspecialchars($line_product->array_options['options_pickup_pbrand']);
+					print ' - ';
+				}
+			}
+			if (!empty($line_product->label)) {
+				print htmlspecialchars($line_product->label);
+			}
 		}	?>
 
 		<?php
