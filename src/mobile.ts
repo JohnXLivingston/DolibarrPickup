@@ -40,6 +40,7 @@ $(function () {
   const processingStatus = container.attr('data-processing-status') ?? null
   const usePickupType = container.attr('data-use-pickup-type') === '1'
   const usePickuplineDescription = container.attr('data-use-pickupline-description') === '1'
+  const dolibarrUrl = container.attr('data-dolibarr-url') ?? undefined
 
   // version is a string that must be related to the Machine definition, and the backend configuration.
   // It is used to clear the stack on page load, if the configuration changed.
@@ -119,7 +120,8 @@ $(function () {
     version,
     container.attr('data-user-id') ?? '',
     true,
-    definition
+    definition,
+    dolibarrUrl
   )
   machine.init(container)
 

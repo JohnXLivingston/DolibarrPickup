@@ -12,12 +12,20 @@ class Machine {
   private readonly states: {[key: string]: State}
   private stack: Stack
   private readonly userId: string
+  private readonly dolibarrUrl?: string
 
-  constructor (name: string, version: string, userId: string, clearStackOnGotoInit: boolean, definition: {[key: string]: StateDefinition}) {
+  constructor (
+    name: string, version: string,
+    userId: string,
+    clearStackOnGotoInit: boolean,
+    definition: {[key: string]: StateDefinition},
+    dolibarrUrl?: string
+  ) {
     this.name = name
     this.clearStackOnGotoInit = clearStackOnGotoInit
     this.version = version
     this.userId = userId
+    this.dolibarrUrl = dolibarrUrl
     this.states = {}
     if (typeof definition !== 'object') {
       throw new Error('Invalid definition')
@@ -134,6 +142,12 @@ class Machine {
   private bindEvents (): void {
     this.content.on('click', '[pickupmobile-reset-stack]', () => {
       this.resetStack()
+    })
+
+    this.content.on('click', '[pickupmobile-return-dolibarr]', () => {
+      if (this.dolibarrUrl) {
+        window.location.href = this.dolibarrUrl
+      }
     })
 
     this.content.on('rerender-state.machineEvents', () => {

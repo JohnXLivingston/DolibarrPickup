@@ -103,5 +103,6 @@ mobile_header();
     <?php if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE)) { print ' data-use-pickup-type="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) { print ' data-use-pickupline-description="1" '; } ?>
     data-units-edit-mode="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_EDIT_MODE ?? '0'); ?>"
+    data-dolibarr-url="<?php print htmlspecialchars(DOL_URL_ROOT.'/custom/pickup/pickupindex.php') ?>"
   ></div>
 </body></html>

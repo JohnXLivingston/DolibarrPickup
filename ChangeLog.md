@@ -6,6 +6,7 @@
 
 * Paramètres du module: on ajoute le bouton «modifier» entre les tableaux, pour plus de visibilité.
 * Fix #53: Le bouton «envoyer email» doit être masqué si la fonctionnalité est désactivée.
+* Fix #56: Ajout d'un bouton pour retourner sous Dolibarr depuis l'application mobile.
 
 ## 1.3.4
 

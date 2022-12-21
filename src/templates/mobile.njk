@@ -11,6 +11,8 @@
     {% endif %}
     {% if stack.stateName !== 'init' %}
       <a class="btn btn-primary" role="button" pickupmobile-reset-stack>{{ translate('Return to Home') }}</a>
+    {% else %}
+      <a class="btn btn-primary" role="button" pickupmobile-return-dolibarr>{{ translate('Return to Dolibarr') }}</a>
     {% endif %}
   </nav>
 

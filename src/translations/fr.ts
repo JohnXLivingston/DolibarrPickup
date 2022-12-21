@@ -1,6 +1,7 @@
 /* eslint-disable quote-props */
 export const fr: {[key: string]: string} = {
   'Return to Home': 'Accueil',
+  'Return to Dolibarr': 'Dolibarr',
   'Not configured yet.': 'Pas configuré pour l\'instant',
   'Don\'t know how to render this state.': 'Ne sait pas comment afficher cette page.',
   'Save': 'Enregistrer',
