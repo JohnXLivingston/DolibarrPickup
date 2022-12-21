@@ -565,6 +565,13 @@ else
 {
 	if (! empty($arrayofparameters)) {
 
+		function draw_modify_button() {
+			global $langs;
+			print '<div class="tabsAction">';
+			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit">'.$langs->trans("Modify").'</a>';
+			print '</div>';
+		}
+
 		function draw_view_table($table, $title) {
 			global $arrayofparameters, $entrepot, $form, $conf, $langs, $pickup_extrafields, $db;
 
@@ -635,15 +642,13 @@ else
 			}
 
 			print '</table>';
+
+			draw_modify_button();
 		}
 
 		draw_view_table('main', $langs->trans("PickupSetup"));
 		draw_view_table('units', $langs->trans("PickupSetupUnits"));
 		draw_view_table('batch', $langs->trans("PickupSetupBatch"));
-
-		print '<div class="tabsAction">';
-		print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit">'.$langs->trans("Modify").'</a>';
-		print '</div>';
 	} else {
 		print '<br>'.$langs->trans("NothingToSetup");
 	}

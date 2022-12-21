@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## ???
+
+### Corrections et changements mineurs
+
+* Paramètres du module: on ajoute le bouton «modifier» entre les tableaux, pour plus de visibilité.
+
 ## 1.3.4
 
 * Fix #14: affichage du libellé et de la marque dans l'application mobile et dans les collectes.
