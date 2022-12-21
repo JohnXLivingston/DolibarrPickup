@@ -528,8 +528,10 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
     	if (empty($reshook))
     	{
     	  // Send
-				if (empty($user->socid) && $object->canCreatePickupPdf()) { // Considering you can send mail if you can generate PDF
-					print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&action=presend&mode=init#formmailbeforetitle">'.$langs->trans('SendMail').'</a>'."\n";
+				if (!empty($conf->global->PICKUP_SEND_MAIL)) {
+					if (empty($user->socid) && $object->canCreatePickupPdf()) { // Considering you can send mail if you can generate PDF
+						print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&action=presend&mode=init#formmailbeforetitle">'.$langs->trans('SendMail').'</a>'."\n";
+					}
 				}
 
         // Modify
