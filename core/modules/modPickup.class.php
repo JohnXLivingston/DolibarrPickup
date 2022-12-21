@@ -64,7 +64,7 @@ class modPickup extends DolibarrModules
         $this->editor_name = 'John Livingston';
         $this->editor_url = 'https://github.com/JohnXLivingston';
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '1.3.4';
+        $this->version = '1.3.5';
         // Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
 

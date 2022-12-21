@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## ???
+## 1.3.5
 
 ### Corrections et changements mineurs
 
