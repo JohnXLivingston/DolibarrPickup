@@ -24,6 +24,9 @@ jobs:
       - name: Build
         run: hugo --minify --baseURL='https://johnxlivingston.github.io/DolibarrPickup' -s documentation
 
+      - name: Get Latest Version
+        run: grep -o -P '^\s*\$this->version\s*=\s*.\d+\.\d+\.\d+.;\s*$' ./core/modules/modPickup.class.php | head -n 1 | sed -e 's/[^0-9.]//g' > ./documentation/public/latest_version.txt
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/main'
