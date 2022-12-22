@@ -1,5 +1,10 @@
 # DolibarrPickup
 
+## 1.3.6
+
+* Définition du paramètre url_last_version, qui permet d'être prévenu des nouvelles version du module.
+* La page «editor_url» pointe désormais vers la documentation.
+
 ## 1.3.5
 
 ### Corrections et changements mineurs
