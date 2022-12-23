@@ -92,7 +92,7 @@ class PickupMobileCat extends CommonObject
 		'fk_user_creat' => array('type'=>'integer', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>510, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'fk_user_modif' => array('type'=>'integer', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>511, 'notnull'=>-1, 'visible'=>-2,),
 		'import_key' => array('type'=>'varchar(14)', 'label'=>'ImportId', 'enabled'=>'1', 'position'=>1000, 'notnull'=>-1, 'visible'=>-2,),
-		'notes' => array('type'=>'text', 'label'=>'Notes', 'enabled'=>'1', 'position'=>63, 'notnull'=>0, 'visible'=>-1, 'comment'=>"Additional notes for the mobile application"),
+		'notes' => array('type'=>'text', 'label'=>'Notes', 'enabled'=>'1', 'position'=>63, 'notnull'=>0, 'visible'=>1, 'comment'=>"Additional notes for the mobile application"),
 	);
 	public $rowid;
 	public $fk_category;

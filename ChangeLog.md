@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## ???
+
+### Nouvelles fonctionnalités
+
+* Refonte de l'écran de gestion des tags pour l'application mobile (#62).
+
 ## 1.3.6
 
 * Définition du paramètre url_last_version, qui permet d'être prévenu des nouvelles version du module.
