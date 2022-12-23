@@ -287,7 +287,15 @@ foreach ($fulltree as $key => $val) {
 					print '</a>';
 					// print '</span>';
 				} elseif (!empty($mobilecat)) {
-					if ($key == 'status') print $mobilecat->getLibStatut(5);
+					if ($key == 'form') {
+						if (empty($mobilecat->form)) {
+							print '-';
+						} else if (array_key_exists($mobilecat->form, $mobileforms)) {
+							print htmlspecialchars($mobileforms[$mobilecat->form]);
+						} else {
+							print htmlspecialchars($mobilecat->form);
+						}
+					} elseif ($key == 'status') print $mobilecat->getLibStatut(5);
 					elseif (in_array($val['type'], array('date','datetime','timestamp'))) print $mobilecat->showOutputField($val, $key, $db->jdate($obj->$key), '');
 					else print $mobilecat->showOutputField($val, $key, $mobilecat->$key, '');
 				}
