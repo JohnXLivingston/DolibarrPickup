@@ -23,6 +23,7 @@
  */
 
 require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
+dol_include_once('/pickup/lib/mobile_forms.php');
 
 /**
  * Class for PickupMobileCat
@@ -83,16 +84,37 @@ class PickupMobileCat extends CommonObject
 	 * @var array  Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
 	 */
 	public $fields=array(
+		// TODO: for future fields like 'DEEE' and so, change visibility and enabled depending on conf->global
 		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>'1', 'position'=>1, 'notnull'=>1, 'visible'=>0, 'index'=>1, 'comment'=>"Id"),
 		'fk_category' => array('type'=>'integer:Categorie:categories/class/categorie.class.php', 'label'=>'Category', 'enabled'=>'1', 'position'=>2, 'notnull'=>1, 'visible'=>2, 'index'=>1, 'foreignkey'=>'categories.rowid',),
-		'active' => array('type'=>'boolean', 'label'=>'Actif', 'enabled'=>'1', 'position'=>61, 'notnull'=>1, 'visible'=>1, 'default'=>'1', 'index'=>1, 'comment'=>"Is this category used in mobile pickup app"),
-		'form' => array('type'=>'varchar(255)', 'label'=>'Formulaire', 'enabled'=>'1', 'position'=>62, 'notnull'=>-1, 'visible'=>1, 'comment'=>"The form name for the mobile pickup app"),
+		'active' => array(
+			'type'=>'boolean',
+			'label'=>'Actif', 'enabled'=>'1',
+			'position'=>61, 'notnull'=>1, 'visible'=>1,
+			'default'=>'1', 'index'=>1,
+			'comment'=>"Is this category used in mobile pickup app",
+			'help' => 'MobileCatEnable'
+		),
+		'form' => array(
+			'type'=>'varchar(255)',
+			'label'=>'Formulaire',
+			'enabled'=>'1',
+			'position'=>62, 'notnull'=>-1, 'visible'=>1,
+			'comment'=>"The form name for the mobile pickup app",
+			'arrayofkeyval'=>array(), // this is set in the constructor.
+			'help' => 'MobileCatForm'
+		),
 		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>'1', 'position'=>500, 'notnull'=>1, 'visible'=>-2,),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>-1, 'visible'=>-2,),
 		'fk_user_creat' => array('type'=>'integer', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>510, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'fk_user_modif' => array('type'=>'integer', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>511, 'notnull'=>-1, 'visible'=>-2,),
 		'import_key' => array('type'=>'varchar(14)', 'label'=>'ImportId', 'enabled'=>'1', 'position'=>1000, 'notnull'=>-1, 'visible'=>-2,),
-		'notes' => array('type'=>'text', 'label'=>'Notes', 'enabled'=>'1', 'position'=>63, 'notnull'=>0, 'visible'=>1, 'comment'=>"Additional notes for the mobile application"),
+		'notes' => array(
+			'type'=>'text', 'label'=>'Notes',
+			'enabled'=>'1', 'position'=>63, 'notnull'=>0, 'visible'=>1,
+			'comment'=>"Additional notes for the mobile application",
+			'help' => 'MobileCatDescription'
+		),
 	);
 	public $rowid;
 	public $fk_category;
@@ -164,15 +186,19 @@ class PickupMobileCat extends CommonObject
 		}
 
 		// Translate some data of arrayofkeyval
-		foreach($this->fields as $key => $val)
-		{
-			if (is_array($val['arrayofkeyval']))
-			{
+		foreach($this->fields as $key => $val) {
+			if (is_array($val['arrayofkeyval'])) {
 				foreach($val['arrayofkeyval'] as $key2 => $val2)
 				{
 					$this->fields[$key]['arrayofkeyval'][$key2]=$langs->trans($val2);
 				}
 			}
+		}
+
+		// FIXME: this is a dirty fix. Waiting to replace the 'form' field by other fields (should be do very soon).
+		if (array_key_exists('form', $this->fields)) {
+			$mobileforms = mobileListProductForms();
+			$this->fields['form']['arrayofkeyval'] = $mobileforms;
 		}
 	}
 

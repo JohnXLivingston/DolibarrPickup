@@ -80,14 +80,17 @@ $contextpage= GETPOST('contextpage', 'aZ')?GETPOST('contextpage', 'aZ'):'pickupl
 $backtopage = GETPOST('backtopage', 'alpha');											// Go back to a dedicated page
 $optioncss  = GETPOST('optioncss', 'aZ');												// Option for the css output (always '' except when 'print')
 
-$id = GETPOST('id', 'int');
+$id = GETPOST('id', 'int'); // the line to edit (when action === 'editline')
 
 // Note: no pagination on this page, always display all results.
 $page = 0;
 $limit = 0;
 // No search neither.
+// Important note: if adding search or sort feature, you risk to break the edit mode (because of nested forms).
 $sortfield = '';
 $sortorder = '';
+// No selectedfields for now.
+$selectedfields = '';
 
 
 $object = new PickupMobileCat($db);
@@ -105,8 +108,11 @@ if ($user->societe_id > 0)	// Protection if external user
 	//$socid = $user->societe_id;
 	accessforbidden();
 }
+$permissionedit = 0;
 if (!$user->rights->pickup->configure) {
   accessforbidden();
+} else {
+	$permissionedit = 1;
 }
 
 dol_include_once('/pickup/lib/mobile_forms.php');
@@ -117,7 +123,13 @@ $arrayfields=array();
 foreach($object->fields as $key => $val) {
 	// If $val['visible']==0, then we never show the field
 	if (! empty($val['visible'])) {
-		$arrayfields['t.'.$key]=array('label'=>$val['label'], 'checked'=>(($val['visible']<0)?0:1), 'enabled'=>($val['enabled'] && ($val['visible'] != 3)), 'position'=>$val['position']);
+		$arrayfields['t.'.$key]=array(
+			'label'=>$val['label'],
+			'checked'=>(($val['visible']<0)?0:1),
+			'enabled'=>($val['enabled'] && ($val['visible'] != 3)),
+			'position'=>$val['position'],
+			'help'=>$val['help']
+		);
 	}
 }
 // // Extra fields
@@ -138,6 +150,11 @@ $arrayfields = dol_sort_array($arrayfields, 'position');
 
 if (GETPOST('cancel', 'alpha')) { $action='list'; $massaction=''; }
 if (! GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') { $massaction=''; }
+
+if (($action === 'editline' || $action === 'editall') && !$permissionedit) {
+	$action = 'list';
+	$massaction = '';
+}
 
 $parameters=array();
 $reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
@@ -172,6 +189,22 @@ if (empty($reshook)) {
 	// include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
 }
 
+$fulltree = $categstatic->get_full_arbo('product');
+$ids_to_edit = [];
+$edit_multiple = false;
+$is_edit_mode = false;
+if ($action === 'editline') {
+	if (!empty($id)) {
+		$ids_to_edit[intval($id)] = true;
+		$is_edit_mode = true;
+	}
+} elseif ($action === 'editall') {
+	$edit_multiple = true;
+	foreach ($fulltree as $key => $val) {
+		$ids_to_edit[intval($val['id'])] = true;
+		$is_edit_mode = true;
+	}
+}
 
 /*
  * View
@@ -179,8 +212,6 @@ if (empty($reshook)) {
 
 $help_url='';
 $title = $langs->trans('ListOf', $langs->transnoentitiesnoconv("MobileCats"));
-
-$fulltree = $categstatic->get_full_arbo('product');
 
 // Output page
 // --------------------------------------------------------------------
@@ -203,6 +234,22 @@ $num = count($fulltree);
 $nbtotalofrecords = $num;
 print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, '', $num, $nbtotalofrecords, 'category', 0, '', '', $limit);
 
+if ($is_edit_mode) {
+	print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
+	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print '<input type="hidden" name="action" value="update">';
+	if ($edit_multiple) {
+		print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
+		print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
+	}
+} elseif ($permissionedit) {
+	print '<div class="right">';
+	print '<a class="button" href="'.$_SERVER["PHP_SELF"].'?action=editall">';
+	print $langs->trans('PickupModifyAllCat');
+	print '</a>';
+	print '</div>';
+}
+
 print '<div class="div-table-responsive">';		// You can use div-table-responsive-no-min if you dont need reserved height for your table
 print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
@@ -216,9 +263,21 @@ foreach($object->fields as $key => $val)
 	elseif (in_array($val['type'], array('date','datetime','timestamp'))) $cssforfield.=($cssforfield?' ':'').'center';
 	elseif (in_array($val['type'], array('timestamp'))) $cssforfield.=($cssforfield?' ':'').'nowrap';
 	elseif (in_array($val['type'], array('double(24,8)', 'double(6,3)', 'integer', 'real', 'price'))) $cssforfield.=($cssforfield?' ':'').'right';
-	if (! empty($arrayfields['t.'.$key]['checked']))
-	{
-		print getTitleFieldOfList($arrayfields['t.'.$key]['label'], 0, $_SERVER['PHP_SELF'], 't.'.$key, '', $param, ($cssforfield?'class="'.$cssforfield.'"':''), $sortfield, $sortorder, ($cssforfield?$cssforfield.' ':''), 1)."\n";
+	if (! empty($arrayfields['t.'.$key]['checked'])) {
+		print getTitleFieldOfList(
+			$arrayfields['t.'.$key]['label'], // name
+			0, // thead 0=To use with standard table format
+			$_SERVER['PHP_SELF'], // Url used when we click on sort picto
+			'', // 't.'.$key, // Field to use for new sorting. Empty if this field is not sortable. Example "t.abc" or "t.abc,t.def"
+			'', // $begin
+			$param, // Add more parameters on sort url links ("" by default)
+			($cssforfield?'class="'.$cssforfield.'"':''), // Add more attributes on th
+			$sortfield, // Current field used to sort (Ex: 'd.datep,d.id')
+			$sortorder, // Current sort order (Ex: 'asc,desc')
+			($cssforfield?$cssforfield.' ':''), // Prefix for css.
+			1, // 1=Disable sort link
+			$arrayfields['t.'.$key]['help'] // Tooltip
+		)."\n";
 	}
 }
 // // Extra fields
@@ -227,8 +286,9 @@ foreach($object->fields as $key => $val)
 // $parameters=array('arrayfields'=>$arrayfields,'param'=>$param,'sortfield'=>$sortfield,'sortorder'=>$sortorder);
 // $reshook=$hookmanager->executeHooks('printFieldListTitle', $parameters, $object);    // Note that $action and $object may have been modified by hook
 // print $hookmanager->resPrint;
-// // Action column
-// print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
+// Action column
+print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
+
 print '</tr>'."\n";
 
 foreach ($fulltree as $key => $val) {
@@ -261,6 +321,8 @@ foreach ($fulltree as $key => $val) {
 			$label[] = $parent_cat->label;
 		}
 		$label = implode(' &gt;&gt; ', $label);
+		$line_edit_prefix = 'line_'.$cat->id.'_';
+		$is_line_edited = $permissionedit && array_key_exists(intval($cat->id), $ids_to_edit) && $ids_to_edit[intval($cat->id)] === true;
 
 		print '<tr class="oddeven">';
 
@@ -286,6 +348,22 @@ foreach ($fulltree as $key => $val) {
 					print $label;
 					print '</a>';
 					// print '</span>';
+					if ($is_line_edited) {
+						print '<input type="hidden" name="'.htmlspecialchars($line_edit_prefix).'" value="1">';
+					}
+				} elseif ($is_line_edited && empty($val['noteditable'])) {
+					// Edit mode.
+					print $object->showInputField(
+						null,
+						$key,
+						GETPOSTISSET($line_edit_prefix.$key)
+							? GETPOST($line_edit_prefix.$key, 'alpha')
+							: (
+								empty($mobilecat)
+									? null
+									: $mobilecat->$key
+								)
+					);
 				} elseif (!empty($mobilecat)) {
 					if ($key == 'form') {
 						if (empty($mobilecat->form)) {
@@ -323,15 +401,31 @@ foreach ($fulltree as $key => $val) {
 		// 	print price($qtyTotals['qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
 		// 	print '</td>';
 		// }
-		// // Action column
-		// print '<td class="nowrap center">';
+		// Action column
+		print '<td class="nowrap center">';
 		// if ($massactionbutton || $massaction)   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
 		// {
 		// 	$selected=0;
 		// 	if (in_array($obj->rowid, $arrayofselected)) $selected=1;
 		// 	print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected?' checked="checked"':'').'>';
 		// }
-		// print '</td>';
+		?><div id="line_<?php echo $cat->id; ?>"></div><?php
+		if ($permissionedit) {
+			if ($is_line_edited) {
+				// line is in edit mode. Displaying save/cancel button (unless it is a multiple edit)
+				if (!$edit_multiple) {
+					?>
+					<input type="submit" class="button buttongen marginbottomonly" id="savelinebutton marginbottomonly" name="save" value="<?php echo $langs->trans("Save"); ?>"><br>
+					<input type="submit" class="button buttongen marginbottomonly" id="cancellinebutton" name="cancel" value="<?php echo $langs->trans("Cancel"); ?>">
+					<?php
+				}
+			} else {
+				?><a class="editfielda reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$cat->id.'&amp;action=editline&amp;#line_'.$cat->id; ?>">
+          <?php print img_edit(); ?>
+        </a><?php
+			}
+		}
+		print '</td>';
 		// if (! $i) $totalarray['nbfield']++;
 
 		print '</tr>';
@@ -340,6 +434,13 @@ foreach ($fulltree as $key => $val) {
 
 print '</table>';
 print '</div>';
+if ($is_edit_mode) {
+	if ($edit_multiple) {
+		print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
+		print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
+	}
+	print '</form>';
+}
 
 // End of page
 llxFooter();

@@ -161,3 +161,5 @@ PickupMailTopic = Pickup receipt __REF__
 PickupDictType = Pickup type
 
 MailToSendPickup = Pickup
+
+PickupModifyAllCat = Modify all

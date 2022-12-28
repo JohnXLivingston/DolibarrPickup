@@ -161,3 +161,5 @@ PickupMailTopic = Bon de collecte __REF__
 PickupDictType = Type de collecte
 
 MailToSendPickup = Collecte
+
+PickupModifyAllCat = Tout modifier
