@@ -62,9 +62,6 @@ if (! $res) die("Include of main fails");
 
 // load pickup libraries
 require_once __DIR__ . '/class/mobilecat.class.php';
-
-// for other modules
-//dol_include_once('/othermodule/class/otherobject.class.php');
 dol_include_once('/categories/class/categorie.class.php');
 
 // Load translation files required by the page
@@ -82,133 +79,42 @@ $optioncss  = GETPOST('optioncss', 'aZ');												// Option for the css outpu
 
 $id = GETPOST('id', 'int'); // the line to edit (when action === 'editline')
 
-// Note: no pagination on this page, always display all results.
-$page = 0;
-$limit = 0;
-// No search neither.
-// Important note: if adding search or sort feature, you risk to break the edit mode (because of nested forms).
-$sortfield = '';
-$sortorder = '';
-// No selectedfields for now.
-$selectedfields = '';
-
+list ($page, $limit) = mobilecat_list_pagination();
+list ($sortfield, $sortorder) = mobilecat_list_sort();
 
 $object = new PickupMobileCat($db);
 $extrafields = new ExtraFields($db);
 $categstatic = new Categorie($db);
+
 $hookmanager->initHooks(array('mobilecatlist'));     // Note that conf->hooks_modules contains array
 // Fetch optionals attributes and labels
 $extralabels = $extrafields->fetch_name_optionals_label('mobilecat');	// Load $extrafields->attributes['mobilecat']
 
 // Security check
-if (empty($conf->pickup->enabled)) accessforbidden('Module not enabled');
-$socid=0;
-if ($user->societe_id > 0)	// Protection if external user
-{
-	//$socid = $user->societe_id;
-	accessforbidden();
-}
-$permissionedit = 0;
-if (!$user->rights->pickup->configure) {
-  accessforbidden();
-} else {
-	$permissionedit = 1;
-}
+list ($permissionedit) = mobilecat_list_security_check($conf, $user);
 
+// Load $mobileforms: available values for mobilecat->form.
 dol_include_once('/pickup/lib/mobile_forms.php');
 $mobileforms = mobileListProductForms();
 
 // Definition of fields for list
-$arrayfields=array();
-foreach($object->fields as $key => $val) {
-	// If $val['visible']==0, then we never show the field
-	if (! empty($val['visible'])) {
-		$arrayfields['t.'.$key]=array(
-			'label'=>$val['label'],
-			'checked'=>(($val['visible']<0)?0:1),
-			'enabled'=>($val['enabled'] && ($val['visible'] != 3)),
-			'position'=>$val['position'],
-			'help'=>$val['help']
-		);
-	}
-}
-// // Extra fields
-// if (is_array($extrafields->attributes[$object->table_element]['label']) && count($extrafields->attributes[$object->table_element]['label']) > 0) {
-// 	foreach($extrafields->attributes[$object->table_element]['label'] as $key => $val)
-// 	{
-// 		if (! empty($extrafields->attributes[$object->table_element]['list'][$key]))
-// 			$arrayfields["ef.".$key]=array('label'=>$extrafields->attributes[$object->table_element]['label'][$key], 'checked'=>(($extrafields->attributes[$object->table_element]['list'][$key]<0)?0:1), 'position'=>$extrafields->attributes[$object->table_element]['pos'][$key], 'enabled'=>(abs($extrafields->attributes[$object->table_element]['list'][$key])!=3 && $extrafields->attributes[$object->table_element]['perms'][$key]));
-// 	}
-// }
+$arrayfields = mobilecat_list_array_fields($object, $extrafields);
+
+// Sorting fields by position
 $object->fields = dol_sort_array($object->fields, 'position');
 $arrayfields = dol_sort_array($arrayfields, 'position');
-
 
 /*
  * Actions
  */
-
-if (GETPOST('cancel', 'alpha')) { $action='list'; $massaction=''; }
-if (! GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') { $massaction=''; }
-
-if (($action === 'editline' || $action === 'editall') && !$permissionedit) {
-	$action = 'list';
-	$massaction = '';
-}
-
-$parameters=array();
-$reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
-if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
-
-if (empty($reshook)) {
-	// // Selection of new fields
-	// include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
-
-	// // Purge search criteria
-	// if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') ||GETPOST('button_removefilter', 'alpha')) // All tests are required to be compatible with all browsers
-	// {
-	// 	foreach($object->fields as $key => $val)
-	// 	{
-	// 		$search[$key]='';
-	// 	}
-	// 	$toselect='';
-	// 	$search_array_options=array();
-	// }
-	// if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
-	// 	|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha'))
-	// {
-	// 	$massaction='';     // Protection to avoid mass action if we force a new search during a mass action confirmation
-	// }
-
-	// // Mass actions
-	// $objectclass='PickupMobileCat';
-	// $objectlabel='PickupMobileCat';
-	// $permtoread = $user->rights->pickup->read;
-	// $permtodelete = $user->rights->pickup->delete;
-	// $uploaddir = $conf->pickup->dir_output;
-	// include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
-}
-
-$fulltree = $categstatic->get_full_arbo('product');
-$ids_to_edit = [];
-$edit_multiple = false;
-$is_edit_mode = false;
-if ($action === 'editline') {
-	if (!empty($id)) {
-		$ids_to_edit[intval($id)] = true;
-		$is_edit_mode = true;
-	}
-} elseif ($action === 'editall') {
-	$edit_multiple = true;
-	foreach ($fulltree as $key => $val) {
-		$ids_to_edit[intval($val['id'])] = true;
-		$is_edit_mode = true;
-	}
-}
+mobilecat_list_check_actions($hookmanager, $object, $action, $massaction, $permissionedit);
 
 /*
- * View
- */
+* View
+*/
+
+list ($fulltree) = mobilecat_list_load_data($categstatic);
+list($ids_to_edit, $is_edit_mode, $is_edit_multiple) = mobilecat_list_edit_vars($action, $fulltree, $id);
 
 $help_url='';
 $title = $langs->trans('ListOf', $langs->transnoentitiesnoconv("MobileCats"));
@@ -230,218 +136,506 @@ if ($optioncss != '')     $param.='&optioncss='.urlencode($optioncss);
 // // Add $param from extra fields
 // include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
 
-$num = count($fulltree);
-$nbtotalofrecords = $num;
-print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, '', $num, $nbtotalofrecords, 'category', 0, '', '', $limit);
+mobilecat_list_print_barre_list(
+	$title,
+	count($fulltree), count($fulltree), $page, $limit,
+	$sortfield, $sortorder,
+	$param
+);
 
-if ($is_edit_mode) {
-	print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
-	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-	print '<input type="hidden" name="action" value="update">';
-	if ($edit_multiple) {
-		print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
-		print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
-	}
-} elseif ($permissionedit) {
-	print '<div class="right">';
-	print '<a class="button" href="'.$_SERVER["PHP_SELF"].'?action=editall">';
-	print $langs->trans('PickupModifyAllCat');
-	print '</a>';
-	print '</div>';
-}
+mobilecat_list_print_open_form_and_button($langs, $is_edit_mode, $is_edit_multiple, $permissionedit);
 
-print '<div class="div-table-responsive">';		// You can use div-table-responsive-no-min if you dont need reserved height for your table
-print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
+mobilecat_list_print_open_table();
+mobilecat_list_print_table_head($langs, $object, $arrayfields, $param, $sortfield, $sortorder);
+mobilecat_list_print_table_content(
+	$db, $langs, $object, $arrayfields, $fulltree,
+	$mobileforms,
+	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit
+);
+mobilecat_list_print_close_table();
 
-// Fields title label
-// --------------------------------------------------------------------
-print '<tr class="liste_titre">';
-foreach($object->fields as $key => $val)
-{
-	$cssforfield=(empty($val['css'])?'':$val['css']);
-	if ($key == 'status') $cssforfield.=($cssforfield?' ':'').'center';
-	elseif (in_array($val['type'], array('date','datetime','timestamp'))) $cssforfield.=($cssforfield?' ':'').'center';
-	elseif (in_array($val['type'], array('timestamp'))) $cssforfield.=($cssforfield?' ':'').'nowrap';
-	elseif (in_array($val['type'], array('double(24,8)', 'double(6,3)', 'integer', 'real', 'price'))) $cssforfield.=($cssforfield?' ':'').'right';
-	if (! empty($arrayfields['t.'.$key]['checked'])) {
-		print getTitleFieldOfList(
-			$arrayfields['t.'.$key]['label'], // name
-			0, // thead 0=To use with standard table format
-			$_SERVER['PHP_SELF'], // Url used when we click on sort picto
-			'', // 't.'.$key, // Field to use for new sorting. Empty if this field is not sortable. Example "t.abc" or "t.abc,t.def"
-			'', // $begin
-			$param, // Add more parameters on sort url links ("" by default)
-			($cssforfield?'class="'.$cssforfield.'"':''), // Add more attributes on th
-			$sortfield, // Current field used to sort (Ex: 'd.datep,d.id')
-			$sortorder, // Current sort order (Ex: 'asc,desc')
-			($cssforfield?$cssforfield.' ':''), // Prefix for css.
-			1, // 1=Disable sort link
-			$arrayfields['t.'.$key]['help'] // Tooltip
-		)."\n";
-	}
-}
-// // Extra fields
-// include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
-// // Hook fields
-// $parameters=array('arrayfields'=>$arrayfields,'param'=>$param,'sortfield'=>$sortfield,'sortorder'=>$sortorder);
-// $reshook=$hookmanager->executeHooks('printFieldListTitle', $parameters, $object);    // Note that $action and $object may have been modified by hook
-// print $hookmanager->resPrint;
-// Action column
-print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
-
-print '</tr>'."\n";
-
-foreach ($fulltree as $key => $val) {
-	$cat = new Categorie($db);
-	$cat->fetch($val['id']);
-	$allways = $cat->get_all_ways();
-
-	// $mobilecats = $object->fetchAll('', '', 1, 0, ['customsql' => 't.fk_category=\''.$object->db->escape($cat->id)]).'\'';
-	// if ($mobilecats < 0)
-	// {
-	// 	dol_print_error($db);
-	// 	exit;
-	// }
-	// $mobilecat = count($mobilecats) > 0 ? $mobilecats[0] : 0;
-	
-	$mobilecat = new PickupMobileCat($db);
-	if ($mobilecat->fetchByCategory($cat->id) < 0)
-	{
-		dol_print_error($db);
-		exit;
-	}
-	if (empty($mobilecat->id)) {
-		$mobilecat = null; // this makes following code clearer.
-	}
-
-	foreach ($allways as $way) {
-		$label = array();
-		foreach ($way as $parent_cat)
-		{
-			$label[] = $parent_cat->label;
-		}
-		$label = implode(' &gt;&gt; ', $label);
-		$line_edit_prefix = 'line_'.$cat->id.'_';
-		$is_line_edited = $permissionedit && array_key_exists(intval($cat->id), $ids_to_edit) && $ids_to_edit[intval($cat->id)] === true;
-
-		print '<tr class="oddeven">';
-
-		// Two main case:
-		// - mobilecat was found: display informations
-		// - mobilecat was not found: only display the fk_category field ($label)
-
-		foreach($object->fields as $key => $val) {
-			$cssforfield=(empty($val['css'])?'':$val['css']);
-			if (in_array($val['type'], array('date','datetime','timestamp')))	$cssforfield.=($cssforfield?' ':'').'center';
-			elseif ($key == 'status') $cssforfield.=($cssforfield?' ':'').'center';
-
-			if (in_array($val['type'], array('timestamp'))) $cssforfield.=($cssforfield?' ':'').'nowrap';
-			elseif ($key == 'ref') $cssforfield.=($cssforfield?' ':'').'nowrap';
-
-			if (in_array($val['type'], array('double(24,8)', 'double(6,3)', 'integer', 'real', 'price')) && $key != 'status') $cssforfield.=($cssforfield?' ':'').'right';
-
-			if (! empty($arrayfields['t.'.$key]['checked'])) {
-				print '<td'.($cssforfield ? ' class="'.$cssforfield.'"' : '').'>';
-				if ($key === 'fk_category') {
-					// print '<span class="noborderoncategories" '.($cat->color?' style="background: #'.$cat->color.';"':' style="background: #aaa"').'>';
-					print '<a href="'.DOL_URL_ROOT.'/custom/pickup/tabs/mobilecat.php?id='.$cat->id.'&backto=mobilecat_list">';
-					print $label;
-					print '</a>';
-					// print '</span>';
-					if ($is_line_edited) {
-						print '<input type="hidden" name="'.htmlspecialchars($line_edit_prefix).'" value="1">';
-					}
-				} elseif ($is_line_edited && empty($val['noteditable'])) {
-					// Edit mode.
-					print $object->showInputField(
-						null,
-						$key,
-						GETPOSTISSET($line_edit_prefix.$key)
-							? GETPOST($line_edit_prefix.$key, 'alpha')
-							: (
-								empty($mobilecat)
-									? null
-									: $mobilecat->$key
-								)
-					);
-				} elseif (!empty($mobilecat)) {
-					if ($key == 'form') {
-						if (empty($mobilecat->form)) {
-							print '-';
-						} else if (array_key_exists($mobilecat->form, $mobileforms)) {
-							print htmlspecialchars($mobileforms[$mobilecat->form]);
-						} else {
-							print htmlspecialchars($mobilecat->form);
-						}
-					} elseif ($key == 'status') print $mobilecat->getLibStatut(5);
-					elseif (in_array($val['type'], array('date','datetime','timestamp'))) print $mobilecat->showOutputField($val, $key, $db->jdate($obj->$key), '');
-					else print $mobilecat->showOutputField($val, $key, $mobilecat->$key, '');
-				}
-				print '</td>';
-				// if (! $i) $totalarray['nbfield']++;
-				// if (! empty($val['isameasure']))
-				// {
-				// 	if (! $i) $totalarray['pos'][$totalarray['nbfield']]='t.'.$key;
-				// 	$totalarray['val']['t.'.$key] += $obj->$key;
-				// }
-			}
-		}
-		// // Extra fields
-		// include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
-		// // Fields from hook
-		// $parameters=array('arrayfields'=>$arrayfields, 'obj'=>$obj, 'i'=>$i, 'totalarray'=>&$totalarray);
-		// $reshook=$hookmanager->executeHooks('printFieldListValue', $parameters, $object);    // Note that $action and $object may have been modified by hook
-		// print $hookmanager->resPrint;
-		// if (!empty($conf->global->PICKUP_USE_DEEE)) {
-		// 	// DEEE qty column
-		// 	print '<td class="nowrap right">';
-		// 	$qtyTotals = $object->computeQtyTotals();
-		// 	print price($qtyTotals['deee_qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
-		// 	print  ' / ';
-		// 	print price($qtyTotals['qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
-		// 	print '</td>';
-		// }
-		// Action column
-		print '<td class="nowrap center">';
-		// if ($massactionbutton || $massaction)   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
-		// {
-		// 	$selected=0;
-		// 	if (in_array($obj->rowid, $arrayofselected)) $selected=1;
-		// 	print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected?' checked="checked"':'').'>';
-		// }
-		?><div id="line_<?php echo $cat->id; ?>"></div><?php
-		if ($permissionedit) {
-			if ($is_line_edited) {
-				// line is in edit mode. Displaying save/cancel button (unless it is a multiple edit)
-				if (!$edit_multiple) {
-					?>
-					<input type="submit" class="button buttongen marginbottomonly" id="savelinebutton marginbottomonly" name="save" value="<?php echo $langs->trans("Save"); ?>"><br>
-					<input type="submit" class="button buttongen marginbottomonly" id="cancellinebutton" name="cancel" value="<?php echo $langs->trans("Cancel"); ?>">
-					<?php
-				}
-			} else {
-				?><a class="editfielda reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$cat->id.'&amp;action=editline&amp;#line_'.$cat->id; ?>">
-          <?php print img_edit(); ?>
-        </a><?php
-			}
-		}
-		print '</td>';
-		// if (! $i) $totalarray['nbfield']++;
-
-		print '</tr>';
-	}
-}
-
-print '</table>';
-print '</div>';
-if ($is_edit_mode) {
-	if ($edit_multiple) {
-		print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
-		print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
-	}
-	print '</form>';
-}
+mobilecat_list_print_close_form_and_button($langs, $is_edit_mode, $is_edit_multiple, $permissionedit);
 
 // End of page
 llxFooter();
+
+// Utilitary functions
+// --------------------------------------------------------------------
+
+/**
+ * Returns pagination vars.
+ */
+function mobilecat_list_pagination() {
+	// Note: no pagination on this page, always display all results.
+	$page = 0;
+	$limit = 0;
+	return array($page, $limit);
+}
+
+/**
+ * Returns sort variables.
+ */
+function mobilecat_list_sort() {
+	// No search on this page.
+	// Important note: if adding search or sort feature, you risk to break the edit mode (because of nested forms).
+	$sortfield = '';
+	$sortorder = '';
+	return array($sortfield, $sortorder);
+}
+
+/**
+ * Perform security checks
+ */
+function mobilecat_list_security_check(&$conf, &$user) {
+	$permissionedit = 0;
+	if (empty($conf->pickup->enabled)) {
+		accessforbidden('Module not enabled');
+	}
+	if ($user->societe_id > 0) {	// Protection if external user
+		accessforbidden();
+	}
+	if (!$user->rights->pickup->configure) {
+		accessforbidden();
+	} else {
+		$permissionedit = 1;
+	}
+	return array($permissionedit);
+}
+
+/**
+ * Return fields definition for columns.
+ */
+function mobilecat_list_array_fields(&$object, &$extrafields) {
+	$arrayfields=array();
+	foreach($object->fields as $key => $val) {
+		// If $val['visible']==0, then we never show the field
+		if (empty($val['visible'])) {
+			continue;
+		}
+
+		$arrayfields['t.'.$key]=array(
+			'label'=>$val['label'],
+			'checked'=>(($val['visible']<0)?0:1),
+			'enabled'=>($val['enabled'] && ($val['visible'] != 3)),
+			'position'=>$val['position'],
+			'help'=>$val['help']
+		);
+
+	}
+
+	// // Extra fields
+	// if (is_array($extrafields->attributes[$object->table_element]['label']) && count($extrafields->attributes[$object->table_element]['label']) > 0) {
+	// 	foreach($extrafields->attributes[$object->table_element]['label'] as $key => $val)
+	// 	{
+	// 		if (! empty($extrafields->attributes[$object->table_element]['list'][$key]))
+	// 			$arrayfields["ef.".$key]=array('label'=>$extrafields->attributes[$object->table_element]['label'][$key], 'checked'=>(($extrafields->attributes[$object->table_element]['list'][$key]<0)?0:1), 'position'=>$extrafields->attributes[$object->table_element]['pos'][$key], 'enabled'=>(abs($extrafields->attributes[$object->table_element]['list'][$key])!=3 && $extrafields->attributes[$object->table_element]['perms'][$key]));
+	// 	}
+	// }
+	return $arrayfields;
+}
+
+/**
+ * Get current action.
+ * Check if ok.
+ * Update variables if needed:
+ * - if the user has not the right, the action is replaced by the default one
+ * - if action was not confirmed, or cancelled, .... 
+ * After this function, $action and $massaction will have correct values.
+ */
+function mobilecat_list_check_actions(&$hookmanager, &$object, &$action, &$massaction, $permissionedit) {
+	if (GETPOST('cancel', 'alpha')) {
+		$action='list'; $massaction='';
+	}
+	if (! GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+		$massaction='';
+	}
+
+	if (($action === 'editline' || $action === 'editall') && !$permissionedit) {
+		$action = 'list';
+		$massaction = '';
+	}
+
+	$parameters=array();
+	$reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);
+	// Note that $action and $object may have been modified by some hooks
+	if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+
+	if (empty($reshook)) {
+		// // Selection of new fields
+		// Note: this template needs $action, $db, $conf, $object
+		// include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+
+		// // Purge search criteria
+		// if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') ||GETPOST('button_removefilter', 'alpha')) // All tests are required to be compatible with all browsers
+		// {
+		// 	foreach($object->fields as $key => $val)
+		// 	{
+		// 		$search[$key]='';
+		// 	}
+		// 	$toselect='';
+		// 	$search_array_options=array();
+		// }
+		// if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
+		// 	|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha'))
+		// {
+		// 	$massaction='';     // Protection to avoid mass action if we force a new search during a mass action confirmation
+		// }
+
+		// // Mass actions
+		// $objectclass='PickupMobileCat';
+		// $objectlabel='PickupMobileCat';
+		// $permtoread = $user->rights->pickup->read;
+		// $permtodelete = $user->rights->pickup->delete;
+		// $uploaddir = $conf->pickup->dir_output;
+		// include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	}
+}
+
+/**
+ * Load needed data.
+ */
+function mobilecat_list_load_data($categstatic) {
+	$fulltree = $categstatic->get_full_arbo('product');
+	return array($fulltree);
+}
+
+/**
+ * Returns variables that describe the current edit mode (if relevant).
+ */
+function mobilecat_list_edit_vars($action, $fulltree, $id) {
+	$ids_to_edit = [];
+	$is_edit_multiple = false;
+	$is_edit_mode = false;
+	if ($action === 'editline' && !empty($id)) {
+		$ids_to_edit[intval($id)] = true;
+		$is_edit_mode = true;
+	} elseif ($action === 'editall') {
+		$is_edit_multiple = true;
+		foreach ($fulltree as $key => $val) {
+			$ids_to_edit[intval($val['id'])] = true;
+			$is_edit_mode = true; // at list one id => true
+		}
+	}
+	return array($ids_to_edit, $is_edit_mode, $is_edit_multiple);
+}
+
+/**
+ * Print the title bar
+ */
+function mobilecat_list_print_barre_list(
+	$title,
+	$num, $nbtotalofrecords, $page, $limit,
+	$sortfield, $sortorder,
+	$param
+) {
+	print_barre_liste(
+		$title,
+		$page,
+		$_SERVER["PHP_SELF"],
+		$param,
+		$sortfield,
+		$sortorder,
+		'',
+		$num,
+		$nbtotalofrecords,
+		'category',
+		0,
+		'',
+		'',
+		$limit
+	);
+}
+
+/**
+ * Print the <form> tag if needed.
+ * Print also the top buttons.
+ */
+function mobilecat_list_print_open_form_and_button($langs, $is_edit_mode, $is_edit_multiple, $permissionedit) {
+	if ($is_edit_mode) {
+		print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
+		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+		print '<input type="hidden" name="action" value="update">';
+		if ($is_edit_multiple) {
+			print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
+			print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
+		}
+	} elseif ($permissionedit) {
+		print '<div class="right">';
+		print '<a class="button" href="'.$_SERVER["PHP_SELF"].'?action=editall">';
+		print $langs->trans('PickupModifyAllCat');
+		print '</a>';
+		print '</div>';
+	}
+}
+
+/**
+ * Close the <form> tag if needed.
+ * Print also the bottom buttons.
+ */
+function mobilecat_list_print_close_form_and_button($langs, $is_edit_mode, $is_edit_multiple, $permissionedit) {
+	if ($is_edit_mode) {
+		if ($is_edit_multiple) {
+			print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
+			print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
+		}
+		print '</form>';
+	}
+}
+
+/**
+ * Print the beginning of the table where content will be.
+ */
+function mobilecat_list_print_open_table() {
+	print '<div class="div-table-responsive">';		// You can use div-table-responsive-no-min if you dont need reserved height for your table
+	print '<table class="tagtable liste">'."\n";
+}
+
+function mobilecat_list_print_close_table() {
+	print '</table>';
+	print '</div>';
+}
+
+/**
+ * Print the table header line
+ */
+function mobilecat_list_print_table_head(
+	&$langs, &$object, &$arrayfields,
+	$param, $sortfield, $sortorder
+) {
+	print '<tr class="liste_titre">';
+	foreach($object->fields as $key => $val) {
+		$cssforfield=(empty($val['css'])?'':$val['css']);
+
+		if ($key == 'status') {
+			$cssforfield.= ($cssforfield?' ':'').'center';
+		} elseif (in_array($val['type'], array('date','datetime','timestamp'))) {
+			$cssforfield.=($cssforfield?' ':'').'center';
+		}	elseif (in_array($val['type'], array('timestamp'))) {
+			$cssforfield.=($cssforfield?' ':'').'nowrap';
+		} elseif (in_array($val['type'], array('double(24,8)', 'double(6,3)', 'integer', 'real', 'price'))) {
+			$cssforfield.=($cssforfield?' ':'').'right';
+		}
+
+		if (! empty($arrayfields['t.'.$key]['checked'])) {
+			print getTitleFieldOfList(
+				$arrayfields['t.'.$key]['label'], // name
+				0, // thead 0=To use with standard table format
+				$_SERVER['PHP_SELF'], // Url used when we click on sort picto
+				'', // 't.'.$key, // Field to use for new sorting. Empty if this field is not sortable. Example "t.abc" or "t.abc,t.def"
+				'', // $begin
+				$param, // Add more parameters on sort url links ("" by default)
+				($cssforfield?'class="'.$cssforfield.'"':''), // Add more attributes on th
+				$sortfield, // Current field used to sort (Ex: 'd.datep,d.id')
+				$sortorder, // Current sort order (Ex: 'asc,desc')
+				($cssforfield?$cssforfield.' ':''), // Prefix for css.
+				1, // 1=Disable sort link
+				$arrayfields['t.'.$key]['help'] // Tooltip
+			)."\n";
+		}
+	}
+	// // Extra fields
+	// include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+	// // Hook fields
+	// $parameters=array('arrayfields'=>$arrayfields,'param'=>$param,'sortfield'=>$sortfield,'sortorder'=>$sortorder);
+	// $reshook=$hookmanager->executeHooks('printFieldListTitle', $parameters, $object);    // Note that $action and $object may have been modified by hook
+	// print $hookmanager->resPrint;
+	// Action column
+	print getTitleFieldOfList('', 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
+
+	print '</tr>'."\n";
+}
+
+/**
+ * Print the table content
+ */
+function mobilecat_list_print_table_content (
+	&$db, &$langs, &$object, &$arrayfields, &$fulltree,
+	&$mobileforms,
+	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit
+) {
+	foreach ($fulltree as $key => $val) {
+		$cat = new Categorie($db);
+		$cat->fetch($val['id']);
+		$allways = $cat->get_all_ways();
+
+		$mobilecat = new PickupMobileCat($db);
+		if ($mobilecat->fetchByCategory($cat->id) < 0) {
+			dol_print_error($db);
+			exit;
+		}
+		if (empty($mobilecat->id)) {
+			// Normal case: tags that were never activated for mobile usage dont have any mobilecat
+			$mobilecat = null; // this makes following code clearer.
+		}
+
+		foreach ($allways as $way) {
+			$label = array();
+			foreach ($way as $parent_cat) {
+				$label[] = $parent_cat->label;
+			}
+			$label = implode(' &gt;&gt; ', $label);
+
+			mobilecat_list_print_table_content_line(
+				$db, $langs, $object, $arrayfields, $fulltree,
+				$mobileforms,
+				$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
+				$cat, $mobilecat, $label
+			);
+		}
+	}
+}
+
+/**
+ * Print one line of the table content
+ */
+function mobilecat_list_print_table_content_line (
+	&$db, &$langs, &$object, &$arrayfields, &$fulltree,
+	&$mobileforms,
+	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
+	&$cat, &$mobilecat, $label
+) {
+
+	$line_edit_prefix = 'line_'.$cat->id.'_';
+	$is_line_edited = $permissionedit && array_key_exists(intval($cat->id), $ids_to_edit) && $ids_to_edit[intval($cat->id)] === true;
+
+	print '<tr class="oddeven">';
+
+	// Two main case:
+	// - mobilecat was found: display informations
+	// - mobilecat was not found: only display the fk_category field ($label)
+
+	foreach($object->fields as $key => $val) {
+		mobilecat_list_print_table_content_line_field(
+			$db, $langs, $object, $arrayfields, $fulltree,
+			$mobileforms,
+			$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
+			$cat, $mobilecat, $label,
+			$line_edit_prefix, $is_line_edited,
+			$key, $val
+		);
+	}
+	// // Extra fields
+	// include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+	// // Fields from hook
+	// $parameters=array('arrayfields'=>$arrayfields, 'obj'=>$obj, 'i'=>$i, 'totalarray'=>&$totalarray);
+	// $reshook=$hookmanager->executeHooks('printFieldListValue', $parameters, $object);    // Note that $action and $object may have been modified by hook
+	// print $hookmanager->resPrint;
+	// if (!empty($conf->global->PICKUP_USE_DEEE)) {
+	// 	// DEEE qty column
+	// 	print '<td class="nowrap right">';
+	// 	$qtyTotals = $object->computeQtyTotals();
+	// 	print price($qtyTotals['deee_qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
+	// 	print  ' / ';
+	// 	print price($qtyTotals['qty'], 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formating role of function price
+	// 	print '</td>';
+	// }
+	// Action column
+	print '<td class="nowrap center">';
+	// if ($massactionbutton || $massaction)   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
+	// {
+	// 	$selected=0;
+	// 	if (in_array($obj->rowid, $arrayofselected)) $selected=1;
+	// 	print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected?' checked="checked"':'').'>';
+	// }
+	?><div id="line_<?php echo $cat->id; ?>"></div><?php
+	if ($permissionedit) {
+		if ($is_line_edited) {
+			// line is in edit mode. Displaying save/cancel button (unless it is a multiple edit)
+			if (!$is_edit_multiple) {
+				?>
+				<input type="submit" class="button buttongen marginbottomonly" id="savelinebutton marginbottomonly" name="save" value="<?php echo $langs->trans("Save"); ?>"><br>
+				<input type="submit" class="button buttongen marginbottomonly" id="cancellinebutton" name="cancel" value="<?php echo $langs->trans("Cancel"); ?>">
+				<?php
+			}
+		} else {
+			?><a class="editfielda reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$cat->id.'&amp;action=editline&amp;#line_'.$cat->id; ?>">
+				<?php print img_edit(); ?>
+			</a><?php
+		}
+	}
+	print '</td>';
+	// if (! $i) $totalarray['nbfield']++;
+
+	print '</tr>';
+}
+
+/**
+ * Displays one column corresponding to a field.
+ */
+function mobilecat_list_print_table_content_line_field (
+	&$db, &$langs, &$object, &$arrayfields, &$fulltree,
+	&$mobileforms,
+	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
+	&$cat, &$mobilecat, $label,
+	$line_edit_prefix, $is_line_edited,
+	$key, $val
+) {
+	if (empty($arrayfields['t.'.$key]['checked'])) {
+		// Hidden field.
+		return;
+	}
+
+	$cssforfield=(empty($val['css'])?'':$val['css']);
+	if (in_array($val['type'], array('date','datetime','timestamp'))) {
+		$cssforfield.=($cssforfield?' ':'').'center';
+	} elseif ($key == 'status') {
+		$cssforfield.=($cssforfield?' ':'').'center';
+	}
+
+	if (in_array($val['type'], array('timestamp'))) {
+		$cssforfield.=($cssforfield?' ':'').'nowrap';
+	}	elseif ($key == 'ref') {
+		$cssforfield.=($cssforfield?' ':'').'nowrap';
+	}
+
+	if (in_array($val['type'], array('double(24,8)', 'double(6,3)', 'integer', 'real', 'price')) && $key != 'status') {
+		$cssforfield.=($cssforfield?' ':'').'right';
+	}
+
+
+	print '<td'.($cssforfield ? ' class="'.$cssforfield.'"' : '').'>';
+	if ($key === 'fk_category') {
+		// print '<span class="noborderoncategories" '.($cat->color?' style="background: #'.$cat->color.';"':' style="background: #aaa"').'>';
+		print '<a href="'.DOL_URL_ROOT.'/custom/pickup/tabs/mobilecat.php?id='.$cat->id.'&backto=mobilecat_list">';
+		print $label;
+		print '</a>';
+		// print '</span>';
+		if ($is_line_edited) {
+			print '<input type="hidden" name="'.htmlspecialchars($line_edit_prefix).'" value="1">';
+		}
+	} elseif ($is_line_edited && empty($val['noteditable'])) {
+		// Edit mode.
+		print $object->showInputField(
+			null,
+			$key,
+			GETPOSTISSET($line_edit_prefix.$key)
+				? GETPOST($line_edit_prefix.$key, 'alpha')
+				: (
+					empty($mobilecat)
+						? null
+						: $mobilecat->$key
+					)
+		);
+	} elseif (!empty($mobilecat)) {
+		if ($key == 'form') {
+			if (empty($mobilecat->form)) {
+				print '-';
+			} else if (array_key_exists($mobilecat->form, $mobileforms)) {
+				print htmlspecialchars($mobileforms[$mobilecat->form]);
+			} else {
+				print htmlspecialchars($mobilecat->form);
+			}
+		} elseif ($key == 'status') print $mobilecat->getLibStatut(5);
+		elseif (in_array($val['type'], array('date','datetime','timestamp'))) print $mobilecat->showOutputField($val, $key, $db->jdate($obj->$key), '');
+		else print $mobilecat->showOutputField($val, $key, $mobilecat->$key, '');
+	}
+	print '</td>';
+	// if (! $i) $totalarray['nbfield']++;
+	// if (! empty($val['isameasure']))
+	// {
+	// 	if (! $i) $totalarray['pos'][$totalarray['nbfield']]='t.'.$key;
+	// 	$totalarray['val']['t.'.$key] += $obj->$key;
+	// }
+}
+
 $db->close();
