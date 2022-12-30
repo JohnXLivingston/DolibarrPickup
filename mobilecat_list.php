@@ -103,10 +103,6 @@ $extralabels = $extrafields->fetch_name_optionals_label('mobilecat');	// Load $e
 // Security check
 list ($permissionedit) = mobilecat_list_security_check();
 
-// Load $mobileforms: available values for mobilecat->form.
-dol_include_once('/pickup/lib/mobile_forms.php');
-$mobileforms = mobileListProductForms();
-
 // Definition of fields for list
 $arrayfields = mobilecat_list_array_fields($object, $extrafields);
 
@@ -160,7 +156,6 @@ mobilecat_list_print_open_table();
 mobilecat_list_print_table_head($object, $arrayfields, $param, $sortfield, $sortorder);
 mobilecat_list_print_table_content(
 	$object, $arrayfields, $fulltree,
-	$mobileforms,
 	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit
 );
 mobilecat_list_print_close_table();
@@ -575,7 +570,6 @@ function mobilecat_list_print_table_head(
  */
 function mobilecat_list_print_table_content (
 	&$object, &$arrayfields, &$fulltree,
-	&$mobileforms,
 	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit
 ) {
 	global $langs, $db;
@@ -604,7 +598,6 @@ function mobilecat_list_print_table_content (
 
 			mobilecat_list_print_table_content_line(
 				$object, $arrayfields, $fulltree,
-				$mobileforms,
 				$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
 				$cat, $mobilecat, $label
 			);
@@ -617,7 +610,6 @@ function mobilecat_list_print_table_content (
  */
 function mobilecat_list_print_table_content_line (
 	&$object, &$arrayfields, &$fulltree,
-	&$mobileforms,
 	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
 	&$cat, &$mobilecat, $label
 ) {
@@ -635,7 +627,6 @@ function mobilecat_list_print_table_content_line (
 	foreach($object->fields as $key => $val) {
 		mobilecat_list_print_table_content_line_field(
 			$object, $arrayfields, $fulltree,
-			$mobileforms,
 			$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
 			$cat, $mobilecat, $label,
 			$line_edit_prefix, $is_line_edited,
@@ -692,7 +683,6 @@ function mobilecat_list_print_table_content_line (
  */
 function mobilecat_list_print_table_content_line_field (
 	&$object, &$arrayfields, &$fulltree,
-	&$mobileforms,
 	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
 	&$cat, &$mobilecat, $label,
 	$line_edit_prefix, $is_line_edited,
@@ -754,8 +744,8 @@ function mobilecat_list_print_table_content_line_field (
 		if ($key == 'form') {
 			if (empty($mobilecat->form)) {
 				print '-';
-			} else if (array_key_exists($mobilecat->form, $mobileforms)) {
-				print htmlspecialchars($mobileforms[$mobilecat->form]);
+			} else if (array_key_exists($mobilecat->form, $val['arrayofkeyval'])) {
+				print htmlspecialchars($val['arrayofkeyval'][$mobilecat->form]);
 			} else {
 				print htmlspecialchars($mobilecat->form);
 			}

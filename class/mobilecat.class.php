@@ -23,7 +23,6 @@
  */
 
 require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
-dol_include_once('/pickup/lib/mobile_forms.php');
 
 /**
  * Class for PickupMobileCat
@@ -197,7 +196,20 @@ class PickupMobileCat extends CommonObject
 
 		// FIXME: this is a dirty fix. Waiting to replace the 'form' field by other fields (should be do very soon).
 		if (array_key_exists('form', $this->fields)) {
-			$mobileforms = mobileListProductForms();
+			$mobileforms = array();
+			$mobileforms[''] = 'Formulaire par défaut';
+
+			if (!empty($conf->global->PICKUP_USE_DEEE)) {
+				$mobileforms['create_product_deee_off'] = 'Non DEEE';
+				$mobileforms['create_product_deee_gef'] = 'GEF';
+				$mobileforms['create_product_deee_ghf'] = 'GHF';
+				$mobileforms['create_product_deee_pam'] = 'PAM';
+				$mobileforms['create_product_deee_pampro'] = 'PAM Pro';
+				$mobileforms['create_product_deee_ecr'] = 'ECR (Ecran < 1m2)';
+				$mobileforms['create_product_deee_ecrpro'] = 'ECR Pro (Ecran > 1m2)';
+				$mobileforms['create_product_deee_pam_or_pampro'] = 'PAM ou PAM Pro';
+				$mobileforms['create_product_deee_ecr_or_ecrpro'] = 'ECR ou ECR Pro';
+			}
 			$this->fields['form']['arrayofkeyval'] = $mobileforms;
 		}
 	}
