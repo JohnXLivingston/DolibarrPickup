@@ -74,7 +74,7 @@ $confirm    = GETPOST('confirm', 'alpha');												// Result of a confirmatio
 $cancel     = GETPOST('cancel', 'alpha');												// We click on a Cancel button
 $toselect   = GETPOST('toselect', 'array');												// Array of ids of elements selected into a list
 $contextpage= GETPOST('contextpage', 'aZ')?GETPOST('contextpage', 'aZ'):'pickuplist';   // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');											// Go back to a dedicated page
+// $backtopage = GETPOST('backtopage', 'alpha');											// Go back to a dedicated page
 $optioncss  = GETPOST('optioncss', 'aZ');												// Option for the css output (always '' except when 'print')
 
 $id = GETPOST('id', 'int'); // the line to edit (when action === 'editline')
@@ -117,7 +117,8 @@ $arrayfields = dol_sort_array($arrayfields, 'position');
 /*
  * Actions
  */
-mobilecat_list_check_actions($object, $action, $massaction, $permissionedit);
+mobilecat_list_check_actions($object, $cancel, $action, $massaction, $permissionedit);
+mobilecat_list_handle_actions($object, $arrayfields, $action, $massaction, $permissionedit);
 
 /*
 * View
@@ -254,17 +255,17 @@ function mobilecat_list_array_fields(&$object, &$extrafields) {
  * - if action was not confirmed, or cancelled, .... 
  * After this function, $action and $massaction will have correct values.
  */
-function mobilecat_list_check_actions(&$object, &$action, &$massaction, $permissionedit) {
+function mobilecat_list_check_actions(&$object, &$cancel, &$action, &$massaction, $permissionedit) {
 	global $hookmanager;
 
-	if (GETPOST('cancel', 'alpha')) {
+	if ($cancel) {
 		$action='list'; $massaction='';
 	}
 	if (! GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 		$massaction='';
 	}
 
-	if (($action === 'editline' || $action === 'editall') && !$permissionedit) {
+	if (($action === 'editline' || $action === 'editall' || $action === 'update') && !$permissionedit) {
 		$action = 'list';
 		$massaction = '';
 	}
@@ -302,6 +303,110 @@ function mobilecat_list_check_actions(&$object, &$action, &$massaction, $permiss
 		// $permtodelete = $user->rights->pickup->delete;
 		// $uploaddir = $conf->pickup->dir_output;
 		// include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	}
+}
+
+/**
+ * Handle current action.
+ */
+function mobilecat_list_handle_actions(&$object, &$arrayfields, &$action, &$massaction, $permissionedit) {
+	if (empty($action) || $action === 'list') {
+		return;
+	}
+	if ($action === 'update') {
+		mobilecat_list_handle_action_update($object, $arrayfields, $action, $massaction, $permissionedit);
+	}
+}
+
+function mobilecat_list_handle_action_update(&$object, &$arrayfields, &$action, &$massaction, $permissionedit) {
+	global $db;
+
+	if (empty($permissionedit)) {
+		// should not happen, mobilecat_list_check_actions should have checked.
+		// But just in case...
+		return;
+	}
+
+	// The active field is mandatory. Otherwise we will do messy things with db.
+	// So we just check that there is nothing that disabled this field.
+	$active_def = $arrayfields['t.active'];
+	if (empty($active_def) || empty($active_def['checked']) || empty($active_def['enabled'])) {
+		dol_print_error($db, 'It seems the «active» field is not enabled. Should not happen.');
+		exit;
+	}
+
+	$line_edit_prefixes = GETPOST('edit_line', 'array',	2); // 2 = only POST.
+	foreach ($line_edit_prefixes as $line_edit_prefix) {
+		if (!preg_match('/^line_(\d+)_$/', $line_edit_prefix, $matches)) {
+			continue;
+		}
+		$cat_id = $matches[1];
+		mobilecat_list_handle_action_update_one_line($object, $arrayfields, $line_edit_prefix, $cat_id);
+	}
+}
+
+function mobilecat_list_handle_action_update_one_line(&$object, &$arrayfields, $line_edit_prefix, $cat_id) {
+	global $db, $user;
+
+	$cat = new Categorie($db);
+	if ($cat->fetch($cat_id) <= 0) {
+		// Error and not found => return
+		dol_syslog(__FUNCTION__." Error: cant find the category ".$cat_id.". ".$db->lasterror(), LOG_ERR);
+		return;
+	}
+	$mobilecat = new PickupMobileCat($db);
+	if ($mobilecat->fetchByCategory($cat->id) < 0) {
+		// Here it is ok if there is no mobilecat.
+		dol_syslog(__FUNCTION__." Error: error when fetching the mobilecat for category ".$cat_id.". ".$db->lasterror(), LOG_ERR);
+		return;
+	}
+
+	$active = GETPOST($line_edit_prefix.'active', 'int') ? 1 : 0;
+	if (!$active && !$mobilecat->id) {
+		// disabled, and mobilecat does not exist for now => nothing to do
+		return;
+	}
+	
+	$mobilecat->active = $active;
+	if (empty($mobilecat->fk_category)) {
+		$mobilecat->fk_category = $cat_id;
+	}
+	foreach($object->fields as $key => $val) {
+		if (empty($arrayfields['t.'.$key]['checked'])) {
+			// The field is hidden. Ignore it.
+			continue;
+		}
+		if ($key === 'fk_category') {
+			continue;
+		}
+		if (!empty($val['noteditable'])) {
+			continue;
+		}
+
+		if (in_array($key, array('notes'))) {
+			$notes = GETPOST($line_edit_prefix.'notes', 'nohtml');
+			$mobilecat->notes = empty($notes) || $notes === '' ? null : $notes;
+			continue;
+		}
+		if (in_array($key, array('form'))) {
+			$form_value = GETPOST($line_edit_prefix.'form', 'alpha');
+			if (empty($form_value) || array_key_exists($form_value, $val['arrayofkeyval'])) {
+				$mobilecat->form = $form_value;
+			}
+			continue;
+		}
+	}
+
+	if (!$mobilecat->id) {
+		if ($mobilecat->create($user) < 0) {
+			dol_print_error($db);
+			exit;
+		}
+	} else {
+		if ($mobilecat->update($user) < 0) {
+			dol_print_error($db);
+			exit;
+		}
 	}
 }
 
@@ -518,7 +623,7 @@ function mobilecat_list_print_table_content_line (
 ) {
 	global $db, $langs;
 
-	$line_edit_prefix = 'line_'.$cat->id.'_';
+	$line_edit_prefix = 'line_'.$cat->id.'_'; // must be line_NUMBER_. Otherwise mobilecat_list_handle_action_update will not accept.
 	$is_line_edited = $permissionedit && array_key_exists(intval($cat->id), $ids_to_edit) && $ids_to_edit[intval($cat->id)] === true;
 
 	print '<tr class="oddeven">';
@@ -626,7 +731,8 @@ function mobilecat_list_print_table_content_line_field (
 		print '</a>';
 		// print '</span>';
 		if ($is_line_edited) {
-			print '<input type="hidden" name="'.htmlspecialchars($line_edit_prefix).'" value="1">';
+			// Adding an hidden field, so we can know which lines are submited (when editing multiple)
+			print '<input type="hidden" name="edit_line[]" value="'.htmlspecialchars($line_edit_prefix).'">';
 		}
 	} elseif ($is_line_edited && empty($val['noteditable'])) {
 		// Edit mode.
@@ -639,7 +745,10 @@ function mobilecat_list_print_table_content_line_field (
 					empty($mobilecat)
 						? null
 						: $mobilecat->$key
-					)
+					),
+			'',
+			'',
+			$line_edit_prefix
 		);
 	} elseif (!empty($mobilecat)) {
 		if ($key == 'form') {
