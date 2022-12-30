@@ -108,13 +108,10 @@ MyWidgetDescription = My widget description
 # For Mobile
 # 
 PickupMobileApp = Mobile app
-TabTitleMobilePickup = Pickup
 MobileCats = Mobile pickup categories
 MobileCatForm = For to use in mobile application
 MobileCatDescription = Notes to display in mobile app near to the field «product description»
 MobileCatEnable = Use in mobile application
-MobileCatDisable = Disable in mobile application
-MobileCatNotEnabled = This tag is currently not used in mobile application
 
 PickupCantBeInFutureError = Pickup cant be in future.
 

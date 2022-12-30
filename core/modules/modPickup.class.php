@@ -157,9 +157,6 @@ class modPickup extends DolibarrModules
         // Array to add new pages in new tabs
         $this->tabs = array();
         $this->tabs[] = array(
-            'data' => 'categories_product:+pickupmobilecat:TabTitleMobilePickup:pickup@pickup:!empty($conf->global->PICKUP_USE_PCAT) && $user->rights->pickup->configure:/pickup/tabs/mobilecat.php?id=__ID__'
-        );
-        $this->tabs[] = array(
             'data' => 'product:+pickups:Pickups:pickup@pickup:$object->isProduct() && $user->rights->pickup->read:/pickup/tabs/product_pickups.php?id=__ID__'
         );
         // Example:

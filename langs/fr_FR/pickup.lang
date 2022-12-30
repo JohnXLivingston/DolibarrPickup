@@ -108,13 +108,10 @@ MyWidgetDescription = Description de mon widget
 # Pour Mobile
 # 
 PickupMobileApp = Application mobile
-TabTitleMobilePickup = Collecte
 MobileCats = Catégories pour l'application mobile
 MobileCatForm = Formulaire à utiliser dans l'application mobile
 MobileCatDescription = Notes à afficher dans l'application mobile à coté du champs «Description du produit»
 MobileCatEnable = Utiliser dans l'application mobile
-MobileCatDisable = Désactiver dans l'application mobile
-MobileCatNotEnabled = Ce tag n'est actuellement pas utilisé dans l'application mobile
 
 PickupCantBeInFutureError = La collecte ne peut pas être dans le futur.
 

@@ -726,7 +726,7 @@ function mobilecat_list_print_table_content_line_field (
 	print '<td'.($cssforfield ? ' class="'.$cssforfield.'"' : '').'>';
 	if ($key === 'fk_category') {
 		// print '<span class="noborderoncategories" '.($cat->color?' style="background: #'.$cat->color.';"':' style="background: #aaa"').'>';
-		print '<a href="'.DOL_URL_ROOT.'/custom/pickup/tabs/mobilecat.php?id='.$cat->id.'&backto=mobilecat_list">';
+		print '<a href="'.DOL_URL_ROOT.'/categories/viewcat.php?id='.urlencode($cat->id).'&type=product">';
 		print $label;
 		print '</a>';
 		// print '</span>';
