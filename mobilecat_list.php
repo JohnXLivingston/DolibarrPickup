@@ -79,6 +79,16 @@ $optioncss  = GETPOST('optioncss', 'aZ');												// Option for the css outpu
 
 $id = GETPOST('id', 'int'); // the line to edit (when action === 'editline')
 
+// --------------------------------------------------------------------
+// Note: in the following code, logic is regrouped in functions.
+// They all takes explicit arguments, to make code clearer.
+// Except for following variables, that are considered globals (that is the case for Dolibarr, so...):
+// - $db
+// - $user
+// - $conf
+// - $langs
+// - $hookmanager
+
 list ($page, $limit) = mobilecat_list_pagination();
 list ($sortfield, $sortorder) = mobilecat_list_sort();
 
@@ -91,7 +101,7 @@ $hookmanager->initHooks(array('mobilecatlist'));     // Note that conf->hooks_mo
 $extralabels = $extrafields->fetch_name_optionals_label('mobilecat');	// Load $extrafields->attributes['mobilecat']
 
 // Security check
-list ($permissionedit) = mobilecat_list_security_check($conf, $user);
+list ($permissionedit) = mobilecat_list_security_check();
 
 // Load $mobileforms: available values for mobilecat->form.
 dol_include_once('/pickup/lib/mobile_forms.php');
@@ -107,7 +117,7 @@ $arrayfields = dol_sort_array($arrayfields, 'position');
 /*
  * Actions
  */
-mobilecat_list_check_actions($hookmanager, $object, $action, $massaction, $permissionedit);
+mobilecat_list_check_actions($object, $action, $massaction, $permissionedit);
 
 /*
 * View
@@ -143,18 +153,18 @@ mobilecat_list_print_barre_list(
 	$param
 );
 
-mobilecat_list_print_open_form_and_button($langs, $is_edit_mode, $is_edit_multiple, $permissionedit);
+mobilecat_list_print_open_form_and_button($is_edit_mode, $is_edit_multiple, $permissionedit);
 
 mobilecat_list_print_open_table();
-mobilecat_list_print_table_head($langs, $object, $arrayfields, $param, $sortfield, $sortorder);
+mobilecat_list_print_table_head($object, $arrayfields, $param, $sortfield, $sortorder);
 mobilecat_list_print_table_content(
-	$db, $langs, $object, $arrayfields, $fulltree,
+	$object, $arrayfields, $fulltree,
 	$mobileforms,
 	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit
 );
 mobilecat_list_print_close_table();
 
-mobilecat_list_print_close_form_and_button($langs, $is_edit_mode, $is_edit_multiple, $permissionedit);
+mobilecat_list_print_close_form_and_button($is_edit_mode, $is_edit_multiple, $permissionedit);
 
 // End of page
 llxFooter();
@@ -186,7 +196,9 @@ function mobilecat_list_sort() {
 /**
  * Perform security checks
  */
-function mobilecat_list_security_check(&$conf, &$user) {
+function mobilecat_list_security_check() {
+	global $conf, $user;
+
 	$permissionedit = 0;
 	if (empty($conf->pickup->enabled)) {
 		accessforbidden('Module not enabled');
@@ -242,7 +254,9 @@ function mobilecat_list_array_fields(&$object, &$extrafields) {
  * - if action was not confirmed, or cancelled, .... 
  * After this function, $action and $massaction will have correct values.
  */
-function mobilecat_list_check_actions(&$hookmanager, &$object, &$action, &$massaction, $permissionedit) {
+function mobilecat_list_check_actions(&$object, &$action, &$massaction, $permissionedit) {
+	global $hookmanager;
+
 	if (GETPOST('cancel', 'alpha')) {
 		$action='list'; $massaction='';
 	}
@@ -350,7 +364,9 @@ function mobilecat_list_print_barre_list(
  * Print the <form> tag if needed.
  * Print also the top buttons.
  */
-function mobilecat_list_print_open_form_and_button($langs, $is_edit_mode, $is_edit_multiple, $permissionedit) {
+function mobilecat_list_print_open_form_and_button($is_edit_mode, $is_edit_multiple, $permissionedit) {
+	global $langs;
+
 	if ($is_edit_mode) {
 		print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
 		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
@@ -372,7 +388,9 @@ function mobilecat_list_print_open_form_and_button($langs, $is_edit_mode, $is_ed
  * Close the <form> tag if needed.
  * Print also the bottom buttons.
  */
-function mobilecat_list_print_close_form_and_button($langs, $is_edit_mode, $is_edit_multiple, $permissionedit) {
+function mobilecat_list_print_close_form_and_button($is_edit_mode, $is_edit_multiple, $permissionedit) {
+	global $langs;
+
 	if ($is_edit_mode) {
 		if ($is_edit_multiple) {
 			print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
@@ -399,9 +417,11 @@ function mobilecat_list_print_close_table() {
  * Print the table header line
  */
 function mobilecat_list_print_table_head(
-	&$langs, &$object, &$arrayfields,
+	&$object, &$arrayfields,
 	$param, $sortfield, $sortorder
 ) {
+	global $langs;
+
 	print '<tr class="liste_titre">';
 	foreach($object->fields as $key => $val) {
 		$cssforfield=(empty($val['css'])?'':$val['css']);
@@ -449,10 +469,12 @@ function mobilecat_list_print_table_head(
  * Print the table content
  */
 function mobilecat_list_print_table_content (
-	&$db, &$langs, &$object, &$arrayfields, &$fulltree,
+	&$object, &$arrayfields, &$fulltree,
 	&$mobileforms,
 	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit
 ) {
+	global $langs, $db;
+
 	foreach ($fulltree as $key => $val) {
 		$cat = new Categorie($db);
 		$cat->fetch($val['id']);
@@ -476,7 +498,7 @@ function mobilecat_list_print_table_content (
 			$label = implode(' &gt;&gt; ', $label);
 
 			mobilecat_list_print_table_content_line(
-				$db, $langs, $object, $arrayfields, $fulltree,
+				$object, $arrayfields, $fulltree,
 				$mobileforms,
 				$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
 				$cat, $mobilecat, $label
@@ -489,11 +511,12 @@ function mobilecat_list_print_table_content (
  * Print one line of the table content
  */
 function mobilecat_list_print_table_content_line (
-	&$db, &$langs, &$object, &$arrayfields, &$fulltree,
+	&$object, &$arrayfields, &$fulltree,
 	&$mobileforms,
 	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
 	&$cat, &$mobilecat, $label
 ) {
+	global $db, $langs;
 
 	$line_edit_prefix = 'line_'.$cat->id.'_';
 	$is_line_edited = $permissionedit && array_key_exists(intval($cat->id), $ids_to_edit) && $ids_to_edit[intval($cat->id)] === true;
@@ -506,7 +529,7 @@ function mobilecat_list_print_table_content_line (
 
 	foreach($object->fields as $key => $val) {
 		mobilecat_list_print_table_content_line_field(
-			$db, $langs, $object, $arrayfields, $fulltree,
+			$object, $arrayfields, $fulltree,
 			$mobileforms,
 			$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
 			$cat, $mobilecat, $label,
@@ -563,13 +586,15 @@ function mobilecat_list_print_table_content_line (
  * Displays one column corresponding to a field.
  */
 function mobilecat_list_print_table_content_line_field (
-	&$db, &$langs, &$object, &$arrayfields, &$fulltree,
+	&$object, &$arrayfields, &$fulltree,
 	&$mobileforms,
 	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
 	&$cat, &$mobilecat, $label,
 	$line_edit_prefix, $is_line_edited,
 	$key, $val
 ) {
+	global $db, $langs;
+
 	if (empty($arrayfields['t.'.$key]['checked'])) {
 		// Hidden field.
 		return;
