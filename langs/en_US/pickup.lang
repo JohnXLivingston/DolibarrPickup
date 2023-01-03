@@ -112,6 +112,7 @@ MobileCats = Mobile pickup categories
 MobileCatForm = For to use in mobile application
 MobileCatDescription = Notes to display in mobile app near to the field «product description»
 MobileCatEnable = Use in mobile application
+MobileCatDisable = Do not use in mobile application
 
 PickupCantBeInFutureError = Pickup cant be in future.
 

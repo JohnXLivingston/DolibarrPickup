@@ -88,6 +88,7 @@ $id = GETPOST('id', 'int'); // the line to edit (when action === 'editline')
 // - $conf
 // - $langs
 // - $hookmanager
+// - $form
 
 list ($page, $limit) = mobilecat_list_pagination();
 list ($sortfield, $sortorder) = mobilecat_list_sort();
@@ -95,6 +96,7 @@ list ($sortfield, $sortorder) = mobilecat_list_sort();
 $object = new PickupMobileCat($db);
 $extrafields = new ExtraFields($db);
 $categstatic = new Categorie($db);
+$form = new Form($db);
 
 $hookmanager->initHooks(array('mobilecatlist'));     // Note that conf->hooks_modules contains array
 // Fetch optionals attributes and labels
@@ -113,8 +115,9 @@ $arrayfields = dol_sort_array($arrayfields, 'position');
 /*
  * Actions
  */
-mobilecat_list_check_actions($object, $cancel, $action, $massaction, $permissionedit);
-mobilecat_list_handle_actions($object, $arrayfields, $action, $massaction, $permissionedit);
+$massactionbutton = mobilecat_list_get_massactionbutton($permissionedit);
+mobilecat_list_check_actions($object, $cancel, $action, $massaction, $massactionbutton, $permissionedit);
+mobilecat_list_handle_actions($object, $arrayfields, $action, $massaction, $toselect, $permissionedit);
 
 /*
 * View
@@ -143,20 +146,25 @@ if ($optioncss != '')     $param.='&optioncss='.urlencode($optioncss);
 // // Add $param from extra fields
 // include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
 
+$arrayofselected = is_array($toselect) ? $toselect : array();
+
+mobilecat_list_print_open_form_and_button($is_edit_mode, $is_edit_multiple, $permissionedit, $optioncss, $sortfield, $sortorder, $page, $contextpage);
+
 mobilecat_list_print_barre_list(
 	$title,
 	count($fulltree), count($fulltree), $page, $limit,
 	$sortfield, $sortorder,
-	$param
+	$massactionbutton,
+	$param,
+	$is_edit_mode, $permissionedit
 );
 
-mobilecat_list_print_open_form_and_button($is_edit_mode, $is_edit_multiple, $permissionedit);
-
 mobilecat_list_print_open_table();
-mobilecat_list_print_table_head($object, $arrayfields, $param, $sortfield, $sortorder);
+mobilecat_list_print_table_head($object, $arrayfields, $massactionbutton, $param, $sortfield, $sortorder);
 mobilecat_list_print_table_content(
 	$object, $arrayfields, $fulltree,
-	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit
+	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
+	$massaction, $massactionbutton, $arrayofselected,
 );
 mobilecat_list_print_close_table();
 
@@ -243,6 +251,22 @@ function mobilecat_list_array_fields(&$object, &$extrafields) {
 }
 
 /**
+ * Get the massactionbutton var.
+ */
+function mobilecat_list_get_massactionbutton($permissionedit) {
+	global $form, $langs;
+
+	$arrayofmassactions = array();
+	if ($permissionedit) {
+		$arrayofmassactions['mobile_activate'] = img_picto('', 'check', 'class="pictofixedwidth"').$langs->trans("MobileCatEnable");
+		$arrayofmassactions['mobile_deactivate'] = img_picto('', 'uncheck', 'class="pictofixedwidth"').$langs->trans("MobileCatDisable");
+	}
+
+	$massactionbutton = $form->selectMassAction('', $arrayofmassactions);
+	return $massactionbutton;
+}
+
+/**
  * Get current action.
  * Check if ok.
  * Update variables if needed:
@@ -250,9 +274,7 @@ function mobilecat_list_array_fields(&$object, &$extrafields) {
  * - if action was not confirmed, or cancelled, .... 
  * After this function, $action and $massaction will have correct values.
  */
-function mobilecat_list_check_actions(&$object, &$cancel, &$action, &$massaction, $permissionedit) {
-	global $hookmanager;
-
+function mobilecat_list_check_actions(&$object, &$cancel, &$action, &$massaction, &$massactionbutton, $permissionedit) {
 	if ($cancel) {
 		$action='list'; $massaction='';
 	}
@@ -260,9 +282,30 @@ function mobilecat_list_check_actions(&$object, &$cancel, &$action, &$massaction
 		$massaction='';
 	}
 
-	if (($action === 'editline' || $action === 'editall' || $action === 'update') && !$permissionedit) {
+	if (!$permissionedit && ($action === 'editline' || $action === 'editall' || $action === 'update')) {
 		$action = 'list';
 		$massaction = '';
+	}
+	if (!$permissionedit && ($massaction === 'mobile_activate' || $massaction === 'mobile_deactivate')) {
+		$action = 'list';
+		$massaction = '';
+	}
+
+	if ($action === 'editline' || $action === 'editall') {
+		$massactionbutton = null; // No massaction when editing.
+	}
+}
+
+/**
+ * Handle current action.
+ */
+function mobilecat_list_handle_actions(&$object, &$arrayfields, &$action, &$massaction, &$toselect, $permissionedit) {
+	global $hookmanager;
+
+	if (empty($massaction)) {
+		if (empty($action) || $action === 'list') {
+			return;
+		}
 	}
 
 	$parameters=array();
@@ -270,46 +313,46 @@ function mobilecat_list_check_actions(&$object, &$cancel, &$action, &$massaction
 	// Note that $action and $object may have been modified by some hooks
 	if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
-	if (empty($reshook)) {
-		// // Selection of new fields
-		// Note: this template needs $action, $db, $conf, $object
-		// include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
-
-		// // Purge search criteria
-		// if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') ||GETPOST('button_removefilter', 'alpha')) // All tests are required to be compatible with all browsers
-		// {
-		// 	foreach($object->fields as $key => $val)
-		// 	{
-		// 		$search[$key]='';
-		// 	}
-		// 	$toselect='';
-		// 	$search_array_options=array();
-		// }
-		// if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
-		// 	|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha'))
-		// {
-		// 	$massaction='';     // Protection to avoid mass action if we force a new search during a mass action confirmation
-		// }
-
-		// // Mass actions
-		// $objectclass='PickupMobileCat';
-		// $objectlabel='PickupMobileCat';
-		// $permtoread = $user->rights->pickup->read;
-		// $permtodelete = $user->rights->pickup->delete;
-		// $uploaddir = $conf->pickup->dir_output;
-		// include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
-	}
-}
-
-/**
- * Handle current action.
- */
-function mobilecat_list_handle_actions(&$object, &$arrayfields, &$action, &$massaction, $permissionedit) {
-	if (empty($action) || $action === 'list') {
+	if (!empty($reshook)) {
 		return;
 	}
+
 	if ($action === 'update') {
 		mobilecat_list_handle_action_update($object, $arrayfields, $action, $massaction, $permissionedit);
+		return;
+	}
+
+	// // Selection of new fields
+	// Note: this template needs $action, $db, $conf, $object
+	// include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+
+	// Purge search criteria
+	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') ||GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+		// foreach($object->fields as $key => $val)
+		// {
+		// 	$search[$key]='';
+		// }
+		$toselect='';
+		// $search_array_options=array();
+	}
+	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
+		|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')
+	) {
+		$massaction='';     // Protection to avoid mass action if we force a new search during a mass action confirmation
+	}
+
+	// // Mass actions
+	// $objectclass='PickupMobileCat';
+	// $objectlabel='PickupMobileCat';
+	// $permtoread = $user->rights->pickup->read;
+	// $permtodelete = $user->rights->pickup->delete;
+	// $uploaddir = $conf->pickup->dir_output;
+	// include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+
+	if ($massaction === 'mobile_activate') {
+		mobilecat_list_handle_action_mass_activate($object, $toselect, $permissionedit, true);
+	} elseif ($massaction === 'mobile_deactivate') {
+		mobilecat_list_handle_action_mass_activate($object, $toselect, $permissionedit, false);
 	}
 }
 
@@ -405,6 +448,59 @@ function mobilecat_list_handle_action_update_one_line(&$object, &$arrayfields, $
 	}
 }
 
+function mobilecat_list_handle_action_mass_activate(&$object, &$toselect, $permissionedit, $activate) {
+	global $db, $user;
+
+	if (empty($permissionedit)) {
+		// should not happen, mobilecat_list_check_actions should have checked.
+		// But just in case...
+		return;
+	}
+
+	if (empty($toselect) || !is_array($toselect)) {
+		return;
+	}
+
+	foreach ($toselect as $cat_id) {
+		if (!is_numeric($cat_id)) {
+			continue;
+		}
+		$cat = new Categorie($db);
+		if ($cat->fetch($cat_id) <= 0) {
+			// Error and not found => return
+			dol_syslog(__FUNCTION__." Error: cant find the category ".$cat_id.". ".$db->lasterror(), LOG_ERR);
+			continue;
+		}
+		$mobilecat = new PickupMobileCat($db);
+		if ($mobilecat->fetchByCategory($cat->id) < 0) {
+			// Here it is ok if there is no mobilecat.
+			dol_syslog(__FUNCTION__." Error: error when fetching the mobilecat for category ".$cat_id.". ".$db->lasterror(), LOG_ERR);
+			continue;
+		}
+
+		if (!$activate && !$mobilecat->id) {
+			// Deactivate, not exists => already ok.
+			continue;
+		}
+
+		$mobilecat->active = $activate ? 1 : 0;
+		if (empty($mobilecat->fk_category)) {
+			$mobilecat->fk_category = $cat_id;
+		}
+		if (!$mobilecat->id) {
+			if ($mobilecat->create($user) < 0) {
+				dol_print_error($db);
+				exit;
+			}
+		} else {
+			if ($mobilecat->update($user) < 0) {
+				dol_print_error($db);
+				exit;
+			}
+		}
+	}
+}
+
 /**
  * Load needed data.
  */
@@ -440,8 +536,20 @@ function mobilecat_list_print_barre_list(
 	$title,
 	$num, $nbtotalofrecords, $page, $limit,
 	$sortfield, $sortorder,
-	$param
+	&$massactionbutton,
+	$param,
+	$is_edit_mode, $permissionedit
 ) {
+	global $langs;
+
+	$morehtmlcenter = $massactionbutton ?? '';
+	if (!$is_edit_mode && $permissionedit) {
+		$morehtmlcenter.= '<div class="right">';
+		$morehtmlcenter.= '<a class="button" href="'.$_SERVER["PHP_SELF"].'?action=editall">';
+		$morehtmlcenter.= $langs->trans('PickupModifyAllCat');
+		$morehtmlcenter.= '</a>';
+		$morehtmlcenter.= '</div>';
+	}
 	print_barre_liste(
 		$title,
 		$page,
@@ -449,7 +557,7 @@ function mobilecat_list_print_barre_list(
 		$param,
 		$sortfield,
 		$sortorder,
-		'',
+		$morehtmlcenter,
 		$num,
 		$nbtotalofrecords,
 		'category',
@@ -464,23 +572,32 @@ function mobilecat_list_print_barre_list(
  * Print the <form> tag if needed.
  * Print also the top buttons.
  */
-function mobilecat_list_print_open_form_and_button($is_edit_mode, $is_edit_multiple, $permissionedit) {
+function mobilecat_list_print_open_form_and_button(
+	$is_edit_mode, $is_edit_multiple, $permissionedit,
+	$optioncss, $sortfield, $sortorder, $page, $contextpage
+) {
 	global $langs;
 
+	print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
+	if ($optioncss != '') {
+		print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
+	}
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+	print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
 	if ($is_edit_mode) {
-		print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
-		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 		print '<input type="hidden" name="action" value="update">';
-		if ($is_edit_multiple) {
-			print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
-			print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
-		}
-	} elseif ($permissionedit) {
-		print '<div class="right">';
-		print '<a class="button" href="'.$_SERVER["PHP_SELF"].'?action=editall">';
-		print $langs->trans('PickupModifyAllCat');
-		print '</a>';
-		print '</div>';
+	} else {
+		print '<input type="hidden" name="action" value="list">';
+	}
+	print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
+	print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
+	print '<input type="hidden" name="page" value="'.$page.'">';
+	print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
+
+
+	if ($is_edit_multiple) {
+		print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
+		print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
 	}
 }
 
@@ -491,13 +608,11 @@ function mobilecat_list_print_open_form_and_button($is_edit_mode, $is_edit_multi
 function mobilecat_list_print_close_form_and_button($is_edit_mode, $is_edit_multiple, $permissionedit) {
 	global $langs;
 
-	if ($is_edit_mode) {
-		if ($is_edit_multiple) {
-			print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
-			print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
-		}
-		print '</form>';
+	if ($is_edit_multiple) {
+		print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
+		print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
 	}
+	print '</form>';
 }
 
 /**
@@ -517,10 +632,10 @@ function mobilecat_list_print_close_table() {
  * Print the table header line
  */
 function mobilecat_list_print_table_head(
-	&$object, &$arrayfields,
+	&$object, &$arrayfields, &$massactionbutton,
 	$param, $sortfield, $sortorder
 ) {
-	global $langs;
+	global $langs, $form;
 
 	print '<tr class="liste_titre">';
 	foreach($object->fields as $key => $val) {
@@ -560,7 +675,10 @@ function mobilecat_list_print_table_head(
 	// $reshook=$hookmanager->executeHooks('printFieldListTitle', $parameters, $object);    // Note that $action and $object may have been modified by hook
 	// print $hookmanager->resPrint;
 	// Action column
-	print getTitleFieldOfList('', 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
+	$last_column_html = '';
+	$last_column_html .= !empty($massactionbutton) ? $form->showCheckAddButtons('checkforselect', 1) : '';
+
+	print getTitleFieldOfList($last_column_html, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
 
 	print '</tr>'."\n";
 }
@@ -570,7 +688,8 @@ function mobilecat_list_print_table_head(
  */
 function mobilecat_list_print_table_content (
 	&$object, &$arrayfields, &$fulltree,
-	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit
+	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
+	$massaction, $massactionbutton, $arrayofselected
 ) {
 	global $langs, $db;
 
@@ -599,6 +718,7 @@ function mobilecat_list_print_table_content (
 			mobilecat_list_print_table_content_line(
 				$object, $arrayfields, $fulltree,
 				$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
+				$massaction, $massactionbutton, $arrayofselected,
 				$cat, $mobilecat, $label
 			);
 		}
@@ -611,6 +731,7 @@ function mobilecat_list_print_table_content (
 function mobilecat_list_print_table_content_line (
 	&$object, &$arrayfields, &$fulltree,
 	$ids_to_edit, $is_edit_mode, $is_edit_multiple, $permissionedit,
+	$massaction, $massactionbutton, $arrayofselected,
 	&$cat, &$mobilecat, $label
 ) {
 	global $db, $langs;
@@ -650,12 +771,6 @@ function mobilecat_list_print_table_content_line (
 	// }
 	// Action column
 	print '<td class="nowrap center">';
-	// if ($massactionbutton || $massaction)   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
-	// {
-	// 	$selected=0;
-	// 	if (in_array($obj->rowid, $arrayofselected)) $selected=1;
-	// 	print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected?' checked="checked"':'').'>';
-	// }
 	?><div id="line_<?php echo $cat->id; ?>"></div><?php
 	if ($permissionedit) {
 		if ($is_line_edited) {
@@ -671,6 +786,13 @@ function mobilecat_list_print_table_content_line (
 				<?php print img_edit(); ?>
 			</a><?php
 		}
+	}
+	if ($massactionbutton || $massaction) {   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
+		$selected=0;
+		if (in_array($cat->id, $arrayofselected)) {
+			$selected=1;
+		}
+		print '<input id="cb'.$cat->id.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$cat->id.'"'.($selected?' checked="checked"':'').'>';
 	}
 	print '</td>';
 	// if (! $i) $totalarray['nbfield']++;

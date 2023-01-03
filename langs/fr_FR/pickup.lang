@@ -112,6 +112,7 @@ MobileCats = Catégories pour l'application mobile
 MobileCatForm = Formulaire à utiliser dans l'application mobile
 MobileCatDescription = Notes à afficher dans l'application mobile à coté du champs «Description du produit»
 MobileCatEnable = Utiliser dans l'application mobile
+MobileCatDisable = Ne pas utiliser dans l'application mobile
 
 PickupCantBeInFutureError = La collecte ne peut pas être dans le futur.
 
