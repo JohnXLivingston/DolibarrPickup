@@ -7,6 +7,10 @@
 * Refonte de l'écran de gestion des tags pour l'application mobile (#62).
 * Suppression de l'onglet «Collecte» sur les tags (#62).
 
+### Corrections et changements mineurs
+
+* Mise à jour de sécurité des dépendances NPM.
+
 ## 1.3.6
 
 * Définition du paramètre url_last_version, qui permet d'être prévenu des nouvelles version du module.
