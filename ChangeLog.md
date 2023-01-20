@@ -10,6 +10,7 @@
 ### Corrections et changements mineurs
 
 * Mise à jour de sécurité des dépendances NPM.
+* Désactivation de la protection anti-CSRF sur la page d'API mobile (#72).
 
 ## 1.3.6
 
