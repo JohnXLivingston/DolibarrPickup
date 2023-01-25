@@ -14,3 +14,19 @@ Le matériel ainsi collecté pourra être :
 * soit loué,
 * soit vendu,
 * soit démantelé pour servir de pièce détachée, ou pour reclycler les matériaux les composants.
+
+LDRS fait de la revalorisation de «Déchets d'Équipements Électriques et Électroniques»,
+qu'on appellera **DEEE** dans la suite.
+Les produits revalorisés par LRDS seront différenciés selon leurs **types de DEEE** :
+
+* Non DEEE : le produit n'est pas un DEEE
+* GEF : Gros Électroménager Froid
+* GHF : Gros Électroménager Hors Froid
+* ECR : Écrans
+* ECR pro : Écrans issus d'un usage professionnel (et non ménager)
+* PAM : Petits Apppareil en Mélange
+* PAM pro : Petits Apppareil en Mélange issus d'un usage professionnel (et non ménager)
+
+Cette catégorisation est importante, car LRDS doit pouvoir réaliser des bilans
+trimestriels et anneuls sur les tonnages revalorisés ou mis au rebus pour
+chaque catégorie.
