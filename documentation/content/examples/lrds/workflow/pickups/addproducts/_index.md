@@ -15,7 +15,7 @@ On peut chercher si le produit est déjà référencé dans Dolibarr.
 LRDS a activé un champs additionnel, fourni par le module de Collecte :
 le champs «Marque».
 
-![Recherche d'un produit existant](/examples/lrds/workflow/images/mobile_pick_product.png?classes=shadow,border&height=200px)
+![Recherche d'un produit existant](./../../images/mobile_pick_product.png?classes=shadow,border&height=200px)
 
 ## Création d'une nouvelle fiche produit
 
@@ -25,12 +25,12 @@ le bouton «Nouveau produit» en bas à gauche.
 LRDS a activé l'utilisation des «Catégories de produits» dans l'application mobile.
 La première information à remplir est donc de choisir une catégorie.
 
-![Sélection de la catégorie](/examples/lrds/workflow/images/mobile_pick_tag.png?classes=shadow,border&height=200px)
+![Sélection de la catégorie](./../../images/mobile_pick_tag.png?classes=shadow,border&height=200px)
 
 LRDS a configuré les catégories de produits de sorte à ce qu'elles les
 caractégorisent de manière très précise.
 
-![Catégories produit](/examples/lrds/workflow/images/tags.png?classes=shadow,border&height=200px)
+![Catégories produit](./../../images/tags.png?classes=shadow,border&height=200px)
 
 Ensuite, dans le module de Collecte, on indique quels tags utiliser dans
 l'application mobile (en effet, certains tags pourraient ne pas concerner
@@ -38,15 +38,15 @@ le processus de collecte).
 
 On peut également assigner à chaque tag les informations suivantes:
 
-* forcer ou limiter le type de DEEE (voir [le contexte](/examples/lrds/context/))
+* forcer ou limiter le type de DEEE (voir [le contexte](../context/))
 * ajouter des notes qui seront affichées dans l'application mobile, pour indiquer quelles informations saisir
 * *forcer le type de suivi (voir plus loin)*. **NB: ceci n'est pas encore implémenté - voir si nécessaire**.
 
-![Configuration des catégories pour l'application mobile](/examples/lrds/workflow/images/configure_tags.png?classes=shadow,border&height=200px)
+![Configuration des catégories pour l'application mobile](./../../images/configure_tags.png?classes=shadow,border&height=200px)
 
 Une fois la catégorie sélectionnée, on est invité à saisir les informations concernant le produit.
 
-![Création d'un produit](/examples/lrds/workflow/images/mobile_create_product_wip.png?classes=shadow,border&height=200px)
+![Création d'un produit](./../../images/mobile_create_product_wip.png?classes=shadow,border&height=200px)
 
 On retrouve le champs «marque», qui est un champs ajouté par le module de collecte
 (l'ajout de ce champs est optionnel, et se configure via les options du module).
@@ -71,7 +71,7 @@ Le champs «type de suivi» est ici contraint par la catégorie produit choisie.
 
 Une fois cet écran rempli, on arrive sur l'écran de saisie du poids unitaire.
 
-![Saisi du poids unitaire](/examples/lrds/workflow/images/mobile_weight.png?classes=shadow,border&height=200px)
+![Saisi du poids unitaire](./../../images/mobile_weight.png?classes=shadow,border&height=200px)
 
 LDRS a choisi de n'utiliser que les poids comme unité, et que cette saisie soit
 obligatoire.
@@ -96,7 +96,7 @@ La saisie du poids unitaire achève la création de la fiche produit.
 Que l'on ai sélectionné un produit existant, ou qu'on ai créé une nouvelle
 fiche produit, on se retrouve ensuite sur l'écran de saisie des quantités.
 
-![Saisie de la quantité](/examples/lrds/workflow/images/mobile_qty.png?classes=shadow,border&height=200px)
+![Saisie de la quantité](./../../images/mobile_qty.png?classes=shadow,border&height=200px)
 
 ## Impression d'une étiquette
 
@@ -130,7 +130,7 @@ directement dérivé de la ref produit.
 Le préfixe «R-» indiquant qu'il s'agit d'une référence produit.
 {{% /notice %}}
 
-![Génération des codes barres](/examples/lrds/workflow/images/mobile_bar_code.png?classes=shadow,border&height=200px)
+![Génération des codes barres](./../../images/mobile_bar_code.png?classes=shadow,border&height=200px)
 
 {{% notice tip %}}
 La fenêtre affichant les codes barres est un PDF affiché dans le navigateur.

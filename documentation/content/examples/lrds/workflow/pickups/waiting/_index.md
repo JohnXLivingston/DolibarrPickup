@@ -8,7 +8,7 @@ description="Fin de saisie des produits récupérés."
 Une fois qu'on a fini d'ajouter les produits, on peut utiliser le bouton
 «Fin de saisie» pour passer la collecte dans le statut «Traitement».
 
-![Fin de saisie](/examples/lrds/workflow/images/mobile_pickup_validate.png?classes=shadow,border&height=200px)
+![Fin de saisie](./../../images/mobile_pickup_validate.png?classes=shadow,border&height=200px)
 
 À partir de ce moment, la collecte n'est plus modifiable depuis l'application mobile.
 
