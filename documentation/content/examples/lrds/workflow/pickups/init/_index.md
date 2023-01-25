@@ -10,8 +10,8 @@ Cette saisie se fait via [l'application mobile](./../../../../user/mobileapp/).
 
 |  |  |
 | ------ | ----------- |
-| ![Nouvelle collecte](./../../images/mobile_home.png?classes=shadow,border&height=200px) | ![Sélection du tiers](./../../images/mobile_select_tiers.png?classes=shadow,border&height=200px) |
-| ![Création du tiers](./../../images/mobile_create_tiers.png?classes=shadow,border&height=200px) | ![Création de la collecte](./../../images/mobile_create_pickup.png?classes=shadow,border&height=200px) |
+| ![Nouvelle collecte](/examples/lrds/workflow/images/mobile_home.png?classes=shadow,border&height=200px) | ![Sélection du tiers](/examples/lrds/workflow/images/mobile_select_tiers.png?classes=shadow,border&height=200px) |
+| ![Création du tiers](/examples/lrds/workflow/images/mobile_create_tiers.png?classes=shadow,border&height=200px) | ![Création de la collecte](/examples/lrds/workflow/images/mobile_create_pickup.png?classes=shadow,border&height=200px) |
 
 Le champs «type de collecte» a été configuré avec les deux valeurs suivantes :
 
