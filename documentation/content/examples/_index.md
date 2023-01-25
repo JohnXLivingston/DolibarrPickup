@@ -14,3 +14,5 @@ Chaque cas étudié correspond à un cas réel. On détaillera :
 * une liste des modules Dolibarr utilisés,
 * l'utilisation de Dolibarr et de ses modules, avec une description précise des différentes opérations réalisées,
 * comment configurer Dolibarr et ses modules pour avoir un usage similaire.
+
+{{% children style="h2" depth="1" description="true" %}}

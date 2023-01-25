@@ -2,6 +2,7 @@
 title="Modules utilisés"
 weight=20
 chapter=false
+description="Cette page résume les modules Dolibarr utilisés par LRDS dans le cadre de l'activité de ressourcerie."
 +++
 
 ## Modules standards

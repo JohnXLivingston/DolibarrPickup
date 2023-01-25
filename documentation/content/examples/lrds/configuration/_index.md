@@ -2,6 +2,7 @@
 title="Configuration"
 weight=50
 chapter=false
+description="Cette page indique, point par point, comment configurer Dolibarr et ses modules pour avoir un usage identique à celui de LDRS."
 +++
 
 Cette page indique, point par point, comment configurer Dolibarr et ses modules

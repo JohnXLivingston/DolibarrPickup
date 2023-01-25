@@ -2,6 +2,7 @@
 title="Contexte"
 weight=10
 chapter=false
+description="Cette page résume rapidement les activités de LRDS, et ce qui est attendu de l'usage de Dolibarr."
 +++
 
 [La Ressourcerie Du Spectacle](https://www.ressourcerieduspectacle.fr/)
