@@ -26,7 +26,7 @@ Par exemple, un ampli guitare qui serait dans le stock «En location» pourra ê
 à un⋅e client⋅e.
 
 À noter que LRDS a fait le choix de séparer complètement la location de la vente :
-un produit dans le stock de location ne sera pas proposé à la vente (on pourra 
+un produit dans le stock de location ne sera pas proposé à la vente (on pourra
 néanmoins le transférer d'un stock à l'autre si on souhaite le vendre).
 
 Le schéma ci-dessous reprend les différents entrepots, et les flux les plus courants :
@@ -34,21 +34,27 @@ Le schéma ci-dessous reprend les différents entrepots, et les flux les plus co
 {{<mermaid>}}
 graph TD;
   .(( )) --> Collecte[Collecte]
-  Diagnostique[Diagnostique]
   Reparation[À réparer / En maintenance]
   Vente[En vente]
   Location[Prestations et Locations]
   Dechet[Déchet]
+  Client((Client))
 
-  Collecte --> Diagnostique
-  Diagnostique --> Reparation
-  Diagnostique --> Location
-  Diagnostique --> Vente
-  Diagnostique --> Dechet
+  Collecte --> Reparation
+  Collecte --> Location
+  Collecte --> Vente
+  Collecte --> Dechet
 
   Reparation --> Location
   Reparation --> Vente
   Reparation --> Dechet
+
+  Location -.-> Reparation
+  Location --> Location
+
+  Vente --> Client
 {{< /mermaid >}}
 
 On pourra bien sûr avoir d'autres flux (de la location vers la vente par exemple).
+
+Pendant la phase de diagnostique, les produits restent dans le stock «Collecte».
