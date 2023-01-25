@@ -14,8 +14,8 @@ Cette saisie se fait via [l'application mobile](./../../../user/mobileapp/).
 
 |  |  |
 | ------ | ----------- |
-| ![Nouvelle collecte](./../images/mobile_home.png?classes=shadow,border) | ![Sélection du tiers](./../images/mobile_select_tiers.png?classes=shadow,border) |
-| ![Création du tiers](./../images/mobile_create_tiers.png?classes=shadow,border) | ![Création de la collecte](./../images/mobile_create_pickup.png?classes=shadow,border) |
+| ![Nouvelle collecte](./../images/mobile_home.png?classes=shadow,border&height=200px) | ![Sélection du tiers](./../images/mobile_select_tiers.png?classes=shadow,border&height=200px) |
+| ![Création du tiers](./../images/mobile_create_tiers.png?classes=shadow,border&height=200px) | ![Création de la collecte](./../images/mobile_create_pickup.png?classes=shadow,border&height=200px) |
 
 Le champs «type de collecte» a été configuré avec les deux valeurs suivantes :
 
@@ -31,7 +31,8 @@ informations.
 
 ## Ajout de produits sur la fiche de collecte
 
-On va ensuite lister les produits récupérés.
+On va ensuite lister les produits récupérés. Deux cas possibles: le produit
+est déjà référencé dans Dolibarr, ou c'est un produit qui n'a jamais été référencé.
 
 ### Ajout d'un produit existant
 
@@ -39,7 +40,7 @@ On peut chercher si le produit est déjà référencé dans Dolibarr.
 LRDS a activé un champs additionnel, fourni par le module de Collecte :
 le champs «Marque».
 
-![Recherche d'un produit existant](./../images/mobile_pick_product.png?classes=shadow,border)
+![Recherche d'un produit existant](./../images/mobile_pick_product.png?classes=shadow,border&height=200px)
 
 ### Création d'une nouvelle fiche produit
 
@@ -49,12 +50,12 @@ le bouton «Nouveau produit» en bas à gauche.
 LRDS a activé l'utilisation des «Catégories de produits» dans l'application mobile.
 La première information à remplir est donc de choisir une catégorie.
 
-![Sélection de la catégorie](./../images/mobile_pick_tag.png?classes=shadow,border)
+![Sélection de la catégorie](./../images/mobile_pick_tag.png?classes=shadow,border&height=200px)
 
 LRDS a configuré les catégories de produits de sorte à ce qu'elles les
 caractégorisent de manière très précise.
 
-![Catégories produit](./../images/tags.png?classes=shadow,border)
+![Catégories produit](./../images/tags.png?classes=shadow,border&height=200px)
 
 Ensuite, dans le module de Collecte, on indique quels tags utiliser dans
 l'application mobile (en effet, certains tags pourraient ne pas concerner
@@ -66,11 +67,11 @@ On peut également assigner à chaque tag les informations suivantes:
 * ajouter des notes qui seront affichées dans l'application mobile, pour indiquer quelles informations saisir
 * *forcer le type de suivi (voir plus loin)*. **NB: ceci n'est pas encore implémenté - voir si nécessaire**.
 
-![Configuration des catégories pour l'application mobile](./../images/configure_tags.png?classes=shadow,border)
+![Configuration des catégories pour l'application mobile](./../images/configure_tags.png?classes=shadow,border&height=200px)
 
 Une fois la catégorie sélectionnée, on est invité à saisir les informations concernant le produit.
 
-![Création d'un produit](./../images/mobile_create_product_wip.png?classes=shadow,border)
+![Création d'un produit](./../images/mobile_create_product_wip.png?classes=shadow,border&height=200px)
 
 On retrouve le champs «marque», qui est un champs ajouté par le module de collecte
 (l'ajout de ce champs est optionnel, et se configure via les options du module).
@@ -95,7 +96,7 @@ Le champs «type de suivi» est ici contraint par la catégorie produit choisie.
 
 Une fois cet écran rempli, on arrive sur l'écran de saisie du poids unitaire.
 
-![Saisi du poids unitaire](./../images/mobile_weight.png?classes=shadow,border)
+![Saisi du poids unitaire](./../images/mobile_weight.png?classes=shadow,border&height=200px)
 
 LDRS a choisi de n'utiliser que les poids comme unité, et que cette saisie soit
 obligatoire.
@@ -120,7 +121,7 @@ La saisie du poids unitaire achève la création de la fiche produit.
 Que l'on ai sélectionné un produit existant, ou qu'on ai créé une nouvelle
 fiche produit, on se retrouve ensuite sur l'écran de saisie des quantités.
 
-![Saisie de la quantité](./../images/mobile_qty.png?classes=shadow,border)
+![Saisie de la quantité](./../images/mobile_qty.png?classes=shadow,border&height=200px)
 
 ### Impression d'une étiquette
 
@@ -154,7 +155,7 @@ directement dérivé de la ref produit.
 Le préfixe «R-» indiquant qu'il s'agit d'une référence produit.
 {{% /notice %}}
 
-![Génération des codes barres](./../images/mobile_bar_code.png?classes=shadow,border)
+![Génération des codes barres](./../images/mobile_bar_code.png?classes=shadow,border&height=200px)
 
 {{% notice tip %}}
 La fenêtre affichant les codes barres est un PDF affiché dans le navigateur.
@@ -166,3 +167,63 @@ Il faudra vérifier que les navigateurs web utilisés affiche cela correctement.
 Sous les code-barres, la valeur en toute lettre sera reprise, afin de pouvoir
 l'interpréter «à l'œil nu».
 {{% /notice %}}
+
+## Fin de saisie
+
+Une fois qu'on a fini d'ajouter les produits, on peut utiliser le bouton
+«Fin de saisie» pour passer la collecte dans le statut «Traitement».
+
+![Fin de saisie](./../images/mobile_pickup_validate.png?classes=shadow,border&height=200px)
+
+À partir de ce moment, la collecte n'est plus modifiable depuis l'application mobile.
+
+{{% notice tip %}}
+Si la collecte a été saisie par un⋅e stagiaire, c'est ici que le processus s'arrête.
+À partir de là, il faut avoir les droits des droits supplémentaires.
+{{% /notice %}}
+
+## Traitement de la collecte
+
+À partir de maintenant, il faut retourner sur l'application Dolibarr classique.
+
+![En cours de traitement](./../images/dolibarr_pickup_waiting.png?classes=shadow,border&height=200px)
+
+En ouvrant la fiche de collecte, on peut voir que celle-ci est en statut «en cours de traitement».
+C'est maintenant à la personne en charge des collectes de vérifier que tout a
+été correctement saisi.
+
+Si besoin de corriger des données, on peut retourner au statut «Brouillon» via
+le bouton «Retour en Brouillon».
+
+{{% notice tip %}}
+Si le poids unitaire a été modifié sur la fiche produit, celui-ci s'affichera
+en orange sur la fiche de collecte.
+Si on retourne au statut «Brouillon», on pourra réappliquer le poids unitaire
+depuis la fiche produit en cliquant sur le bouton «warning» affiché à droite.
+![Correction du poids](./../images//dolibarr_pickup_correct_weight.png?classes=shadow,border)
+{{% /notice %}}
+
+À partir du statut «En cours de traitement», un pdf «bon de collecte» est généré.
+
+![Bon de collecte](./../images/dolibarr_pickup_pdf.png?classes=shadow,border)
+
+## Intégration au stock
+
+Si tout est correct sur la fiche de collecte, on peut maintenant utiliser le
+bouton «intégrer au stock» pour passer en statut «En Attente de Signature».
+
+Attention, cette action n'est pas réversible.
+
+En cliquant sur ce bouton, tous les produits listés vont être ajoutés dans le
+stock, dans l'entrepôt «Collecte».
+
+Pour les produits avec un «type de suivi» par «numéro de série unique», on
+va également créer des fiches «Équipement».
+
+Le module «Équipement» fait parti de la suite de modules «Gestion de location»
+fourni par l'entreprise Altairis
+(voir [la liste des modules utilisés](./../../plugins/) pour
+plus d'informations).
+
+Pour ces équipements, le numéro de série correspond à celui du code barre qu'on
+aura pu imprimer lors de la création de la collecte.
