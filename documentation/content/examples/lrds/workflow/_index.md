@@ -202,7 +202,8 @@ Chaque étiquette aura un numéro de série unique, généré automatiquement.
 
 {{% notice warning %}}
 Le format de ce numéro de série n'a pas encore été défini.
-On pourrait partir sur une codification du type «REFERENCE_PRODUIT-00012».
+On pourrait partir sur une codification du type «E-REFERENCE_PRODUIT-00012».
+Le préfixe «E-» indiquant qu'il s'agira d'un «Equipement» (cf plus loin).
 {{% /notice %}}
 
 Si c'est un suivi par référence, on aura une page avec un seul code barre,
@@ -211,8 +212,9 @@ on choisira le nombre dans la fenêtre d'impression.
 
 {{% notice warning %}}
 Le format du code barre correspondant à la référence n'a pas encore été défini.
-On pourrait partir sur une codification du type «REFERENCE_PRODUIT»
-(directement dérivé de la ref produit).
+On pourrait partir sur une codification du type «R-REFERENCE_PRODUIT»
+directement dérivé de la ref produit.
+Le préfixe «R-» indiquant qu'il s'agit d'une référence produit.
 {{% /notice %}}
 
 ![Génération des codes barres](./images/mobile_bar_code.png?classes=shadow,border)
@@ -221,4 +223,9 @@ On pourrait partir sur une codification du type «REFERENCE_PRODUIT»
 La fenêtre affichant les codes barres est un PDF affiché dans le navigateur.
 Il faudra passer par le bouton «imprimer» affiché en haut de celui-ci.
 Il faudra vérifier que les navigateurs web utilisés affiche cela correctement.
+{{% /notice %}}
+
+{{% notice info %}}
+Sous les code-barres, la valeur en toute lettre sera reprise, afin de pouvoir
+l'interpréter «à l'œil nu».
 {{% /notice %}}
