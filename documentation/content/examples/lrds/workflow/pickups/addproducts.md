@@ -115,13 +115,13 @@ Chaque étiquette aura un numéro de série unique, généré automatiquement.
 
 {{% notice warning %}}
 Le format de ce numéro de série n'a pas encore été défini.
-On pourrait partir sur une codification du type «E-REFERENCE_PRODUIT-00012».
-Le préfixe «E-» indiquant qu'il s'agira d'un «Equipement» (cf plus loin).
+On pourrait partir sur une codification du type «S-REFERENCE_PRODUIT-00012».
+Le préfixe «S-» indiquant qu'il s'agira d'un «numéro de **s**érie» (cf plus loin).
 {{% /notice %}}
 
 Si c'est un suivi par référence, on aura une page avec un seul code barre,
 correspondant à la référence produit. Si on a besoin d'en imprimer plusieurs,
-on choisira le nombre dans la fenêtre d'impression.
+on choisira le nombre d'étiquettes à imprimer dans la fenêtre d'impression.
 
 {{% notice warning %}}
 Le format du code barre correspondant à la référence n'a pas encore été défini.
