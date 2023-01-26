@@ -1,6 +1,6 @@
 +++
 title="Commande"
-weight=20
+weight=40
 chapter=false
 description="Création d'une commande."
 +++
@@ -13,15 +13,10 @@ On peut retrouver la commande dans la section «Objets liés» du devis.
 {{% /notice %}}
 
 Si vous avez sauté l'étape du devis, vous pouvez utiliser le bouton
-«nouvelle commande» de l'application «Commandes».
+«nouvelle commande» de l'application «Gestion de Location».
 
-Les personnes en charge du stocks de vente vont alors vérifier régulièrement la
+Les personnes en charge du stocks de location vont alors vérifier régulièrement la
 liste des commandes «brouillons» pour savoir quelles commandes préparer.
-
-{{% notice warning %}}
-Je crois que pour les ventes, le paragraphe précédent n'est pas exact.
-C'est la même personne qui fait tout (devis, commande, facture, expédition).
-{{% /notice %}}
 
 Quand les personnes commencent à préparer la commande, on la passe en statut
 «Validée» via le bouton du même nom.

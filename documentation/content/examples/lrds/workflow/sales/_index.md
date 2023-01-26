@@ -1,5 +1,5 @@
 +++
-title="Vente de produits"
+title="Ventes de produits"
 weight=60
 chapter=false
 description="Cette section décrit le processus de vente de produits."

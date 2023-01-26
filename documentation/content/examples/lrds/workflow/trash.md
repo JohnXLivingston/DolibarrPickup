@@ -1,6 +1,6 @@
 +++
 title="Mise au rebut"
-weight=70
+weight=80
 chapter=false
 description="Gestion des déchets."
 +++
