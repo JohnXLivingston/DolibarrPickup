@@ -18,3 +18,6 @@ stock, dans l'entrepôt «Collecte».
 Pour les produits avec un «type de suivi» par «numéro de série unique», les numéros
 de séries générés à l'ajout, et imprimés sur étiquette, seront associés aux
 mouvements de stocks créés.
+
+Le bon de collecte passe en état «En attente de signature».
+Il faudra alors envoyer le pdf au tiers donneur, et attendre que celui-ci le signe.
