@@ -6,7 +6,7 @@ chapter=false
 description="On créé une fiche de collecte"
 +++
 
-Cette saisie se fait via [l'application mobile](./../../../../user/mobileapp/).
+Cette saisie se fait via [l'application mobile](./../../../../../user/mobileapp/).
 
 |  |  |
 | ------ | ----------- |
