@@ -17,7 +17,11 @@ vous pourrez changer ligne par ligne par la suite.
 ![Création d'une expédition](./../../images/dolibarr_expedition.png?classes=shadow,border&height=400px)
 
 Vous pouvez ensuite saisir les quantités à envoyer.
-Pour les produits suivants par numéro de série, il faudra choisir lequel envoyer.
+
+Pour les produits suivants par numéro de série, il faudra choisir lequels envoyer.
+C'est à la personne qui prépare la commande de choisir.
+Si le client souhaite un produit particulier, et que ce n'est pas la même personne
+qui gère la commande et l'expédition, on pourra ajouter des annotations pour le préciser.
 
 ![Saisie d'une expédition](./../../images/dolibarr_expedition_2.png?classes=shadow,border&height=400px)
 
