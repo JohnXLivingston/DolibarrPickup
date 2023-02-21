@@ -24,11 +24,8 @@
   {% if pickedItems.length %}
     <hr>
     <div class="alert alert-info">
-      <p>{{ translate('There are {items} items that match your selection.', {items: pickedItems.length}) }}</p>
-      <ul class="list-group">
-      {% for item in pickedItems %}
-        <li class="list-group-item">
-          {{ item[currentState.primaryKey] }}.
+      {% if pickedItems.length === 1 %}
+        {% for item in pickedItems %}
           <a class="btn btn-primary"
             pickupmobile-pick-pick="{{ item[currentState.primaryKey] }}"
             {% if currentState.itemGotoField and item[currentState.itemGotoField] %}
@@ -37,9 +34,25 @@
           >
             {{ translate('Pick this one') }}
           </a>
-        </li>
-      {% endfor %}
-      </ul>
+        {% endfor %}
+      {% else %}
+        <p>{{ translate('There are {items} items that match your selection.', {items: pickedItems.length}) }}</p>
+        <ul class="list-group">
+        {% for item in pickedItems %}
+          <li class="list-group-item">
+            {{ item[currentState.primaryKey] }}.
+            <a class="btn btn-primary"
+              pickupmobile-pick-pick="{{ item[currentState.primaryKey] }}"
+              {% if currentState.itemGotoField and item[currentState.itemGotoField] %}
+                pickupmobile-pick-pick-goto="{{ item[currentState.itemGotoField] }}"
+              {% endif %}
+            >
+              {{ translate('Pick this one') }}
+            </a>
+          </li>
+        {% endfor %}
+        </ul>
+      {% endif %}
       <a class="btn btn-danger" role="button" pickupmobile-pick-empty>
           {{ translate('Empty the selection') }}
       </a>
