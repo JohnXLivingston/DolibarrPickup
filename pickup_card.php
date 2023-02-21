@@ -531,49 +531,15 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
     	  // Send
 				if (!empty($conf->global->PICKUP_SEND_MAIL)) {
 					if (empty($user->socid) && $object->canCreatePickupPdf()) { // Considering you can send mail if you can generate PDF
-						print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&action=presend&mode=init#formmailbeforetitle">'.$langs->trans('SendMail').'</a>'."\n";
+						print dolGetButtonAction('', $langs->trans('SendMail'), 'default', $_SERVER["PHP_SELF"].'?id='.$object->id.'&action=presend&mode=init&token='.newToken().'#formmailbeforetitle');
 					}
 				}
 
         // Modify
-    		if ($permissionedit)
-    		{
-    			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n";
-    		}
-    		else
-    		{
-    			print '<a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans('Modify').'</a>'."\n";
-    		}
+				print dolGetButtonAction('', $langs->trans('Modify'), 'default', $_SERVER["PHP_SELF"].'?id='.$object->id.'&action=edit&token='.newToken(), '', $permissionedit);
 
-    		// Clone
-    		// if (! empty($user->rights->pickup->write))
-    		// {
-				// 	print '<a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;socid=' . $object->socid . '&amp;action=clone&amp;object=order">' . $langs->trans("ToClone") . '</a>'."\n";
-				// }
-
-    		/*
-    		if ($user->rights->pickup->write)
-    		{
-    			if ($object->status == 1)
-    		 	{
-    		 		print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=disable">'.$langs->trans("Disable").'</a>'."\n";
-    		 	}
-    		 	else
-    		 	{
-    		 		print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=enable">'.$langs->trans("Enable").'</a>'."\n";
-    		 	}
-    		}
-    		*/
-
-				// Delete (need delete permission
-     		if (! empty($user->rights->pickup->delete))
-    		{
-    			print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=delete">'.$langs->trans('Delete').'</a>'."\n";
-    		}
-    		else
-    		{
-    			print '<a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans('Delete').'</a>'."\n";
-    		}
+				// Delete (need delete permission)
+				print dolGetButtonAction('', $langs->trans("Delete"), 'delete', $_SERVER["PHP_SELF"].'?id='.$object->id.'&action=delete&token='.newToken(), 'delete', !empty($user->rights->pickup->delete));
     	}
     	print '</div>'."\n";
 	}

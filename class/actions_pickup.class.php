@@ -870,22 +870,54 @@ class ActionsPickup
 		}
 		global $langs, $conf;
 		$pickup_rights = $object->getRights();
-		if ($object->status == Pickup::STATUS_DRAFT && $pickup_rights->workflow->processing) {
-			if (!empty($object->lines)) { // assuming lines were fetched before. If not, no button, thats not a problem.
-				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=processing">'.$langs->trans("PickupStatusProcessing").'</a>'."\n";
-			}
+		if ($object->status == Pickup::STATUS_DRAFT) {
+			print dolGetButtonAction(
+				'',
+				$langs->trans('PickupStatusProcessing'),
+				'default',
+				$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=processing&token='.newToken(),
+				'',
+				(
+					!empty($object->lines) // assuming lines were fetched before. If not, no button, thats not a problem.
+					&&
+					$pickup_rights->workflow->processing
+				)
+			);
 		}
-		if (($object->status == Pickup::STATUS_DRAFT || $object->status == Pickup::STATUS_PROCESSING) && $pickup_rights->workflow->stock) {
-			if (!empty($object->lines)) { // assuming lines were fetched before. If not, no button, thats not a problem.
-				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=includeinstock">'.$langs->trans("PickupActionIncludeInStock").'</a>'."\n";
-			}
+		if (($object->status == Pickup::STATUS_DRAFT || $object->status == Pickup::STATUS_PROCESSING)) {
+			print dolGetButtonAction(
+				'',
+				$langs->trans('PickupActionIncludeInStock'),
+				'default',
+				$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=includeinstock&token='.newToken(),
+				'',
+				(
+					!empty($object->lines) // assuming lines were fetched before. If not, no button, thats not a problem.
+					&&
+					$pickup_rights->workflow->stock
+				)
+			);
 		}
-		if ($object->status == Pickup::STATUS_PROCESSING && $pickup_rights->workflow->processing) {
-			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=settodraft">'.$langs->trans("SetToDraft").'</a>'."\n";
+		if ($object->status == Pickup::STATUS_PROCESSING) {
+			print dolGetButtonAction(
+				'',
+				$langs->trans('SetToDraft'),
+				'default',
+				$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=settodraft&token='.newToken(),
+				'',
+				$pickup_rights->workflow->processing
+			);
 		}
-		if ($object->status == Pickup::STATUS_STOCK && $pickup_rights->workflow->sign && empty($conf->global->PICKUP_NO_SIGN_STATUS)) {
+		if ($object->status == Pickup::STATUS_STOCK && empty($conf->global->PICKUP_NO_SIGN_STATUS)) {
 			// FIXME: there must be at least one attachment...
-			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=sign">'.$langs->trans("PickupActionSign").'</a>'."\n";
+			print dolGetButtonAction(
+				'',
+				$langs->trans('PickupActionSign'),
+				'default',
+				$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=sign&token='.newToken(),
+				'',
+				$pickup_rights->workflow->sign
+			);
 		}
 		return 0;
 	}
