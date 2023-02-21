@@ -12,7 +12,7 @@
       {% if s %}
         <tr>
           <th>{{ s.label }}</th>
-          <td>{{ s.display | trim | escape | nl2br }}</td>
+          <td>{{ s.display | string | trim | escape | nl2br }}</td>
         </tr>
       {% endif %}
     {% endfor %}
