@@ -246,6 +246,9 @@ function count_extra_fields_to_migrate($extrafield_name) {
 	if (!array_key_exists($ef_definition['elementype'], $extrafields->attributes)) {
 		return null;
 	}
+	if (!array_key_exists('type', $extrafields->attributes[$ef_definition['elementype']])) {
+		return null;
+	}
 	if (!array_key_exists($ef_definition['LRDS']['lrds_name'], $extrafields->attributes[$ef_definition['elementype']]['type'])) {
 		return null;
 	}
