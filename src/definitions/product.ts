@@ -145,7 +145,7 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bo
   fields.push({
     type: 'text',
     name: 'product_description',
-    label: 'Notes',
+    label: 'Description de la fiche produit',
     mandatory: false,
     notes: descriptionNotes
   })
@@ -233,7 +233,7 @@ export function showProduct (
   {
     type: 'text',
     name: 'description',
-    label: 'Description'
+    label: 'Description de la fiche produit'
   })
 
   if (useDEEE) {

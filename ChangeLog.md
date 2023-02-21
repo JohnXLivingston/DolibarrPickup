@@ -6,7 +6,7 @@
 
 * Fix #68: le formulaire de collecte ne permettait pas d'enregistrer un type de collecte vide.
 * Fix #74: affichage des retours à la ligne dans l'application mobile.
-* Fix #76 #77: cohérence des libellés.
+* Fix #76 #77 #79: cohérence des libellés.
 * Fix de quelques warnings php sans incidence.
 * Compatibilité Dolibarr 16: remplacement des boutons d'action par des appels à dolGetButtonAction avec des tokens anti-CSRF.
 
