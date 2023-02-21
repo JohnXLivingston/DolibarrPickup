@@ -117,7 +117,8 @@ MobileCatDisable = Do not use in mobile application
 PickupCantBeInFutureError = Pickup cant be in future.
 
 #
-ConfirmPickupActionProcessing = Are you sure you want to process this pickup?
+PickupActionProcessing = End of input
+ConfirmPickupActionProcessing = Are you sure you want to change this pickup status to «Processing» ?
 PickupActionIncludeInStock = Insert in stock
 ConfirmPickupActionIncludeInStock = Are you sure you want to insert products in stocks and set the pickup as «in stocks»?
 PickupIncludeInStockOk = Products where inserted in stock

@@ -873,7 +873,7 @@ class ActionsPickup
 		if ($object->status == Pickup::STATUS_DRAFT) {
 			print dolGetButtonAction(
 				'',
-				$langs->trans('PickupStatusProcessing'),
+				$langs->trans('PickupActionProcessing'),
 				'default',
 				$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=processing&token='.newToken(),
 				'',

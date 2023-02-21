@@ -117,7 +117,8 @@ MobileCatDisable = Ne pas utiliser dans l'application mobile
 PickupCantBeInFutureError = La collecte ne peut pas être dans le futur.
 
 #
-ConfirmPickupActionProcessing = Êtes-vous sûr de vouloir traiter cette collecte ?
+PickupActionProcessing = Fin de saisie
+ConfirmPickupActionProcessing = Êtes-vous sûr de vouloir passer cette collecte en statut «En cours de traitement» ?
 PickupActionIncludeInStock = Intégrer au stock
 ConfirmPickupActionIncludeInStock = Êtes-vous sûr de vouloir intégrer ces produits au stock et mettre la collecte en statut «en stock» ?
 PickupIncludeInStockOk = Produits intégrés au stock
