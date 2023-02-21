@@ -936,7 +936,11 @@ class ActionsPickup
 		}
 		if ($action == 'includeinstock') {
 			global $form, $langs;
-			$this->resprints = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('PickupActionIncludeInStock'), $langs->trans('ConfirmPickupActionIncludeInStock'), 'confirm_includeinstock', '', 0, 1);
+			$this->resprints = $form->formconfirm(
+				$_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('PickupActionIncludeInStock'),
+				(empty($conf->global->PICKUP_NO_SIGN_STATUS) ? $langs->trans('ConfirmPickupActionIncludeInStockBis') : $langs->trans('ConfirmPickupActionIncludeInStock')),
+				'confirm_includeinstock', '', 0, 1
+			);
 		}
 		if ($action == 'sign') {
 			global $form, $langs;

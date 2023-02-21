@@ -120,11 +120,12 @@ PickupCantBeInFutureError = La collecte ne peut pas être dans le futur.
 PickupActionProcessing = Fin de saisie
 ConfirmPickupActionProcessing = Êtes-vous sûr de vouloir passer cette collecte en statut «En cours de traitement» ?
 PickupActionIncludeInStock = Intégrer au stock
-ConfirmPickupActionIncludeInStock = Êtes-vous sûr de vouloir intégrer ces produits au stock et mettre la collecte en statut «en stock» ?
+ConfirmPickupActionIncludeInStock = Êtes-vous sûr de vouloir intégrer ces produits au stock et mettre la collecte en statut «En stock» ?
+ConfirmPickupActionIncludeInStockBis = Êtes-vous sûr de vouloir intégrer ces produits au stock et mettre la collecte en statut «En attente de signature» ?
 PickupIncludeInStockOk = Produits intégrés au stock
 PickupIncludeInStockMovementNotFoundError = Une erreur a eu lieu, le mouvement n'a pas été trouvé
 PickupActionSign = Valider signature
-ConfirmPickupActionSign = Êtes-vous sûr de vouloir passer cette collecte en statut «signée»
+ConfirmPickupActionSign = Êtes-vous sûr de vouloir passer cette collecte en statut «Signée» ?
 #
 
 PickupUnitValue = Unitaire
