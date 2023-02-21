@@ -28,7 +28,7 @@ class DataMobileActionPickupline extends DataMobileAction {
       'line_volume' => $pickupline->volume_units == -3 ? $pickupline->volume : null
     );
     if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
-      $r['line_description'] = $pickupline->description;
+      $r['line_description'] = dol_htmlentitiesbr($pickupline->description);
     }
     // For now, no need to have more values.
 

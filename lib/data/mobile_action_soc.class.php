@@ -49,7 +49,7 @@ class DataMobileActionSoc extends DataMobileAction {
       'rowid' => $soc->id,
       'name' => $soc->name,
       'name_alias' => $soc->name_alias,
-      'complete_address' => $soc->address . ' ' . $soc->zip . ' ' . $soc->town,
+      'complete_address' => dol_htmlentitiesbr($soc->address . ' ' . $soc->zip . ' ' . $soc->town),
       'email' => $soc->email,
       'phone' => $soc->phone,
       'typent' => $soc->typent_code,

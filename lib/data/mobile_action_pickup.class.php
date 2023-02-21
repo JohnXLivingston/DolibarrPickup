@@ -26,7 +26,7 @@ class DataMobileActionPickup extends DataMobileAction {
 
     $r['date'] = dol_print_date($pickup->date_pickup, 'day');
     $r['soc_name'] = $soc->name;
-    $r['description'] = $pickup->description;
+    $r['description'] = dol_htmlentitiesbr($pickup->description);
     $r['entrepot_name'] = $entrepot->ref;
     $r['lines'] = array();
     if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE)) {
@@ -45,28 +45,28 @@ class DataMobileActionPickup extends DataMobileAction {
       if (!empty($weight)) {
         $weight.= ' ' . measuringUnitString(0, "weight", $line->weight_units);
         if(($conf->global->PICKUP_UNITS_WEIGHT ?? '0') != '0') {
-          $unitary.= htmlspecialchars($weight)."\n";
+          $unitary.= htmlspecialchars($weight).'<br>';
         }
       }
       $length = $line->length;
       if (!empty($length)) {
         $length.= ' ' . measuringUnitString(0, 'size', $line->length_units);
         if(($conf->global->PICKUP_UNITS_LENGTH ?? '0') != '0') {
-          $unitary.= htmlspecialchars($length)."\n";
+          $unitary.= htmlspecialchars($length).'<br>';
         }
       }
       $surface = $line->surface;
       if (!empty($surface)) {
         $surface.= ' ' . measuringUnitString(0, 'surface', $line->surface_units);
         if(($conf->global->PICKUP_UNITS_SURFACE ?? '0') != '0') {
-          $unitary.= htmlspecialchars($surface)."\n";
+          $unitary.= htmlspecialchars($surface).'<br>';
         }
       }
       $volume = $line->volume;
       if (!empty($volume)) {
         $volume.= ' ' . measuringUnitString(0, 'volume', $line->volume_units);
         if(($conf->global->PICKUP_UNITS_VOLUME ?? '0') != '0') {
-          $unitary.= htmlspecialchars($volume)."\n";
+          $unitary.= htmlspecialchars($volume).'<br>';
         }
       }
 

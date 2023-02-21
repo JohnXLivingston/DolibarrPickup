@@ -48,7 +48,7 @@
           <textarea
             name="{{ field.name }}"
             class="form-control {% if invalid %}is-invalid{% endif %}"
-          >{{ currentValue }}</textarea>
+          >{{ currentValue | striptags(true) | safe }}</textarea>
         {% elif field.type === 'select' %}
           <select
             name="{{ field.name }}"

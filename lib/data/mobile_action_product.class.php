@@ -83,7 +83,7 @@ class DataMobileActionProduct extends DataMobileAction {
     $result = array(
       'rowid' => $object->id,
       'ref' => $object->ref,
-      'description' => $object->description,
+      'description' => dol_htmlentitiesbr($object->description),
       'label' => $object->label,
       'pcats' => join(', ', $cats_labels),
       // FIXME: should be weight + weight_units (and so on...)... But it is simplier like that for now

@@ -3,7 +3,7 @@
     {% if field.type === 'varchar' or field.type === 'integer'%}
       {{ data[field.name] }}
     {% elif field.type === 'text' %}
-      {{ data[field.name] | trim | escape | nl2br }}
+      {{ data[field.name] | safe }}
     {% elif field.type === 'boolean' %}
       <input type="checkbox" disabled="disabled" {% if (data[field.name]) %}checked="checked"{% endif %}>
     {% elif field.type === 'concatenate' %}

@@ -132,7 +132,7 @@ export function showSociete (okGoto: string): StateDefinition {
         label: 'Nom de la personne référente'
       },
       {
-        type: 'varchar',
+        type: 'text',
         name: 'complete_address',
         label: 'Adresse'
       },
