@@ -45,28 +45,28 @@ class DataMobileActionPickup extends DataMobileAction {
       if (!empty($weight)) {
         $weight.= ' ' . measuringUnitString(0, "weight", $line->weight_units);
         if(($conf->global->PICKUP_UNITS_WEIGHT ?? '0') != '0') {
-          $unitary.= htmlspecialchars($weight)."<br>";
+          $unitary.= htmlspecialchars($weight)."\n";
         }
       }
       $length = $line->length;
       if (!empty($length)) {
         $length.= ' ' . measuringUnitString(0, 'size', $line->length_units);
         if(($conf->global->PICKUP_UNITS_LENGTH ?? '0') != '0') {
-          $unitary.= htmlspecialchars($length)."<br>";
+          $unitary.= htmlspecialchars($length)."\n";
         }
       }
       $surface = $line->surface;
       if (!empty($surface)) {
         $surface.= ' ' . measuringUnitString(0, 'surface', $line->surface_units);
         if(($conf->global->PICKUP_UNITS_SURFACE ?? '0') != '0') {
-          $unitary.= htmlspecialchars($surface)."<br>";
+          $unitary.= htmlspecialchars($surface)."\n";
         }
       }
       $volume = $line->volume;
       if (!empty($volume)) {
         $volume.= ' ' . measuringUnitString(0, 'volume', $line->volume_units);
         if(($conf->global->PICKUP_UNITS_VOLUME ?? '0') != '0') {
-          $unitary.= htmlspecialchars($volume)."<br>";
+          $unitary.= htmlspecialchars($volume)."\n";
         }
       }
 

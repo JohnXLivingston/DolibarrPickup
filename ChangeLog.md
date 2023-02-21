@@ -5,6 +5,7 @@
 ### Corrections et changements mineurs
 
 * Fix #68: le formulaire de collecte ne permettait pas d'enregistrer un type de collecte vide.
+* Fix #74: affichage des retours à la ligne dans l'application mobile.
 * Fix de quelques warnings php sans incidence.
 
 ## 1.4.0
