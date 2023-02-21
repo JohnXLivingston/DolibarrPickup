@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## ??? (Not Released Yet)
+
+### Corrections et changements mineurs
+
+* Fix #68: le formulaire de collecte ne permettait pas d'enregistrer un type de collecte vide.
+
 ## 1.4.0
 
 ### Nouvelles fonctionnalités

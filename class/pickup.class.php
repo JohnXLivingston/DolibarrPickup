@@ -96,7 +96,15 @@ class Pickup extends CommonObject
 		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>30, 'notnull'=>1, 'visible'=>4, 'searchall'=>1, 'showoncombobox'=>'1',),
 		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php:1', 'label'=>'ThirdParty', 'enabled'=>'1', 'position'=>50, 'notnull'=>1, 'visible'=>1, 'index'=>1,),
 		'date_pickup' => array('type'=>'date', 'label'=>'PickupDate', 'enabled'=>'1', 'position'=>55, 'notnull'=>1, 'visible'=>1, 'index'=>1,),
-		'fk_pickup_type' => array('type' => 'sellist:c_pickup_type:label:rowid::active=1','label' => 'PickupType', 'enabled' => '$conf->global->PICKUP_USE_PICKUP_TYPE', 'position'=>57,'notnull'=>0,'visible'=>1,'index'=>1),
+		'fk_pickup_type' => array(
+			'type' => 'sellist:c_pickup_type:label:rowid::active=1',
+			'label' => 'PickupType',
+			'enabled' => '$conf->global->PICKUP_USE_PICKUP_TYPE',
+			'position'=>57,
+			'notnull'=>-1, // '' must be converted to null
+			'visible'=>1,
+			'index'=>1,
+		),
 		'description' => array('type'=>'html', 'label'=>'Description', 'enabled'=>'1', 'position'=>60, 'notnull'=>-1, 'visible'=>-1,),
 		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>'1', 'position'=>500, 'notnull'=>1, 'visible'=>-2,),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>-1, 'visible'=>-2,),
