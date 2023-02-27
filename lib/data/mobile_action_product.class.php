@@ -69,6 +69,7 @@ class DataMobileActionProduct extends DataMobileAction {
       }
     }
     $cats_labels = array_unique($cats_labels, SORT_STRING);
+    sort($cats_labels, SORT_STRING);
 
     require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php'; // for measuringUnitString
     $langs->loadLangs(array("other"));
