@@ -55,14 +55,16 @@ class DataMobileActionProduct extends DataMobileAction {
     require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 		$cat = new Categorie($db);
     $cats = $cat->containing($id, Categorie::TYPE_PRODUCT, 'object');
-    $cats_labels = array();
+    $cats_labels = [];
 		if (!($cats <= 0)) {
       foreach ($cats as $cat) {
         $allways = $cat->get_all_ways();
         foreach ($allways as $way) {
+          $cat_label = [];
           foreach ($way as $parent_cat) {
-            array_push($cats_labels, $parent_cat->label);
+            $cat_label[] = $parent_cat->label;
           }
+          $cats_labels[] = implode(' >> ', $cat_label);
         }
       }
     }
