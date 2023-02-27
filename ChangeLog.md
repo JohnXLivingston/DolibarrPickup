@@ -2,6 +2,10 @@
 
 ## ??? (Not Released Yet)
 
+### Nouvelles fonctionnalités
+
+* #75: dans l'application mobile, on peut maintenant ouvrir une fiche produit, et éditer ce dernier.
+
 ### Corrections et changements mineurs
 
 * Fix #68: le formulaire de collecte ne permettait pas d'enregistrer un type de collecte vide.

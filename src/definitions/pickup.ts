@@ -77,6 +77,7 @@ export function showPickup (
   usePBrand: boolean,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   addGoto: string,
+  lineProductGoto: string | undefined,
   editLineGoto: string,
   setProcessingStatusGoto: null | {processingStatus: string, goto: string},
   usePickupType: boolean
@@ -119,7 +120,17 @@ export function showPickup (
   productShowFields.push({
     type: 'varchar',
     name: 'name',
-    label: 'Ref'
+    label: 'Ref',
+    goto: lineProductGoto,
+    pushToStack: [
+      {
+        fromDataKey: 'product_rowid',
+        pushOnStackKey: 'product',
+        stackLabel: 'Produit',
+        silent: false,
+        invisible: true
+      }
+    ]
   })
   productShowFields.push({
     type: 'varchar',

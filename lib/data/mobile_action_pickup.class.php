@@ -76,6 +76,7 @@ class DataMobileActionPickup extends DataMobileAction {
         'rowid' => $line->id,
         'name' => $product->ref,
         'label' => $product->label,
+        'product_rowid' => $product->id,
         'qty' => $line->qty,
         'line_weight_txt' => $weight,
         'line_length_txt' => $length,

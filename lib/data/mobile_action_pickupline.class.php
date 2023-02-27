@@ -21,6 +21,7 @@ class DataMobileActionPickupline extends DataMobileAction {
       'rowid' => $pickupline->id,
       'name' => $product->ref,
       'qty' => $pickupline->qty,
+      'product_rowid' => $product->id,
       // For weight/length/..., we only add the value if the unit is the standard one.
       'line_weight' => $pickupline->weight_units == 0 ? $pickupline->weight : null,
       'line_length' => $pickupline->length_units == 0 ? $pickupline->length : null,

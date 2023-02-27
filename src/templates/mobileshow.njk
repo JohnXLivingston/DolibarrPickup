@@ -1,7 +1,15 @@
 <div class="pickupmobile-scrollzone">
   {% macro printFieldContent(field, data) %}
     {% if field.type === 'varchar' or field.type === 'integer'%}
+      {% if field.goto %}
+        <a
+          pickupmobile-show-goto="{{ field.goto }}"
+          pickupmobile-show-data="{{ data | dump }}"
+          pickupmobile-show-push-to-stack="{{ field.pushToStack | dump }}"
+        >
+      {% endif %}
       {{ data[field.name] }}
+      {% if field.goto %}</a>{% endif %}
     {% elif field.type === 'text' %}
       {{ data[field.name] | safe }}
     {% elif field.type === 'boolean' %}
@@ -24,9 +32,9 @@
       {% else %}
         <a
           class="btn btn-primary" role="button"
-          pickupmobile-show-edit-goto="{{ field.goto }}"
-          pickupmobile-show-edit-data="{{ data | dump }}"
-          pickupmobile-show-edit-push-to-stack="{{ field.pushToStack | dump }}"
+          pickupmobile-show-goto="{{ field.goto }}"
+          pickupmobile-show-data="{{ data | dump }}"
+          pickupmobile-show-push-to-stack="{{ field.pushToStack | dump }}"
         >
           {{ field.label }}
         </a>

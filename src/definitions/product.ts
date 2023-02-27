@@ -200,7 +200,7 @@ export function showProduct (
   usePCat: boolean, useDEEE: boolean, usePBrand: boolean,
   _unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
-  okGoto: string
+  okGoto: string | undefined
 ): StateDefinition {
   const fields: ShowFields = []
 

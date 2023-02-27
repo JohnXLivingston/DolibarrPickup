@@ -12,6 +12,10 @@ interface ShowFieldBase {
 interface ShowFieldVarchar extends ShowFieldBase {
   type: 'varchar'
 }
+interface ShowFieldVarcharWithGoto extends ShowFieldVarchar {
+  goto: string
+  pushToStack: ShowPushToStack[]
+}
 interface ShowFieldText extends ShowFieldBase {
   type: 'text'
 }
@@ -38,29 +42,29 @@ interface ShowFieldConcatenate extends ShowFieldBase {
   fields: ShowFields
 }
 
-interface ShowFieldEditPushToStackBase {
+interface ShowPushToStackBase {
   pushOnStackKey: string // name to use when pushing value in stack
   stackLabel?: string
   silent?: boolean // if true, the value will not be sent to backend
   invisible?: boolean // if true, the value will not be shown by displayStackValue
 }
-interface ShowFieldEditPushToStackFromData extends ShowFieldEditPushToStackBase {
+interface ShowPushToStackFromData extends ShowPushToStackBase {
   fromDataKey: string // get the value from the current data using this key
 }
-interface ShowFieldEditPushToStackFixed extends ShowFieldEditPushToStackBase {
+interface ShowPushToStackFixed extends ShowPushToStackBase {
   value: string
 }
 
-type ShowFieldEditPushToStack = ShowFieldEditPushToStackFromData | ShowFieldEditPushToStackFixed
+type ShowPushToStack = ShowPushToStackFromData | ShowPushToStackFixed
 
 interface ShowFieldEdit extends ShowFieldBase {
   type: 'edit'
   goto: string
   disabledFunc?: (data: any) => boolean
-  pushToStack: ShowFieldEditPushToStack[]
+  pushToStack: ShowPushToStack[]
 }
 
-type ShowField = ShowFieldVarchar | ShowFieldText | ShowFieldBoolean | ShowFieldLines | ShowFieldInteger | ShowFieldEdit | ShowFieldConcatenate
+type ShowField = ShowFieldVarchar | ShowFieldVarcharWithGoto | ShowFieldText | ShowFieldBoolean | ShowFieldLines | ShowFieldInteger | ShowFieldEdit | ShowFieldConcatenate
 type ShowFields = ShowField[]
 interface StateShowDefinition extends StateDefinitionBase {
   type: 'show'
@@ -127,11 +131,12 @@ class StateShow extends State {
         dom.trigger('goto-state', [this.okGoto])
       }
     })
-    dom.on('click.StateEvents', '[pickupmobile-show-edit-goto]', ev => {
+
+    dom.on('click.StateEvents', '[pickupmobile-show-goto]', ev => {
       const a = $(ev.currentTarget)
-      const goto = a.attr('pickupmobile-show-edit-goto')
-      const data: any = JSON.parse(a.attr('pickupmobile-show-edit-data') ?? '{}')
-      const pushToStacks: ShowFieldEditPushToStack[] = JSON.parse(a.attr('pickupmobile-show-edit-push-to-stack') ?? '[]')
+      const goto = a.attr('pickupmobile-show-goto')
+      const data: any = JSON.parse(a.attr('pickupmobile-show-data') ?? '{}')
+      const pushToStacks: ShowPushToStack[] = JSON.parse(a.attr('pickupmobile-show-push-to-stack') ?? '[]')
 
       const svs: StackValue[] = []
       for (const pushToStack of pushToStacks) {
@@ -166,7 +171,7 @@ class StateShow extends State {
     }
     function searchFieldGoto (fields: ShowFields): void {
       fields.forEach(field => {
-        if (field.type === 'edit' && field.goto) {
+        if (('goto' in field) && field.goto) {
           a.push(field.goto)
         } else if (field.type === 'lines') {
           searchFieldGoto(field.lines)

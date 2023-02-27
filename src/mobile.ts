@@ -76,7 +76,7 @@ $(function () {
     useDEEE,
     usePBrand,
     useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume,
-    'product', 'qty_edit',
+    'product', 'show_product_from_pickup', 'qty_edit',
     processingStatus ? { goto: 'save_pickup_status', processingStatus: processingStatus } : null,
     usePickupType
   )
@@ -106,6 +106,8 @@ $(function () {
   definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_product')
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)
   definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty')
+
+  definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, undefined)
 
   definition.qty = definitions.createPickupLine(false, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')
   definition.qty_edit = definitions.createPickupLine(true, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')

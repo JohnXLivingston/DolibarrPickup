@@ -80,3 +80,8 @@ h1 {
 label.pickupmobile-mandatory {
   font-weight: bold;
 }
+
+a[pickupmobile-show-goto]:not(.btn) {
+  cursor: pointer !important;
+  text-decoration: underline !important;
+}
