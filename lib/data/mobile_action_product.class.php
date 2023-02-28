@@ -167,20 +167,24 @@ class DataMobileActionProduct extends DataMobileAction {
     $pickup = null;
 
     $is_creation = true;
-    $save_common_attributes = true;
-    $save_cat = true;
+    $save_common_attributes = false;
+    $save_cat = false;
+    $save_product = false;
     $refresh_pickup_line = false;
+
     $subaction = GETPOST('subaction');
     if (!empty($subaction)) {
-      if ($subaction === 'edit_product_attrs' || $subaction = 'edit_product_attrs_from_pickup') {
-        $is_creation = false;
-        $save_cat = false;
-        $product_id = GETPOST('product', 'int');
+      $is_creation = false;
 
-        if ($product->fetch($product_id) <= 0) {
-          $this->_log_object_errors(__METHOD__, $product);
-          return 0;
-        }
+      $product_id = GETPOST('product', 'int');
+      if ($product->fetch($product_id) <= 0) {
+        $this->_log_object_errors(__METHOD__, $product);
+        return 0;
+      }
+
+      if ($subaction === 'edit_product_attrs' || $subaction === 'edit_product_attrs_from_pickup') {
+        $save_common_attributes = true;
+        $save_product = true;
 
         if ($subaction === 'edit_product_attrs_from_pickup') {
           $refresh_pickup_line = true;
@@ -193,12 +197,19 @@ class DataMobileActionProduct extends DataMobileAction {
           }
         }
 
+      } elseif ($subaction === 'edit_product_cat_from_pickup') {
+        $save_cat = true;
       } else {
         dol_syslog(__METHOD__.' Invalid sub action: '.$subaction, LOG_ERR);
         return 0;
       }
     } else {
       // Product creation
+      $is_creation = true;
+      $save_common_attributes = true;
+      $save_cat = true;
+      $save_product = true;
+
       $product->type = Product::TYPE_PRODUCT;
       $product->ref = GETPOST('product_ref');
       $product_label = GETPOST('product_label');
@@ -251,21 +262,23 @@ class DataMobileActionProduct extends DataMobileAction {
       }
     }
 
-    if ($is_creation) {
-      $product_id = $product->create($user);
-      if (!$product_id || $product_id <= 0) {
-        $this->_log_object_errors(__METHOD__, $product);
-        if ($product->error === 'ErrorProductAlreadyExists') {
-          $langs->loadLangs(array('products'));
-          return $this->_error_response('ErrorProductAlreadyExists', $langs->transnoentitiesnoconv('ErrorProductAlreadyExists', $product->ref));
+    if ($save_product) {
+      if ($is_creation) {
+        $product_id = $product->create($user);
+        if (!$product_id || $product_id <= 0) {
+          $this->_log_object_errors(__METHOD__, $product);
+          if ($product->error === 'ErrorProductAlreadyExists') {
+            $langs->loadLangs(array('products'));
+            return $this->_error_response('ErrorProductAlreadyExists', $langs->transnoentitiesnoconv('ErrorProductAlreadyExists', $product->ref));
+          }
+          return 0;
         }
-        return 0;
-      }
-    } else {
-      $result = $product->update($product_id, $user);
-      if ($result <= 0) {
-        $this->_log_object_errors(__METHOD__, $product);
-        return 0;
+      } else {
+        $result = $product->update($product_id, $user);
+        if ($result <= 0) {
+          $this->_log_object_errors(__METHOD__, $product);
+          return 0;
+        }
       }
     }
 
@@ -278,12 +291,6 @@ class DataMobileActionProduct extends DataMobileAction {
     }
 
     if ($refresh_pickup_line && !empty($pickup)) {
-      // // Just to be sure, we are reloading the product (as deee field is computed)
-      // if ($product->fetch($product_id) <= 0) {
-      //   $this->_log_object_errors(__METHOD__, $product);
-      //   return 0;
-      // }
-
       $pickup->getLinesArray();
       foreach ($pickup->lines as $line) {
         if (intval($line->fk_product) === intval($product_id)) {

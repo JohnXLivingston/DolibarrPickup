@@ -85,7 +85,7 @@ $(function () {
   if (usePCat) {
     saveUntilForProduct = 'categorie'
     definition.product = definitions.pickProduct(usePBrand, 'show_product', 'categorie')
-    definition.categorie = definitions.pickPCat('create_product') // Note: itemGotoField can override the goto
+    definition.categorie = definitions.pickPCat('create_product', 'form') // Note: itemGotoField can override the goto
     definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', '')
   } else {
     saveUntilForProduct = 'create_product'
@@ -105,12 +105,16 @@ $(function () {
   }
   definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_product')
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)
-  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty', undefined)
+  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty', undefined, undefined)
 
-  definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, undefined, 'edit_product')
+  definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, undefined, 'edit_product', 'edit_product_cat')
   // FIXME: following line does not constrains DEEE types.
   definition.edit_product = definitions.editProduct(usePCat, useDEEE, usePBrand, askHasBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_edit_product', '')
   definition.save_edit_product = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
+
+  // FIXME: itemGotoField from pickPCat can override goto....
+  definition.edit_product_cat = definitions.pickPCat('save_edit_product_cat', undefined)
+  definition.save_edit_product_cat = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
 
   definition.qty = definitions.createPickupLine(false, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')
   definition.qty_edit = definitions.createPickupLine(true, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')

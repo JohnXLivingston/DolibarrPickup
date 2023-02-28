@@ -283,7 +283,8 @@ export function showProduct (
   _unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   okGoto: string | undefined,
-  editGoto: string | undefined
+  editGoto: string | undefined,
+  editCatGoto: string | undefined
 ): StateDefinition {
   const fields: ShowFields = []
 
@@ -291,7 +292,26 @@ export function showProduct (
     fields.push({
       type: 'varchar',
       name: 'reference_pcat_label',
-      label: 'Catégorie de référence'
+      label: 'Catégorie de référence',
+      goto: editCatGoto,
+      pushToStack: [
+        // Note: no need to add 'product' on the stack, it is already here from the previous state.
+        {
+          // we take the product ref, just to show it on save screen
+          fromDataKey: 'ref',
+          pushOnStackKey: 'ref',
+          silent: true,
+          invisible: false,
+          stackLabel: 'Référence produit'
+        },
+        {
+          // here we specify a «subaction» for the backend API.
+          value: 'edit_product_cat_from_pickup',
+          pushOnStackKey: 'subaction',
+          silent: false,
+          invisible: true
+        }
+      ]
     })
     fields.push({
       type: 'varchar',
