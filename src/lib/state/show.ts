@@ -28,6 +28,10 @@ interface ShowFieldInteger extends ShowFieldBase {
   type: 'integer'
   total?: boolean
 }
+interface ShowFieldIntegerWithGoto extends ShowFieldInteger {
+  goto: string
+  pushToStack: ShowPushToStack[]
+}
 interface ShowFieldLines extends ShowFieldBase {
   type: 'lines'
   lines: ShowFields
@@ -64,7 +68,10 @@ interface ShowFieldEdit extends ShowFieldBase {
   pushToStack: ShowPushToStack[]
 }
 
-type ShowField = ShowFieldVarchar | ShowFieldVarcharWithGoto | ShowFieldText | ShowFieldBoolean | ShowFieldLines | ShowFieldInteger | ShowFieldEdit | ShowFieldConcatenate
+type ShowField = ShowFieldVarchar | ShowFieldVarcharWithGoto
+| ShowFieldText | ShowFieldBoolean | ShowFieldLines
+| ShowFieldInteger | ShowFieldIntegerWithGoto | ShowFieldEdit | ShowFieldConcatenate
+
 type ShowFields = ShowField[]
 interface StateShowDefinition extends StateDefinitionBase {
   type: 'show'

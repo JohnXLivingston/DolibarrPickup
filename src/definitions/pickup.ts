@@ -160,21 +160,7 @@ export function showPickup (
     type: 'integer',
     name: 'qty',
     label: 'Quantité',
-    total: true
-  })
-
-  if (useUnitWeight || useUnitLength || useUnitSurface || useUnitVolume) {
-    lineCols.push({
-      type: 'text',
-      name: 'line_unitary_html',
-      label: 'Valeurs unitaires'
-    })
-  }
-
-  lineCols.push({
-    type: 'edit',
-    name: 'pickupline',
-    label: 'Modifier',
+    total: true,
     pushToStack: [
       {
         fromDataKey: 'rowid', // when on showCollecte page, rowid is the pickup_line id.
@@ -192,6 +178,14 @@ export function showPickup (
     ],
     goto: editLineGoto
   })
+
+  if (useUnitWeight || useUnitLength || useUnitSurface || useUnitVolume) {
+    lineCols.push({
+      type: 'text',
+      name: 'line_unitary_html',
+      label: 'Valeurs unitaires'
+    })
+  }
 
   fields.push({
     type: 'lines',
