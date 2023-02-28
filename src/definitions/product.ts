@@ -190,7 +190,7 @@ export function editProduct (
   }
 
   if (unitsEditMode === 'product') {
-    pushUnitFields(fields, 'product_', '', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
+    pushUnitFields(fields, '', '', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
   }
 
   let descriptionNotes
@@ -217,7 +217,7 @@ export function editProduct (
     type: 'form',
     label: 'Corriger la fiche produit',
     edit: {
-      stackKey: 'product_id',
+      stackKey: 'product',
       getDataKey: 'product'
     },
     goto,
@@ -259,6 +259,21 @@ export function saveProduct (goto: string, saveUntil: string): StateDefinition {
     primaryKey: 'rowid', // FIXME: to check.
     labelKey: 'Produit',
     saveUntil,
+    goto
+  }
+}
+
+export function saveEditProduct (goto: string, saveUntil: string, removeUntil: string, removeFromStack: boolean): StateDefinition {
+  return {
+    type: 'save',
+    label: 'Sauvegarde du produit',
+    key: 'product',
+    primaryKey: 'rowid', // FIXME: to check.
+    labelKey: 'Produit',
+    dependingCacheKey: 'pickup',
+    saveUntil,
+    removeUntil,
+    removeFromStack,
     goto
   }
 }
@@ -310,17 +325,34 @@ export function showProduct (
       name: 'product',
       label: 'Éditer',
       pushToStack: [
+        // Note: no need to add 'product' on the stack, it is already here from the previous state.
+        // {
+        //   fromDataKey: 'rowid',
+        //   pushOnStackKey: 'product',
+        //   silent: false,
+        //   invisible: true,
+        //   stackLabel: 'ID produit'
+        // },
         {
-          fromDataKey: 'rowid',
-          pushOnStackKey: 'product_id',
-          silent: false,
-          invisible: true
+          // we take the product ref, just to show it on save screen
+          fromDataKey: 'ref',
+          pushOnStackKey: 'ref',
+          silent: true,
+          invisible: false,
+          stackLabel: 'Référence produit'
         },
         {
           // we have to push the current reference tag, that is needed for the form
           fromDataKey: 'reference_pcat_id',
           pushOnStackKey: 'reference_pcat_id',
           silent: true,
+          invisible: true
+        },
+        {
+          // here we specify a «subaction» for the backend API.
+          value: 'edit_product_attrs_from_pickup',
+          pushOnStackKey: 'subaction',
+          silent: false,
           invisible: true
         }
       ],

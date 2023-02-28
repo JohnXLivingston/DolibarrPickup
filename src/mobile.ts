@@ -109,8 +109,8 @@ $(function () {
 
   definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, undefined, 'edit_product')
   // FIXME: following line does not constrains DEEE types.
-  // FIXME: save state.
-  definition.edit_product = definitions.editProduct(usePCat, useDEEE, usePBrand, askHasBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, '', '')
+  definition.edit_product = definitions.editProduct(usePCat, useDEEE, usePBrand, askHasBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_edit_product', '')
+  definition.save_edit_product = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
 
   definition.qty = definitions.createPickupLine(false, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')
   definition.qty_edit = definitions.createPickupLine(true, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')

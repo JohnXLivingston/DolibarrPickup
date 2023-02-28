@@ -119,7 +119,7 @@ class DataMobileActionProduct extends DataMobileAction {
     if (!empty($surface)) { $surface.= ' ' . measuringUnitString(0, 'surface', $object->surface_units); }
     $volume = $object->volume;
     if (!empty($volume)) { $volume.= ' ' . measuringUnitString(0, 'volume', $object->volume_units); }
-    
+
 
     $result = array(
       'rowid' => $object->id,
@@ -164,65 +164,155 @@ class DataMobileActionProduct extends DataMobileAction {
     require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
     $product = new Product($db);
 
-    $product->type = Product::TYPE_PRODUCT;
-    $product->ref = GETPOST('product_ref');
-    $product_label = GETPOST('product_label');
-    if (empty($product_label)) {
-      $product_label = GETPOST('product_ref');
-    }
-    $product->label = $product_label;
-    $product->description = htmlentities(trim(GETPOST('product_description')));
+    $pickup = null;
 
-    if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
-      $product->weight = GETPOST('weight', 'int'); // yes... for dolibarr floats are 'int'
-      $product->weight_units = 0;
-    }
-    if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
-      $product->length = GETPOST('length', 'int'); // yes... for dolibarr floats are 'int'
-      $product->length_units = 0;
-    }
-    if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
-      $product->surface = GETPOST('surface', 'int'); // yes... for dolibarr floats are 'int'
-      $product->surface_units = 0;
-    }
-    if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
-      $product->volume = GETPOST('volume', 'int'); // yes... for dolibarr floats are 'int'
-      $product->volume_units = -3; // L
-    }
-    
-    if (!empty($conf->global->PICKUP_USE_PBRAND)) {
-      $product->array_options['options_pickup_pbrand'] = GETPOST('product_pbrand');
-    }
-    if (!empty($conf->global->PICKUP_USE_DEEE)) {
-      $deee_type = GETPOST('product_deee_type', 'alpha');
-      if (!empty($deee_type)) {
-        $product->array_options['options_pickup_deee_type'] = $deee_type;
-      }
-    }
-    if (!empty($conf->productbatch->enabled)) {
-      if ($conf->global->PICKUP_DEFAULT_HASBATCH === '1') {
-        $product->status_batch = 1;
-      } else if ($conf->global->PICKUP_DEFAULT_HASBATCH === 'ask') {
-        $product->status_batch = GETPOST('product_hasbatch') === '1' ? 1 : 0;
+    $is_creation = true;
+    $save_common_attributes = true;
+    $save_cat = true;
+    $refresh_pickup_line = false;
+    $subaction = GETPOST('subaction');
+    if (!empty($subaction)) {
+      if ($subaction === 'edit_product_attrs' || $subaction = 'edit_product_attrs_from_pickup') {
+        $is_creation = false;
+        $save_cat = false;
+        $product_id = GETPOST('product', 'int');
+
+        if ($product->fetch($product_id) <= 0) {
+          $this->_log_object_errors(__METHOD__, $product);
+          return 0;
+        }
+
+        if ($subaction === 'edit_product_attrs_from_pickup') {
+          $refresh_pickup_line = true;
+          $pickup_id = GETPOST('pickup', 'int');
+          dol_include_once('/pickup/class/pickup.class.php');
+          $pickup = new Pickup($db);
+          if ($pickup->fetch($pickup_id) <= 0) {
+            $this->_log_object_errors(__METHOD__, $pickup);
+            return 0;
+          }
+        }
+
       } else {
-        $product->status_batch = 0;
+        dol_syslog(__METHOD__.' Invalid sub action: '.$subaction, LOG_ERR);
+        return 0;
       }
-    }
-  
-    $product_id = $product->create($user);
-    if (!$product_id || $product_id <= 0) {
-      $this->_log_object_errors(__METHOD__, $product);
-      if ($product->error === 'ErrorProductAlreadyExists') {
-        $langs->loadLangs(array('products'));
-        return $this->_error_response('ErrorProductAlreadyExists', $langs->transnoentitiesnoconv('ErrorProductAlreadyExists', $product->ref));
+    } else {
+      // Product creation
+      $product->type = Product::TYPE_PRODUCT;
+      $product->ref = GETPOST('product_ref');
+      $product_label = GETPOST('product_label');
+      if (empty($product_label)) {
+        $product_label = GETPOST('product_ref');
       }
-      return 0;
+      $product->label = $product_label;
+
+      if (!empty($conf->global->PICKUP_USE_PBRAND)) {
+        $product->array_options['options_pickup_pbrand'] = GETPOST('product_pbrand');
+      }
     }
 
-    // Now we have to set the category
-    if (!empty($conf->global->PICKUP_USE_PCAT)) {
-      $pcat = GETPOST('pcat', 'int');
-      $product->setCategories(array($pcat));
+    if ($save_common_attributes) {
+      $product->description = htmlentities(trim(GETPOST('product_description')));
+
+      if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+        $product->weight = GETPOST('weight', 'int'); // yes... for dolibarr floats are 'int'
+        $product->weight_units = 0;
+      }
+      if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+        $product->length = GETPOST('length', 'int'); // yes... for dolibarr floats are 'int'
+        $product->length_units = 0;
+      }
+      if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+        $product->surface = GETPOST('surface', 'int'); // yes... for dolibarr floats are 'int'
+        $product->surface_units = 0;
+      }
+      if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+        $product->volume = GETPOST('volume', 'int'); // yes... for dolibarr floats are 'int'
+        $product->volume_units = -3; // L
+      }
+
+      if (!empty($conf->global->PICKUP_USE_DEEE)) {
+        $deee_type = GETPOST('product_deee_type', 'alpha');
+        if (!empty($deee_type) || $deee_type === '') {
+          $product->array_options['options_pickup_deee_type'] = $deee_type;
+        }
+      }
+      if (!empty($conf->productbatch->enabled)) {
+        if ($conf->global->PICKUP_DEFAULT_HASBATCH === '1') {
+          $product->status_batch = 1;
+        } else if ($conf->global->PICKUP_DEFAULT_HASBATCH === 'ask') {
+          $product->status_batch = GETPOST('product_hasbatch') === '1' ? 1 : 0;
+        } else {
+          $product->status_batch = 0;
+        }
+      }
+    }
+
+    if ($is_creation) {
+      $product_id = $product->create($user);
+      if (!$product_id || $product_id <= 0) {
+        $this->_log_object_errors(__METHOD__, $product);
+        if ($product->error === 'ErrorProductAlreadyExists') {
+          $langs->loadLangs(array('products'));
+          return $this->_error_response('ErrorProductAlreadyExists', $langs->transnoentitiesnoconv('ErrorProductAlreadyExists', $product->ref));
+        }
+        return 0;
+      }
+    } else {
+      $result = $product->update($product_id, $user);
+      if ($result <= 0) {
+        $this->_log_object_errors(__METHOD__, $product);
+        return 0;
+      }
+    }
+
+    if ($save_cat) {
+      // Now we have to set the category
+      if (!empty($conf->global->PICKUP_USE_PCAT)) {
+        $pcat = GETPOST('pcat', 'int');
+        $product->setCategories(array($pcat));
+      }
+    }
+
+    if ($refresh_pickup_line && !empty($pickup)) {
+      // // Just to be sure, we are reloading the product (as deee field is computed)
+      // if ($product->fetch($product_id) <= 0) {
+      //   $this->_log_object_errors(__METHOD__, $product);
+      //   return 0;
+      // }
+
+      $pickup->getLinesArray();
+      foreach ($pickup->lines as $line) {
+        if (intval($line->fk_product) === intval($product_id)) {
+          if (!empty($conf->global->PICKUP_USE_DEEE)) {
+            $line->deee = $product->array_options['options_pickup_deee'];
+            $line->deee_type = $product->array_options['options_pickup_deee_type'];
+          }
+
+          if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+            $line->weight = $product->weight;
+            $line->weight_units = $product->weight_units;
+          }
+          if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+            $line->length = $product->length;
+            $line->length_units = $product->length_units;
+          }
+          if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+            $line->surface = $product->surface;
+            $line->surface_units = $product->surface_units;
+          }
+          if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+            $line->volume = $product->volume;
+            $line->volume_units = $product->volume_units;
+          }
+
+          if ($line->update($user) <= 0) {
+            $this->_log_object_errors(__METHOD__, $line);
+            return 0;
+          }
+        }
+      }
     }
 
     $result = array("rowid" => $product_id, "ref" => $product->ref);
