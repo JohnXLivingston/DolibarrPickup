@@ -84,4 +84,8 @@ label.pickupmobile-mandatory {
 a[pickupmobile-show-goto]:not(.btn) {
   cursor: pointer !important;
   text-decoration: underline !important;
+
+  &::after {
+    content: "✎";
+  }
 }
