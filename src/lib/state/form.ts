@@ -219,12 +219,18 @@ class StateForm extends State {
         const data = getData(notes.load, 'list', force)
         r.set('__notes_' + field.name, data)
         if (data.status === 'resolved') {
+          console.debug('Loading notes for field ' + field.name + ', based on value of ' + notes.basedOnValueOf)
           const value = stack.searchValue(notes.basedOnValueOf)
+          console.debug('  value in stack:', value)
+          console.debug('  looking for key in data:', notes.key)
+          console.debug('  note field:', notes.field)
+          console.debug('  data: ', data.data)
           if (value !== undefined) {
             const note = (data.data as any[]).find(
               el => notes.key && el[notes.key] === value
             )
             if (note) {
+              console.debug('Found data for note:', note)
               notes.label = note[notes.field]
             }
           }

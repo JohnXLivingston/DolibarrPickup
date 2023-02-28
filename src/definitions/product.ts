@@ -158,6 +158,80 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bo
   }
 }
 
+export function editProduct (
+  usePCat: boolean, useDEEE: boolean, usePBrand: boolean, askHasBatch: boolean,
+  unitsEditMode: UnitsEditMode,
+  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  goto: string,
+  deeeForm: string
+): StateDefinition {
+  const fields: FormField[] = []
+  const editMapFields: {[key: string]: string} = {}
+
+  // FIXME
+  // if (askHasBatch) {
+  //   fields.push({
+  //     type: 'boolean',
+  //     name: 'product_hasbatch',
+  //     label: 'Utiliser les numéros de lots/série',
+  //     mandatory: false
+  //   })
+  //   editMapFields.hasbatch = 'product_hasbatch'
+  // }
+
+  if (useDEEE) {
+    const deeeField: FormField = getDeeeField(deeeForm)
+    fields.push(deeeField)
+    editMapFields.deee_type = 'product_deee_type'
+  }
+
+  if (unitsEditMode === 'product') {
+    pushUnitFields(fields, 'product_', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
+    if (useUnitWeight) { editMapFields.weight = 'product_weight' }
+    if (useUnitLength) { editMapFields.length = 'product_length' }
+    if (useUnitSurface) { editMapFields.surface = 'product_surface' }
+    if (useUnitVolume) { editMapFields.volume = 'product_volume' }
+  }
+
+  let descriptionNotes
+  if (usePCat) {
+    descriptionNotes = {
+      load: 'pcat',
+      key: 'rowid',
+      basedOnValueOf: 'reference_pcat_id',
+      field: 'notes'
+    }
+  }
+  fields.push({
+    type: 'text',
+    name: 'product_description',
+    label: 'Description de la fiche produit',
+    mandatory: false,
+    notes: descriptionNotes
+  })
+  editMapFields.description = 'product_description'
+
+  return {
+    type: 'form',
+    label: 'Corriger la fiche produit',
+    edit: {
+      stackKey: 'product_id',
+      getDataKey: 'product',
+      convertData: (key: string, v: any) => {
+        if (key in editMapFields) {
+          return {
+            value: v,
+            name: editMapFields[key]
+          }
+        }
+        return false
+      }
+    },
+    goto,
+    fields
+  }
+}
+
 export function createProductSpecifications (
   unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
@@ -200,15 +274,21 @@ export function showProduct (
   usePCat: boolean, useDEEE: boolean, usePBrand: boolean,
   _unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
-  okGoto: string | undefined
+  okGoto: string | undefined,
+  editGoto: string | undefined
 ): StateDefinition {
   const fields: ShowFields = []
 
   if (usePCat) {
     fields.push({
       type: 'varchar',
+      name: 'reference_pcat_label',
+      label: 'Catégorie de référence'
+    })
+    fields.push({
+      type: 'varchar',
       name: 'pcats',
-      label: 'Catégorie'
+      label: 'Toutes les catégories'
     })
   }
 
@@ -229,17 +309,36 @@ export function showProduct (
     type: 'varchar',
     name: 'label',
     label: 'Libellé'
-  },
-  {
-    type: 'text',
-    name: 'description',
-    label: 'Description de la fiche produit'
   })
+
+  if (editGoto) {
+    fields.push({
+      type: 'edit',
+      name: 'product',
+      label: 'Éditer',
+      pushToStack: [
+        {
+          fromDataKey: 'rowid',
+          pushOnStackKey: 'product_id',
+          silent: false,
+          invisible: true
+        },
+        {
+          // we have to push the current reference tag, that is needed for the form
+          fromDataKey: 'reference_pcat_id',
+          pushOnStackKey: 'reference_pcat_id',
+          silent: true,
+          invisible: true
+        }
+      ],
+      goto: editGoto
+    })
+  }
 
   if (useDEEE) {
     fields.push({
       type: 'varchar',
-      name: 'deee_type',
+      name: 'deee_type_txt',
       label: 'DEEE'
     })
   }
@@ -275,6 +374,12 @@ export function showProduct (
       label: 'Volume'
     })
   }
+
+  fields.push({
+    type: 'text',
+    name: 'description',
+    label: 'Description de la fiche produit'
+  })
 
   return {
     type: 'show',

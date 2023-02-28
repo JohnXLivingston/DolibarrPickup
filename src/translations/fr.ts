@@ -12,6 +12,7 @@ export const fr: {[key: string]: string} = {
   'Pick this one': 'Sélectionner cet élément',
   'Empty the selection': 'Vider la sélection',
   'Reload': 'Recharger',
+  'Edit': 'Éditer',
   'Create a new one': 'Créer nouveau',
   'Please confirm the data you want to save:': 'Merci de confirmer les données à enregistrer :',
   'Ok': 'Ok',

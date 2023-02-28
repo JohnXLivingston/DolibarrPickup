@@ -1,5 +1,6 @@
 <?php
 dol_include_once('/pickup/lib/data/mobile_action.class.php');
+dol_include_once('/pickup/class/mobilecat.class.php');
 
 class DataMobileActionProduct extends DataMobileAction {
   public function action_list() {
@@ -56,20 +57,57 @@ class DataMobileActionProduct extends DataMobileAction {
 		$cat = new Categorie($db);
     $cats = $cat->containing($id, Categorie::TYPE_PRODUCT, 'object');
     $cats_labels = [];
+    $mobile_cats = [];
+
 		if (!($cats <= 0)) {
       foreach ($cats as $cat) {
         $allways = $cat->get_all_ways();
+
+        // is this a mobile cat?
+        $is_mobile_cat = false;
+        $mobilecat = new PickupMobileCat($db);
+        if (
+          $mobilecat->fetchByCategory($cat->id) > 0
+          && !empty($mobilecat->id)
+          && $mobilecat->active
+        ) {
+          $is_mobile_cat = true;
+        }
+
         foreach ($allways as $way) {
           $cat_label = [];
           foreach ($way as $parent_cat) {
             $cat_label[] = $parent_cat->label;
           }
-          $cats_labels[] = implode(' >> ', $cat_label);
+          $cat_label = implode(' >> ', $cat_label);
+          $cats_labels[] = $cat_label;
+
+          if ($is_mobile_cat) {
+            $mobile_cats[] = [
+              'label' => $cat_label,
+              'cat' => $cat
+            ];
+          }
         }
       }
     }
     $cats_labels = array_unique($cats_labels, SORT_STRING);
     sort($cats_labels, SORT_STRING);
+
+    $reference_pcat = null; // The product categorie that should be considered as the reference one for mobile app
+    // To compute $reference_pcat, we will search the longest label in $mobile_cats.
+    // This is an approximation.
+    // In the standard case, we are searching the deepest nested category which is active for mobile.
+    // This is, in the standard case, equivalent to the longest label (as we implode $allways).
+    // This is not true if there are multiple mobile categories attached to the product...
+    // But this case is not supposed to happen... (it can... but...)
+    $reference_pcat_label = null;
+    foreach ($mobile_cats as $mobile_cat_info) {
+      if ($reference_pcat_label === null || strlen($reference_pcat_label) < strlen($mobile_cat_info['label'])) {
+        $reference_pcat_label = $mobile_cat_info['label'];
+        $reference_pcat = $mobile_cat_info['cat'];
+      }
+    }
 
     require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php'; // for measuringUnitString
     $langs->loadLangs(array("other"));
@@ -89,11 +127,18 @@ class DataMobileActionProduct extends DataMobileAction {
       'description' => dol_htmlentitiesbr($object->description),
       'label' => $object->label,
       'pcats' => join(', ', $cats_labels),
+      'reference_pcat_id' => $reference_pcat ? $reference_pcat->id : null,
+      'reference_pcat_label' => $reference_pcat_label,
       // FIXME: should be weight + weight_units (and so on...)... But it is simplier like that for now
       'weight_txt' => $weight,
       'length_txt' => $length,
       'surface_txt' => $surface,
-      'volume_txt' => $volume
+      'volume_txt' => $volume,
+      // Numeric values for weight, length, ... : only if the unit is the good one (required for edit mode)
+      'weight' => $object->weight_units == 0 ? $object->weight : null,
+      'length' => $object->length_units == 0 ? $object->length : null,
+      'surface' => $object->surface_units == 0 ? $object->surface : null,
+      'volume' => $object->volume_units == -3 ? $object->volume : null
     );
     if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $result['pbrand'] = $object->array_options['options_pickup_pbrand'];
@@ -102,7 +147,11 @@ class DataMobileActionProduct extends DataMobileAction {
       require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
       $extrafields = new ExtraFields($db);
       $extrafields->fetch_name_optionals_label('product');
-      $result['deee_type'] = $extrafields->showOutputField('pickup_deee_type', $object->array_options['options_pickup_deee_type'], '', $object->table_element);
+      $result['deee_type'] = $object->array_options['options_pickup_deee_type'];
+      $result['deee_type_txt'] = $extrafields->showOutputField('pickup_deee_type', $object->array_options['options_pickup_deee_type'], '', $object->table_element);
+    }
+    if (!empty($conf->productbatch->enabled)) {
+      $result['hasbatch'] = $product->status_batch;
     }
     return $result;
   }
