@@ -137,7 +137,6 @@ interface StateFormDefinition extends StateDefinitionBase {
 interface StateFormEditDefinition {
   stackKey: string
   getDataKey: string
-  convertData: (key: string, v: any) => JQuery.NameValuePair | false // | StackValue
 }
 ```
 
@@ -145,10 +144,20 @@ interface StateFormEditDefinition {
 
 `getDataKey` est le nom de la source de donnée à utiliser.
 
-`convertData` est une méthode qui va transformer les données de la source, pour
-les faire correspondre aux champs du formulaire.
-En effet, les noms des champs ne correspondent pas forcément, et pour certaines
-valeurs il faut potentiellement les transformer.
+Chaque champs du formulaire devra avoir une clé `edit` pour décrire comment
+charger la valeur courante à partir de la stack:
+
+```typescript
+interface FormFieldEditInfo {
+  getDataFromSourceKey: string
+  convertData?: (v: any) => string
+}
+```
+
+`getDataFromSourceKey` indique le nom du champs dans la source de donnée.
+
+`convertData` est une méthode qui va transformer les données de la source,
+ pour les faire correspondre aux champs du formulaire.
 
 ### StatePick
 

@@ -20,6 +20,14 @@ interface FormFieldNotesLoad {
  */
 type FormFieldNotes = FormFieldNotesStatic | FormFieldNotesLoad
 
+/**
+ * FormFieldEditInfo: when in edit mode, how to map stack with field
+ */
+interface FormFieldEditInfo {
+  getDataFromSourceKey: string // the key in the data source for this field
+  convertData?: (v: any) => string // if needed, we can transform the value in the stack
+}
+
 interface FormFieldBase {
   type: string
   name: string
@@ -28,6 +36,7 @@ interface FormFieldBase {
   default?: string
   maxLength?: number
   notes?: FormFieldNotes
+  edit?: FormFieldEditInfo
 }
 
 interface FormFieldVarchar extends FormFieldBase {
@@ -109,7 +118,6 @@ type FormField = FormFieldSelect | FormFieldVarchar | FormFieldText | FormFieldI
 interface StateFormEditDefinition {
   stackKey: string
   getDataKey: string
-  convertData: (key: string, v: any) => JQuery.NameValuePair | false // | StackValue
 }
 
 interface StateFormDefinition extends StateDefinitionBase {
@@ -195,16 +203,22 @@ class StateForm extends State {
         const sva1: StackValue[] = []
         if (!stack.isAnyValue() && data.status === 'resolved') {
           const dataArray: JQuery.NameValuePair[] = []
-          for (const key in data.data) {
-            let v = data.data[key]
-            v = this.edit.convertData(key, v)
-            if (v === false) {
-              continue
-            // } else if ('label' in v) {
-            //   sva1.push(v)
-            } else {
-              dataArray.push(v)
+          console.debug('Mapping fields edit value from stack...')
+          console.debug('  Data are:', data.data)
+          for (let i = 0; i < this.fields.length; i++) {
+            const field = this.fields[i]
+            if (!field.edit?.getDataFromSourceKey) { continue }
+            console.debug('  Field ' + field.name + ' must be mapped from:', field.edit.getDataFromSourceKey)
+            let v = data.data[field.edit.getDataFromSourceKey]
+            if (field.edit.convertData) {
+              console.debug('    and the value must be converted.')
+              v = field.edit.convertData(v)
             }
+            console.debug('  Field ' + field.name + ' retained value:', v)
+            dataArray.push({
+              name: field.name,
+              value: v
+            })
           }
           const sva2: StackValue[] = this.checkForm(dataArray)
           stack.setValues(sva1.concat(sva2))

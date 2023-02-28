@@ -59,6 +59,9 @@ function getDeeeFieldForce (value: string): FormField {
     map: {
       value: 'value',
       label: 'label'
+    },
+    edit: {
+      getDataFromSourceKey: 'deee_type'
     }
   }
 }
@@ -83,6 +86,9 @@ function getDeeeFieldMultiple (deeeForm: string): FormField {
     map: {
       value: 'value',
       label: 'label'
+    },
+    edit: {
+      getDataFromSourceKey: 'deee_type'
     }
   }
 }
@@ -166,7 +172,6 @@ export function editProduct (
   deeeForm: string
 ): StateDefinition {
   const fields: FormField[] = []
-  const editMapFields: {[key: string]: string} = {}
 
   // FIXME
   // if (askHasBatch) {
@@ -174,23 +179,18 @@ export function editProduct (
   //     type: 'boolean',
   //     name: 'product_hasbatch',
   //     label: 'Utiliser les numéros de lots/série',
-  //     mandatory: false
+  //     mandatory: false,
+  //     edit: ...
   //   })
-  //   editMapFields.hasbatch = 'product_hasbatch'
   // }
 
   if (useDEEE) {
     const deeeField: FormField = getDeeeField(deeeForm)
     fields.push(deeeField)
-    editMapFields.deee_type = 'product_deee_type'
   }
 
   if (unitsEditMode === 'product') {
-    pushUnitFields(fields, 'product_', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
-    if (useUnitWeight) { editMapFields.weight = 'product_weight' }
-    if (useUnitLength) { editMapFields.length = 'product_length' }
-    if (useUnitSurface) { editMapFields.surface = 'product_surface' }
-    if (useUnitVolume) { editMapFields.volume = 'product_volume' }
+    pushUnitFields(fields, 'product_', '', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
   }
 
   let descriptionNotes
@@ -207,25 +207,18 @@ export function editProduct (
     name: 'product_description',
     label: 'Description de la fiche produit',
     mandatory: false,
-    notes: descriptionNotes
+    notes: descriptionNotes,
+    edit: {
+      getDataFromSourceKey: 'description'
+    }
   })
-  editMapFields.description = 'product_description'
 
   return {
     type: 'form',
     label: 'Corriger la fiche produit',
     edit: {
       stackKey: 'product_id',
-      getDataKey: 'product',
-      convertData: (key: string, v: any) => {
-        if (key in editMapFields) {
-          return {
-            value: v,
-            name: editMapFields[key]
-          }
-        }
-        return false
-      }
+      getDataKey: 'product'
     },
     goto,
     fields
@@ -245,7 +238,7 @@ export function createProductSpecifications (
   }
 
   if (unitsEditMode === 'product') {
-    pushUnitFields(r.fields, '', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
+    pushUnitFields(r.fields, '', '', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
   }
 
   if (r.fields.length === 0) {

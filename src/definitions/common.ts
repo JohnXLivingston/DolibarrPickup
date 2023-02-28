@@ -1,7 +1,7 @@
 import { FormField } from '../lib/state/form'
 import { UseUnit } from '../lib/utils/units'
 
-function pushUnitFields (fields: FormField[], fieldNamePrefix: string, useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit): void {
+function pushUnitFields (fields: FormField[], fieldNamePrefix: string, fieldEditNamePrefix: string, useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit): void {
   if (useUnitWeight !== '0') {
     fields.push({
       type: 'float',
@@ -10,7 +10,10 @@ function pushUnitFields (fields: FormField[], fieldNamePrefix: string, useUnitWe
       mandatory: useUnitWeight === 'mandatory',
       min: 0,
       max: 1000,
-      step: 0.1
+      step: 0.1,
+      edit: {
+        getDataFromSourceKey: fieldEditNamePrefix + 'weight'
+      }
     })
   }
   if (useUnitLength !== '0') {
@@ -21,7 +24,10 @@ function pushUnitFields (fields: FormField[], fieldNamePrefix: string, useUnitWe
       mandatory: useUnitLength === 'mandatory',
       min: 0,
       max: 1000,
-      step: 0.01
+      step: 0.01,
+      edit: {
+        getDataFromSourceKey: fieldEditNamePrefix + 'length'
+      }
     })
   }
   if (useUnitSurface !== '0') {
@@ -32,7 +38,10 @@ function pushUnitFields (fields: FormField[], fieldNamePrefix: string, useUnitWe
       mandatory: useUnitSurface === 'mandatory',
       min: 0,
       max: 1000,
-      step: 0.0001
+      step: 0.0001,
+      edit: {
+        getDataFromSourceKey: fieldEditNamePrefix + 'surface'
+      }
     })
   }
   if (useUnitVolume !== '0') {
@@ -43,7 +52,10 @@ function pushUnitFields (fields: FormField[], fieldNamePrefix: string, useUnitWe
       mandatory: useUnitVolume === 'mandatory',
       min: 0,
       max: 100000,
-      step: 0.01
+      step: 0.01,
+      edit: {
+        getDataFromSourceKey: fieldEditNamePrefix + 'volume'
+      }
     })
   }
 }

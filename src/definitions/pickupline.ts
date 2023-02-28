@@ -17,12 +17,15 @@ export function createPickupLine (
       mandatory: true,
       default: '1',
       min: 0,
-      max: 1000
+      max: 1000,
+      edit: {
+        getDataFromSourceKey: 'qty'
+      }
     }
   ]
 
   if (unitsEditMode === 'pickupline') {
-    pushUnitFields(fields, 'line_', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
+    pushUnitFields(fields, 'line_', 'line_', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
   }
 
   if (usePickuplineDescription) {
@@ -30,7 +33,10 @@ export function createPickupLine (
       type: 'text',
       name: 'line_description',
       label: 'Remarques',
-      mandatory: false
+      mandatory: false,
+      edit: {
+        getDataFromSourceKey: 'line_description'
+      }
     })
   }
 
@@ -44,58 +50,7 @@ export function createPickupLine (
   if (editMode) {
     result.edit = {
       stackKey: 'pickup_line_id',
-      getDataKey: 'pickupline',
-      convertData: (key: string, v: any) => {
-        // if (key === 'name') {
-        //   const r: StackValue = {
-        //     label: 'Produit',
-        //     name: 'dummy_product_name',
-        //     value: v,
-        //     silent: true,
-        //     invisible: false
-        //   }
-        //   return r
-        // }
-        if (usePickuplineDescription && key === 'line_description') {
-          return {
-            value: v,
-            name: key
-          }
-        }
-        if (unitsEditMode === 'pickupline') {
-          if (useUnitWeight && key === 'line_weight' && v !== null) {
-            return {
-              value: v,
-              name: key
-            }
-          }
-          if (useUnitLength && key === 'line_length' && v !== null) {
-            return {
-              value: v,
-              name: key
-            }
-          }
-          if (useUnitSurface && key === 'line_surface' && v !== null) {
-            return {
-              value: v,
-              name: key
-            }
-          }
-          if (useUnitVolume && key === 'line_volume' && v !== null) {
-            return {
-              value: v,
-              name: key
-            }
-          }
-        }
-        if (key === 'qty') {
-          return {
-            value: v,
-            name: key
-          }
-        }
-        return false
-      }
+      getDataKey: 'pickupline'
     }
   }
 
