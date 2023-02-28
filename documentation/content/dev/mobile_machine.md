@@ -122,6 +122,34 @@ interface {
 }
 ```
 
+#### Mode edition
+
+Un formulaire peut être en mode «édition» pour modifier des données existantes.
+La définition sera alors du type suivant :
+
+```typescript
+interface StateFormDefinition extends StateDefinitionBase {
+  type: 'form'
+  goto: string
+  edit?: StateFormEditDefinition
+  fields: FormField[]
+}
+interface StateFormEditDefinition {
+  stackKey: string
+  getDataKey: string
+  convertData: (key: string, v: any) => JQuery.NameValuePair | false // | StackValue
+}
+```
+
+`stackKey` est le nom de la clé primaire se trouvant dans la stack.
+
+`getDataKey` est le nom de la source de donnée à utiliser.
+
+`convertData` est une méthode qui va transformer les données de la source, pour
+les faire correspondre aux champs du formulaire.
+En effet, les noms des champs ne correspondent pas forcément, et pour certaines
+valeurs il faut potentiellement les transformer.
+
 ### StatePick
 
 La classe [StatePick](/src/lib/state/pick.ts) proposera de sélectionner une valeur dans une ou plusieurs liste(s) (en utilisant des widgets de type «autocomplete»).
