@@ -215,21 +215,23 @@ class DataMobileActionProduct extends DataMobileAction {
     if ($save_common_attributes) {
       $product->description = htmlentities(trim(GETPOST('product_description')));
 
-      if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
-        $product->weight = GETPOST('weight', 'int'); // yes... for dolibarr floats are 'int'
-        $product->weight_units = 0;
-      }
-      if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
-        $product->length = GETPOST('length', 'int'); // yes... for dolibarr floats are 'int'
-        $product->length_units = 0;
-      }
-      if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
-        $product->surface = GETPOST('surface', 'int'); // yes... for dolibarr floats are 'int'
-        $product->surface_units = 0;
-      }
-      if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
-        $product->volume = GETPOST('volume', 'int'); // yes... for dolibarr floats are 'int'
-        $product->volume_units = -3; // L
+      if ($conf->global->PICKUP_UNITS_EDIT_MODE !== 'pickupline') {
+        if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+          $product->weight = GETPOST('weight', 'int'); // yes... for dolibarr floats are 'int'
+          $product->weight_units = 0;
+        }
+        if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+          $product->length = GETPOST('length', 'int'); // yes... for dolibarr floats are 'int'
+          $product->length_units = 0;
+        }
+        if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+          $product->surface = GETPOST('surface', 'int'); // yes... for dolibarr floats are 'int'
+          $product->surface_units = 0;
+        }
+        if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+          $product->volume = GETPOST('volume', 'int'); // yes... for dolibarr floats are 'int'
+          $product->volume_units = -3; // L
+        }
       }
 
       if (!empty($conf->global->PICKUP_USE_DEEE)) {
@@ -290,21 +292,23 @@ class DataMobileActionProduct extends DataMobileAction {
             $line->deee_type = $product->array_options['options_pickup_deee_type'];
           }
 
-          if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
-            $line->weight = $product->weight;
-            $line->weight_units = $product->weight_units;
-          }
-          if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
-            $line->length = $product->length;
-            $line->length_units = $product->length_units;
-          }
-          if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
-            $line->surface = $product->surface;
-            $line->surface_units = $product->surface_units;
-          }
-          if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
-            $line->volume = $product->volume;
-            $line->volume_units = $product->volume_units;
+          if ($conf->global->PICKUP_UNITS_EDIT_MODE !== 'pickupline') {
+            if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
+              $line->weight = $product->weight;
+              $line->weight_units = $product->weight_units;
+            }
+            if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
+              $line->length = $product->length;
+              $line->length_units = $product->length_units;
+            }
+            if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
+              $line->surface = $product->surface;
+              $line->surface_units = $product->surface_units;
+            }
+            if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
+              $line->volume = $product->volume;
+              $line->volume_units = $product->volume_units;
+            }
           }
 
           if ($line->update($user) <= 0) {
