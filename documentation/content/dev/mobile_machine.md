@@ -109,7 +109,7 @@ Plusieurs formes possibles :
 }
 ```
 
-On peut aussi se baser sur des choix précédemment fait (et donc dans la stack) pour peronnaliser les notes à partir d'une liste remontée du backend.
+On peut aussi se baser sur des choix précédemment fait (et donc dans la stack) pour personnaliser les notes à partir d'une liste remontée du backend.
 
 Par exemple, le backend a une liste de tags, pour chaque tag une note optionnelle à afficher. On va donc charger une liste de tags depuis le backend, chercher le tag qui est actuellement appliqué au produit, et afficher la note correspondante.
 
