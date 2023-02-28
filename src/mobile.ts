@@ -102,7 +102,7 @@ $(function () {
   definition.save_edit_product = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
 
   definition.edit_product_cat = definitions.pickPCat('save_edit_product_cat')
-  definition.save_edit_product_cat = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
+  definition.save_edit_product_cat = definitions.saveEditProduct('show_product_from_pickup', 'init', 'show_product_from_pickup', true)
 
   definition.qty = definitions.createPickupLine(false, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')
   definition.qty_edit = definitions.createPickupLine(true, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')
