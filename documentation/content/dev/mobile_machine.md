@@ -186,14 +186,9 @@ interface PickField {
 
 Nom du champs dans la source de donnée qui contient la valeur à stocker dans la stack (la clé primaire).
 
-#### goto et itemGotoField(optionnel)
+#### goto
 
 L'état où aller après avoir sélectionné une valeur.
-
-Chaque item peut surcharger cette valeur.
-Si itemGotoField est fourni, on cherchera un champs de ce nom dans l'item sélectionnée. Si la source a fourni une valeur, ce sera le nom du state vers lequel aller pour cette valeur spécifique.
-
-Ainsi, le backend peut piloter le comportement de l'automate. Par exemple, afficher un formulaire différent en fonction de la catégorie de produit.
 
 #### creationGoto / creationLabel (optionnel)
 

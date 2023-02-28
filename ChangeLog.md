@@ -15,6 +15,7 @@
 * Compatibilité Dolibarr 16: remplacement des boutons d'action par des appels à dolGetButtonAction avec des tokens anti-CSRF.
 * Appli mobile: meilleure interface quand on revient en arrière sur une page de type «pick».
 * Appli mobile: simplification du mode édition.
+* Appli mobile: suppression du mécanisme «itemGotoField», remplacé par un mécanisme plus robuste.
 
 ## 1.4.0
 

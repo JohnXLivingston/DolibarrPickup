@@ -1,4 +1,4 @@
-import type { StateDefinition, FormField, FormFieldSelectLoadFilter, PickFields, ShowFields } from '../lib/state/index'
+import type { StateDefinition, FormField, PickFields, ShowFields } from '../lib/state/index'
 import type { UnitsEditMode, UseUnit } from '../lib/utils/units'
 import { pushUnitFields } from './common'
 
@@ -20,69 +20,24 @@ export function pickProduct (usePBrand: boolean, goto: string, creationGoto: str
   }
 }
 
-function getDeeeField (deeeForm: string): FormField {
-  switch (deeeForm) {
-    case 'create_product_deee_off':
-      return getDeeeFieldForce('')
-    case 'create_product_deee_gef':
-      return getDeeeFieldForce('gef')
-    case 'create_product_deee_ghf':
-      return getDeeeFieldForce('ghf')
-    case 'create_product_deee_pam':
-      return getDeeeFieldForce('pam')
-    case 'create_product_deee_pampro':
-      return getDeeeFieldForce('pam_pro')
-    case 'create_product_deee_ecr':
-      return getDeeeFieldForce('ecr')
-    case 'create_product_deee_ecrpro':
-      return getDeeeFieldForce('ecr_pro')
-    case 'create_product_deee_pam_or_pampro':
-    case 'create_product_deee_ecr_or_ecrpro':
-    default:
-      return getDeeeFieldMultiple(deeeForm)
-  }
-}
-function getDeeeFieldForce (value: string): FormField {
+function getDeeeField (pcatStackKey: string): FormField {
   return {
     type: 'select',
     name: 'product_deee_type',
     label: 'DEEE',
-    readonly: true,
-    mandatory: false,
-    default: value,
-    options: [],
-    load: 'dict',
-    loadParams: {
-      what: 'deee_type'
-    },
-    loadFilter: (option) => option.value === value,
-    map: {
-      value: 'value',
-      label: 'label'
-    },
-    edit: {
-      getDataFromSourceKey: 'deee_type'
-    }
-  }
-}
-function getDeeeFieldMultiple (deeeForm: string): FormField {
-  let loadFilter: FormFieldSelectLoadFilter | undefined
-  if (deeeForm === 'create_product_deee_pam_or_pampro') {
-    loadFilter = (option) => { return option.value === 'pam' || option.value === 'pam_pro' }
-  } else if (deeeForm === 'create_product_deee_ecr_or_ecrpro') {
-    loadFilter = (option) => { return option.value === 'ecr' || option.value === 'ecr_pro' }
-  }
-  return {
-    type: 'select',
-    name: 'product_deee_type',
-    label: 'DEEE',
+    // readonly: true, FIXME: should be true if only 1 possible value
+    // default: value, FIXME: should be set if only 1 possible value
     mandatory: false,
     options: [],
     load: 'dict',
     loadParams: {
-      what: 'deee_type'
+      what: 'deee_type',
+      pcat: {
+        key: pcatStackKey,
+        type: 'stack'
+      }
     },
-    loadFilter,
+    dontAddEmptyOption: true,
     map: {
       value: 'value',
       label: 'label'
@@ -93,7 +48,7 @@ function getDeeeFieldMultiple (deeeForm: string): FormField {
   }
 }
 
-export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: boolean, askHasBatch: boolean, goto: string, deeeForm: string): StateDefinition {
+export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: boolean, askHasBatch: boolean, goto: string, pcatStackName: string): StateDefinition {
   const fields: FormField[] = []
 
   if (usePBrand) {
@@ -135,7 +90,7 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bo
   }
 
   if (useDEEE) {
-    const deeeField: FormField = getDeeeField(deeeForm)
+    const deeeField: FormField = getDeeeField(pcatStackName)
     fields.push(deeeField)
   }
 
@@ -169,7 +124,7 @@ export function editProduct (
   unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   goto: string,
-  deeeForm: string
+  pcatStackName: string
 ): StateDefinition {
   const fields: FormField[] = []
 
@@ -185,7 +140,7 @@ export function editProduct (
   // }
 
   if (useDEEE) {
-    const deeeField: FormField = getDeeeField(deeeForm)
+    const deeeField: FormField = getDeeeField(pcatStackName)
     fields.push(deeeField)
   }
 

@@ -37,8 +37,7 @@ interface StatePickDefinition extends StateDefinitionBase {
   key: string
   fields: PickFields
   primaryKey: string
-  goto: string // default goto. Can be overriden by an item, if itemGotoField is defined
-  itemGotoField?: string
+  goto: string
   creationGoto?: string
   creationLabel?: string
 }
@@ -47,7 +46,6 @@ class StatePick extends State {
   private readonly key: string
   private readonly fields: PickFields
   private readonly goto: string
-  readonly itemGotoField?: string
   private readonly creationGoto?: string
   private readonly creationLabel?: string
   readonly primaryKey: string
@@ -58,7 +56,6 @@ class StatePick extends State {
     this.fields = definition.fields
     this.primaryKey = definition.primaryKey
     this.goto = definition.goto
-    this.itemGotoField = definition.itemGotoField
     this.creationGoto = definition.creationGoto
     this.creationLabel = definition.creationLabel
   }
@@ -100,16 +97,9 @@ class StatePick extends State {
       invisible: true // this value is not shown in interface
     }
     stack.changeOrAppendValues(sv) // dont loose silent values... they still be needed for display.
-    let goto = this.goto
-    if (this.itemGotoField) {
-      // FIXME: should be in common with the standard pick-pick event.
-      if (vars.formInfos.pickedItems[0][this.itemGotoField]) {
-        goto = vars.formInfos.pickedItems[0][this.itemGotoField]
-      }
-    }
     return {
       type: 'forward',
-      goto: goto
+      goto: this.goto
     }
   }
 
@@ -149,14 +139,7 @@ class StatePick extends State {
         invisible: true // this value is not shown in interface
       }
       stack.changeOrAppendValues(sv) // dont loose silent values... they still be needed for display.
-      let goto = this.goto
-      if (this.itemGotoField) {
-        const attrGoto = a.attr('pickupmobile-pick-pick-goto')
-        if (attrGoto) {
-          goto = attrGoto
-        }
-      }
-      dom.trigger('goto-state', [goto])
+      dom.trigger('goto-state', [this.goto])
     })
 
     dom.on('click.stateEvents', '[pickupmobile-pick-create]', () => {
@@ -249,20 +232,6 @@ class StatePick extends State {
     const r = []
     if (this.goto) r.push(this.goto)
     if (this.creationGoto) r.push(this.creationGoto)
-    if (this.itemGotoField) {
-      const d = getData(this.key, 'list')
-      const p = Promise.all([d.promise])
-      const data = (await p)[0]
-      for (let i = 0; i < data.length; i++) {
-        const item = data[i]
-        const goto = item[this.itemGotoField]
-        if (goto) {
-          if (!r.find(s => s === goto)) {
-            r.push(goto)
-          }
-        }
-      }
-    }
     return r
   }
 }

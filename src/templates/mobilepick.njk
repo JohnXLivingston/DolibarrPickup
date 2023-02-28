@@ -28,9 +28,6 @@
         {% for item in pickedItems %}
           <a class="btn btn-primary"
             pickupmobile-pick-pick="{{ item[currentState.primaryKey] }}"
-            {% if currentState.itemGotoField and item[currentState.itemGotoField] %}
-              pickupmobile-pick-pick-goto="{{ item[currentState.itemGotoField] }}"
-            {% endif %}
           >
             {{ translate('Pick this one') }}
           </a>
@@ -43,9 +40,6 @@
             {{ item[currentState.primaryKey] }}.
             <a class="btn btn-primary"
               pickupmobile-pick-pick="{{ item[currentState.primaryKey] }}"
-              {% if currentState.itemGotoField and item[currentState.itemGotoField] %}
-                pickupmobile-pick-pick-goto="{{ item[currentState.itemGotoField] }}"
-              {% endif %}
             >
               {{ translate('Pick this one') }}
             </a>

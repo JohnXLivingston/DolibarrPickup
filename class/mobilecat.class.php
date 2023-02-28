@@ -200,6 +200,8 @@ class PickupMobileCat extends CommonObject
 			$mobileforms[''] = 'Formulaire par défaut';
 
 			if (!empty($conf->global->PICKUP_USE_DEEE)) {
+				// FIXME: following values (create_product_*) format comes from the old «itemGotoField» system.
+				// 	We should replace this when we will replace the 'form' field.
 				$mobileforms['create_product_deee_off'] = 'Non DEEE';
 				$mobileforms['create_product_deee_gef'] = 'GEF';
 				$mobileforms['create_product_deee_ghf'] = 'GHF';

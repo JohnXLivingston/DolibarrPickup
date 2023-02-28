@@ -85,23 +85,12 @@ $(function () {
   if (usePCat) {
     saveUntilForProduct = 'categorie'
     definition.product = definitions.pickProduct(usePBrand, 'show_product', 'categorie')
-    definition.categorie = definitions.pickPCat('create_product', 'form') // Note: itemGotoField can override the goto
-    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', '')
+    definition.categorie = definitions.pickPCat('create_product')
+    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'pcat')
   } else {
     saveUntilForProduct = 'create_product'
     definition.product = definitions.pickProduct(usePBrand, 'show_product', 'create_product')
-    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', '')
-  }
-  if (useDEEE) {
-    definition.create_product_deee_off = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'create_product_deee_off')
-    definition.create_product_deee_gef = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'create_product_deee_gef')
-    definition.create_product_deee_ghf = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'create_product_deee_ghf')
-    definition.create_product_deee_pam = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'create_product_deee_pam')
-    definition.create_product_deee_pampro = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'create_product_deee_pampro')
-    definition.create_product_deee_ecr = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'create_product_deee_ecr')
-    definition.create_product_deee_ecrpro = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'create_product_deee_ecrpro')
-    definition.create_product_deee_pam_or_pampro = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'create_product_deee_pam_or_pampro')
-    definition.create_product_deee_ecr_or_ecrpro = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'create_product_deee_ecr_or_ecrpro')
+    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'pcat')
   }
   definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_product')
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)
@@ -109,11 +98,10 @@ $(function () {
 
   definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, undefined, 'edit_product', 'edit_product_cat')
   // FIXME: following line does not constrains DEEE types.
-  definition.edit_product = definitions.editProduct(usePCat, useDEEE, usePBrand, askHasBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_edit_product', '')
+  definition.edit_product = definitions.editProduct(usePCat, useDEEE, usePBrand, askHasBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_edit_product', 'reference_pcat_id')
   definition.save_edit_product = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
 
-  // FIXME: itemGotoField from pickPCat can override goto....
-  definition.edit_product_cat = definitions.pickPCat('save_edit_product_cat', undefined)
+  definition.edit_product_cat = definitions.pickPCat('save_edit_product_cat')
   definition.save_edit_product_cat = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
 
   definition.qty = definitions.createPickupLine(false, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')

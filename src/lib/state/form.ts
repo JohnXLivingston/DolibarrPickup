@@ -74,6 +74,7 @@ interface FormFieldSelectDynamic extends FormFieldBase {
   load: string
   loadParams?: FormFieldSelectDynamicLoadParams
   loadFilter?: FormFieldSelectLoadFilter // a function to filter values
+  dontAddEmptyOption?: boolean
   map: {value: string, label: string}
 }
 type FormFieldSelect = FormFieldSelectSimple | FormFieldSelectDynamic
@@ -284,8 +285,10 @@ class StateForm extends State {
             return { value: d[field.map.value], label: d[field.map.label] }
           })
           // Adding empty value if not present in data source.
-          if (!field.options.find(option => option.value === '' || option.value === '0')) {
-            field.options.unshift({ value: '', label: '-' })
+          if (!field.dontAddEmptyOption) {
+            if (!field.options.find(option => option.value === '' || option.value === '0')) {
+              field.options.unshift({ value: '', label: '-' })
+            }
           }
           if (field.loadFilter) {
             field.options = field.options.filter(field.loadFilter)

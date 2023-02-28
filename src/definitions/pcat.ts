@@ -1,6 +1,6 @@
 import { StateDefinition } from '../lib/state/index'
 
-export function pickPCat (goto: string, itemGotoField: string | undefined): StateDefinition {
+export function pickPCat (goto: string): StateDefinition {
   return {
     type: 'pick',
     label: 'Catégorie du produit',
@@ -8,7 +8,6 @@ export function pickPCat (goto: string, itemGotoField: string | undefined): Stat
     primaryKey: 'rowid',
     goto,
     creationGoto: undefined,
-    itemGotoField,
     fields: [
       { name: 'label', label: 'Catégorie' }
     ]
