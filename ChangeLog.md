@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## ??? (Not Released Yet)
+## 1.5.0
 
 ### Nouvelles fonctionnalités
 
