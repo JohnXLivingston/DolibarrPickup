@@ -1,5 +1,18 @@
 # DolibarrPickup
 
+## 2.0.0 (Not Released Yet)
+
+**Important** : Cette version rend le champs «marque» déprécié. Si vous l'utilisez
+et souhaitez continuer à le faire, merci de contacter l'auteur du plugin.
+
+Si vous l'utilisiez, vous pouvez aller le désactiver dans les paramètres du module.
+Un bouton pour migrer les données vous sera proposé. Ce bouton ajoutera la marque
+en préfixe des références produits (si elle n'est pas déjà en préfixe).
+
+### Changements non rétro-compatibles
+
+* Champs «marque» déprécié.
+
 ## 1.5.0
 
 ### Nouvelles fonctionnalités

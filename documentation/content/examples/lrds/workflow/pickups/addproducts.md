@@ -52,6 +52,10 @@ On retrouve le champs «marque», qui est un champs ajouté par le module de col
 (l'ajout de ce champs est optionnel, et se configure via les options du module).
 Ce champs propose une autocomplétion, basée sur les marques déjà connues.
 
+{{% notice warning %}}
+Le champs «marque produit» est déprécié. Il va bientôt être tiré du module. Si vous l'utilisez encore, merci de contacter l'auteur du module.
+{{% /notice %}}
+
 On peut noter dans la capture d'écran ci-dessus que le champs «DEEE» a été
 forcé à «PAM Pro». Ceci car nous avons choisi une catégorie «Backline >> Amplis»
 qui force ce type.

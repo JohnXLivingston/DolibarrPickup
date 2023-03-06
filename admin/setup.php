@@ -53,6 +53,7 @@ if (! $user->admin) accessforbidden();
 // Parameters
 $action = GETPOST('action', 'alpha');
 $backtopage = GETPOST('backtopage', 'alpha');
+$confirm    = GETPOST('confirm', 'alpha');
 
 if (GETPOSTISSET('fk_entrepot')) {
 	// This is a hack for the PICKUP_DEFAULT_STOCK field
@@ -143,10 +144,10 @@ $arrayofparameters=array(
 	'PICKUP_ALLOW_FUTURE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_PCAT' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_DEEE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_deee', 'pickup_deee_type')),
-	'PICKUP_USE_PBRAND' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand')),
 	'PICKUP_USE_PICKUPLINE_DESCRIPTION' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_NO_SIGN_STATUS' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_SEND_MAIL' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
+	'PICKUP_USE_PBRAND' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand')),
 
 	'PICKUP_UNITS_WEIGHT' => array(
 		'table' => 'units',
@@ -273,6 +274,20 @@ function count_extra_fields_to_migrate($extrafield_name) {
 	return $row->nb;
 }
 
+function can_migrate_pbrand_to_Ref() {
+	global $db, $extrafields;
+	if (!array_key_exists('product', $extrafields->attributes)) {
+		return false;
+	}
+	if (!array_key_exists('type', $extrafields->attributes['product'])) {
+		return false;
+	}
+	if (!array_key_exists('pickup_pbrand', $extrafields->attributes['product']['type'])) {
+		return false;
+	}
+	return true;
+}
+
 function migrate_extra_fields_to_migrate($extrafield_name) {
 	global $db, $extrafields, $pickup_extrafields;
 
@@ -320,6 +335,47 @@ function migrate_extra_fields_to_migrate($extrafield_name) {
 				dol_syslog('pickup module: Failed to migrate extrafield: '.$db->lasterror(), LOG_ERR);
 				return -1;
 			}
+		}
+	}
+	return 1;
+}
+
+function migrate_pbrand_to_ref() {
+	global $db, $extrafields, $user;
+	$sql = 'SELECT fk_object, pickup_pbrand FROM '.MAIN_DB_PREFIX.'product_extrafields ';
+	$sql.=' WHERE ';
+	$sql.= ' (pickup_pbrand != "" AND pickup_pbrand IS NOT NULL) ';
+	$resql = $db->query($sql);
+	if (!$resql) {
+		dol_syslog('pickup module: Failed to get product_extrafields having pbrand attributes: '.$db->lasterror(), LOG_ERR);
+		return -1;
+	}
+	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+	while ($row = $db->fetch_object($resql)) {
+		$pbrand = $row->pickup_pbrand;
+		$pbrand = mb_strtoupper($pbrand);
+		$pbrand = preg_replace('/^\s+/', '_', $pbrand);
+		if (substr($pbrand, -1) !== '_') {
+			$pbrand = $pbrand.'_';
+		}
+		dol_syslog('migrate_pbrand_to_ref: object: '.$row->fk_object.', pbrand: '.$row->pickup_pbrand.' prefix: '.$pbrand, LOG_DEBUG);
+		$product = new Product($db);
+		if ($product->fetch($row->fk_object) <= 0) {
+			dol_syslog('migrate_pbrand_to_ref: cant fetch object: '.$row->fk_object, LOG_ERR);
+			continue;
+		}
+		if (substr(mb_strtoupper($product->ref), 0, strlen($pbrand)) === $pbrand) {
+			dol_syslog('migrate_pbrand_to_ref: object: '.$row->fk_object.' already begins with pbrand.', LOG_DEBUG);
+			continue;
+		}
+		$new_ref = $pbrand.$product->ref;
+		dol_syslog('migrate_pbrand_to_ref: object: '.$row->fk_object.' changing ref to: '.$new_ref, LOG_INFO);
+		$product->ref = $new_ref;
+		$result = $product->update($product->id, $user);
+		if ($result <= 0) {
+			dol_syslog('migrate_pbrand_to_ref: Failed updating object '.$row->fk_object, LOG_ERR);
+			if (!empty($product->error)) dol_syslog($method.' '.$product->error, LOG_ERR);
+    	if (!empty($product->errors)) dol_syslog($method.' '.join(',', $product->errors), LOG_ERR);
 		}
 	}
 	return 1;
@@ -479,6 +535,9 @@ if ($action === 'migrateExtraFields' && $pickup_extrafields) {
 		}
 	}
 }
+if ($action === 'confirmMigratePBrandToRef' && can_migrate_pbrand_to_Ref()) {
+	migrate_pbrand_to_ref();
+}
 
 /*
  * View
@@ -498,6 +557,11 @@ dol_fiche_head($head, 'settings', '', -1, "pickup@pickup");
 
 // Setup page goes here
 echo '<span class="opacitymedium">'.$langs->trans("PickupSetupPage").'</span><br><br>';
+
+if ($action === 'migratePBrandToRef' && can_migrate_pbrand_to_Ref()) {
+	$form=new Form($db);
+	print $form->formconfirm($_SERVER["PHP_SELF"], $langs->trans('PICKUP_MIGRATE_PBRAND_TO_REF'), $langs->trans('Confirm'), 'confirmMigratePBrandToRef', '', 0, 1);
+}
 
 if ($action == 'edit')
 {
@@ -631,6 +695,18 @@ else
 									print '</form>';
 								}
 							}
+						}
+					}
+
+					// PBrand is deprecated. Special case to migrate this info back to the Product Ref field.
+					if ($key === 'PICKUP_USE_PBRAND' && !$conf->global->$key) {
+						if (can_migrate_pbrand_to_Ref()) {
+							print ' <form style="display:inline" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
+							print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+							print '<input type="hidden" name="action" value="migratePBrandToRef">';
+							print '<input type="submit" name="" value="'.dol_escape_htmltag($langs->trans("PICKUP_MIGRATE_PBRAND_TO_REF")).'">';
+							print img_help(1, $langs->trans('PICKUP_MIGRATE_PBRAND_TO_REF_Tooltip'));
+							print '</form>';
 						}
 					}
 

@@ -28,3 +28,7 @@ Sur certains écrans, et en fonction du paramétrage du module sur votre install
 (nouvelles collectes, nouvelle fiche produit, ...).
 Dans ce cas, il y aura un bouton de création dans la barre d'action, en bas à gauche de votre écran.
 {{% /notice %}}
+
+{{% notice warning %}}
+Le champs «marque produit» est déprécié. Il va bientôt être tiré du module. Si vous l'utilisez encore, merci de contacter l'auteur du module.
+{{% /notice %}}
