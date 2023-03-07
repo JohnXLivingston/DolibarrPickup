@@ -2,7 +2,7 @@
 /* Copyright (C) 2004-2018  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2018-2019  Nicolas ZABOURI         <info@inovea-conseil.com>
  * Copyright (C) 2019       Frédéric France         <frederic.france@netlogic.fr>
- * Copyright (C) 2021-2022		John Livingston		<license@john-livingston.fr>
+ * Copyright (C) 2021-2023		John Livingston		<license@john-livingston.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -89,7 +89,7 @@ class modPickup extends DolibarrModules
             // Set this to 1 if module overwrite template dir (core/tpl)
             'tpl' => 0,
             // Set this to 1 if module has its own barcode directory (core/modules/barcode)
-            'barcode' => 0,
+            'barcode' => 1,
             // Set this to 1 if module has its own models directory (core/modules/xxx)
             'models' => 1,
             // Set this to 1 if module has its own theme directory (theme)

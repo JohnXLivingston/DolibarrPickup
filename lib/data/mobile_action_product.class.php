@@ -1,6 +1,7 @@
 <?php
 dol_include_once('/pickup/lib/data/mobile_action.class.php');
 dol_include_once('/pickup/class/mobilecat.class.php');
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
 
 class DataMobileActionProduct extends DataMobileAction {
   public function action_list() {
@@ -264,6 +265,10 @@ class DataMobileActionProduct extends DataMobileAction {
 
     if ($save_product) {
       if ($is_creation) {
+        // If the Barcode module is enabled, and default bar code type and ModeleNumRefBarCode class are defined,
+        // we also will generate the barcode.
+        $this->createDefaultBarCode($product);
+
         $product_id = $product->create($user);
         if (!$product_id || $product_id <= 0) {
           $this->_log_object_errors(__METHOD__, $product);
@@ -331,5 +336,52 @@ class DataMobileActionProduct extends DataMobileAction {
       $result['pbrand'] = $product->array_options['options_pickup_pbrand'];
     }
     return $result;
+  }
+
+  protected function createDefaultBarCode($product) {
+    global $conf;
+
+    if (empty($conf->barcode->enabled)) {
+      dol_syslog(__CLASS__.'::'.__METHOD__.': barcode module is not enabled', LOG_DEBUG);
+      return;
+    }
+    if (empty($conf->global->BARCODE_PRODUCT_ADDON_NUM)) {
+      dol_syslog(__CLASS__.'::'.__METHOD__.': no default barcode num class', LOG_DEBUG);
+      return;
+    }
+    if (empty($conf->global->PRODUIT_DEFAULT_BARCODE_TYPE)) {
+      dol_syslog(__CLASS__.'::'.__METHOD__.': no default barcode type', LOG_DEBUG);
+      return;
+    }
+
+    $fk_barcode_type = getDolGlobalInt("PRODUIT_DEFAULT_BARCODE_TYPE");
+    if (empty($fk_barcode_type)) {
+      dol_syslog(__CLASS__.'::'.__METHOD__.': no default barcode type (after getDolGlobalInt call)', LOG_DEBUG);
+      return;
+    }
+
+    $module = strtolower($conf->global->BARCODE_PRODUCT_ADDON_NUM);
+    $dirbarcode = array_merge(array('/core/modules/barcode/'), $conf->modules_parts['barcode']);
+    $res = 0;
+    foreach ($dirbarcode as $dirroot) {
+      $res = dol_include_once($dirroot.$module.'.php');
+      if ($res) {
+        break;
+      }
+    }
+    if ($res <= 0) {
+      dol_syslog(__CLASS__.'::'.__METHOD__.': cant load module '.$module, LOG_DEBUG);
+      return;
+    }
+
+    $modBarCodeProduct = new $module();
+    if (empty($modBarCodeProduct->code_auto)) {
+      // This barcode module does not generated code automatically.
+      dol_syslog(__CLASS__.'::'.__METHOD__.': the barcode module has not code_auto, ignoring.', LOG_DEBUG);
+      return;
+    }
+
+    $product->barcode_type = $fk_barcode_type;
+    $product->barcode = $modBarCodeProduct->getNextValue($product, $fk_barcode_type);
   }
 }

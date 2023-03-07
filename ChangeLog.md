@@ -13,6 +13,16 @@ en préfixe des références produits (si elle n'est pas déjà en préfixe).
 
 * Champs «marque» déprécié.
 
+### Nouvelles fonctionnalités
+
+* Gestion des codes-barres produits:
+  * activé si le module code-barre Dolibarr est activé
+  * propose un nouveau modèle de génération de code-barre, basé sur la ref produit
+  * génère des codes-barres à la création des produits depuis l'application mobile si:
+    * le module code-barre est actif
+    * un modèle de génération ait été sélectionné, et que celui-ci ai le mode «auto»
+    * un type de code barre par défaut ait été défini
+
 ## 1.5.0
 
 ### Nouvelles fonctionnalités
