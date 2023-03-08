@@ -144,6 +144,17 @@ class mod_barcode_product_pickup extends ModeleNumRefBarCode
     $code = mb_strtoupper(trim($code));
     $code = preg_replace('/^\s+/', '_', $code);
 
+		if (!$this->checkIfAvailable($db, $code, $objproduct)) {
+			// We will append a counter.
+			$cpt = 1;
+			$new_code = $code.'_'.substr('0000'.$cpt, -4);
+			while (!$this->checkIfAvailable($db, $new_code, $objproduct)) {
+				$ctp++;
+				$new_code = $code.'_'.substr('0000'.$cpt, -4);
+			}
+			$code = $new_code;
+		}
+
     return $code;
 	}
 
@@ -193,14 +204,13 @@ class mod_barcode_product_pickup extends ModeleNumRefBarCode
 	 *	@param	DoliDB		$db			Handler acces base
 	 *	@param	string		$code		Code to check
 	 *	@param	Product		$product	Objet product
-	 *	@return	int						0 if available, <0 if KO
+	 *	@return	boolean						true if available, false if KO
 	 */
-	public function checkIfAvailable($db, $code, $product)
+	public function checkIfAvailable($db, $code, $product = null)
 	{
-		// phpcs:enable
 		$sql = "SELECT barcode FROM ".MAIN_DB_PREFIX."product";
 		$sql .= " WHERE barcode = '".$db->escape($code)."'";
-		if ($product->id > 0) {
+		if (!empty($product) && $product->id > 0) {
 			$sql .= " AND rowid != ".$db->escape($product->id);
 		}
 
