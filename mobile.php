@@ -93,6 +93,7 @@ mobile_header();
     data-entrepot-id="<?php if(!empty($conf->global->PICKUP_DEFAULT_STOCK)) { print $conf->global->PICKUP_DEFAULT_STOCK; } ?>"
     <?php if (!empty($conf->global->PICKUP_USE_PCAT)) { print ' data-use-pcat="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PBRAND)) { print ' data-use-pbrand="1" '; } ?>
+    <?php if (!empty($conf->barcode->enabled)) { print ' data-use-barcode="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_DEEE)) { print ' data-use-deee="1" '; } ?>
     <?php if (!empty($conf->productbatch->enabled) && $conf->global->PICKUP_DEFAULT_HASBATCH === 'ask') { print ' data-ask-hasbatch="1" '; } ?>
     data-units-weight="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_WEIGHT ?? '0'); ?>"

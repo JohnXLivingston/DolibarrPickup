@@ -139,7 +139,8 @@ class DataMobileActionProduct extends DataMobileAction {
       'weight' => $object->weight_units == 0 ? $object->weight : null,
       'length' => $object->length_units == 0 ? $object->length : null,
       'surface' => $object->surface_units == 0 ? $object->surface : null,
-      'volume' => $object->volume_units == -3 ? $object->volume : null
+      'volume' => $object->volume_units == -3 ? $object->volume : null,
+      'barcode' => $object->barcode
     );
     if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $result['pbrand'] = $object->array_options['options_pickup_pbrand'];

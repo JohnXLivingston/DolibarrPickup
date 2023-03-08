@@ -235,6 +235,7 @@ export function saveEditProduct (goto: string, saveUntil: string, removeUntil: s
 
 export function showProduct (
   usePCat: boolean, useDEEE: boolean, usePBrand: boolean,
+  useBarcode: boolean,
   _unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   okGoto: string | undefined,
@@ -280,6 +281,14 @@ export function showProduct (
       type: 'varchar',
       name: 'pbrand',
       label: 'Marque'
+    })
+  }
+
+  if (useBarcode) {
+    fields.push({
+      type: 'varchar',
+      name: 'barcode',
+      label: 'Code-barre'
     })
   }
 
