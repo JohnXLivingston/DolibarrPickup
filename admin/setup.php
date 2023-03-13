@@ -228,6 +228,12 @@ $arrayofparameters=array(
 		'table' => 'batch',
 		'enabled' => !empty($conf->productbatch->enabled),
 		'type' => 'boolean'
+	),
+
+	'PICKUP_USE_PRINTABLE_LABEL' => array(
+		'table' => 'printable_label',
+		'enabled' => true,
+		'type' => 'boolean'
 	)
 );
 
@@ -620,6 +626,7 @@ if ($action == 'edit')
 	draw_edit_table('main', $langs->trans("PickupSetup"));
 	draw_edit_table('units', $langs->trans("PickupSetupUnits"));
 	draw_edit_table('batch', $langs->trans("PickupSetupBatch"));
+	draw_edit_table('printable_label', $langs->trans("PickupSetupPrintableLabel"));
 
 	print '<br><div class="center">';
 	print '<input class="button" type="submit" value="'.$langs->trans("Save").'">';
@@ -728,6 +735,7 @@ else
 		draw_view_table('main', $langs->trans("PickupSetup"));
 		draw_view_table('units', $langs->trans("PickupSetupUnits"));
 		draw_view_table('batch', $langs->trans("PickupSetupBatch"));
+		draw_view_table('printable_label', $langs->trans("PickupSetupPrintableLabel"));
 	} else {
 		print '<br>'.$langs->trans("NothingToSetup");
 	}

@@ -22,6 +22,11 @@ en préfixe des références produits (si elle n'est pas déjà en préfixe).
     * le module code-barre est actif
     * un modèle de génération ait été sélectionné, et que celui-ci ai le mode «auto»
     * un type de code barre par défaut ait été défini
+* Impression d'étiquettes: le module permet maintenant d'imprimer des étiquettes :
+  * Celles-ci sont générées par TcPDF, quelque soit la configuration du module Code-Barre.
+  * Les étiquettes peuvent contenir:
+    * le code-barre de la fiche produit, le cas échéant
+    * un code-barre avec le numéro de lot/série le cas échéant
 
 ## 1.5.0
 

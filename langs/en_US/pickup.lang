@@ -71,6 +71,9 @@ PICKUP_ALLOW_FUTURETooltip = This parameter does not apply to the mobile applica
 PICKUP_UNITS_EDIT_MODE = Input
 PICKUP_UNITS_EDIT_MODE_OPTIONS_0 = Values are entered on the product card
 PICKUP_UNITS_EDIT_MODE_OPTIONS_pickupline = Values are entered on the pickup card
+PICKUP_USE_PRINTABLE_LABEL = Utiliser l'impression d'étiquettes
+PICKUP_USE_PRINTABLE_LABELTooltip = En activant cette option, le module de collecte vous proposera d'imprimer des étiquettes pouvant contenir le code-barre de la fiche produit, un code-barre pour le numéro de lot/série, etc...
+
 
 #
 # Menus
@@ -90,6 +93,7 @@ Settings = Settings
 PickupSetupPage = Pickup setup page
 PickupSetupUnits = Units
 PickupSetupBatch = Lot/Serial
+PickupSetupPrintableLabel = Impression d'étiquettes
 
 #
 # About page

@@ -1,0 +1,49 @@
+@media print {
+  @page {
+    /* this trick removes headers and footers that browsers are adding */
+    margin: 0;
+    size: landscape;
+  }
+
+  body {
+    margin: 1mm;
+  }
+}
+
+@media screen {
+  .page {
+    border: 1px solid black;
+    width: 89mm;
+    height: 36mm;
+    padding: 1mm; // simulates the 1mm margin of the dymo printers.
+  }
+}
+
+body {
+  font-size: 3mm;
+}
+
+.page {
+  break-after: page;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 5mm;
+  justify-content: space-between;
+}
+
+.block {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1mm;
+  justify-content: center;
+
+  label {
+    white-space: nowrap;
+  }
+
+  img,
+  svg {
+    max-width: 100%;
+    width: fit-content;
+  }
+}

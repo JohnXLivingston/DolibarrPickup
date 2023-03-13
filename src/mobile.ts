@@ -5,6 +5,7 @@ import { initNunjucks } from './lib/nunjucks'
 import { Machine } from './lib/machine'
 import * as definitions from './definitions/index'
 import { readUnitsEditMode, readUseUnit } from './lib/utils/units'
+import { setPrintLabelUrl } from './shared/printlabel'
 
 // FIXME: only pick needed files.
 import '../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'
@@ -41,7 +42,11 @@ $(function () {
   const usePickupType = container.attr('data-use-pickup-type') === '1'
   const usePickuplineDescription = container.attr('data-use-pickupline-description') === '1'
   const useBarcode = container.attr('data-use-barcode') === '1'
+  const printableLabelUrl = container.attr('data-printable-label-url')
+  const usePrintableLabel = !!printableLabelUrl
   const dolibarrUrl = container.attr('data-dolibarr-url') ?? undefined
+
+  if (printableLabelUrl) { setPrintLabelUrl(printableLabelUrl) }
 
   // version is a string that must be related to the Machine definition, and the backend configuration.
   // It is used to clear the stack on page load, if the configuration changed.
@@ -50,6 +55,7 @@ $(function () {
   version += '_c' + (usePCat ? '1' : '0')
   version += '_b' + (usePBrand ? '1' : '0')
   version += '_bc' + (useBarcode ? '1' : '0')
+  version += '_pl' + (usePrintableLabel ? '1' : '0')
   version += '_d' + (useDEEE ? '1' : '0')
   version += '_hb' + (askHasBatch ? '1' : '0')
   version += '_uw' + useUnitWeight[0]
@@ -96,9 +102,9 @@ $(function () {
   }
   definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_product')
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)
-  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, useBarcode, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty', undefined, undefined)
+  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, useBarcode, usePrintableLabel, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty', undefined, undefined)
 
-  definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, useBarcode, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, undefined, 'edit_product', 'edit_product_cat')
+  definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, useBarcode, usePrintableLabel, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, undefined, 'edit_product', 'edit_product_cat')
   definition.edit_product = definitions.editProduct(usePCat, useDEEE, usePBrand, askHasBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_edit_product', 'reference_pcat_id')
   definition.save_edit_product = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
 

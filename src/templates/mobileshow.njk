@@ -39,6 +39,14 @@
           {{ field.label }}
         </a>
       {% endif %}
+    {% elif field.type === 'action' %}
+      <a
+        class="btn btn-primary" role="button"
+        pickupmobile-show-action="{{ field.name }}"
+        pickupmobile-show-data="{{ data | dump }}"
+      >
+        {{ field.label }}
+      </a>
     {% elif field.type === 'lines' %}
       {{ printLines(field.lines, data[field.name]) }}
     {% endif %}

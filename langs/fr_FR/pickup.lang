@@ -71,6 +71,8 @@ PICKUP_ALLOW_FUTURETooltip = Ce paramètre ne s'applique pas à l'application mo
 PICKUP_UNITS_EDIT_MODE = Saisie des valeurs
 PICKUP_UNITS_EDIT_MODE_OPTIONS_0 = La saisie des valeurs se fait sur la fiche produit
 PICKUP_UNITS_EDIT_MODE_OPTIONS_pickupline = La saisie des valeurs se fait sur les bons de collecte
+PICKUP_USE_PRINTABLE_LABEL = Utiliser l'impression d'étiquettes
+PICKUP_USE_PRINTABLE_LABELTooltip = En activant cette option, le module de collecte vous proposera d'imprimer des étiquettes pouvant contenir le code-barre de la fiche produit, un code-barre pour le numéro de lot/série, etc...
 
 #
 # Menus
@@ -90,6 +92,7 @@ Settings = Réglages
 PickupSetupPage = Page de configuration du module Collecte
 PickupSetupUnits = Unités
 PickupSetupBatch = Gestion par Lot/Série
+PickupSetupPrintableLabel = Impression d'étiquettes
 
 #
 # Page À propos

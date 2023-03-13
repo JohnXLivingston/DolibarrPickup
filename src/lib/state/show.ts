@@ -68,9 +68,16 @@ interface ShowFieldEdit extends ShowFieldBase {
   pushToStack: ShowPushToStack[]
 }
 
+interface ShowFieldAction extends ShowFieldBase {
+  type: 'action'
+  actionFunc: (button: JQuery, data: any) => void
+}
+
 type ShowField = ShowFieldVarchar | ShowFieldVarcharWithGoto
 | ShowFieldText | ShowFieldBoolean | ShowFieldLines
-| ShowFieldInteger | ShowFieldIntegerWithGoto | ShowFieldEdit | ShowFieldConcatenate
+| ShowFieldInteger | ShowFieldIntegerWithGoto | ShowFieldEdit
+| ShowFieldAction
+| ShowFieldConcatenate
 
 type ShowFields = ShowField[]
 interface StateShowDefinition extends StateDefinitionBase {
@@ -165,6 +172,17 @@ class StateShow extends State {
       }
       stack.setValues(svs)
       dom.trigger('goto-state', [goto])
+    })
+
+    dom.on('click.StateEvents', '[pickupmobile-show-action]', ev => {
+      const a = $(ev.currentTarget)
+      const action = a.attr('pickupmobile-show-action')
+      const data: any = JSON.parse(a.attr('pickupmobile-show-data') ?? '{}')
+      const fields = this.fields
+      const field = fields.find((f) => f.name === action)
+      if (!field) { return }
+      if (!('actionFunc' in field)) { return }
+      field.actionFunc(a, data)
     })
   }
 
