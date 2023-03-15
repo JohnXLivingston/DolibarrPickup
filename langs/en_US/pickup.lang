@@ -39,9 +39,6 @@ PickupStatusSigned = Signed
 PickupDate = Pickup date
 PickupType = Pickup type
 
-PickupBarCodeModelDesc = Pickup plugin barcode model
-PickupBarCodeModelTooltip = Ce modèle est fourni par le module DolibarrPickup. Il utilise la référence produit (nettoyée des caractères non standards) pour générer un code-barre alphanumérique. Attention, ce n'est compatible qu'avec les formats Datamatrix et QR-code.
-
 PICKUP_USE_PICKUP_TYPE = Use «Pickup type» field
 PICKUP_USE_PICKUP_TYPETooltip = If you enable this feature, don't forget to setup the corresponding dictionnary.
 PICKUP_DEFAULT_STOCK = Default stock
