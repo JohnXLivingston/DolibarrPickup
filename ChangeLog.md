@@ -9,9 +9,12 @@ Si vous l'utilisiez, vous pouvez aller le désactiver dans les paramètres du mo
 Un bouton pour migrer les données vous sera proposé. Ce bouton ajoutera la marque
 en préfixe des références produits (si elle n'est pas déjà en préfixe).
 
+**Important** : La version Dolibarr minimum est désormais la version 14.
+
 ### Changements non rétro-compatibles
 
 * Champs «marque» déprécié.
+* Version minimum Dolibarr: 14.
 
 ### Nouvelles fonctionnalités
 
@@ -22,6 +25,8 @@ en préfixe des références produits (si elle n'est pas déjà en préfixe).
     * des infos sur le produit (ref, ...)
     * un code-barre avec le numéro de lot/série le cas échéant
 * Gestion des numéros de série uniques.
+* Application mobile: ajout du choix «numéro de série unique».
+* Settings: on peut forcer les produits créés depuis l'appli mobile à utiliser des numéros de série uniques.
 
 ## 1.5.0
 

@@ -83,10 +83,15 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bo
 
   if (askHasBatch) {
     fields.push({
-      type: 'boolean',
+      type: 'select',
       name: 'product_hasbatch',
       label: 'Utiliser les numéros de lots/série',
-      mandatory: false
+      mandatory: false,
+      options: [
+        { value: '0', label: 'Non' },
+        { value: '1', label: 'Lot/Série' },
+        { value: '2', label: 'Numéro de série unique' }
+      ]
     })
   }
 

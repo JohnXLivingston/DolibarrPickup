@@ -254,8 +254,17 @@ class DataMobileActionProduct extends DataMobileAction {
       if (!empty($conf->productbatch->enabled)) {
         if ($conf->global->PICKUP_DEFAULT_HASBATCH === '1') {
           $product->status_batch = 1;
+        } else if ($conf->global->PICKUP_DEFAULT_HASBATCH === '2') {
+          $product->status_batch = 2;
         } else if ($conf->global->PICKUP_DEFAULT_HASBATCH === 'ask') {
-          $product->status_batch = GETPOST('product_hasbatch') === '1' ? 1 : 0;
+          $status_batch = GETPOST('product_hasbatch');
+          if ($status_batch === '1') {
+            $product->status_batch = 1;
+          } elseif ($status_batch === '2') {
+            $product->status_batch = 2;
+          } else {
+            $product->status_batch = 0;
+          }
         } else {
           $product->status_batch = 0;
         }

@@ -221,7 +221,8 @@ $arrayofparameters=array(
 		'options' => array(
 			'0' => $langs->trans('PICKUP_DEFAULT_HASBATCH_OPTIONS_0'),
 			'ask' =>  $langs->trans('PICKUP_DEFAULT_HASBATCH_OPTIONS_ask'),
-			'1' => $langs->trans('PICKUP_DEFAULT_HASBATCH_OPTIONS_1')
+			'1' => $langs->trans('PICKUP_DEFAULT_HASBATCH_OPTIONS_1'),
+			'2' => $langs->trans('PICKUP_DEFAULT_HASBATCH_OPTIONS_2')
 		)
 	),
 	'PICKUP_DEFAULT_BATCH_PICKUP_REF' => array(
