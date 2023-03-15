@@ -1102,4 +1102,49 @@ class PBatch extends CommonObject
 
 		return $error;
 	}
+
+	public static function getNextPBatchNumber() {
+		global $db, $conf;
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+
+		$cpt = dolibarr_get_const($db, 'PICKUP_CURRENT_PBATCH_CPT', $conf->entity) ?? 0;
+		dol_syslog(__CLASS__.'::'.__METHOD__.': current counter is '.$cpt, LOG_DEBUG);
+
+		$cpt = intval($cpt);
+		while (true) {
+			$cpt++;
+			if (strlen(strval($cpt)) > 8) {
+				throw new Exception('Max Batch Number raised.');
+			}
+			$batch_number = substr('00000000'.strval($cpt), -8);
+			dol_syslog(__CLASS__.'::'.__METHOD__.': testing availability for '.$batch_number, LOG_DEBUG);
+
+			// check if used in pbatch
+			$sql = "SELECT rowid ";
+			$sql.= " FROM ".(property_exists($db, 'prefix') ? $db->prefix : MAIN_DB_PREFIX)."pickup_batch ";
+			$sql.= " WHERE batch_number = ".$db->escape($batch_number);
+			$resql = $db->query($sql);
+			if ($resql && $db->num_rows($resql) > 0) {
+				dol_syslog(__CLASS__.'::'.__METHOD__.': '.$batch_number.' is used on a PBatch', LOG_DEBUG);
+				continue;
+			}
+			
+			// check if used in productlot
+			$sql = "SELECT rowid ";
+			$sql.= " FROM ".(property_exists($db, 'prefix') ? $db->prefix : MAIN_DB_PREFIX)."product_lot ";
+			$sql.= " WHERE batch = ".$db->escape($batch_number);
+			$resql = $db->query($sql);
+			if ($resql && $db->num_rows($resql) > 0) {
+				dol_syslog(__CLASS__.'::'.__METHOD__.': '.$batch_number.' is used on a productlot', LOG_DEBUG);
+				continue;
+			}
+
+			dol_syslog(__CLASS__.'::'.__METHOD__.': batch number available: '.$batch_number, LOG_DEBUG);
+			break;
+		}
+
+		dol_syslog(__CLASS__.'::'.__METHOD__.': setting current counter value to '.$cpt, LOG_DEBUG);
+		dolibarr_set_const($db, 'PICKUP_CURRENT_PBATCH_CPT', strval($cpt));
+		return $batch_number;
+	}
 }

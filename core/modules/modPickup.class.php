@@ -27,6 +27,7 @@
  *  \brief      Description and activation file for module Pickup
  */
 include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 /**
  *  Description and activation class for module Pickup
@@ -443,7 +444,7 @@ class modPickup extends DolibarrModules
      */
     public function init($options = '')
     {
-        global $conf;
+        global $conf, $db;
 
         $result=$this->_load_tables('/pickup/sql/');
         if ($result < 0) return -1; // Do not activate module if error 'not allowed' returned when loading module SQL queries (the _load_table run sql with run_sql with the error allowed parameter set to 'default')
@@ -503,6 +504,14 @@ class modPickup extends DolibarrModules
                 'ignoreerror' => true
             )
         );
+
+        if (
+            empty(dolibarr_get_const($db, 'PICKUP_DEFAULT_BATCH', $conf->entity))
+            && !empty(dolibarr_get_const($db, 'PICKUP_DEFAULT_BATCH_PICKUP_REF', $conf->entity))
+        ) {
+            dolibarr_set_const($db, 'PICKUP_DEFAULT_BATCH', 'pickup_ref', 'chaine', 0, '', $conf->entity);
+            dolibarr_del_const($db, 'PICKUP_DEFAULT_BATCH_PICKUP_REF', $conf->entity);
+        }
 
         return $this->_init($sql, $options);
     }

@@ -231,13 +231,33 @@ class PickupLine extends CommonObjectLine
 
 		$product = new Product($db);
 		if ($product->fetch($this->fk_product) <= 0) { return $result; }
-		if ($product->hasbatch() && !empty($conf->global->PICKUP_DEFAULT_BATCH_PICKUP_REF)) {
-			$pickup = new Pickup($db);
-			if ($pickup->fetch($this->fk_pickup) <= 0) {
-				return $result;
+		if ($product->hasbatch()) {
+			$default_batch = '';
+			if ($product->status_batch == 2) {
+				$default_batch = $conf->global->PICKUP_DEFAULT_UNIQUE_BATCH;
+			} else {
+				$default_batch = $conf->global->PICKUP_DEFAULT_BATCH;
 			}
-			$this->updateAssociatedBatch($pickup->ref, $user);
-			return $result;
+			if ($default_batch === 'pickup_ref') {
+				$pickup = new Pickup($db);
+				if ($pickup->fetch($this->fk_pickup) <= 0) {
+					return $result;
+				}
+				$this->updateAssociatedBatch($pickup->ref, $user);
+			} else if ($default_batch === 'generate') {
+				$batch_numbers = [];
+				if ($product->status_batch == 2) {
+					// must generate unique batch numbers.
+					$qty = intval($this->qty);
+					for ($cpt = 0; $cpt < $qty; $cpt++) {
+						$batch_numbers[] = PBatch::getNextPBatchNumber();
+					}
+				} else {
+					// must generate only one batch number.
+					$batch_numbers[] = PBatch::getNextPBatchNumber();
+				}
+				$this->updateAssociatedBatch($batch_numbers, $user);
+			}
 		}
 		return $result;
 	}

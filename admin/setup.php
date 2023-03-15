@@ -225,10 +225,24 @@ $arrayofparameters=array(
 			'2' => $langs->trans('PICKUP_DEFAULT_HASBATCH_OPTIONS_2')
 		)
 	),
-	'PICKUP_DEFAULT_BATCH_PICKUP_REF' => array(
+	'PICKUP_DEFAULT_BATCH' => array(
 		'table' => 'batch',
 		'enabled' => !empty($conf->productbatch->enabled),
-		'type' => 'boolean'
+		'type' => 'select',
+		'options' => [
+			'0' => '',
+			'pickup_ref' => $langs->trans('PICKUP_DEFAULT_BATCH_OPTIONS_PICKUP_REF'),
+			'generate' => $langs->trans('PICKUP_DEFAULT_BATCH_OPTIONS_GENERATE'),
+		]
+	),
+	'PICKUP_DEFAULT_UNIQUE_BATCH' => array(
+		'table' => 'batch',
+		'enabled' => !empty($conf->productbatch->enabled),
+		'type' => 'select',
+		'options' => [
+			'0' => '',
+			'generate' => $langs->trans('PICKUP_DEFAULT_UNIQUE_BATCH_OPTIONS_GENERATE'),
+		]
 	),
 
 	'PICKUP_USE_PRINTABLE_LABEL' => array(

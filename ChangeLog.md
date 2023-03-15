@@ -27,6 +27,7 @@ en préfixe des références produits (si elle n'est pas déjà en préfixe).
 * Gestion des numéros de série uniques.
 * Application mobile: ajout du choix «numéro de série unique».
 * Settings: on peut forcer les produits créés depuis l'appli mobile à utiliser des numéros de série uniques.
+* Options pour la génération automatique de numéros de lot/série (uniques ou non) depuis l'application mobile.
 
 ## 1.5.0
 
