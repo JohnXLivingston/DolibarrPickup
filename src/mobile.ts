@@ -32,6 +32,7 @@ $(function () {
   const usePCat = container.attr('data-use-pcat') === '1'
   const usePBrand = container.attr('data-use-pbrand') === '1'
   const useDEEE = container.attr('data-use-deee') === '1'
+  const useBatch = container.attr('data-use-batch') === '1'
   const askHasBatch = container.attr('data-ask-hasbatch') === '1'
   const unitsEditMode = readUnitsEditMode(container.attr('data-units-edit-mode'))
   const useUnitWeight = readUseUnit(container.attr('data-units-weight'))
@@ -55,6 +56,7 @@ $(function () {
   version += '_b' + (usePBrand ? '1' : '0')
   version += '_pl' + (usePrintableLabel ? '1' : '0')
   version += '_d' + (useDEEE ? '1' : '0')
+  version += '_ba' + (useBatch ? '1' : '0')
   version += '_hb' + (askHasBatch ? '1' : '0')
   version += '_uw' + useUnitWeight[0]
   version += '_ul' + useUnitLength[0]
@@ -100,9 +102,9 @@ $(function () {
   }
   definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_product')
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)
-  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, usePrintableLabel, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty', undefined, undefined)
+  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, useBatch, usePrintableLabel, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty', undefined, undefined)
 
-  definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, usePrintableLabel, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, undefined, 'edit_product', 'edit_product_cat')
+  definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, useBatch, usePrintableLabel, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, undefined, 'edit_product', 'edit_product_cat')
   definition.edit_product = definitions.editProduct(usePCat, useDEEE, usePBrand, askHasBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_edit_product', 'reference_pcat_id')
   definition.save_edit_product = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
 

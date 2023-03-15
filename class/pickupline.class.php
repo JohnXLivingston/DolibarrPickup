@@ -226,39 +226,9 @@ class PickupLine extends CommonObjectLine
 		if ($result <= 0) {
 			return $result;
 		}
-		// We must create pbatch(es) if needed.
-		if (empty($this->fk_product)) { return $result; }
 
-		$product = new Product($db);
-		if ($product->fetch($this->fk_product) <= 0) { return $result; }
-		if ($product->hasbatch()) {
-			$default_batch = '';
-			if ($product->status_batch == 2) {
-				$default_batch = $conf->global->PICKUP_DEFAULT_UNIQUE_BATCH;
-			} else {
-				$default_batch = $conf->global->PICKUP_DEFAULT_BATCH;
-			}
-			if ($default_batch === 'pickup_ref') {
-				$pickup = new Pickup($db);
-				if ($pickup->fetch($this->fk_pickup) <= 0) {
-					return $result;
-				}
-				$this->updateAssociatedBatch($pickup->ref, $user);
-			} else if ($default_batch === 'generate') {
-				$batch_numbers = [];
-				if ($product->status_batch == 2) {
-					// must generate unique batch numbers.
-					$qty = intval($this->qty);
-					for ($cpt = 0; $cpt < $qty; $cpt++) {
-						$batch_numbers[] = PBatch::getNextPBatchNumber();
-					}
-				} else {
-					// must generate only one batch number.
-					$batch_numbers[] = PBatch::getNextPBatchNumber();
-				}
-				$this->updateAssociatedBatch($batch_numbers, $user);
-			}
-		}
+		// We must create pbatch(es) if needed.
+		$this->ensurePBatches($user);
 		return $result;
 	}
 
@@ -547,5 +517,59 @@ class PickupLine extends CommonObjectLine
 				array_map(function ($pbatch) { return $pbatch->batch_number; }, $pbatches)
 			)
 		);
+	}
+
+	public function ensurePBatches($user) {
+		global $db, $conf;
+
+		if (empty($conf->productbatch->enabled)) { return ;}
+		if (empty($this->fk_product)) { return; }
+		// We must create pbatch(es) if needed.
+
+		$product = new Product($db);
+		if ($product->fetch($this->fk_product) <= 0) { return; }
+
+		$pbatches = $this->fetchAssociatedBatch();
+
+		$default_batch = '';
+		$number_of_wanted_pbatches = 0;
+		if (!$product->hasbatch()) {
+			$number_of_wanted_pbatches = 0;
+		} else if ($product->status_batch == 2) {
+			$default_batch = $conf->global->PICKUP_DEFAULT_UNIQUE_BATCH;
+			$number_of_wanted_pbatches = intval($this->qty);
+		} else {
+			$default_batch = $conf->global->PICKUP_DEFAULT_BATCH;
+			$number_of_wanted_pbatches = 1;
+		}
+
+		// have we already enought batch_numbers ?
+		if (count($pbatches) >= $number_of_wanted_pbatches) {
+			return;
+		}
+
+		// // have we too many ?
+		// if (count($pbatches) > $number_of_wanted_pbatches) {
+		// 	$batch_numbers = array_map(function ($pbatch) { return $pbatch->batch_number; }, $pbatches);
+		// 	$batch_numbers = array_slice($batch_numbers, 0, $number_of_wanted_pbatches);
+		// 	$this->updateAssociatedBatch($batch_numbers, $user);
+		// 	return;
+		// }
+
+		// not enought... checking if we can generate missing ones.
+
+		if ($default_batch === 'pickup_ref') {
+			$pickup = new Pickup($db);
+			if ($pickup->fetch($this->fk_pickup) <= 0) {
+				return;
+			}
+			$this->updateAssociatedBatch($pickup->ref, $user);
+		} else if ($default_batch === 'generate') {
+			$batch_numbers = array_map(function ($pbatch) { return $pbatch->batch_number; }, $pbatches);
+			while (count($batch_numbers) < $number_of_wanted_pbatches) {
+				$batch_numbers[] = PBatch::getNextPBatchNumber();
+			}
+			$this->updateAssociatedBatch($batch_numbers, $user);
+		}
 	}
 }

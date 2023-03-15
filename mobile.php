@@ -95,6 +95,7 @@ mobile_header();
     <?php if (!empty($conf->global->PICKUP_USE_PBRAND)) { print ' data-use-pbrand="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) { print ' data-printable-label-url="'.htmlspecialchars(DOL_URL_ROOT.'/custom/pickup/pickup_printable_label.php').'" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_DEEE)) { print ' data-use-deee="1" '; } ?>
+    <?php if (!empty($conf->productbatch->enabled)) { print ' data-use-batch="1" '; } ?>
     <?php if (!empty($conf->productbatch->enabled) && $conf->global->PICKUP_DEFAULT_HASBATCH === 'ask') { print ' data-ask-hasbatch="1" '; } ?>
     data-units-weight="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_WEIGHT ?? '0'); ?>"
     data-units-length="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_LENGTH ?? '0'); ?>"

@@ -151,7 +151,19 @@ class DataMobileActionProduct extends DataMobileAction {
       $result['deee_type_txt'] = $extrafields->showOutputField('pickup_deee_type', $object->array_options['options_pickup_deee_type'], '', $object->table_element);
     }
     if (!empty($conf->productbatch->enabled)) {
-      $result['hasbatch'] = $product->status_batch;
+      $langs->loadLangs(array('productbatch'));
+      $result['hasbatch'] = $object->status_batch;
+
+      switch ($object->status_batch) {
+        case 2:
+          $result['hasbatch_txt'] = $langs->transnoentities('ProductStatusOnSerial');
+          break;
+        case 1:
+          $result['hasbatch_txt'] = $langs->transnoentities('ProductStatusOnBatch');
+          break;
+        default:
+          $result['hasbatch_txt'] = $langs->transnoentities('ProductStatusNotOnBatch');
+      }
     }
     return $result;
   }
@@ -331,6 +343,9 @@ class DataMobileActionProduct extends DataMobileAction {
             $this->_log_object_errors(__METHOD__, $line);
             return 0;
           }
+
+          // must generate missing pbatches in certain cases.
+          $line->ensurePBatches($user);
         }
       }
     }

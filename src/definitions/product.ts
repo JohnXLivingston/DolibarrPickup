@@ -134,16 +134,22 @@ export function editProduct (
 ): StateDefinition {
   const fields: FormField[] = []
 
-  // FIXME
-  // if (askHasBatch) {
-  //   fields.push({
-  //     type: 'boolean',
-  //     name: 'product_hasbatch',
-  //     label: 'Utiliser les numéros de lots/série',
-  //     mandatory: false,
-  //     edit: ...
-  //   })
-  // }
+  if (askHasBatch) {
+    fields.push({
+      type: 'select',
+      name: 'product_hasbatch',
+      label: 'Utiliser les numéros de lots/série',
+      mandatory: false,
+      options: [
+        { value: '0', label: 'Non' },
+        { value: '1', label: 'Lot/Série' },
+        { value: '2', label: 'Numéro de série unique' }
+      ],
+      edit: {
+        getDataFromSourceKey: 'hasbatch'
+      }
+    })
+  }
 
   if (useDEEE) {
     const deeeField: FormField = getDeeeField(pcatStackName)
@@ -241,6 +247,7 @@ export function saveEditProduct (goto: string, saveUntil: string, removeUntil: s
 
 export function showProduct (
   usePCat: boolean, useDEEE: boolean, usePBrand: boolean,
+  useBatch: boolean,
   usePrintableLabel: boolean,
   _unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
@@ -352,6 +359,14 @@ export function showProduct (
         }
       ],
       goto: editGoto
+    })
+  }
+
+  if (useBatch) {
+    fields.push({
+      type: 'varchar',
+      name: 'hasbatch_txt',
+      label: 'Numéro de lot/série'
     })
   }
 
