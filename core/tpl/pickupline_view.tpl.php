@@ -72,9 +72,10 @@ $coldisplay = 0; ?>
           print htmlspecialchars($line_product->label);
         }
 
-        if ($line_product->hasbatch() || !empty($line->batch)) {
+        $pbatches = $line->fetchAssociatedBatch();
+        if ($line_product->hasbatch() || !empty($pbatches)) {
           print '<br>';
-          $batch_warning = (($object->status == $object::STATUS_PROCESSING || $object->status == $object::STATUS_DRAFT) && empty($line->batch));
+          $batch_warning = (($object->status == $object::STATUS_PROCESSING || $object->status == $object::STATUS_DRAFT) && empty($pbatches));
           $hide_batch_number = false;
 
           print '<div style="white-space: nowrap; '.($batch_warning ? 'color: orange;' : '').'">';
@@ -86,7 +87,7 @@ $coldisplay = 0; ?>
               $hide_batch_number = true;
               // Note: the <form> is printed by pickup_card.php
               print '<input type="hidden" name="lineid" value="'.$line->id.'">';
-              print $line->showInputField(null, 'batch', GETPOSTISSET("batch") ? GETPOST('batch') : $line->batch);
+              print $line->showPBatchInputField($line_product, $pbatches, 'batch');
               print '<input type="submit" class="button valignmiddle" value="'.$langs->trans("Modify").'">';
             } else {
               print ' <a class="editfielda" href="';
@@ -97,7 +98,7 @@ $coldisplay = 0; ?>
           }
 
           if (!$hide_batch_number) {
-            print htmlspecialchars($line->batch ?? '');
+            print '<br>'.implode('<br>', array_map(function ($pbatch) { return htmlspecialchars($pbatch->batch_number); }, $pbatches));
           }
 
           if ($batch_warning) {

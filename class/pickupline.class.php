@@ -24,6 +24,8 @@
 
 require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
 require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
+dol_include_once('/pickup/class/pickup.class.php');
+dol_include_once('/pickup/class/pbatch.class.php');
 
 /**
  * Class for PickupLine
@@ -55,6 +57,11 @@ class PickupLine extends CommonObjectLine
 	 * @var string String with name of icon for pickupline. Must be the part after the 'object_' into object_pickupline.png
 	 */
 	public $picto = 'pickupline@pickup';
+
+	/**
+	 * @var array	List of child tables. To know object to delete on cascade.
+	 */
+	protected $childtablesoncascade=array('@PBatch:pickup/class/pbatch.class.php:fk_pickupline');
 
 
 	/**
@@ -94,7 +101,7 @@ class PickupLine extends CommonObjectLine
 		),
 		'description' => array('type'=>'html', 'label'=>'Description', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>-1,),
 		'qty' => array('type'=>'integer', 'label'=>'Quantité', 'enabled'=>'1', 'position'=>45, 'notnull'=>1, 'visible'=>1, 'default'=>'1', 'isameasure'=>'1', 'css'=>'maxwidth75imp',),
-		'batch' => array('type' => 'varchar(128)', 'label' => 'Batch', 'enabled' => '1', 'position' => 50, 'visible' => 1, 'notnull' => -1),
+		// 'batch' => array('type' => 'varchar(128)', 'label' => 'Batch', 'enabled' => '1', 'position' => 50, 'visible' => 1, 'notnull' => -1),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>140, 'notnull'=>1, 'visible'=>-1,),
 		'fk_user_creat' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>45, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
 		'fk_user_modif' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>50, 'notnull'=>-1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
@@ -148,7 +155,7 @@ class PickupLine extends CommonObjectLine
 	public $fk_product;
 	public $description;
 	public $qty;
-	public $batch;
+	// public $batch;
 	public $tms;
 	public $fk_user_creat;
 	public $fk_user_modif;
@@ -214,7 +221,25 @@ class PickupLine extends CommonObjectLine
 	 */
 	public function create(User $user, $notrigger = false)
 	{
-		return $this->createCommon($user, $notrigger);
+		global $db, $conf;
+		$result = $this->createCommon($user, $notrigger);
+		if ($result <= 0) {
+			return $result;
+		}
+		// We must create pbatch(es) if needed.
+		if (empty($this->fk_product)) { return $result; }
+
+		$product = new Product($db);
+		if ($product->fetch($this->fk_product) <= 0) { return $result; }
+		if ($product->hasbatch() && !empty($conf->global->PICKUP_DEFAULT_BATCH_PICKUP_REF)) {
+			$pickup = new Pickup($db);
+			if ($pickup->fetch($this->fk_pickup) <= 0) {
+				return $result;
+			}
+			$this->updateAssociatedBatch($pickup->ref, $user);
+			return $result;
+		}
+		return $result;
 	}
 
 	/**
@@ -424,5 +449,83 @@ class PickupLine extends CommonObjectLine
 		$result = array_unique($result, SORT_STRING);
 
 		return $result;
+	}
+
+	public function fetchAssociatedBatch() {
+		global $db;
+		$pbatch = new PBatch($db);
+		$result = $pbatch->fetchAll('ASC', 'rowid', 0, 0, array('fk_pickupline' => $this->id), 'AND');
+		if (is_array($result)) {
+			$result = array_values($result); // to reindex from 0.
+		}
+		return $result;
+	}
+
+	public function updateAssociatedBatch($batch_numbers, $user) {
+		global $db;
+		if (empty($this->id)) {
+			dol_syslog(__CLASS__.'::'.__METHOD__.': cant call this method on an unfetched object', LOG_ERR);
+			return;
+		}
+
+		$pbatches = $this->fetchAssociatedBatch();
+
+		if (empty($batch_numbers)) {
+			foreach ($pbatches as $pbatch) {
+				$pbatch->delete($user);
+			}
+			return;
+		}
+
+		if (!is_array($batch_numbers)) {
+			$batch_numbers = [$batch_numbers];
+		}
+		$pbatches_by_number = [];
+		foreach ($pbatches as $pbatch) {
+			$pbatches_by_number[$pbatch->batch_number] = $pbatch;
+		}
+		$seen_batch_numbers = [];
+
+		// first create missing batch_numbers
+		foreach ($batch_numbers as $batch_number) {
+			$batch_number = trim($batch_number);
+			if (empty($batch_number)) { continue; }
+			$seen_batch_numbers[$batch_number] = true;
+			if (array_key_exists($batch_number, $pbatches_by_number)) { continue; }
+			$pbatch = new PBatch($db);
+			$pbatch->batch_number = $batch_number;
+			$pbatch->fk_product = $this->fk_product;
+			$pbatch->fk_pickupline = $this->id;
+			$pbatch->create($user);
+		}
+
+		// then delete obsolete batch_numbers.
+		foreach ($pbatches as $pbatch) {
+			if (array_key_exists($pbatch->batch_number, $seen_batch_numbers)) { continue; }
+			$pbatch->delete($user);
+		}
+	}
+
+	public function showPBatchInputField($product, $pbatches, $field_name) {
+		if ($product->status_batch == 1) { // non unique batch => 1 line field
+			$field_type = 'varchar(255)';
+		} else {
+			$field_type = 'text';
+		}
+		require_once DOL_DOCUMENT_ROOT.'/core/class/genericobject.class.php';
+		$common_object = new GenericObject($this->db);
+		$common_object->fields = [
+			$field_name => array('type' => $field_type, 'label' => 'Batch', 'enabled' => '1', 'visible' => 1, 'notnull' => -1)
+		];
+		return $common_object->showInputField(
+			null,
+			$field_name,
+			GETPOSTISSET($field_name)
+			? GETPOST($field_name, 'alpha')
+			: implode(
+				$field_type === 'text' ? "\n" : ',',
+				array_map(function ($pbatch) { return $pbatch->batch_number; }, $pbatches)
+			)
+		);
 	}
 }

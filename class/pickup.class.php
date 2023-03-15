@@ -529,7 +529,14 @@ class Pickup extends CommonObject
 			return -2;
 		}
 
-		return $this->deleteLineCommon($user, $idline, $notrigger);
+		$objectline = new PickupLine($this->db);
+		$result = $objectline->fetch($idline);
+		if ($result <= 0) {
+			return -1;
+		}
+		// we must use the line->delete method, because there are subobjects.
+		return $objectline->delete($user, $notrigger);
+		// return $this->deleteLineCommon($user, $idline, $notrigger);
 	}
 
     /**
@@ -893,9 +900,9 @@ class Pickup extends CommonObject
 				$line->volume_units = $product->volume_units;
 			}
 
-			if ($product->hasbatch() && !empty($conf->global->PICKUP_DEFAULT_BATCH_PICKUP_REF)) {
-				$line->batch = $this->ref;
-			}
+			// if ($product->hasbatch() && !empty($conf->global->PICKUP_DEFAULT_BATCH_PICKUP_REF)) {
+			// 	$line->batch = $this->ref;
+			// }
 		}
 
 		return $line;

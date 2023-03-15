@@ -225,6 +225,9 @@ class ActionsPickup
 
 			$deee_type = GETPOST('options_pickup_deee_type', 'alpha');
 			$batch = GETPOSTISSET('batch') ? GETPOST('batch', 'alpha') : null;
+			if (!empty($batch)) {
+				$batch = preg_split('/\r\n|\r|\n/', $batch);
+			}
 
 			if ($qty == '') {
 				array_push($errors, $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Qty')));
@@ -285,8 +288,6 @@ class ActionsPickup
 						$line->volume_units = $volume_units;
 					}
 
-					$line->batch = $batch;
-
 					$result = $line->update($user);
 					if ($result <= 0) {
 						if (!empty($line->error)) {
@@ -296,6 +297,7 @@ class ActionsPickup
 							$errors = array_merge($errors, $line->errors);
 						}
 					} else {
+						$line->updateAssociatedBatch($batch, $user);
 						unset($_POST['qty']);
 						unset($_POST['weight']);
 						unset($_POST['weight_units']);
@@ -336,9 +338,12 @@ class ActionsPickup
 			} else if ($line->fk_pickup !== $object->id) {
 				dol_syslog(__METHOD__ . ' ' . 'Line '.$line->id.' is not from pickup '.$object->id, LOG_ERR);
 			} else {
-				$line->batch = GETPOST('batch', 'alpha');
-				dol_syslog(__METHOD__ . ' ' . 'Line '.$line->is. ' changing batch to '.$line->batch, LOG_DEBUG);
-				$result = $line->update($user);
+				$batch = GETPOST('batch', 'alpha');
+				dol_syslog(__METHOD__ . ' ' . 'Line '.$line->id. ' changing batch to '.($batch ?? ''), LOG_DEBUG);
+				if (!empty($batch)) {
+					$batch = preg_split('/\r\n|\r|\n/', $batch);
+				}
+				$result = $line->updateAssociatedBatch($batch, $user);
 				if ($result <= 0) {
 					if (!empty($line->error)) {
 						array_push($errors, $line->error);
@@ -447,8 +452,24 @@ class ActionsPickup
 						continue;
 					}
 
-					if (!empty($conf->productbatch->enabled) && ($product->hasbatch() || !empty($line->batch))) {
-						$result = $product->correct_stock_batch($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, '', '', $line->batch, $inventorycode, 'Pickup@pickup', $object->id);
+					$pbatches = $line->fetchAssociatedBatch();
+					if (!empty($conf->productbatch->enabled) && ($product->hasbatch() || !empty($pbatches))) {
+						if (count($pbatches) === 1) {
+							// Simple case: batch unique or not => just try to add in stock (could fail if batch unique and qty > 1)
+							$result = $product->correct_stock_batch($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, '', '', $pbatches[0]->batch_number, $inventorycode, 'Pickup@pickup', $object->id);
+						} else {
+							if (count($pbatches) !== $line->qty) {
+								$nb_error++;
+								setEventMessages($langs->trans('PickupIncludeInStockWrongBatchNumberNumber'), null, 'errors');
+								continue;
+							}
+							foreach ($pbatches as $pbatch) {
+								$result = $product->correct_stock_batch($user, $object->fk_entrepot, 1, 0, $movement_label, 0, '', '', $pbatch->batch_number, $inventorycode, 'Pickup@pickup', $object->id);
+								if ($result <= 0) {
+									break;
+								}
+							}
+						}
 					} else {
 						$result = $product->correct_stock($user, $object->fk_entrepot, $line->qty, 0, $movement_label, 0, $inventorycode, 'Pickup@pickup', $object->id);
 					}

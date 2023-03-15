@@ -1,4 +1,4 @@
--- Copyright (C) 2021-2022		John Livingston		<license@john-livingston.fr>
+-- Copyright (C) 2023		John Livingston		<license@john-livingston.fr>
 --
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU Affero General Public License as published by
@@ -14,27 +14,16 @@
 -- along with this program.  If not, see https://www.gnu.org/licenses/.
 
 
-CREATE TABLE llx_pickup_pickupline(
+
+-- This table is used to generate batch/serial numbers, and keep track of it.
+
+CREATE TABLE llx_pickup_batch(
 	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
-	fk_pickup integer NOT NULL,
 	fk_product integer NOT NULL,
-	description text,
-	weight double(24,8) DEFAULT NULL,
-	weight_units tinyint DEFAULT NULL,
-	length double(24,8) DEFAULT NULL,
-	length_units tinyint DEFAULT NULL,
-	surface double(24,8) DEFAULT NULL,
-	surface_units tinyint DEFAULT NULL,
-	volume double(24,8) DEFAULT NULL,
-	volume_units tinyint DEFAULT NULL,
-	deee tinyint DEFAULT NULL,
-	-- NB: deee_type should be a tinyint, but it seems it is a varchar on llx_product_extrafields
-	deee_type varchar(255) DEFAULT NULL,
-	qty integer DEFAULT 1 NOT NULL,
-	-- DEPRECATED 2023-03-13: batch varchar(128) DEFAULT NULL,
+  -- the pickupline attached to this batch number (could be null when the number was not generated from a pickup)
+	fk_pickupline integer DEFAULT NULL,
+	batch_number varchar(255) DEFAULT NULL,
 	tms timestamp NOT NULL, 
 	fk_user_creat integer NOT NULL, 
-	fk_user_modif integer, 
-	position integer NOT NULL,
-	fk_stock_movement integer
+	fk_user_modif integer
 ) ENGINE=innodb;

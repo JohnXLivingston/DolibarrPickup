@@ -133,6 +133,7 @@ ConfirmPickupActionIncludeInStock = Are you sure you want to insert products in 
 ConfirmPickupActionIncludeInStockBis = Are you sure you want to insert products in stocks and set the pickup as «Waiting signature»?
 PickupIncludeInStockOk = Products where inserted in stock
 PickupIncludeInStockMovementNotFoundError = An error occured. The movement was not found
+PickupIncludeInStockWrongBatchNumberNumber = Le nombre de numéros de lot/série ne correspond pas à la quantité
 PickupActionSign = Validate signature
 ConfirmPickupActionSign = Are you sure you want to set this pickup as signed?
 #

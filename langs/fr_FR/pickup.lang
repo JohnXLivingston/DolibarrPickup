@@ -132,6 +132,7 @@ ConfirmPickupActionIncludeInStock = Êtes-vous sûr de vouloir intégrer ces pro
 ConfirmPickupActionIncludeInStockBis = Êtes-vous sûr de vouloir intégrer ces produits au stock et mettre la collecte en statut «En attente de signature» ?
 PickupIncludeInStockOk = Produits intégrés au stock
 PickupIncludeInStockMovementNotFoundError = Une erreur a eu lieu, le mouvement n'a pas été trouvé
+PickupIncludeInStockWrongBatchNumberNumber = Le nombre de numéros de lot/série ne correspond pas à la quantité
 PickupActionSign = Valider signature
 ConfirmPickupActionSign = Êtes-vous sûr de vouloir passer cette collecte en statut «Signée» ?
 #

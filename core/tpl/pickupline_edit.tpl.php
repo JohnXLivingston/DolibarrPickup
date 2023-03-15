@@ -73,9 +73,10 @@ $coldisplay = 0;
 			// }
 		?>
 		<?php
-			if ($line_product->hasbatch() || !empty($line->batch)) {
+			$pbatches = $line->fetchAssociatedBatch();
+			if ($line_product->hasbatch() || !empty($pbatches)) {
 				print $langs->trans('Batch') . ': ';
-				print $line->showInputField(null, 'batch', GETPOSTISSET("batch") ? GETPOST('batch', 'alpha') : $line->batch);
+				print $line->showPBatchInputField($line_product, $pbatches, 'batch');
 			}
 		?>
 	</td>

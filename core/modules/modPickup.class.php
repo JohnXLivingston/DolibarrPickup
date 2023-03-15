@@ -487,6 +487,21 @@ class modPickup extends DolibarrModules
                 'sql' => "INSERT INTO ".MAIN_DB_PREFIX."const (name, entity, value, type, visible) VALUES('PICKUP_UNITS_WEIGHT',".$conf->entity.", 'mandatory', 'chaine', 0)",
                 'ignoreerror' => true
             ),
+            // migration for version 2.0.0:
+            array(
+                // migrating pickupline.batch to new batch table.
+                // Note: this request will fail if we already deleted the pickupline.batch column.
+                'sql' => "INSERT INTO ".MAIN_DB_PREFIX."pickup_batch (fk_product, fk_pickupline, batch_number, tms, fk_user_creat, fk_user_modif) "
+                    ." SELECT pl.fk_product, pl.rowid, pl.batch, pl.tms, pl.fk_user_creat, pl.fk_user_modif "
+                    ." FROM ".MAIN_DB_PREFIX."pickup_pickupline AS pl "
+                    ." WHERE pl.batch IS NOT NULL AND pl.batch != '' "
+                    ." AND pl.rowid NOT IN (SELECT fk_pickupline FROM ".MAIN_DB_PREFIX."pickup_batch) ",
+                'ignoreerror' => true
+            ),
+            array(
+                'sql' => "ALTER TABLE ".MAIN_DB_PREFIX."pickup_pickupline DROP COLUMN IF EXISTS batch ",
+                'ignoreerror' => true
+            )
         );
 
         return $this->_init($sql, $options);

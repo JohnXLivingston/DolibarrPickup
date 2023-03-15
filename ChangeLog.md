@@ -27,6 +27,7 @@ en préfixe des références produits (si elle n'est pas déjà en préfixe).
   * Les étiquettes peuvent contenir:
     * le code-barre de la fiche produit, le cas échéant
     * un code-barre avec le numéro de lot/série le cas échéant
+* Gestion des numéros de série uniques.
 
 ## 1.5.0
 
