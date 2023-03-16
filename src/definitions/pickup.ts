@@ -1,5 +1,6 @@
 import type { StateDefinition, ShowFields, FormField } from '../lib/state/index'
 import { UseUnit } from '../lib/utils/units'
+import { printPickupLabels } from '../shared/printlabel'
 
 export function choosePickup (goto: string, creationGoto: string): StateDefinition {
   return {
@@ -75,6 +76,7 @@ export function savePickup (goto: string, saveUntil: string): StateDefinition {
 export function showPickup (
   useDEEE: boolean,
   usePBrand: boolean,
+  usePrintableLabel: boolean,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   addGoto: string,
   lineProductGoto: string | undefined,
@@ -193,6 +195,19 @@ export function showPickup (
     label: 'Produits',
     lines: lineCols
   })
+
+  if (usePrintableLabel) {
+    fields.push({
+      type: 'action',
+      name: 'print_label',
+      label: 'Imprimer étiquettes',
+      actionFunc: (button: JQuery, data: any) => {
+        if (data?.rowid) {
+          printPickupLabels(button, data.rowid)
+        }
+      }
+    })
+  }
 
   if (setProcessingStatusGoto !== null) {
     fields.push({

@@ -249,7 +249,57 @@ $arrayofparameters=array(
 		'table' => 'printable_label',
 		'enabled' => true,
 		'type' => 'boolean'
-	)
+	),
+	'PICKUP_PRINTABLE_LABEL_PRODUCTCARD_LINK' => array(
+		'table' => 'printable_label',
+		'enabled' => true,
+		'type' => 'select',
+		'options' => [
+			'0' => '-',
+			'DATAMATRIX' => 'DATAMATRIX',
+			'QRCODE' => 'QRCODE',
+		]
+	),
+	'PICKUP_PRINTABLE_LABEL_BATCH' => array(
+		'table' => 'printable_label',
+		'enabled' => true,
+		'type' => 'select',
+		'options' => [
+			'0' => '-',
+			'C39' => 'C39',
+			'C39+' => 'C39+',
+			'C39E' => 'C39E',
+			'C39E+' => 'C39E+',
+			'S25' => 'S25',
+			'S25+' => 'S25+',
+			'I25' => 'I25',
+			'I25+' => 'I25+',
+			'C128' => 'C128',
+			'C128A' => 'C128A',
+			'C128B' => 'C128B',
+			'C128C' => 'C128C',
+			'EAN2' => 'EAN2',
+			'EAN5' => 'EAN5',
+			'EAN8' => 'EAN8',
+			'EAN13' => 'EAN13',
+			'ISBN' => 'EAN13',
+			'UPC' => 'UPCA',
+			'UPCE' => 'UPCE',
+			'MSI' => 'MSI',
+			'MSI+' => 'MSI+',
+			'POSTNET' => 'POSTNET',
+			'PLANET' => 'PLANET',
+			'RMS4CC' => 'RMS4CC',
+			'KIX' => 'KIX',
+			'IMB' => 'IMB',
+			'CODABAR' => 'CODABAR',
+			'CODE11' => 'CODE11',
+			// 'PHARMA' => 'PHARMA',
+			// 'PHARMA2T' => 'PHARMA2T',
+			'DATAMATRIX' => 'DATAMATRIX',
+			'QRCODE' => 'QRCODE',
+		]
+	),
 );
 
 

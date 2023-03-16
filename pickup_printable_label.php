@@ -150,6 +150,10 @@ function get_infos() {
   if ($what === 'product') {
     return get_product_infos();
   }
+
+  if ($what === 'pickup') {
+    return get_pickup_infos();
+  }
 }
 
 function get_test_infos() {
@@ -197,8 +201,52 @@ function get_test_infos() {
   ];
 }
 
+$cache_product_block = [];
+function product_block($product) {
+  global $conf, $cache_product_block;
+  if (array_key_exists($product->id, $cache_product_block)) {
+    return $cache_product_block[$product->id];
+  }
+
+  $barcode = null;
+  if (!empty($conf->global->PICKUP_PRINTABLE_LABEL_PRODUCTCARD_LINK)) {
+    $barcode = [
+      'barcode_type' => $conf->global->PICKUP_PRINTABLE_LABEL_PRODUCTCARD_LINK,
+      'code' => DOL_MAIN_URL_ROOT.'/product/card.php?id='.urlencode($product->id)
+    ];
+  }
+
+  $label = $product->ref;
+
+  $cache_product_block[$product->id] = ['label' => $label, 'barcode' => $barcode];
+  return $cache_product_block[$product->id];
+}
+
+$cache_pbatch_block = [];
+function batch_block($batch_number) {
+  global $conf, $cache_pbatch_block;
+
+  if (array_key_exists($batch_number, $cache_pbatch_block)) {
+    return $cache_pbatch_block[$batch_number];
+  }
+
+  $barcode = null;
+  if (!empty($conf->global->PICKUP_PRINTABLE_LABEL_BATCH)) {
+    $barcode = [
+      'barcode_type' => $conf->global->PICKUP_PRINTABLE_LABEL_BATCH,
+      'code' => $batch_number
+    ];
+  }
+
+  $cache_pbatch_block[$batch_number] = [
+    'label' => $batch_number,
+    'barcode' => $barcode
+  ];
+  return $cache_pbatch_block[$batch_number];
+}
+
 function get_product_infos() {
-  global $db;
+  global $db, $conf;
   $labels_info = [];
   dol_include_once('/product/class/product.class.php');
   $pids = GETPOST('product_id', 'array');
@@ -213,20 +261,68 @@ function get_product_infos() {
       continue;
     }
 
-    $label = empty($product->barcode) ? $product->ref : $product->barcode;
-    $barcode = null;
-    if (!empty($product->barcode)) {
-      $barcode = [
-        'barcode_type' => $product->barcode_type,
-        'code' => $product->barcode
-      ];
+    $labels_info[] = [
+      'blocks' => [product_block($product)]
+    ];
+  }
+
+  return $labels_info;
+}
+
+function get_pickup_infos() {
+  global $db, $conf;
+  $labels_info = [];
+  dol_include_once('/product/class/product.class.php');
+  dol_include_once('/pickup/class/pickup.class.php');
+  $pids = GETPOST('pickup_id', 'array');
+  foreach ($pids as $pid) {
+    $pid = intval($pid);
+    if (empty($pid)) {
+      continue;
+    }
+    $pickup = new Pickup($db);
+    if ($pickup->fetch($pid) <= 0) {
+      dol_syslog(__FUNCTION__.': pickup not found. pid='.$pid, LOG_ERR);
+      continue;
     }
 
-    $labels_info[] = [
-      'blocks' => [
-        ['label' => $label, 'barcode' => $barcode]
-      ]
-    ];
+    if ($pickup->fetchLines() < 0) {
+      dol_syslog(__FUNCTION__.': error on fetching pickuplines. pid='.$pid, LOG_ERR);
+      continue;
+    }
+    foreach ($pickup->lines as $pickup_line) {
+      $product = new Product($db);
+      if ($product->fetch($pickup_line->fk_product) <= 0) {
+        dol_syslog(__FUNCTION__.': product not found. pid='.$pid, LOG_ERR);
+        continue;
+      }
+
+      $pbatches = $pickup_line->fetchAssociatedBatch();
+      if (count($pbatches) === 0) {
+        // no batch number, printing just 1 label
+        $labels_info[] = [
+          'blocks' => [
+            product_block($product)
+          ]
+        ];
+      } else {
+        // 2 possible cases, depending on the product status_batch.
+        // But just printing one label per pbatch in both case.
+        foreach ($pbatches as $pbatch) {
+          $labels_info[] = [
+            'blocks' => [
+              product_block($product),
+              batch_block($pbatch->batch_number)
+            ]
+          ];
+        }
+      }
+      $labels_info[] = [
+        'blocks' => [
+          product_block($product)
+        ]
+      ];
+    }
   }
 
   return $labels_info;

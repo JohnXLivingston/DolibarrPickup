@@ -83,6 +83,7 @@ $(function () {
   definition.show_pickup = definitions.showPickup(
     useDEEE,
     usePBrand,
+    usePrintableLabel,
     useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume,
     'product', 'show_product_from_pickup', 'qty_edit',
     processingStatus ? { goto: 'save_pickup_status', processingStatus: processingStatus } : null,

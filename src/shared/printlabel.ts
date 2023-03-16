@@ -18,13 +18,17 @@ function _print (dom: JQuery | HTMLElement, url: string): void {
 function printProductLabel (dom: JQuery | HTMLElement, id: string): void {
   const url = new URL(printLabelUrl, window.location.origin)
   url.searchParams.set('what', 'product')
-  url.searchParams.set('product_id', id)
+  url.searchParams.set('product_id[]', id)
 
   _print(dom, url.toString())
 }
 
-function printPickupLabels (): void {
-  throw new Error('not implemented yet')
+function printPickupLabels (dom: JQuery | HTMLElement, id: string): void {
+  const url = new URL(printLabelUrl, window.location.origin)
+  url.searchParams.set('what', 'pickup')
+  url.searchParams.set('pickup_id[]', id)
+
+  _print(dom, url.toString())
 }
 
 function printPickupLineLabels (): void {
