@@ -1,7 +1,6 @@
 import type { StateDefinition, FormField, PickFields, ShowFields } from '../lib/state/index'
 import type { UnitsEditMode, UseUnit } from '../lib/utils/units'
 import { pushUnitFields } from './common'
-import { printProductLabel } from '../shared/printlabel'
 
 export function pickProduct (usePBrand: boolean, goto: string, creationGoto: string): StateDefinition {
   const fields: PickFields = []
@@ -248,7 +247,6 @@ export function saveEditProduct (goto: string, saveUntil: string, removeUntil: s
 export function showProduct (
   usePCat: boolean, useDEEE: boolean, usePBrand: boolean,
   useBatch: boolean,
-  usePrintableLabel: boolean,
   _unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   okGoto: string | undefined,
@@ -294,19 +292,6 @@ export function showProduct (
       type: 'varchar',
       name: 'pbrand',
       label: 'Marque'
-    })
-  }
-
-  if (usePrintableLabel) {
-    fields.push({
-      type: 'action',
-      name: 'print_label',
-      label: 'Imprimer étiquette',
-      actionFunc: (button: JQuery, data: any) => {
-        if (data?.rowid) {
-          printProductLabel(button, data.rowid)
-        }
-      }
     })
   }
 

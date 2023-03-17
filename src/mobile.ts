@@ -103,9 +103,9 @@ $(function () {
   }
   definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_product')
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)
-  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, useBatch, usePrintableLabel, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty', undefined, undefined)
+  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, useBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'qty', undefined, undefined)
 
-  definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, useBatch, usePrintableLabel, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, undefined, 'edit_product', 'edit_product_cat')
+  definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, useBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, undefined, 'edit_product', 'edit_product_cat')
   definition.edit_product = definitions.editProduct(usePCat, useDEEE, usePBrand, askHasBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_edit_product', 'reference_pcat_id')
   definition.save_edit_product = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
 
