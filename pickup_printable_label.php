@@ -171,6 +171,10 @@ function get_infos() {
   if ($what === 'pickup') {
     return get_pickup_infos();
   }
+
+  if ($what === 'pickupline') {
+    return get_pickupline_infos();
+  }
 }
 
 function get_test_infos() {
@@ -349,10 +353,44 @@ function get_product_infos() {
   return $labels_info;
 }
 
+function fill_pickupline_infos(&$labels_info, &$pickup_line) {
+  global $db, $conf;
+
+  dol_include_once('/product/class/product.class.php');
+  $product = new Product($db);
+  if ($product->fetch($pickup_line->fk_product) <= 0) {
+    dol_syslog(__FUNCTION__.': product not found. pid='.$pid, LOG_ERR);
+    return;
+  }
+
+  $pbatches = $pickup_line->fetchAssociatedBatch();
+  if (count($pbatches) === 0) {
+    // no batch number, printing just 1 label
+    $labels_info[] = [
+      'blocks' => [
+        product_block($product)
+      ],
+      'footers' => product_footers($product)
+    ];
+    return;
+  }
+
+  // 2 possible remaining cases, depending on the product status_batch.
+  // But just printing one label per pbatch in both case.
+  foreach ($pbatches as $pbatch) {
+    $labels_info[] = [
+      'blocks' => [
+        product_block($product),
+        batch_block($pbatch->batch_number)
+      ],
+      'footers' => product_footers($product)
+    ];
+  }
+}
+
 function get_pickup_infos() {
   global $db, $conf;
   $labels_info = [];
-  dol_include_once('/product/class/product.class.php');
   dol_include_once('/pickup/class/pickup.class.php');
   $pids = GETPOST('pickup_id', 'array');
   foreach ($pids as $pid) {
@@ -371,41 +409,31 @@ function get_pickup_infos() {
       continue;
     }
     foreach ($pickup->lines as $pickup_line) {
-      $product = new Product($db);
-      if ($product->fetch($pickup_line->fk_product) <= 0) {
-        dol_syslog(__FUNCTION__.': product not found. pid='.$pid, LOG_ERR);
-        continue;
-      }
-
-      $pbatches = $pickup_line->fetchAssociatedBatch();
-      if (count($pbatches) === 0) {
-        // no batch number, printing just 1 label
-        $labels_info[] = [
-          'blocks' => [
-            product_block($product)
-          ],
-          'footers' => product_footers($product)
-        ];
-      } else {
-        // 2 possible cases, depending on the product status_batch.
-        // But just printing one label per pbatch in both case.
-        foreach ($pbatches as $pbatch) {
-          $labels_info[] = [
-            'blocks' => [
-              product_block($product),
-              batch_block($pbatch->batch_number)
-            ],
-            'footers' => product_footers($product)
-          ];
-        }
-      }
-      $labels_info[] = [
-        'blocks' => [
-          product_block($product)
-        ],
-        'footers' => product_footers($product)
-      ];
+      fill_pickupline_infos($labels_info, $pickup_line);
     }
+  }
+
+  return $labels_info;
+}
+
+function get_pickupline_infos() {
+  global $db, $conf;
+  $labels_info = [];
+  dol_include_once('/pickup/class/pickup.class.php');
+  dol_include_once('/pickup/class/pickupline.class.php');
+  $plids = GETPOST('pickupline_id', 'array');
+  foreach ($plids as $plid) {
+    $plid = intval($plid);
+    if (empty($plid)) {
+      continue;
+    }
+    $pickup_line = new PickupLine($db);
+    if ($pickup_line->fetch($plid) <= 0) {
+      dol_syslog(__FUNCTION__.': pickupline not found. plid='.$plid, LOG_ERR);
+      continue;
+    }
+
+    fill_pickupline_infos($labels_info, $pickup_line);
   }
 
   return $labels_info;
