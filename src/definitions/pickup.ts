@@ -1,6 +1,6 @@
 import type { StateDefinition, ShowFields, FormField } from '../lib/state/index'
 import { UseUnit } from '../lib/utils/units'
-import { printLabelIconSVG, printPickupLabels } from '../shared/printlabel'
+import { printLabelIconSVG, printPickupLabels, printPickupLineLabels } from '../shared/printlabel'
 
 export function choosePickup (goto: string, creationGoto: string): StateDefinition {
   return {
@@ -189,6 +189,21 @@ export function showPickup (
     })
   }
 
+  if (usePrintableLabel) {
+    lineCols.push({
+      type: 'action',
+      name: 'print_line_label',
+      icon: printLabelIconSVG(),
+      iconTitle: 'Imprimer étiquettes',
+      label: '',
+      actionFunc: (button: JQuery, data: any) => {
+        if (data?.rowid) {
+          printPickupLineLabels(button, data.rowid)
+        }
+      }
+    })
+  }
+
   fields.push({
     type: 'lines',
     name: 'lines',
@@ -201,7 +216,8 @@ export function showPickup (
       type: 'action',
       name: 'print_label',
       icon: printLabelIconSVG(),
-      label: ' Imprimer étiquettes',
+      iconTitle: 'Imprimer étiquettes',
+      label: '',
       actionFunc: (button: JQuery, data: any) => {
         if (data?.rowid) {
           printPickupLabels(button, data.rowid)

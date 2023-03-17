@@ -45,8 +45,12 @@ function printPickupLabels (dom: JQuery | HTMLElement, id: string): void {
   _print(dom, url.toString())
 }
 
-function printPickupLineLabels (): void {
-  throw new Error('not implemented yet')
+function printPickupLineLabels (dom: JQuery | HTMLElement, id: string): void {
+  const url = new URL(printLabelUrl, window.location.origin)
+  url.searchParams.set('what', 'pickupline')
+  url.searchParams.set('pickupline_id[]', id)
+
+  _print(dom, url.toString())
 }
 
 function printLabelIconSVG (): string {

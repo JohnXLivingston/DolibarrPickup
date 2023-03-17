@@ -71,6 +71,7 @@ interface ShowFieldEdit extends ShowFieldBase {
 interface ShowFieldAction extends ShowFieldBase {
   type: 'action'
   icon?: string
+  iconTitle?: string
   actionFunc: (button: JQuery, data: any) => void
 }
 
@@ -111,6 +112,20 @@ class StateShow extends State {
 
   private _getValue (stack: Stack): string | undefined {
     return stack.searchValue(this.primaryKey)
+  }
+
+  public getField (fieldName: string, fields?: ShowField[]): ShowField | undefined {
+    if (!fields) { fields = this.fields }
+    for (const field of fields) {
+      if (field.name === fieldName) {
+        return field
+      }
+      if (('lines' in field) && field.lines) {
+        const f = this.getField(fieldName, field.lines)
+        if (f) { return f }
+      }
+    }
+    return undefined
   }
 
   retrieveData (stack: Stack, force: boolean): StateRetrievedData {
@@ -178,9 +193,9 @@ class StateShow extends State {
     dom.on('click.StateEvents', '[pickupmobile-show-action]', ev => {
       const a = $(ev.currentTarget)
       const action = a.attr('pickupmobile-show-action')
+      if (!action) { return }
       const data: any = JSON.parse(a.attr('pickupmobile-show-data') ?? '{}')
-      const fields = this.fields
-      const field = fields.find((f) => f.name === action)
+      const field = this.getField(action)
       if (!field) { return }
       if (!('actionFunc' in field)) { return }
       field.actionFunc(a, data)
