@@ -70,6 +70,7 @@ interface ShowFieldEdit extends ShowFieldBase {
 
 interface ShowFieldAction extends ShowFieldBase {
   type: 'action'
+  icon?: string
   actionFunc: (button: JQuery, data: any) => void
 }
 

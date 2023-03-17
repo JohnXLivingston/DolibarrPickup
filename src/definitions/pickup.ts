@@ -1,6 +1,6 @@
 import type { StateDefinition, ShowFields, FormField } from '../lib/state/index'
 import { UseUnit } from '../lib/utils/units'
-import { printPickupLabels } from '../shared/printlabel'
+import { printLabelIconSVG, printPickupLabels } from '../shared/printlabel'
 
 export function choosePickup (goto: string, creationGoto: string): StateDefinition {
   return {
@@ -200,7 +200,8 @@ export function showPickup (
     fields.push({
       type: 'action',
       name: 'print_label',
-      label: 'Imprimer étiquettes',
+      icon: printLabelIconSVG(),
+      label: ' Imprimer étiquettes',
       actionFunc: (button: JQuery, data: any) => {
         if (data?.rowid) {
           printPickupLabels(button, data.rowid)

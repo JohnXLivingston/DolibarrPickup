@@ -44,8 +44,13 @@
         class="btn btn-primary" role="button"
         pickupmobile-show-action="{{ field.name }}"
         pickupmobile-show-data="{{ data | dump }}"
+        {% if field.icon and field.label %}title="{{ field.label }}"{% endif %}
       >
-        {{ field.label }}
+        {% if field.icon %}
+          {{ field.icon | safe }}
+        {% else %}
+          {{ field.label }}
+        {% endif %}
       </a>
     {% elif field.type === 'lines' %}
       {{ printLines(field.lines, data[field.name]) }}
