@@ -73,6 +73,9 @@ class DataMobileActionPickupline extends DataMobileAction {
         return 0;
       }
 
+      // generate batch_numbers if needed:
+      $pickupline->ensurePBatches($user);
+
       $id = $pickupline->id;
     } else {
       // This is a creation

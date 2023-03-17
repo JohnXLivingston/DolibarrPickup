@@ -298,6 +298,7 @@ class ActionsPickup
 						}
 					} else {
 						$line->updateAssociatedBatch($batch, $user);
+						// $line->ensurePBatches($user);
 						unset($_POST['qty']);
 						unset($_POST['weight']);
 						unset($_POST['weight_units']);
