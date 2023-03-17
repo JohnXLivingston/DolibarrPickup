@@ -54,22 +54,13 @@ function printPickupLineLabels (dom: JQuery | HTMLElement, id: string): void {
 }
 
 function printLabelIconSVG (): string {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="16" fill="currentColor" viewBox="0 0 64 16">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" fill="currentColor" viewBox="0 0 32 16">
   <g id="bars" fill="currentColor" stroke="none">
     <rect x="0" y="0" width="4" height="30"></rect>
     <rect x="6" y="0" width="2" height="30"></rect>
     <rect x="12" y="0" width="2" height="30"></rect>
     <rect x="22" y="0" width="4" height="30"></rect>
     <rect x="28" y="0" width="6" height="30"></rect>
-    <rect x="36" y="0" width="2" height="30"></rect>
-    <rect x="44" y="0" width="2" height="30"></rect>
-    <rect x="48" y="0" width="6" height="30"></rect>
-    <rect x="60" y="0" width="4" height="30"></rect>
-    <rect x="66" y="0" width="2" height="30"></rect>
-    <rect x="70" y="0" width="6" height="30"></rect>
-    <rect x="78" y="0" width="8" height="30"></rect>
-    <rect x="88" y="0" width="4" height="30"></rect>
-    <rect x="96" y="0" width="4" height="30"></rect>
   </g>
 </svg>`
   // return `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-qr-code" viewBox="0 0 16 16">
