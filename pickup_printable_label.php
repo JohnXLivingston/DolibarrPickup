@@ -120,25 +120,42 @@ function print_labels($labels_info) {
   foreach ($labels_info as $label_info) {
     ?><div class="page"><?php
     if (!empty($label_info['blocks']) && is_array($label_info['blocks'])) {
+      ?><div class="blocks"><?php
       foreach ($label_info['blocks'] as $block_info) {
         print_block($block_info);
       }
+      ?></div><?php
+    }
+    if (!empty($label_info['footers']) && is_array($label_info['footers'])) {
+      ?><div class="footers"><?php
+      foreach ($label_info['footers'] as $footer) {
+        ?><span class="footer"><?php
+        print_label($footer);
+        ?></span><?php
+      }
+      ?></div><?php
     }
     ?></div><?php
   }
 }
 
 function print_block($block_info) {
+  if (empty($block_info)) { return; }
+
   ?><span class="block"><?php
   if (!empty($block_info['barcode'])) {
     print_barcode($block_info['barcode']['barcode_type'], $block_info['barcode']['code']);
   }
-  if (!empty($block_info['label'])) {
-    ?><label><?php
-    print htmlspecialchars($block_info['label']);
-    ?></label><?php
-  }
+  print_label($block_info);
   ?></span><?php
+}
+
+function print_label($info) {
+  if (empty($info['label'])) { return; }
+
+  ?><label class="<?php if (array_key_exists('label_align', $info)) { print $info['label_align'] ?? ''; } ?>"><?php
+  print htmlspecialchars($info['label']);
+  ?></label><?php
 }
 
 function get_infos() {
@@ -157,46 +174,102 @@ function get_infos() {
 }
 
 function get_test_infos() {
+  global $conf;
+  $link_barcode_type = empty($conf->global->PICKUP_PRINTABLE_LABEL_PRODUCTCARD_LINK) ? 'DATAMATRIX' : $conf->global->PICKUP_PRINTABLE_LABEL_PRODUCTCARD_LINK;
+  $batch_barcode_type = empty($conf->global->PICKUP_PRINTABLE_LABEL_BATCH) ? 'C128' : $conf->global->PICKUP_PRINTABLE_LABEL_BATCH;
   return [
     [
       'blocks' => [
         [
-          'barcode' => ['barcode_type' => 'DATAMATRIX', 'code' => 'MARSHALL MX100'],
-          'label' => 'MARSHALL MX100'
+          'barcode' => ['barcode_type' =>  $link_barcode_type, 'code' => 'MARSHALL MX100'],
         ],
         [
-          'barcode' => ['barcode_type' => 'C128', 'code' => 'SN0123456789'],
-          'label' => 'SN0123456789'
-        ]
-      ]
+          'barcode' => ['barcode_type' => $batch_barcode_type, 'code' => 'SN0123456789'],
+          'label' => 'SN0123456789',
+          'label_align' => 'center'
+        ],
+      ],
+      'footers' => [[
+        'label' => 'MARSHALL MX100',
+        'label_align' => 'left'
+      ], [
+        'label' => 'ANOTHER LINE',
+        'label_align' => 'left'
+      ]]
     ],
     [
       'blocks' => [
         [
-          'barcode' => ['barcode_type' => 'DATAMATRIX', 'code' => 'UNE_REF_BIDON'],
-          'label' => 'UNE_REF_BIDON'
+          'barcode' => ['barcode_type' => $link_barcode_type, 'code' => 'UNE_REF_BIDON'],
         ],
         [
           'barcode' => ['barcode_type' => 'C128', 'code' => 'SN0123456790'],
-          'label' => 'SN0123456790'
+          'label' => 'SN0123456790',
+          'label_align' => 'center'
         ]
-      ]
+      ],
+      'footers' => [[
+        'label' => 'UNE_REF_BIDON',
+        'label_align' => 'left'
+      ]]
+    ],
+    [
+      'blocks' => [
+        [
+          'barcode' => ['barcode_type' => $link_barcode_type, 'code' => 'UNE_REF_BIDON'],
+        ],
+        [
+          'barcode' => ['barcode_type' => 'C128', 'code' => 'SN0123456790'],
+          'label' => 'SN0123456790',
+          'label_align' => 'center'
+        ]
+      ],
+      'footers' => [[
+        'label' => 'UNE_REF_BIDON_MAIS_TRES_LONGUE_POUR_VOIR',
+        'label_align' => 'left'
+      ]]
     ],
     [
       'blocks' => [
         [
           'barcode' => ['barcode_type' => null, 'code' => 'UNE_REF_BIDON'],
-          'label' => 'BARCODE_DEFAULT_TYPE'
         ]
-      ]
+      ],
+      'footers' => [[
+        'label' => 'BARCODE_DEFAULT_TYPE',
+        'label_align' => 'left'
+      ]]
     ],
     [
       'blocks' => [
         [
           'barcode' => ['barcode_type' => '7', 'code' => 'UNE_REF_BIDON'],
-          'label' => 'BARCODE_NUMERIC'
         ]
-      ]
+      ],
+      'footers' => [[
+        'label' => 'BARCODE_NUMERIC',
+        'label_align' => 'left'
+      ]]
+    ],
+    [
+      'blocks' => [
+        [
+          'barcode' => null,
+        ]
+      ],
+      'footers' => [[
+        'label' => 'EMPTY_BARCODE',
+        'label_align' => 'left'
+      ]]
+    ],
+    [
+      'blocks' => [
+        null
+      ],
+      'footers' => [[
+        'label' => 'NULL_BLOCK',
+        'label_align' => 'left'
+      ]]
     ]
   ];
 }
@@ -208,18 +281,23 @@ function product_block($product) {
     return $cache_product_block[$product->id];
   }
 
-  $barcode = null;
-  if (!empty($conf->global->PICKUP_PRINTABLE_LABEL_PRODUCTCARD_LINK)) {
-    $barcode = [
-      'barcode_type' => $conf->global->PICKUP_PRINTABLE_LABEL_PRODUCTCARD_LINK,
-      'code' => DOL_MAIN_URL_ROOT.'/product/card.php?id='.urlencode($product->id)
-    ];
+  if (empty($conf->global->PICKUP_PRINTABLE_LABEL_PRODUCTCARD_LINK)) {
+    return null;
   }
 
-  $label = $product->ref;
+  $barcode = [
+    'barcode_type' => $conf->global->PICKUP_PRINTABLE_LABEL_PRODUCTCARD_LINK,
+    'code' => DOL_MAIN_URL_ROOT.'/product/card.php?id='.urlencode($product->id)
+  ];
 
-  $cache_product_block[$product->id] = ['label' => $label, 'barcode' => $barcode];
+  $cache_product_block[$product->id] = ['barcode' => $barcode];
   return $cache_product_block[$product->id];
+}
+
+function product_footers($product) {
+  return [
+    ['label' => $product->ref, 'label_align' => 'left']
+  ];
 }
 
 $cache_pbatch_block = [];
@@ -240,6 +318,7 @@ function batch_block($batch_number) {
 
   $cache_pbatch_block[$batch_number] = [
     'label' => $batch_number,
+    'label_align' => 'center',
     'barcode' => $barcode
   ];
   return $cache_pbatch_block[$batch_number];
@@ -262,7 +341,8 @@ function get_product_infos() {
     }
 
     $labels_info[] = [
-      'blocks' => [product_block($product)]
+      'blocks' => [product_block($product)],
+      'footers' => product_footers($product)
     ];
   }
 
@@ -303,7 +383,8 @@ function get_pickup_infos() {
         $labels_info[] = [
           'blocks' => [
             product_block($product)
-          ]
+          ],
+          'footers' => product_footers($product)
         ];
       } else {
         // 2 possible cases, depending on the product status_batch.
@@ -313,14 +394,16 @@ function get_pickup_infos() {
             'blocks' => [
               product_block($product),
               batch_block($pbatch->batch_number)
-            ]
+            ],
+            'footers' => product_footers($product)
           ];
         }
       }
       $labels_info[] = [
         'blocks' => [
           product_block($product)
-        ]
+        ],
+        'footers' => product_footers($product)
       ];
     }
   }

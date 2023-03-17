@@ -26,9 +26,21 @@ body {
 .page {
   break-after: page;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   gap: 5mm;
+  justify-content: start;
+}
+
+.blocks {
+  display: flex;
+  flex-flow: row nowrap;
   justify-content: space-between;
+}
+
+.footers {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
 }
 
 .block {
@@ -37,13 +49,25 @@ body {
   gap: 1mm;
   justify-content: center;
 
-  label {
-    white-space: nowrap;
-  }
-
   img,
   svg {
     max-width: 100%;
     width: fit-content;
+  }
+}
+
+label {
+  white-space: nowrap;
+
+  &.center {
+    align-self: center;
+  }
+
+  &.left {
+    align-self: flex-start;
+  }
+
+  &.right {
+    align-self: flex-end;
   }
 }
