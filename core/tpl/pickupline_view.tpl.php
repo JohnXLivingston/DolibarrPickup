@@ -75,10 +75,24 @@ $coldisplay = 0; ?>
         $pbatches = $line->fetchAssociatedBatch();
         if ($line_product->hasbatch() || !empty($pbatches)) {
           print '<br>';
-          $batch_warning = (($object->status == $object::STATUS_PROCESSING || $object->status == $object::STATUS_DRAFT) && empty($pbatches));
+          $batch_warning = false;
+          $batch_warning_too_many = false;
+          if ($object->status == $object::STATUS_PROCESSING || $object->status == $object::STATUS_DRAFT) {
+            if (empty($pbatches)) {
+              $batch_warning = true;
+            } else {
+              if ($line_product->status_batch == 2) {
+                if (count($pbatches) != $line->qty) {
+                  $batch_warning_too_many = true;
+                }
+              } else {
+
+              }
+            }
+          }
           $hide_batch_number = false;
 
-          print '<div style="white-space: nowrap; '.($batch_warning ? 'color: orange;' : '').'">';
+          print '<div style="white-space: nowrap; '.($batch_warning || $batch_warning_too_many ? 'color: orange;' : '').'">';
 
           print $langs->trans('Batch') . ': ';
 
@@ -93,7 +107,7 @@ $coldisplay = 0; ?>
               print ' <a class="editfielda" href="';
               print $_SERVER["PHP_SELF"];
               print '?id='.$object->id.'&amp;action=editlinebatch&amp;lineid='.$line->id.'#line_'.$line->id;
-              print '"">'.img_edit($langs->transnoentitiesnoconv('Batch'), 0).'</a> ';
+              print '">'.img_edit($langs->transnoentitiesnoconv('Batch'), 0).'</a> ';
             }
           }
 
@@ -110,7 +124,28 @@ $coldisplay = 0; ?>
           }
 
           if ($batch_warning) {
-            print img_warning($langs->trans('PickupFixLineBatch'));
+            // Can we fix it?
+            if (
+              (($object->status == $object::STATUS_PROCESSING || $object->status == $object::STATUS_DRAFT) && $object->canEditPickup())
+              &&
+              (
+                ($line_product->status_batch == 2 && !empty($conf->global->PICKUP_DEFAULT_UNIQUE_BATCH))
+                ||
+                ($line_product->status_batch == 1 && !empty($conf->global->PICKUP_DEFAULT_BATCH))
+              )
+            ) {
+              print ' <a class="" href="';
+              print $_SERVER["PHP_SELF"];
+              print '?id='.$object->id.'&amp;action=fixlinebatchnumber&amp;lineid='.$line->id.'#line_'.$line->id;
+              print '">';
+              print img_warning($langs->trans('PickupMissingBatch'). '. ' . $langs->trans('PickupMissingBatchGenerate'));
+              print '</a> ';
+            } else {
+              print img_warning($langs->trans('PickupMissingBatch'));
+            }
+          }
+          if ($batch_warning_too_many) {
+            print img_warning($langs->trans('PickupTooManyBatch'));
           }
 
           print '</div>';

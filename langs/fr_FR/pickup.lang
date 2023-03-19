@@ -144,7 +144,9 @@ ConfirmPickupActionSign = Êtes-vous sûr de vouloir passer cette collecte en st
 PickupUnitValue = Unitaire
 
 PickupFixLine = Remonter les informations du produit
-PickupFixLineBatch = Numéro de Lot/Série manquant
+PickupMissingBatch = Numéro de Lot/Série manquant
+PickupMissingBatchGenerate = Cliquez pour les générer
+PickupTooManyBatch = Trop de numéros de Lot/Série
 DEEE = DEEE
 DEEEType = Type DEEE
 DEEETotal = Total DEEE

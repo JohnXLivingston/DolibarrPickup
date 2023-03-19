@@ -418,6 +418,28 @@ class ActionsPickup
 			exit;
 		}
 
+		if ($action == 'fixlinebatchnumber' && $parameters['permissionedit'] && !empty($object->id)) {
+			dol_syslog(__METHOD__ . ' ' . 'fixlinebatchnumber action', LOG_DEBUG);
+
+			$lineid   = GETPOST('lineid', 'int');
+
+			$line = new PickupLine($db);
+			if ($line->fetch($lineid) <= 0) {
+				if (!empty($line->error)) {
+					array_push($errors, $line->error);
+				}
+				if (!empty($line->errors)) {
+					$errors = array_merge($errors, $line->errors);
+				}
+			} else if ($line->fk_pickup !== $object->id) {
+				dol_syslog(__METHOD__ . ' ' . 'Line '.$line->id.' is not from pickup '.$object->id, LOG_ERR);
+			} else {
+				$line->ensurePBatches($user);
+				header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+				exit;
+			}
+		}
+
 		if ($action == 'confirm_processing' && GETPOST('confirm') == 'yes' && $pickup_rights->workflow->processing) {
 			$object->status = Pickup::STATUS_PROCESSING;
 			if ($object->update($user) <= 0) {

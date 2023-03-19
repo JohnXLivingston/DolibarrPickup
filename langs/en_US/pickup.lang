@@ -144,7 +144,9 @@ ConfirmPickupActionSign = Are you sure you want to set this pickup as signed?
 PickupUnitValue = Per unit
 
 PickupFixLine = Get product information
-PickupFixLineBatch = Missing batch number
+PickupMissingBatch = Missing batch Number
+PickupMissingBatchGenerate = Cliquez pour les générer
+PickupTooManyBatch = Trop de numéros de Lot/Série
 DEEE = DEEE
 DEEEType = DEEE Type
 DEEETotal = DEEE total
