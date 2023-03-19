@@ -13,12 +13,17 @@ function _print (dom: JQuery | HTMLElement, url: string): void {
   iframe.style.display = 'none'
 
   let waitingElement: HTMLElement | undefined
+  let removeDisabledClass = false
   if (domElement.classList.contains('btn')) {
     // It seems we are using a Boostrap button (mobile app), so we can use Bootstrap spinner element
     waitingElement = document.createElement('span')
     waitingElement.classList.add('spinner-border')
     waitingElement.classList.add('spinner-border-sm')
     dom.prepend(waitingElement)
+  } else if (domElement.classList.contains('button')) {
+    // We must be on the classic Dolibarr interface.
+    removeDisabledClass = true
+    domElement.classList.add('disabled')
   }
 
   domElement.after(iframe)
@@ -26,6 +31,9 @@ function _print (dom: JQuery | HTMLElement, url: string): void {
   iframe.onload = () => {
     iframe.contentWindow?.print()
     waitingElement?.remove()
+    if (removeDisabledClass) {
+      domElement.classList.remove('disabled')
+    }
   }
 }
 

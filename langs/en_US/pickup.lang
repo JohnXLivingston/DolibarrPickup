@@ -178,3 +178,5 @@ PickupDictType = Pickup type
 MailToSendPickup = Pickup
 
 PickupModifyAllCat = Modify all
+
+PickupPrintLabel = Imprimer étiquettes

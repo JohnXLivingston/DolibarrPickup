@@ -59,4 +59,12 @@ else header('Cache-Control: no-cache');
 
 /* Javascript library of module Pickup */
 
-
+if (window.dolibarrPickupSetPrintLabelUrl) {
+  window.dolibarrPickupSetPrintLabelUrl('<?php print dol_buildpath('/custom/pickup/pickup_printable_label.php', 1) ?>')
+} else if ($) {
+  $(function() {
+    if (window.dolibarrPickupSetPrintLabelUrl) {
+      window.dolibarrPickupSetPrintLabelUrl('<?php print dol_buildpath('/custom/pickup/pickup_printable_label.php', 1) ?>')
+    }
+  })
+}

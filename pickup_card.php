@@ -519,6 +519,11 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	if ($action != 'presend' && $action != 'editline' && $action != 'editlinebatch') {
     	print '<div class="tabsAction">'."\n";
+			// the print label button
+			if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) {
+				print $object->printLabelButton();
+			}
+
     	$parameters=array(
 				'permissiontoadd' => $permissiontoadd,
 				'permissionedit' => $permissionedit

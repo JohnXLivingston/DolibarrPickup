@@ -572,4 +572,24 @@ class PickupLine extends CommonObjectLine
 			$this->updateAssociatedBatch($batch_numbers, $user);
 		}
 	}
+
+	public function printLabelButton() {
+		global $langs;
+		$button = '<a class="button buttongen"';
+		$button.= ' onclick="window.dolibarrPickupPrintPickupLineLabels(this, \''.htmlspecialchars($this->id).'\');"';
+		$button.= ' title="'.$langs->trans('PickupPrintLabel').'"';
+		$button.= ' style="min-width: 34px;"';
+		$button.= '>';
+		$button.= '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" fill="currentColor" viewBox="0 0 32 16">';
+		$button.= '<g id="bars" fill="currentColor" stroke="none">';
+		$button.= '	<rect x="0" y="0" width="4" height="30"></rect>';
+		$button.= '	<rect x="6" y="0" width="2" height="30"></rect>';
+		$button.= '	<rect x="12" y="0" width="2" height="30"></rect>';
+		$button.= '	<rect x="22" y="0" width="4" height="30"></rect>';
+		$button.= '	<rect x="28" y="0" width="6" height="30"></rect>';
+		$button.= '</g>';
+		$button.= '</svg>';
+		$button.= '</a>';
+		return $button;
+	}
 }

@@ -178,3 +178,5 @@ PickupDictType = Type de collecte
 MailToSendPickup = Collecte
 
 PickupModifyAllCat = Tout modifier
+
+PickupPrintLabel = Imprimer étiquettes

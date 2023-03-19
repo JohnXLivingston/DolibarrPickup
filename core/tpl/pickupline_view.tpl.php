@@ -112,6 +112,12 @@ $coldisplay = 0; ?>
           }
 
           if (!$hide_batch_number) {
+            // the print label button
+            if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) {
+              print $line->printLabelButton();
+            }
+
+            // pbatches list
             foreach ($pbatches as $pbatch) {
               print '<br>';
               $productlot = $pbatch->getProductLot();
