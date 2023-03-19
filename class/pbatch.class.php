@@ -1147,4 +1147,13 @@ class PBatch extends CommonObject
 		dolibarr_set_const($db, 'PICKUP_CURRENT_PBATCH_CPT', strval($cpt));
 		return $batch_number;
 	}
+
+	public function getProductLot() {
+		require_once DOL_DOCUMENT_ROOT . '/product/stock/class/productlot.class.php';
+		$productlot = new Productlot($this->db);
+		if ($productlot->fetch(0, $this->fk_product, $this->batch_number) <= 0) {
+			return null;
+		}
+		return $productlot;
+	}
 }

@@ -98,7 +98,15 @@ $coldisplay = 0; ?>
           }
 
           if (!$hide_batch_number) {
-            print '<br>'.implode('<br>', array_map(function ($pbatch) { return htmlspecialchars($pbatch->batch_number); }, $pbatches));
+            foreach ($pbatches as $pbatch) {
+              print '<br>';
+              $productlot = $pbatch->getProductLot();
+              if (!empty($productlot)) {
+                print $productlot->getNomUrl();
+              } else {
+                print htmlspecialchars($pbatch->batch_number);
+              }
+            }
           }
 
           if ($batch_warning) {
