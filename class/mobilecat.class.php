@@ -103,6 +103,19 @@ class PickupMobileCat extends CommonObject
 			'arrayofkeyval'=>array(), // this is set in the constructor.
 			'help' => 'MobileCatForm'
 		),
+		'batch_constraint'  => array(
+			'type'=>'varchar(20)',
+			'label'=>'Batch',
+			'enabled'=>'1', // it can be changed in the constructor.
+			'position'=>63, 'notnull'=>-1, 'visible'=>1,
+			'arrayofkeyval'=>array(
+				'' => '',
+				'batch_status_0' => 'ProductStatusNotOnBatch',
+				'batch_status_1' => 'ProductStatusOnBatch',
+				'batch_status_2' => 'ProductStatusOnSerial'
+			),
+			'help' => 'MobileCatBatchConstraint'
+		),
 		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>'1', 'position'=>500, 'notnull'=>1, 'visible'=>-2,),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>-1, 'visible'=>-2,),
 		'fk_user_creat' => array('type'=>'integer', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>510, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid',),
@@ -119,6 +132,7 @@ class PickupMobileCat extends CommonObject
 	public $fk_category;
 	public $active;
 	public $form;
+	public $batch_constraint;
 	public $date_creation;
 	public $tms;
 	public $fk_user_creat;
@@ -170,10 +184,16 @@ class PickupMobileCat extends CommonObject
 	{
 		global $conf, $langs;
 
+		$langs->loadLangs(array('pickup@pickup', 'productbatch'));
+
 		$this->db = $db;
 
 		if (empty($conf->global->MAIN_SHOW_TECHNICAL_ID) && isset($this->fields['rowid'])) $this->fields['rowid']['visible']=0;
 		if (empty($conf->multicompany->enabled) && isset($this->fields['entity'])) $this->fields['entity']['enabled']=0;
+
+		if (empty($conf->productbatch->enabled)) {
+			$this->fields['batch_constraint']['enabled'] = 0;
+		}
 
 		// Unset fields that are disabled
 		foreach($this->fields as $key => $val)
@@ -189,7 +209,9 @@ class PickupMobileCat extends CommonObject
 			if (is_array($val['arrayofkeyval'])) {
 				foreach($val['arrayofkeyval'] as $key2 => $val2)
 				{
-					$this->fields[$key]['arrayofkeyval'][$key2]=$langs->trans($val2);
+					if ($val2 !== '') {
+						$this->fields[$key]['arrayofkeyval'][$key2] = $langs->trans($val2);
+					}
 				}
 			}
 		}

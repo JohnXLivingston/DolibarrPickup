@@ -65,7 +65,7 @@ require_once __DIR__ . '/class/mobilecat.class.php';
 dol_include_once('/categories/class/categorie.class.php');
 
 // Load translation files required by the page
-$langs->loadLangs(array("pickup@pickup","other"));
+$langs->loadLangs(array("pickup@pickup","productbatch","other"));
 
 $action     = GETPOST('action', 'aZ09')?GETPOST('action', 'aZ09'):'view';				// The action 'add', 'create', 'edit', 'update', 'view', ...
 $massaction = GETPOST('massaction', 'alpha');											// The bulk action (combo box choice into lists)
@@ -254,12 +254,19 @@ function mobilecat_list_array_fields(&$object, &$extrafields) {
  * Get the massactionbutton var.
  */
 function mobilecat_list_get_massactionbutton($permissionedit) {
-	global $form, $langs;
+	global $form, $langs, $object;
 
 	$arrayofmassactions = array();
 	if ($permissionedit) {
 		$arrayofmassactions['mobile_activate'] = img_picto('', 'check', 'class="pictofixedwidth"').$langs->trans("MobileCatEnable");
 		$arrayofmassactions['mobile_deactivate'] = img_picto('', 'uncheck', 'class="pictofixedwidth"').$langs->trans("MobileCatDisable");
+
+		if (array_key_exists('batch_constraint', $object->fields)) {
+			$arrayofmassactions['batch_constraint_set_empty'] = img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans("Batch").': -';
+			$arrayofmassactions['batch_constraint_set_0'] = img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans("Batch").': '.$langs->trans('ProductStatusNotOnBatch');
+			$arrayofmassactions['batch_constraint_set_1'] = img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans("Batch").': '.$langs->trans('ProductStatusOnBatch');
+			$arrayofmassactions['batch_constraint_set_2'] = img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans("Batch").': '.$langs->trans('ProductStatusOnSerial');
+		}
 	}
 
 	$massactionbutton = $form->selectMassAction('', $arrayofmassactions);
@@ -286,7 +293,15 @@ function mobilecat_list_check_actions(&$object, &$cancel, &$action, &$massaction
 		$action = 'list';
 		$massaction = '';
 	}
-	if (!$permissionedit && ($massaction === 'mobile_activate' || $massaction === 'mobile_deactivate')) {
+	if (
+		!$permissionedit
+		&& (
+			in_array($massaction, [
+				'mobile_activate', 'mobile_deactivate',
+				'batch_constraint_set_empty', 'batch_constraint_set_0', 'batch_constraint_set_1', 'batch_constraint_set_2'
+			])
+		)
+	) {
 		$action = 'list';
 		$massaction = '';
 	}
@@ -353,6 +368,10 @@ function mobilecat_list_handle_actions(&$object, &$arrayfields, &$action, &$mass
 		mobilecat_list_handle_action_mass_activate($object, $toselect, $permissionedit, true);
 	} elseif ($massaction === 'mobile_deactivate') {
 		mobilecat_list_handle_action_mass_activate($object, $toselect, $permissionedit, false);
+	} elseif (preg_match('/^batch_constraint_set_(empty|0|1|2)$/', $massaction, $batch_constraint_matches)) {
+		$batch_constraint_val = $batch_constraint_matches[1];
+		$batch_constraint_val = $batch_constraint_val === 'empty' ? $batch_constraint_val = '' : 'batch_status_'.$batch_constraint_val;
+		mobilecat_list_handle_action_mass_batch_constraint_set($object, $toselect, $permissionedit, $batch_constraint_val);
 	}
 }
 
@@ -426,10 +445,10 @@ function mobilecat_list_handle_action_update_one_line(&$object, &$arrayfields, $
 			$mobilecat->notes = empty($notes) || $notes === '' ? null : $notes;
 			continue;
 		}
-		if (in_array($key, array('form'))) {
-			$form_value = GETPOST($line_edit_prefix.'form', 'alpha');
+		if (in_array($key, array('form', 'batch_constraint'))) {
+			$form_value = GETPOST($line_edit_prefix.$key, 'alpha');
 			if (empty($form_value) || array_key_exists($form_value, $val['arrayofkeyval'])) {
-				$mobilecat->form = $form_value;
+				$mobilecat->$key = $form_value;
 			}
 			continue;
 		}
@@ -497,6 +516,53 @@ function mobilecat_list_handle_action_mass_activate(&$object, &$toselect, $permi
 				dol_print_error($db);
 				exit;
 			}
+		}
+	}
+}
+
+function mobilecat_list_handle_action_mass_batch_constraint_set(&$object, &$toselect, $permissionedit, $val) {
+	global $db, $user;
+
+	if (empty($permissionedit)) {
+		// should not happen, mobilecat_list_check_actions should have checked.
+		// But just in case...
+		return;
+	}
+
+	if (empty($toselect) || !is_array($toselect)) {
+		return;
+	}
+
+	foreach ($toselect as $cat_id) {
+		if (!is_numeric($cat_id)) {
+			continue;
+		}
+		$cat = new Categorie($db);
+		if ($cat->fetch($cat_id) <= 0) {
+			// Error and not found => return
+			dol_syslog(__FUNCTION__." Error: cant find the category ".$cat_id.". ".$db->lasterror(), LOG_ERR);
+			continue;
+		}
+		$mobilecat = new PickupMobileCat($db);
+		if ($mobilecat->fetchByCategory($cat->id) < 0) {
+			// Here it is ok if there is no mobilecat.
+			dol_syslog(__FUNCTION__." Error: error when fetching the mobilecat for category ".$cat_id.". ".$db->lasterror(), LOG_ERR);
+			continue;
+		}
+
+		if (!$mobilecat->id) {
+			continue;
+		}
+
+		if ($mobilecat->batch_constraint === $val) {
+			// already the good value.
+			continue;
+		}
+
+		$mobilecat->batch_constraint = $val;
+		if ($mobilecat->update($user) < 0) {
+			dol_print_error($db);
+			exit;
 		}
 	}
 }
@@ -863,13 +929,13 @@ function mobilecat_list_print_table_content_line_field (
 			$line_edit_prefix
 		);
 	} elseif (!empty($mobilecat)) {
-		if ($key == 'form') {
-			if (empty($mobilecat->form)) {
+		if (in_array($key, ['form', 'batch_constraint'])) {
+			if (empty($mobilecat->$key)) {
 				print '-';
-			} else if (array_key_exists($mobilecat->form, $val['arrayofkeyval'])) {
-				print htmlspecialchars($val['arrayofkeyval'][$mobilecat->form]);
+			} else if (array_key_exists($mobilecat->$key, $val['arrayofkeyval'])) {
+				print $val['arrayofkeyval'][$mobilecat->$key]; // no htmlspecialchars, because it can come from $langs->trans, which adds htmlentities
 			} else {
-				print htmlspecialchars($mobilecat->form);
+				print htmlspecialchars($mobilecat->$key);
 			}
 		} elseif ($key == 'status') print $mobilecat->getLibStatut(5);
 		elseif (in_array($val['type'], array('date','datetime','timestamp'))) print $mobilecat->showOutputField($val, $key, $db->jdate($obj->$key), '');

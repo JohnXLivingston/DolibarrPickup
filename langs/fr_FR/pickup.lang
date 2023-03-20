@@ -122,6 +122,7 @@ MyWidgetDescription = Description de mon widget
 PickupMobileApp = Application mobile
 MobileCats = Catégories pour l'application mobile
 MobileCatForm = Formulaire à utiliser dans l'application mobile
+MobileCatBatchConstraint = Permet de contraindre les produits créés depuis l'appli mobile concernant les numéros de lot/série.
 MobileCatDescription = Notes à afficher dans l'application mobile à coté du champs «Description du produit»
 MobileCatEnable = Utiliser dans l'application mobile
 MobileCatDisable = Ne pas utiliser dans l'application mobile
