@@ -261,6 +261,12 @@ function mobilecat_list_get_massactionbutton($permissionedit) {
 		$arrayofmassactions['mobile_activate'] = img_picto('', 'check', 'class="pictofixedwidth"').$langs->trans("MobileCatEnable");
 		$arrayofmassactions['mobile_deactivate'] = img_picto('', 'uncheck', 'class="pictofixedwidth"').$langs->trans("MobileCatDisable");
 
+		if (array_key_exists('deee_constraint', $object->fields)) {
+			foreach ($object->fields['deee_constraint']['arrayofkeyval'] as $value => $label) {
+				$arrayofmassactions['deee_constraint_set_'.$value] = img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans("DEEEType").': '.$label;
+			}
+		}
+
 		if (array_key_exists('batch_constraint', $object->fields)) {
 			$arrayofmassactions['batch_constraint_set_empty'] = img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans("Batch").': -';
 			$arrayofmassactions['batch_constraint_set_0'] = img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans("Batch").': '.$langs->trans('ProductStatusNotOnBatch');
@@ -372,6 +378,8 @@ function mobilecat_list_handle_actions(&$object, &$arrayfields, &$action, &$mass
 		$batch_constraint_val = $batch_constraint_matches[1];
 		$batch_constraint_val = $batch_constraint_val === 'empty' ? $batch_constraint_val = '' : 'batch_status_'.$batch_constraint_val;
 		mobilecat_list_handle_action_mass_batch_constraint_set($object, $toselect, $permissionedit, $batch_constraint_val);
+	} elseif (preg_match('/^deee_constraint_set_(\w*)$/', $massaction, $deee_constraint_matches)) {
+		mobilecat_list_handle_action_mass_deee_constraint_set($object, $toselect, $permissionedit, $deee_constraint_matches[1]);
 	}
 }
 
@@ -566,6 +574,62 @@ function mobilecat_list_handle_action_mass_batch_constraint_set(&$object, &$tose
 		}
 	}
 }
+
+
+function mobilecat_list_handle_action_mass_deee_constraint_set(&$object, &$toselect, $permissionedit, $val) {
+	global $db, $user;
+
+	if (empty($permissionedit)) {
+		// should not happen, mobilecat_list_check_actions should have checked.
+		// But just in case...
+		return;
+	}
+
+	if (empty($toselect) || !is_array($toselect)) {
+		return;
+	}
+
+	$val = $val ?? '';
+	$mobilecat = new PickupMobileCat($db);
+	$arrayofkeyval = $mobilecat->fields['deee_constraint']['arrayofkeyval'];
+	if (!array_key_exists($val, $arrayofkeyval)) {
+		return;
+	}
+
+	foreach ($toselect as $cat_id) {
+		if (!is_numeric($cat_id)) {
+			continue;
+		}
+		$cat = new Categorie($db);
+		if ($cat->fetch($cat_id) <= 0) {
+			// Error and not found => return
+			dol_syslog(__FUNCTION__." Error: cant find the category ".$cat_id.". ".$db->lasterror(), LOG_ERR);
+			continue;
+		}
+		$mobilecat = new PickupMobileCat($db);
+		if ($mobilecat->fetchByCategory($cat->id) < 0) {
+			// Here it is ok if there is no mobilecat.
+			dol_syslog(__FUNCTION__." Error: error when fetching the mobilecat for category ".$cat_id.". ".$db->lasterror(), LOG_ERR);
+			continue;
+		}
+
+		if (!$mobilecat->id) {
+			continue;
+		}
+
+		if ($mobilecat->deee_constraint === $val) {
+			// already the good value.
+			continue;
+		}
+
+		$mobilecat->deee_constraint = $val;
+		if ($mobilecat->update($user) < 0) {
+			dol_print_error($db);
+			exit;
+		}
+	}
+}
+
 
 /**
  * Load needed data.
