@@ -155,6 +155,11 @@ $coldisplay = 0; ?>
           }
 
           print '</div>';
+        } else {
+          // the print label button
+          if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) {
+            print $line->printLabelButton();
+          }
         }
       }
 
