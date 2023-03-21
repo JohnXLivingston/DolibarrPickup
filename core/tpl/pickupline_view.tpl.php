@@ -75,24 +75,34 @@ $coldisplay = 0; ?>
         $pbatches = $line->fetchAssociatedBatch();
         if ($line_product->hasbatch() || !empty($pbatches)) {
           print '<br>';
-          $batch_warning = false;
+          $batch_warning_missing = false;
           $batch_warning_too_many = false;
           if ($object->status == $object::STATUS_PROCESSING || $object->status == $object::STATUS_DRAFT) {
             if (empty($pbatches)) {
-              $batch_warning = true;
+              $batch_warning_missing = true;
             } else {
               if ($line_product->status_batch == 2) {
-                if (count($pbatches) != $line->qty) {
+                if (count($pbatches) > $line->qty) {
                   $batch_warning_too_many = true;
+                } else if (count($pbatches) < $line->qty) {
+                  $batch_warning_missing = true;
+                }
+              } else if ($line_product->status_batch == 1) {
+                if (count($pbatches) > 1) {
+                  $batch_warning_too_many = true;
+                } else if (count($pbatches) < 1) {
+                  $batch_warning_missing = true;
                 }
               } else {
-
+                if (count($pbatches) > 0) {
+                  $batch_warning_too_many = true;
+                }
               }
             }
           }
           $hide_batch_number = false;
 
-          print '<div style="white-space: nowrap; '.($batch_warning || $batch_warning_too_many ? 'color: orange;' : '').'">';
+          print '<div style="white-space: nowrap; '.($batch_warning_missing || $batch_warning_too_many ? 'color: orange;' : '').'">';
 
           print $langs->trans('Batch') . ': ';
 
@@ -129,7 +139,7 @@ $coldisplay = 0; ?>
             }
           }
 
-          if ($batch_warning) {
+          if ($batch_warning_missing) {
             // Can we fix it?
             if (
               (($object->status == $object::STATUS_PROCESSING || $object->status == $object::STATUS_DRAFT) && $object->canEditPickup())
