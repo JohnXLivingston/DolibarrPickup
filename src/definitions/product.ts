@@ -1,4 +1,4 @@
-import type { StateDefinition, FormField, PickFields, ShowFields } from '../lib/state/index'
+import { StateDefinition, FormField, PickFields, ShowFields, StateDefinitionLoadData, FormFieldSelectFilterOptions } from '../lib/state/index'
 import type { UnitsEditMode, UseUnit } from '../lib/utils/units'
 import { pushUnitFields } from './common'
 
@@ -48,8 +48,69 @@ function getDeeeField (pcatStackKey: string): FormField {
   }
 }
 
+function getHasBatchField (pcatStackKey: string, usePCat: boolean): FormField {
+  let filterOptions: FormFieldSelectFilterOptions | undefined
+  if (usePCat) {
+    filterOptions = (field, stack, retrievedData) => {
+      const pcatData = retrievedData.get('all_pcats')
+      if (!pcatData || pcatData.status !== 'resolved') {
+        console.log('product_hasbatch.filterOptions: data are not loaded')
+        return field.options
+      }
+      const pcatId = stack.searchValue(pcatStackKey)
+      if (!pcatId) {
+        console.error('product_hasbatch.filterOptions: no pcat in stack')
+        return field.options
+      }
+
+      const currentPcat = (pcatData.data as any[]).find(el => el.rowid === pcatId)
+      if (!currentPcat) {
+        console.error('product_hasbatch.filterOptions: did not found the current pcat, with id=' + pcatId)
+        return field.options
+      }
+
+      if (!currentPcat.batch_constraint || currentPcat.batch_constraint === '') {
+        console.log('product_hasbatch.filterOptions: the current pcat has not batch_constraint')
+        return field.options
+      }
+
+      console.log('product_hasbatch.filterOptions: batch_constraint is: ', currentPcat.batch_constraint)
+      return field.options.filter(option => {
+        switch (currentPcat.batch_constraint) {
+          case 'batch_status_0':
+            return option.value === '0'
+          case 'batch_status_1':
+            return option.value === '1'
+          case 'batch_status_2':
+            return option.value === '2'
+        }
+        console.log('product_hasbatch.filterOptions: invalid batch_constraint:', currentPcat.batch_constraint)
+        return false
+      })
+    }
+  }
+
+  return {
+    type: 'select',
+    name: 'product_hasbatch',
+    label: 'Utiliser les numéros de lots/série',
+    mandatory: false,
+    options: [
+      { value: '0', label: 'Non' },
+      { value: '1', label: 'Lot/Série' },
+      { value: '2', label: 'Numéro de série unique' }
+    ],
+    filterOptions,
+    edit: {
+      getDataFromSourceKey: 'hasbatch'
+    }
+  }
+}
+
 export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: boolean, askHasBatch: boolean, goto: string, pcatStackName: string): StateDefinition {
   const fields: FormField[] = []
+
+  let mustLoadPCat = false
 
   if (usePBrand) {
     fields.push({
@@ -81,20 +142,12 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bo
   })
 
   if (askHasBatch) {
-    fields.push({
-      type: 'select',
-      name: 'product_hasbatch',
-      label: 'Utiliser les numéros de lots/série',
-      mandatory: false,
-      options: [
-        { value: '0', label: 'Non' },
-        { value: '1', label: 'Lot/Série' },
-        { value: '2', label: 'Numéro de série unique' }
-      ]
-    })
+    mustLoadPCat = true
+    fields.push(getHasBatchField(pcatStackName, usePCat))
   }
 
   if (useDEEE) {
+    mustLoadPCat = true
     const deeeField: FormField = getDeeeField(pcatStackName)
     fields.push(deeeField)
   }
@@ -116,11 +169,21 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bo
     notes: descriptionNotes
   })
 
+  const loadData: StateDefinitionLoadData[] = []
+  if (mustLoadPCat && usePCat && pcatStackName) {
+    loadData.push({
+      dataKey: 'pcat',
+      retrievedDataKey: 'all_pcats',
+      requestType: 'list'
+    })
+  }
+
   return {
     type: 'form',
     label: 'Remplir la fiche produit',
     goto,
-    fields
+    fields,
+    loadData
   }
 }
 
@@ -133,21 +196,11 @@ export function editProduct (
 ): StateDefinition {
   const fields: FormField[] = []
 
+  let mustLoadPCat = false
+
   if (askHasBatch) {
-    fields.push({
-      type: 'select',
-      name: 'product_hasbatch',
-      label: 'Utiliser les numéros de lots/série',
-      mandatory: false,
-      options: [
-        { value: '0', label: 'Non' },
-        { value: '1', label: 'Lot/Série' },
-        { value: '2', label: 'Numéro de série unique' }
-      ],
-      edit: {
-        getDataFromSourceKey: 'hasbatch'
-      }
-    })
+    mustLoadPCat = true
+    fields.push(getHasBatchField(pcatStackName, usePCat))
   }
 
   if (useDEEE) {
@@ -179,6 +232,15 @@ export function editProduct (
     }
   })
 
+  const loadData: StateDefinitionLoadData[] = []
+  if (mustLoadPCat && usePCat && pcatStackName) {
+    loadData.push({
+      dataKey: 'pcat',
+      retrievedDataKey: 'all_pcats',
+      requestType: 'list'
+    })
+  }
+
   return {
     type: 'form',
     label: 'Corriger la fiche produit',
@@ -187,7 +249,8 @@ export function editProduct (
       getDataKey: 'product'
     },
     goto,
-    fields
+    fields,
+    loadData
   }
 }
 

@@ -1,11 +1,20 @@
 import type { NunjucksVars } from '../nunjucks'
-import type { ResultData } from '../data'
+import type { GetDataParams, ResultData } from '../data'
 import { Stack } from '../stack'
 import { RenderReason } from '../constants'
 import { Veto } from '../veto'
+import { getData } from '../data'
+
+interface StateDefinitionLoadData {
+  dataKey: string
+  retrievedDataKey?: string // optional: name to use for setting retrieved data
+  requestType: string
+  requestParams?: GetDataParams
+}
 
 interface StateDefinitionBase {
   label: string
+  loadData?: StateDefinitionLoadData[]
 }
 
 type StateRetrievedData = Map<string, ResultData | false> // false means «missing key»
@@ -13,14 +22,23 @@ type StateRetrievedData = Map<string, ResultData | false> // false means «missi
 abstract class State {
   readonly type: string
   readonly label: string
+  readonly loadData: StateDefinitionBase['loadData']
 
   constructor (type: string, definition: StateDefinitionBase) {
     this.type = type
     this.label = definition.label
+    this.loadData = definition.loadData
   }
 
-  retrieveData (_stack: Stack, _force: boolean): StateRetrievedData {
-    return new Map<string, ResultData>()
+  retrieveData (_stack: Stack, force: boolean): StateRetrievedData {
+    const r = new Map<string, ResultData>()
+    if (!this.loadData) {
+      return r
+    }
+    for (const load of this.loadData) {
+      r.set(load.retrievedDataKey ?? load.dataKey, getData(load.dataKey, load.requestType, force, load.requestParams))
+    }
+    return r
   }
 
   renderVars (stack: Stack, retrievedData: StateRetrievedData): NunjucksVars {
@@ -127,6 +145,7 @@ interface PossibleNunjucks {
 
 export {
   State,
+  StateDefinitionLoadData,
   StateDefinitionBase,
   StateRetrievedData,
   PossibleNunjucks

@@ -57,10 +57,11 @@ interface FormFieldSelectOption {
   value: string
   label: string
 }
-type FormFieldSelectLoadFilter = (option: FormFieldSelectOption) => boolean
+type FormFieldSelectFilterOptions = (field: FormFieldSelect, stack: Stack, retrievedData: StateRetrievedData) => FormFieldSelectOption[]
 interface FormFieldSelectSimple extends FormFieldBase {
   type: 'select'
   options: FormFieldSelectOption[]
+  filterOptions?: FormFieldSelectFilterOptions // a function to filter values, just before the rendering (ie: all data are available)
 }
 interface FormFieldSelectDynamicLoadParamsFromStack {
   type: 'stack'
@@ -73,7 +74,6 @@ interface FormFieldSelectDynamic extends FormFieldBase {
   readonly?: boolean
   load: string
   loadParams?: FormFieldSelectDynamicLoadParams
-  loadFilter?: FormFieldSelectLoadFilter // a function to filter values
   dontAddEmptyOption?: boolean
   map: {value: string, label: string}
 }
@@ -153,6 +153,16 @@ class StateForm extends State {
   _renderVars (stack: Stack, retrievedData: StateRetrievedData, h: NunjucksVars): void {
     this.initDateDefaults()
     h.useDefaultValues = !stack.isAnyValue()
+    h.filteredOptions = {}
+    for (const field of this.fields) {
+      if ('options' in field) {
+        h.filteredOptions[field.name] = field.options
+      }
+      if (('filterOptions' in field) && field.filterOptions) {
+        console.log('form._renderVars: field ' + field.name + ' use filterOptions, calling it.')
+        h.filteredOptions[field.name] = field.filterOptions(field, stack, retrievedData)
+      }
+    }
   }
 
   bindEvents (dom: JQuery, stack: Stack): void {
@@ -290,9 +300,6 @@ class StateForm extends State {
               field.options.unshift({ value: '', label: '-' })
             }
           }
-          if (field.loadFilter) {
-            field.options = field.options.filter(field.loadFilter)
-          }
         }
       }
     }
@@ -407,5 +414,5 @@ export {
   StateForm,
   StateFormDefinition,
   FormField,
-  FormFieldSelectLoadFilter
+  FormFieldSelectFilterOptions
 }
