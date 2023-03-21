@@ -111,7 +111,7 @@ class PickupMobileCat extends CommonObject
 				'pam_or_pampro' => 'PAM ou PAM Pro',
 				'ecr_or_ecrpro' => 'ECR ou ECR Pro'
 			),
-			'help' => 'MobileCatForm'
+			'help' => 'MobileCatDEEEConstraint'
 		),
 		'batch_constraint'  => array(
 			'type'=>'varchar(20)',
