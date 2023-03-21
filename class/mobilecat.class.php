@@ -201,7 +201,7 @@ class PickupMobileCat extends CommonObject
 		if (empty($conf->global->MAIN_SHOW_TECHNICAL_ID) && isset($this->fields['rowid'])) $this->fields['rowid']['visible']=0;
 		if (empty($conf->multicompany->enabled) && isset($this->fields['entity'])) $this->fields['entity']['enabled']=0;
 
-		if (empty($conf->productbatch->enabled)) {
+		if (empty($conf->productbatch->enabled) || $conf->global->PICKUP_DEFAULT_HASBATCH !== 'ask') {
 			$this->fields['batch_constraint']['enabled'] = 0;
 		}
 		if (empty($conf->global->PICKUP_USE_DEEE)) {
