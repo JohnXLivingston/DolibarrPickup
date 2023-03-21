@@ -503,7 +503,16 @@ class modPickup extends DolibarrModules
             array(
                 'sql' => "ALTER TABLE ".MAIN_DB_PREFIX."pickup_pickupline DROP COLUMN IF EXISTS batch ",
                 'ignoreerror' => true
-            )
+            ),
+            array(
+                // column mobilecat.form must be migrated to deee_constraint if still exists
+                'sql' => "UPDATE ".MAIN_DB_PREFIX."pickup_mobilecat set deee_constraint = SUBSTR(form, 21) where form LIKE 'create_product_deee_%'",
+                'ignoreerror' => true
+            ),
+            array (
+                'sql' => "ALTER TABLE ".MAIN_DB_PREFIX."pickup_mobilecat DROP COLUMN IF EXISTS form",
+                'ignoreerror' => true
+            ),
         );
 
         if (

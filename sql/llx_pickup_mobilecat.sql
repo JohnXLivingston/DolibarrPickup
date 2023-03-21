@@ -19,7 +19,7 @@ CREATE TABLE llx_pickup_mobilecat(
 	fk_category integer NOT NULL,
 	active boolean DEFAULT 1 NOT NULL,
 	batch_constraint varchar(20),
-	form varchar(255),
+	deee_constraint varchar(40),
 	date_creation datetime NOT NULL,
 	tms timestamp,
 	fk_user_creat integer NOT NULL,

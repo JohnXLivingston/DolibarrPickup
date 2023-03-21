@@ -20,7 +20,64 @@ export function pickProduct (usePBrand: boolean, goto: string, creationGoto: str
   }
 }
 
-function getDeeeField (pcatStackKey: string): FormField {
+function getDeeeField (pcatStackKey: string, usePCat: boolean): FormField {
+  let filterOptions: FormFieldSelectFilterOptions | undefined
+  if (usePCat) {
+    filterOptions = (field, stack, retrievedData) => {
+      const pcatData = retrievedData.get('all_pcats')
+      if (!pcatData || pcatData.status !== 'resolved') {
+        console.log('product_deee_type.filterOptions: data are not loaded')
+        return field.options
+      }
+      const pcatId = stack.searchValue(pcatStackKey)
+      if (!pcatId) {
+        console.error('product_deee_type.filterOptions: no pcat in stack')
+        return field.options
+      }
+
+      const currentPcat = (pcatData.data as any[]).find(el => el.rowid === pcatId)
+      if (!currentPcat) {
+        console.error('product_deee_type.filterOptions: did not found the current pcat, with id=' + pcatId)
+        return field.options
+      }
+
+      if (!currentPcat.deee_constraint || currentPcat.deee_constraint === '') {
+        console.log('product_deee_type.filterOptions: the current pcat has not deee_constraint')
+        return field.options
+      }
+
+      console.log('product_deee_type.filterOptions: deee_constraint is: ', currentPcat.deee_constraint)
+      // console.log('product_deee_type.filterOptions: before filtering: ', field.options)
+      const r = field.options.filter(option => {
+        switch (currentPcat.deee_constraint) {
+          case 'off':
+            return option.value === ''
+          case 'gef':
+            return option.value === 'gef'
+          case 'ghf':
+            return option.value === 'ghf'
+          case 'pam':
+            return option.value === 'pam'
+          case 'pampro':
+            return option.value === 'pampro'
+          case 'ecr':
+            return option.value === 'ecr'
+          case 'ecrpro':
+            return option.value === 'ecrpro'
+          case 'pam_or_pampro':
+            return option.value === 'pam' || option.value === 'pam_pro'
+          case 'ecr_or_ecrpro':
+            return option.value === 'ecr' || option.value === 'ecr_pro'
+        }
+        console.log('product_deee_type.filterOptions: invalid deee_constraint:', currentPcat.deee_constraint)
+        return false
+      })
+
+      // console.log('product_deee_type.filterOptions: after filtering: ', r)
+      return r
+    }
+  }
+
   return {
     type: 'select',
     name: 'product_deee_type',
@@ -31,17 +88,14 @@ function getDeeeField (pcatStackKey: string): FormField {
     options: [],
     load: 'dict',
     loadParams: {
-      what: 'deee_type',
-      pcat: {
-        key: pcatStackKey,
-        type: 'stack'
-      }
+      what: 'deee_type'
     },
     dontAddEmptyOption: true,
     map: {
       value: 'value',
       label: 'label'
     },
+    filterOptions,
     edit: {
       getDataFromSourceKey: 'deee_type'
     }
@@ -148,7 +202,7 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bo
 
   if (useDEEE) {
     mustLoadPCat = true
-    const deeeField: FormField = getDeeeField(pcatStackName)
+    const deeeField: FormField = getDeeeField(pcatStackName, usePCat)
     fields.push(deeeField)
   }
 
@@ -204,7 +258,7 @@ export function editProduct (
   }
 
   if (useDEEE) {
-    const deeeField: FormField = getDeeeField(pcatStackName)
+    const deeeField: FormField = getDeeeField(pcatStackName, usePCat)
     fields.push(deeeField)
   }
 

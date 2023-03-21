@@ -14,4 +14,4 @@
 -- along with this program.  If not, see https://www.gnu.org/licenses/.
 
 ALTER TABLE llx_pickup_mobilecat ADD IF NOT EXISTS batch_constraint varchar(20) DEFAULT '' AFTER active;
-
+ALTER TABLE llx_pickup_mobilecat ADD IF NOT EXISTS deee_constraint varchar(40) DEFAULT '' AFTER batch_constraint;

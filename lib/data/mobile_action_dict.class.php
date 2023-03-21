@@ -42,63 +42,13 @@ class DataMobileActionDict extends DataMobileAction {
       $extrafields = new ExtraFields($db);
       $extrafields->fetch_name_optionals_label('product');
 
-      $pcat_filter_id = GETPOST('pcat', 'int');
-      $acceptable_values = null;
-      if (!empty($pcat_filter_id)) {
-        dol_include_once('/pickup/class/mobilecat.class.php');
-        $mobilecat = new PickupMobileCat($db);
-        if ($mobilecat->fetchByCategory($pcat_filter_id) <= 0) {
-          dol_syslog(__METHOD__." Mobilecat not found for pcat=$pcat_filter_id", LOG_ERR);
-          return 0;
-        }
-        if ($mobilecat->active && !empty($mobilecat->form)) {
-          $pcat_form = $mobilecat->form;
-          switch ($pcat_form) {
-            case 'create_product_deee_off':
-              $acceptable_values = [];
-              break;
-            case 'create_product_deee_gef':
-              $acceptable_values = ['gef'];
-              break;
-            case 'create_product_deee_ghf':
-              $acceptable_values = ['ghf'];
-              break;
-            case 'create_product_deee_pam':
-              $acceptable_values = ['pam'];
-              break;
-            case 'create_product_deee_pampro':
-              $acceptable_values = ['pam_pro'];
-              break;
-            case 'create_product_deee_ecr':
-              $acceptable_values = ['ecr'];
-              break;
-            case 'create_product_deee_ecrpro':
-              $acceptable_values = ['ecr_pro'];
-              break;
-            case 'create_product_deee_pam_or_pampro':
-              $acceptable_values = ['pam', 'pam_pro'];
-              break;
-            case 'create_product_deee_ecr_or_ecrpro':
-              $acceptable_values = ['ecr', 'ecr_pro'];
-              break;
-          }
-        }
-      }
-
       $options = $extrafields->attributes['product']['param']['pickup_deee_type']['options'];
       $result = array();
-      if (empty($acceptable_values)) { // includes the case where $acceptable_values = [];
-        array_push($result, [
-          'value' => '',
-          'label' => '-'
-        ]);
-      }
+      array_push($result, [
+        'value' => '',
+        'label' => '-'
+      ]);
       foreach ($options as $key => $val) {
-        if ($acceptable_values !== null) {
-          if (!in_array(strval($key), $acceptable_values)) {
-            continue;
-          }
-        }
         array_push($result, array(
           'value' => strval($key),
           'label' => $val

@@ -445,7 +445,7 @@ function mobilecat_list_handle_action_update_one_line(&$object, &$arrayfields, $
 			$mobilecat->notes = empty($notes) || $notes === '' ? null : $notes;
 			continue;
 		}
-		if (in_array($key, array('form', 'batch_constraint'))) {
+		if (in_array($key, array('deee_constraint', 'batch_constraint'))) {
 			$form_value = GETPOST($line_edit_prefix.$key, 'alpha');
 			if (empty($form_value) || array_key_exists($form_value, $val['arrayofkeyval'])) {
 				$mobilecat->$key = $form_value;
@@ -929,7 +929,7 @@ function mobilecat_list_print_table_content_line_field (
 			$line_edit_prefix
 		);
 	} elseif (!empty($mobilecat)) {
-		if (in_array($key, ['form', 'batch_constraint'])) {
+		if (in_array($key, ['deee_constraint', 'batch_constraint'])) {
 			if (empty($mobilecat->$key)) {
 				print '-';
 			} else if (array_key_exists($mobilecat->$key, $val['arrayofkeyval'])) {

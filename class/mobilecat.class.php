@@ -94,13 +94,23 @@ class PickupMobileCat extends CommonObject
 			'comment'=>"Is this category used in mobile pickup app",
 			'help' => 'MobileCatEnable'
 		),
-		'form' => array(
-			'type'=>'varchar(255)',
-			'label'=>'Formulaire',
-			'enabled'=>'1',
+		'deee_constraint' => array(
+			'type'=>'varchar(40)',
+			'label'=>'DEEEType',
+			'enabled'=>'1', // it can be changed in the constructor.
 			'position'=>62, 'notnull'=>-1, 'visible'=>1,
-			'comment'=>"The form name for the mobile pickup app",
-			'arrayofkeyval'=>array(), // this is set in the constructor.
+			'arrayofkeyval'=>array(
+				'' => '',
+				'off' => 'Non DEEE',
+				'gef' => 'GEF',
+				'ghf' => 'GHF',
+				'pam' => 'PAM',
+				'pampro' => 'PAM Pro',
+				'ecr' => 'ECR (Ecran < 1m2)',
+				'ecrpro' => 'ECR Pro (Ecran > 1m2)',
+				'pam_or_pampro' => 'PAM ou PAM Pro',
+				'ecr_or_ecrpro' => 'ECR ou ECR Pro'
+			),
 			'help' => 'MobileCatForm'
 		),
 		'batch_constraint'  => array(
@@ -131,7 +141,7 @@ class PickupMobileCat extends CommonObject
 	public $rowid;
 	public $fk_category;
 	public $active;
-	public $form;
+	public $deee_constraint;
 	public $batch_constraint;
 	public $date_creation;
 	public $tms;
@@ -194,6 +204,9 @@ class PickupMobileCat extends CommonObject
 		if (empty($conf->productbatch->enabled)) {
 			$this->fields['batch_constraint']['enabled'] = 0;
 		}
+		if (empty($conf->global->PICKUP_USE_DEEE)) {
+			$this->fields['deee_constraint']['enabled'] = 0;
+		}
 
 		// Unset fields that are disabled
 		foreach($this->fields as $key => $val)
@@ -214,27 +227,6 @@ class PickupMobileCat extends CommonObject
 					}
 				}
 			}
-		}
-
-		// FIXME: this is a dirty fix. Waiting to replace the 'form' field by other fields (should be do very soon).
-		if (array_key_exists('form', $this->fields)) {
-			$mobileforms = array();
-			$mobileforms[''] = 'Formulaire par défaut';
-
-			if (!empty($conf->global->PICKUP_USE_DEEE)) {
-				// FIXME: following values (create_product_*) format comes from the old «itemGotoField» system.
-				// 	We should replace this when we will replace the 'form' field.
-				$mobileforms['create_product_deee_off'] = 'Non DEEE';
-				$mobileforms['create_product_deee_gef'] = 'GEF';
-				$mobileforms['create_product_deee_ghf'] = 'GHF';
-				$mobileforms['create_product_deee_pam'] = 'PAM';
-				$mobileforms['create_product_deee_pampro'] = 'PAM Pro';
-				$mobileforms['create_product_deee_ecr'] = 'ECR (Ecran < 1m2)';
-				$mobileforms['create_product_deee_ecrpro'] = 'ECR Pro (Ecran > 1m2)';
-				$mobileforms['create_product_deee_pam_or_pampro'] = 'PAM ou PAM Pro';
-				$mobileforms['create_product_deee_ecr_or_ecrpro'] = 'ECR ou ECR Pro';
-			}
-			$this->fields['form']['arrayofkeyval'] = $mobileforms;
 		}
 	}
 
