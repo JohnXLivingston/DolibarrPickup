@@ -208,10 +208,10 @@ foreach my $PROJECT (@PROJECTLIST) {
   }
   my $PROJVERSION = '';
   while(<IN>) {
-    if ($_ =~ /this->version\s*=\s*'([\d\.]+)'/) { $PROJVERSION=$1; last; }
+    if ($_ =~ /this->version\s*=\s*'([\d\.]+(-beta\d+)?)'/) { $PROJVERSION=$1; last; }
   }
   close IN;
-  if ($PROJVERSION !~ /^\d+\.\d+(\.\d+)?$/) {
+  if ($PROJVERSION !~ /^\d+\.\d+(\.\d+)?(-beta\d+)?$/) {
     print "Invalid project version number: '$PROJVERSION'.\n";
     print "Aborting...";
     sleep(2);
@@ -467,9 +467,9 @@ foreach my $PROJECT (@PROJECTLIST) {
 }
 
 
-if (! $batch) {
-    print "\nPress key to finish...";
-    my $WAITKEY=<STDIN>;
-}
+# if (! $batch) {
+#     print "\nPress key to finish...";
+#     my $WAITKEY=<STDIN>;
+# }
 
 0;
