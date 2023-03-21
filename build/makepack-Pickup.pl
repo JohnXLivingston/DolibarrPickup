@@ -220,6 +220,7 @@ foreach my $PROJECT (@PROJECTLIST) {
 	print "Project version: ".$PROJVERSION."\n";
 
 	my ($MAJOR,$MINOR,$BUILD)=split(/\./,$PROJVERSION,3);
+  $BUILD =~ s/-beta/./;
 
 	my $FILENAME="$PROJECTLC";
 	my $ARCHIVEFILENAME="module_$PROJECTLC-$MAJOR.$MINOR".($BUILD ne '' ? ".$BUILD" : "");
