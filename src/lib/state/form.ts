@@ -345,6 +345,7 @@ class StateForm extends State {
         sv.display = value === '1' ? 'Yes' : 'No'
       }
       if (field.type === 'select') {
+        // FIXME: if the field has a filterOptions attribute, it is not taken into account here.
         const option = field.options.find(o => o.value === sv.value)
         if (option) {
           sv.display = option.label
