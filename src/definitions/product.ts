@@ -59,11 +59,11 @@ function getDeeeField (pcatStackKey: string, usePCat: boolean): FormField {
           case 'pam':
             return option.value === 'pam'
           case 'pampro':
-            return option.value === 'pampro'
+            return option.value === 'pam_pro'
           case 'ecr':
             return option.value === 'ecr'
           case 'ecrpro':
-            return option.value === 'ecrpro'
+            return option.value === 'ecr_pro'
           case 'pam_or_pampro':
             return option.value === 'pam' || option.value === 'pam_pro'
           case 'ecr_or_ecrpro':
