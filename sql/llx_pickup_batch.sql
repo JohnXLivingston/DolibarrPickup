@@ -22,7 +22,7 @@ CREATE TABLE llx_pickup_batch(
 	fk_product integer NOT NULL,
   -- the pickupline attached to this batch number (could be null when the number was not generated from a pickup)
 	fk_pickupline integer DEFAULT NULL,
-	batch_number varchar(255) DEFAULT NULL,
+	batch_number varchar(30) NOT NULL,
 	tms timestamp NOT NULL, 
 	fk_user_creat integer NOT NULL, 
 	fk_user_modif integer

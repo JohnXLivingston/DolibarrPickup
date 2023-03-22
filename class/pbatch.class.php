@@ -126,7 +126,7 @@ class PBatch extends CommonObject
 			'notnull'=>0, 'visible'=>1, 'index'=>1, 'foreignkey'=>'pickup_pickupline.rowid',
 		),
 		'batch_number'         => array(
-			'type'=>'varchar(255)',
+			'type'=>'varchar(30)',
 			'label'=>'BatchNumber', 'enabled'=>1, 'visible'=>1, 'position'=>10
 		),
 
