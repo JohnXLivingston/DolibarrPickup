@@ -61,6 +61,14 @@ function printPickupLineLabels (dom: JQuery | HTMLElement, id: string): void {
   _print(dom, url.toString())
 }
 
+function printProductLotLabel (dom: JQuery | HTMLElement, id: string): void {
+  const url = new URL(printLabelUrl, window.location.origin)
+  url.searchParams.set('what', 'product_lot')
+  url.searchParams.set('productlot_id[]', id)
+
+  _print(dom, url.toString())
+}
+
 function printLabelIconSVG (): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" fill="currentColor" viewBox="0 0 32 16">
   <g id="bars" fill="currentColor" stroke="none">
@@ -85,5 +93,6 @@ export {
   printProductLabel,
   printPickupLabels,
   printPickupLineLabels,
+  printProductLotLabel,
   printLabelIconSVG
 }

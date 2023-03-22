@@ -909,9 +909,37 @@ class ActionsPickup
 	}
 
 	public function addMoreActionsButtons($parameters, &$object, &$action) {
-		if ($object->table_element != 'pickup_pickup') {
+		global $langs, $conf;
+
+		if ($object->table_element === 'pickup_pickup') {
+			return $this->_PickupAddMoreActionsButtons($parameters, $object, $action);
+		}
+		if ($object->table_element === 'product_lot') {
+			if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) {
+				$langs->load("pickup@pickup");
+				$button = '<a class="button buttongen"';
+				$button.= ' onclick="window.dolibarrProductLotPrintLabel(this, \''.htmlspecialchars($object->id).'\');"';
+				$button.= ' title="'.$langs->trans('PickupPrintLabel').'"';
+				$button.= ' style="min-width: 34px;"';
+				$button.= '>';
+				$button.= '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" fill="currentColor" viewBox="0 0 32 16">';
+				$button.= '<g id="bars" fill="currentColor" stroke="none">';
+				$button.= '	<rect x="0" y="0" width="4" height="30"></rect>';
+				$button.= '	<rect x="6" y="0" width="2" height="30"></rect>';
+				$button.= '	<rect x="12" y="0" width="2" height="30"></rect>';
+				$button.= '	<rect x="22" y="0" width="4" height="30"></rect>';
+				$button.= '	<rect x="28" y="0" width="6" height="30"></rect>';
+				$button.= '</g>';
+				$button.= '</svg>';
+				$button.= '</a>';
+				print $button;
+			}
 			return 0;
 		}
+		return 0;
+	}
+
+	protected function _PickupAddMoreActionsButtons($parameters, &$object, &$action) {
 		global $langs, $conf;
 		$pickup_rights = $object->getRights();
 		if ($object->status == Pickup::STATUS_DRAFT) {

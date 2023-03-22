@@ -175,6 +175,10 @@ function get_infos() {
   if ($what === 'pickupline') {
     return get_pickupline_infos();
   }
+
+  if ($what === 'product_lot') {
+    return get_productlot_infos();
+  }
 }
 
 function get_test_infos() {
@@ -434,6 +438,42 @@ function get_pickupline_infos() {
     }
 
     fill_pickupline_infos($labels_info, $pickup_line);
+  }
+
+  return $labels_info;
+}
+
+
+function get_productlot_infos() {
+  global $db, $conf;
+  $labels_info = [];
+  dol_include_once('/product/stock/class/productlot.class.php');
+  $plids = GETPOST('productlot_id', 'array');
+  foreach ($plids as $plid) {
+    $plid = intval($plid);
+    if (empty($plid)) {
+      continue;
+    }
+    $product_lot = new Productlot($db);
+    if ($product_lot->fetch($plid) <= 0) {
+      dol_syslog(__FUNCTION__.': productlot not found. plid='.$plid, LOG_ERR);
+      continue;
+    }
+
+    dol_include_once('/product/class/product.class.php');
+    $product = new Product($db);
+    if ($product->fetch($product_lot->fk_product) <= 0) {
+      dol_syslog(__FUNCTION__.': product not found. pid='.$pid, LOG_ERR);
+      return;
+    }
+
+    $labels_info[] = [
+      'blocks' => [
+        product_block($product),
+        batch_block($product_lot->batch)
+      ],
+      'footers' => product_footers($product)
+    ];
   }
 
   return $labels_info;
