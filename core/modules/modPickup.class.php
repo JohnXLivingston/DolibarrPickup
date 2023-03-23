@@ -108,7 +108,7 @@ class modPickup extends DolibarrModules
             'hooks' => array(
                 'data' => array(
                     'pickupcard',
-                    // 'productlotcard',
+                    'productlotcard',
                     'emailtemplates'
                 )
                 //   'data' => array(
