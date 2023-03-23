@@ -28,6 +28,8 @@ en préfixe des références produits (si elle n'est pas déjà en préfixe).
 * Application mobile: ajout du choix «numéro de série unique». Ce choix peut être contraint en fonction du tag.
 * Settings: on peut forcer les produits créés depuis l'appli mobile à utiliser des numéros de série uniques.
 * Options pour la génération automatique de numéros de lot/série (uniques ou non) depuis l'application mobile.
+* Ajout de boutons pour créer des numéros de série depuis les écrans de correction de stock.
+* Amélioration de l'ergonomie Dolibarr: quand on créé des mouvements de stocks sur des produits avec numéro unique, on initialise la quantité à 1.
 
 ## 1.5.0
 

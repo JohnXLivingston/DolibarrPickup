@@ -914,11 +914,14 @@ class ActionsPickup
 		if ($object->table_element === 'pickup_pickup') {
 			return $this->_PickupAddMoreActionsButtons($parameters, $object, $action);
 		}
+		if ($object->table_element === 'product') {
+			return $this->_ProductAddMoreActionsButton($parameters, $object, $action);
+		}
 		if ($object->table_element === 'product_lot') {
 			if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) {
 				$langs->load("pickup@pickup");
 				$button = '<a class="button buttongen"';
-				$button.= ' onclick="window.dolibarrProductLotPrintLabel(this, \''.htmlspecialchars($object->id).'\');"';
+				$button.= ' onclick="window.dolibarrPickup.printProductLotLabel(this, \''.htmlspecialchars($object->id).'\');"';
 				$button.= ' title="'.$langs->trans('PickupPrintLabel').'"';
 				$button.= ' style="min-width: 34px;"';
 				$button.= '>';
@@ -991,6 +994,33 @@ class ActionsPickup
 				$pickup_rights->workflow->sign
 			);
 		}
+		return 0;
+	}
+
+	protected function _ProductAddMoreActionsButton($parameters, &$object, &$action) {
+		global $user;
+
+		if (empty($parameters['currentcontext'])) {
+			return 0;
+		}
+		if (in_array($parameters['currentcontext'], ['stockproductcard'], true)) {
+			if ($user->rights->pickup->create) {
+				$api_url = dol_buildpath('mobile_data.php', 1);
+				$unique = $object->status_batch == 2 ? 'true' : 'false';
+				// Adding javascript that will:
+				// - add «generate batch number» button
+				// - autofill qty to 1 if status_batch==2 and qty is empty
+				if ($action === 'correction') {
+					print '<script type="text/javascript">';
+					print '	jQuery(document).ready(function() { ';
+					print '		window.dolibarrPickup.enhanceStockTransferForm("$api_url", '.$unique.');';
+					print '	});';
+					print '</script>';
+				}
+			}
+			return 0;
+		}
+
 		return 0;
 	}
 

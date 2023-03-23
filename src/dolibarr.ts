@@ -1,16 +1,25 @@
-import { printPickupLabels, printPickupLineLabels, printProductLabel, printProductLotLabel, setPrintLabelUrl } from './shared/printlabel'
+import { printPickupLabels, printPickupLineLabels, printProductLabel, printProductLotLabel } from './shared/printlabel'
+import { enhanceStockTransferForm } from './dolibarr/stock'
+import { setBaseUrl } from './dolibarr/utils'
 
 declare global {
   interface Window {
-    dolibarrPickupSetPrintLabelUrl: typeof setPrintLabelUrl
-    dolibarrPickupPrintProductLabel: typeof printProductLabel
-    dolibarrPickupPrintPickupLabels: typeof printPickupLabels
-    dolibarrPickupPrintPickupLineLabels: typeof printPickupLineLabels
-    dolibarrProductLotPrintLabel: typeof printProductLotLabel
+    dolibarrPickup: {
+      setBaseUrl: typeof setBaseUrl
+      printProductLabel: typeof printProductLabel
+      printPickupLabels: typeof printPickupLabels
+      printPickupLineLabels: typeof printPickupLineLabels
+      printProductLotLabel: typeof printProductLotLabel
+      enhanceStockTransferForm: typeof enhanceStockTransferForm
+    }
   }
 }
-window.dolibarrPickupSetPrintLabelUrl = setPrintLabelUrl
-window.dolibarrPickupPrintProductLabel = printProductLabel
-window.dolibarrPickupPrintPickupLabels = printPickupLabels
-window.dolibarrPickupPrintPickupLineLabels = printPickupLineLabels
-window.dolibarrProductLotPrintLabel = printProductLotLabel
+
+window.dolibarrPickup = {
+  setBaseUrl,
+  printProductLabel,
+  printPickupLabels,
+  printPickupLineLabels,
+  printProductLotLabel,
+  enhanceStockTransferForm
+}

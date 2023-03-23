@@ -1099,7 +1099,7 @@ class Pickup extends CommonObject
 	public function printLabelButton() {
 		global $langs;
 		$button = '<a class="button buttongen"';
-		$button.= ' onclick="window.dolibarrPickupPrintPickupLabels(this, \''.htmlspecialchars($this->id).'\');"';
+		$button.= ' onclick="window.dolibarrPickup.printPickupLabels(this, \''.htmlspecialchars($this->id).'\');"';
 		$button.= ' title="'.$langs->trans('PickupPrintLabel').'"';
 		$button.= ' style="min-width: 34px;"';
 		$button.= '>';
