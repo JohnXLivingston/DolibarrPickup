@@ -37,12 +37,6 @@ if (! $res && file_exists("../../main.inc.php")) $res=@include "../../main.inc.p
 if (! $res && file_exists("../../../main.inc.php")) $res=@include "../../../main.inc.php";
 if (! $res) die("Include of main fails");
 
-if (! $user->rights->pickup->create) { // mobile app needs create rights.
-  http_response_code(403);
-  accessforbidden();
-}
-
-header('Content-Type: application/json');
 header('Cache-Control: no-cache');
 
 $key = GETPOST('key', 'alpha');
@@ -59,6 +53,11 @@ if (preg_match('/^[a-z]+$/', $key) && preg_match('/^\w+$/', $action)) {
     if(class_exists($className)) {
       $obj = new $className($db);
       if(method_exists($obj, $actionMethod)) {
+        if (!$obj->testRights($user, $action)) {
+          http_response_code(403);
+          accessforbidden();
+          exit(0);
+        }
         dol_syslog("Calling method $actionMethod on class $className", LOG_DEBUG);
         $json = $obj->$actionMethod();
         if (!is_array($json)) {
@@ -66,7 +65,10 @@ if (preg_match('/^[a-z]+$/', $key) && preg_match('/^\w+$/', $action)) {
           http_response_code(500);
           exit(0);
         }
+
         dol_syslog('The action '.$key.'->'.$action.' returned a value.', LOG_DEBUG);
+
+        header('Content-Type: application/json');
         print json_encode($json);
         exit(0);
       }

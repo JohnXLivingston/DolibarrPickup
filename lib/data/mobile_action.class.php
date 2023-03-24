@@ -7,6 +7,13 @@ abstract class DataMobileAction {
     $this->db = $db;
   }
 
+  /**
+   * You can override this if you want to test other rights for your action.
+   */
+  public function testRights($user, $action) {
+    return $user->rights->pickup->create ? true : false; // mobile app needs create rights.
+  }
+
   protected function _log_object_errors($method, $object) {
     if (!empty($object->error)) dol_syslog($method.' '.$object->error, LOG_ERR);
     if (!empty($object->errors)) dol_syslog($method.' '.join(',', $object->errors), LOG_ERR);
