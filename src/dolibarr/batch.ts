@@ -19,7 +19,7 @@ function createGenerateBatchNumberButton (input: HTMLInputElement): void {
   const b = document.createElement('a')
   b.classList.add('button')
   b.classList.add('buttongen')
-  b.innerHTML = '&larr;'
+  b.innerHTML = '&larr;Générer'
   b.title = 'Générer un numéro de lot/série'
   b.onclick = async () => {
     input.value = await generateBatchNumber() ?? ''
