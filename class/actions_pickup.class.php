@@ -1010,7 +1010,7 @@ class ActionsPickup
 				// Adding javascript that will:
 				// - add «generate batch number» button
 				// - autofill qty to 1 if status_batch==2 and qty is empty
-				if ($action === 'correction') {
+				if ($action === 'correction' || $action === 'transfert') {
 					print '<script type="text/javascript">';
 					print '	jQuery(document).ready(function() { ';
 					print '		window.dolibarrPickup.enhanceStockTransferForm("$api_url", '.$unique.');';
