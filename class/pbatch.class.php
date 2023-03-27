@@ -1103,6 +1103,9 @@ class PBatch extends CommonObject
 		return $error;
 	}
 
+	/**
+	 * Get the next available PBatch number
+	 */
 	public static function getNextPBatchNumber() {
 		global $db, $conf;
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
@@ -1146,6 +1149,34 @@ class PBatch extends CommonObject
 		dol_syslog(__CLASS__.'::'.__METHOD__.': setting current counter value to '.$cpt, LOG_DEBUG);
 		dolibarr_set_const($db, 'PICKUP_CURRENT_PBATCH_CPT', strval($cpt));
 		return $batch_number;
+	}
+
+	/**
+	 * For product that have status_batch==1,
+	 * it generates a pbatch_number the first time it is called.
+	 * Next time, it returns always the same pbatch_number for the product.
+	 *
+	 * To store this, it will create a pbatch line in DB, with fk_pickupline=NULL.
+	 */
+	public static function getPBatchPerProduct($id_product, $user) {
+		global $db;
+		$pbatch = new PBatch($db);
+		$result = $pbatch->fetchAll('ASC', 'rowid', 0, 0, array(
+			'customsql' => 'fk_pickupline IS NULL AND fk_product = \''.$db->escape($id_product).'\''
+		), 'AND');
+		if (is_array($result)) {
+			$pbatch = array_shift($result);
+			if ($pbatch) {
+				return $pbatch->batch_number;
+			}
+		}
+
+		$batch_number = PBatch::getNextPBatchNumber();
+		$pbatch = new PBatch($db);
+		$pbatch->batch_number = $batch_number;
+		$pbatch->fk_product = $id_product;
+		$pbatch->fk_pickupline = null;
+		$pbatch->create($user);
 	}
 
 	public function getProductLot() {

@@ -15,6 +15,7 @@
 
 ALTER TABLE llx_pickup_batch ADD INDEX idx_pickup_batch_rowid (rowid);
 ALTER TABLE llx_pickup_batch ADD INDEX idx_pickup_batch_batch_number (batch_number);
+ALTER TABLE llx_pickup_batch ADD INDEX idx_pickup_batch_product_pickupline (fk_product, fk_pickupline);
 
 ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_user_modif FOREIGN KEY (fk_user_modif) REFERENCES llx_user(rowid);

@@ -570,6 +570,11 @@ class PickupLine extends CommonObjectLine
 				$batch_numbers[] = PBatch::getNextPBatchNumber();
 			}
 			$this->updateAssociatedBatch($batch_numbers, $user);
+		} else if ($default_batch === 'generate_per_product') {
+			$batch_number = PBatch::getPBatchPerProduct($this->fk_product, $user);
+			if (!empty($batch_number)) {
+				$this->updateAssociatedBatch($batch_number, $user);
+			}
 		}
 	}
 

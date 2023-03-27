@@ -233,6 +233,7 @@ $arrayofparameters=array(
 			'0' => '',
 			'pickup_ref' => $langs->trans('PICKUP_DEFAULT_BATCH_OPTIONS_PICKUP_REF'),
 			'generate' => $langs->trans('PICKUP_DEFAULT_BATCH_OPTIONS_GENERATE'),
+			'generate_per_product' => $langs->trans('PICKUP_DEFAULT_BATCH_OPTIONS_GENERATEPPRODUCT'),
 		]
 	),
 	'PICKUP_DEFAULT_UNIQUE_BATCH' => array(
