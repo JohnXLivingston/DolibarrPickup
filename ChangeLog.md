@@ -2,6 +2,10 @@
 
 ## 2.0.0 (Not Released Yet)
 
+**Important** : cette mise à jour contient des modifications dans la gestion des hooks Dolibarr
+et dans les définitions de base de donnée.
+Pour les appliquer, il faut désactiver puis réactiver le module.
+
 **Important** : Cette version rend le champs «marque» déprécié. Si vous l'utilisez
 et souhaitez continuer à le faire, merci de contacter l'auteur du plugin.
 
