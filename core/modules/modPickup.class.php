@@ -441,6 +441,19 @@ class modPickup extends DolibarrModules
             'target'=>'',
             'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
         /* END LEFTMENU PICKUP */
+
+        // Adding the search by printable_label menu in product application:
+        $this->menu[$r++]=array(
+            'fk_menu'=>'fk_mainmenu=products,fk_leftmenu=product',
+            'type'=>'left',
+            'titre'=>'PickupMenuLabelSearch',
+            'url'=>'/pickup/printablelabel_search.php',
+            'langs'=>'pickup@pickup',
+            'position'=>1100+$r,
+            'enabled'=>'$conf->product->enabled && $conf->pickup->enabled && !empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)',
+            'perms'=>'$user->rights->produit->lire && $user->rights->stock->lire',
+            'target'=>'',
+            'user'=>0);
     }
 
     /**

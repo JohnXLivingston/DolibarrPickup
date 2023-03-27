@@ -28,6 +28,8 @@ en préfixe des références produits (si elle n'est pas déjà en préfixe).
     * un code-barre 2D pointant sur la fiche produit, le cas échéant
     * des infos sur le produit (ref, ...)
     * un code-barre avec le numéro de lot/série le cas échéant
+  * Un nouvel écran de recherche de produit «par étiquette» est disponible, qui permet :
+    * de scanner en masse des code-barre 1D ou 2D pour afficher les produits/lots correspondants
 * Gestion des numéros de série uniques.
 * Application mobile: ajout du choix «numéro de série unique». Ce choix peut être contraint en fonction du tag.
 * Settings: on peut forcer les produits créés depuis l'appli mobile à utiliser des numéros de série uniques.

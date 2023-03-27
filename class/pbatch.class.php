@@ -1125,7 +1125,7 @@ class PBatch extends CommonObject
 			// check if used in pbatch
 			$sql = "SELECT rowid ";
 			$sql.= " FROM ".(property_exists($db, 'prefix') ? $db->prefix : MAIN_DB_PREFIX)."pickup_batch ";
-			$sql.= " WHERE batch_number = ".$db->escape($batch_number);
+			$sql.= " WHERE batch_number = '".$db->escape($batch_number)."'";
 			$resql = $db->query($sql);
 			if ($resql && $db->num_rows($resql) > 0) {
 				dol_syslog(__CLASS__.'::'.__METHOD__.': '.$batch_number.' is used on a PBatch', LOG_DEBUG);
@@ -1135,7 +1135,7 @@ class PBatch extends CommonObject
 			// check if used in productlot
 			$sql = "SELECT rowid ";
 			$sql.= " FROM ".(property_exists($db, 'prefix') ? $db->prefix : MAIN_DB_PREFIX)."product_lot ";
-			$sql.= " WHERE batch = ".$db->escape($batch_number);
+			$sql.= " WHERE batch = '".$db->escape($batch_number)."'";
 			$resql = $db->query($sql);
 			if ($resql && $db->num_rows($resql) > 0) {
 				dol_syslog(__CLASS__.'::'.__METHOD__.': '.$batch_number.' is used on a productlot', LOG_DEBUG);
