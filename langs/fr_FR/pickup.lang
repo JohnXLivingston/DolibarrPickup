@@ -182,3 +182,5 @@ MailToSendPickup = Collecte
 PickupModifyAllCat = Tout modifier
 
 PickupPrintLabel = Imprimer étiquettes
+PickupLabelPrefix1 = Lot :
+PickupLabelPrefix2 = N° Série:

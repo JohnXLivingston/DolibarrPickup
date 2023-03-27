@@ -309,11 +309,12 @@ function product_footers($product) {
 }
 
 $cache_pbatch_block = [];
-function batch_block($batch_number) {
-  global $conf, $cache_pbatch_block;
+function batch_block($batch_number, $product_status_batch) {
+  global $conf, $cache_pbatch_block, $langs;
 
-  if (array_key_exists($batch_number, $cache_pbatch_block)) {
-    return $cache_pbatch_block[$batch_number];
+  $cache_key = $batch_number.'!!!'.($product_status_batch ?? '');
+  if (array_key_exists($cache_key, $cache_pbatch_block)) {
+    return $cache_pbatch_block[$cache_key];
   }
 
   $barcode = null;
@@ -324,12 +325,20 @@ function batch_block($batch_number) {
     ];
   }
 
-  $cache_pbatch_block[$batch_number] = [
-    'label' => $batch_number,
+  $label_prefix = '';
+  // FIXME: if the product status_batch has changed, this information is wrong.
+  if ($product_status_batch == 1) {
+    $label_prefix = $langs->transnoentities('PickupLabelPrefix1') . ' ';
+  } else if ($product_status_batch == 2) {
+    $label_prefix = $langs->transnoentities('PickupLabelPrefix2') . ' ';
+  }
+
+  $cache_pbatch_block[$cache_key] = [
+    'label' => $label_prefix.$batch_number,
     'label_align' => 'center',
     'barcode' => $barcode
   ];
-  return $cache_pbatch_block[$batch_number];
+  return $cache_pbatch_block[$cache_key];
 }
 
 function get_product_infos() {
@@ -385,7 +394,7 @@ function fill_pickupline_infos(&$labels_info, &$pickup_line) {
     $labels_info[] = [
       'blocks' => [
         product_block($product),
-        batch_block($pbatch->batch_number)
+        batch_block($pbatch->batch_number, $product->status_batch)
       ],
       'footers' => product_footers($product)
     ];
@@ -470,7 +479,7 @@ function get_productlot_infos() {
     $labels_info[] = [
       'blocks' => [
         product_block($product),
-        batch_block($product_lot->batch)
+        batch_block($product_lot->batch, $product->status_batch)
       ],
       'footers' => product_footers($product)
     ];
