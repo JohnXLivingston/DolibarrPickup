@@ -101,7 +101,7 @@ class PickupsTabContent {
     );
   }
 
-  public function printContent($sql_where, $sql_join) {
+  public function printContent($sql_where, $sql_join = '') {
     $db = $this->db;
 
     $pickup = new Pickup($db);
