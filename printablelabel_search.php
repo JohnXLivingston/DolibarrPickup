@@ -30,6 +30,8 @@ if (! $res && file_exists("../../main.inc.php")) $res=@include "../../main.inc.p
 if (! $res && file_exists("../../../main.inc.php")) $res=@include "../../../main.inc.php";
 if (! $res) die("Include of main fails");
 
+require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
 dol_include_once('/pickup/lib/printable_label.lib.php');
 
 $langs->loadLangs(array("pickup@pickup", 'products', 'stocks', 'productbatch', "other"));
@@ -87,16 +89,20 @@ function print_scan_form($with_search, $search) {
 }
 
 function print_list($search) {
-  global $langs;
+  global $db, $langs;
   $values = preg_split('/\r\n|\r|\n/', $search);
   $result = search_printable_label($values);
 
+  $warehouses = [];
+
   print '<div class="div-table-responsive">';
   print '<table class="tagtable nobottomiftotal liste">';
+  print '<tr class="liste_titre">';
   print_liste_field_titre("Ref");
   print_liste_field_titre("Label");
   print_liste_field_titre("Batch");
-  print '<tr class="liste_titre">';
+  print_liste_field_titre("Entrepot");
+  print_liste_field_titre("Stock");
   print '</tr>';
 
   foreach ($result as $line) {
@@ -118,8 +124,66 @@ function print_list($search) {
       print $productlot->getNomUrl(1);
     }
     print '</td>';
+    print '<td></td>';
+    print '<td></td>';
 
     print '</tr>';
+
+    // Now we print lines describing the stock
+    $product->load_stock('novirtual');
+    foreach ($product->stock_warehouse as $fk_entrepot => $stock_info) {
+      $qty = 0;
+      if (!empty($productlot)) {
+        // We requested a specific batch number, only showing lines for this one.
+        $detail_batch = $stock_info->detail_batch;
+        $detail_current_batch = array_filter(is_array($detail_batch) ? $detail_batch : [], function ($productbatch) use ($productlot) {
+          return $productbatch->batch === $productlot->batch;
+        });
+        if (count($detail_current_batch) === 0) {
+          continue;
+        }
+        foreach ($detail_current_batch as $productbatch) {
+          $qty+= $productbatch->qty;
+        }
+      } else {
+        $qty = $stock_info->real;
+      }
+
+      if (array_key_exists($fk_entrepot, $warehouses)) {
+        $warehouse = $warehouses[$fk_entrepot];
+      } else {
+        $warehouse = new Entrepot($db);
+        $warehouse->fetch($fk_entrepot);
+        $warehouses[$fk_entrepot] = $warehouse;
+      }
+
+      print '<tr>';
+      print '<td></td>';
+      print '<td></td>';
+      // Batch numbers, if we did not scan it.
+      print '<td>';
+      if (empty($productlot) && is_array($stock_info->detail_batch)) {
+        $batches = [];
+        foreach ($stock_info->detail_batch as $productbatch) {
+          if (empty($productbatch->batch)) { continue; }
+          $batches[$productbatch->batch] = $productbatch->batch;
+        }
+        ksort($batches, SORT_STRING);
+        foreach ($batches as $batch) {
+          $pl = new Productlot($db);
+          if ($pl->fetch(0, $product->id, $batch)>0) {
+            print $pl->getNomUrl(1);
+          } else {
+            print htmlspecialchars($batch);
+          }
+          print '<br>';
+        }
+      }
+      print '</td>';
+      print '<td>'.$warehouse->getNomUrl(1).'</td>';
+      print '<td>'.price2num($qty, 'MS').'</td>';
+      print '</tr>';
+    }
   }
   print '</table>';
 }
