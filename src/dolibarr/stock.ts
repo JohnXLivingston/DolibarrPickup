@@ -1,6 +1,6 @@
 import { createGenerateBatchNumberButton } from './batch'
 
-function enhanceStockTransferForm (_apiUrl: string, batchIsUnique: boolean): void {
+function enhanceStockTransferForm (_apiUrl: string, productId: string, batchIsUnique: boolean): void {
   console.log('Entering enhanceStockTransferForm...')
   document.querySelectorAll('input[name=batch_number]:not(disabled)').forEach((el) => {
     console.log('enhanceStockTransferForm: found a batch_number input')
@@ -9,7 +9,7 @@ function enhanceStockTransferForm (_apiUrl: string, batchIsUnique: boolean): voi
       console.log('enhanceStockTransferForm: input is not empty, skipping')
       return
     }
-    createGenerateBatchNumberButton(input)
+    createGenerateBatchNumberButton(input, productId)
   })
 
   if (batchIsUnique) {

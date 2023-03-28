@@ -1013,7 +1013,7 @@ class ActionsPickup
 				if ($action === 'correction' || $action === 'transfert') {
 					print '<script type="text/javascript">';
 					print '	jQuery(document).ready(function() { ';
-					print '		window.dolibarrPickup.enhanceStockTransferForm("$api_url", '.$unique.');';
+					print '		window.dolibarrPickup.enhanceStockTransferForm("$api_url", '.((int) $object->id).', '.$unique.');';
 					print '	});';
 					print '</script>';
 				}
