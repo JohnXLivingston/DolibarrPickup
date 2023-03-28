@@ -42,10 +42,17 @@ function search_printable_label($values) {
   foreach ($values as $value) {
     $value = trim($value);
     if (empty($value)) { continue; }
+
     $line = [
       'product' => null,
-      'productlot' => null
+      'productlot' => null,
+      'scan_count' => 1
     ];
+
+    if (array_key_exists($value, $result)) {
+      $result[$value]['scan_count']++;
+      continue;
+    }
 
     // if it is an url
     if (
@@ -63,7 +70,7 @@ function search_printable_label($values) {
         continue;
       }
       $line['product'] = $product;
-      $result[] = $line;
+      $result[$value] = $line;
       continue;
     }
 
@@ -99,11 +106,11 @@ function search_printable_label($values) {
       
       $line['productlot'] = $productlot;
       $line['product'] = $product;
-      $result[] = $line;
+      $result[$value] = $line;
     }
 
     $db->free($resql);
   }
 
-  return $result;
+  return array_values($result); // to reindex from 0.
 }
