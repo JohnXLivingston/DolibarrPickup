@@ -73,13 +73,13 @@ if ($action === 'dotransfer') {
     $action = 'transfer';
     $transfer_actions = null;
   } else {
-    if (empty($confirm_mass_movement)) {
-      // we must display the confirm block. This is done by displaying the form again.
-      $action = 'transfer';
-    } else {
-      // TODO: do the actions.
-      $action = 'transfer';
+    if (!empty($confirm_mass_movement)) {
+      // doing the transfer...
+      // This function makes a redirection on success.
+      do_the_transfer($transfer_actions);
     }
+    // display the form again.
+    $action = 'transfer';
   }
 }
 
@@ -309,6 +309,7 @@ function print_transfer_form(&$transfer_form_description, $search, $actions_to_c
     print '</td>';
     print '</tr>';
     print '</table>';
+    print '<br><br>';
   }
 
   print '<div class="div-table-responsive-no-min">';
@@ -594,6 +595,11 @@ function transfer_form_valid(&$transfer_form_description) {
   $codemove = GETPOST("codemove", 'alpha');
   if (empty($codemove)) {
     $error++;
+		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("InventoryCode")), null, 'errors');
+  }
+  $label = GETPOST("label");
+  if (empty($label)) {
+    $error++;
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("MovementLabel")), null, 'errors');
   }
 
@@ -623,6 +629,14 @@ function transfer_form_valid(&$transfer_form_description) {
       continue;
     }
 
+    if ($qty > 1 && $form_line['product']->status_batch == 2) {
+      $error++;
+      $product_desc = !empty($form_line['productlot']) ? $form_line['productlot']->batch : $form_line['product']->ref;
+      setEventMessages($langs->trans("PrintableSearchTransferQtyMustBeOne", $product_desc), null, 'errors');
+      $form_line['qty']['is_error'] = true;
+      continue;
+    }
+
     $transfer_actions[] = [
       'qty' => $qty,
       'from_warehouse' => $from_warehouse,
@@ -642,6 +656,132 @@ function transfer_form_valid(&$transfer_form_description) {
     return false;
   }
   return $transfer_actions;
+}
+
+function do_the_transfer(&$transfer_actions) {
+  global $user, $db, $langs, $conf;
+
+  $error = 0;
+  $db->begin();
+
+  $codemove = GETPOST("codemove", 'alpha');
+  $labelmovement = GETPOST("label");
+
+  foreach ($transfer_actions as &$transfer_action) {
+    if ($error) {
+      break; // if previous iteration had error, stop.
+    }
+
+    $productlot = $transfer_action['productlot'];
+    $from_warehouse = $transfer_action['from_warehouse'];
+    $to_warehouse = $transfer_action['to_warehouse'];
+    $qty = $transfer_action['qty'];
+
+    // Following code is an adaptation of the official massstockmove.php file.
+
+    // to avoid any issue when a same product has multiple lines, we will fetch it again.
+    $product = new Product($db);
+    $product->fetch($transfer_action['product']->id);
+    $product->load_stock('novirtual'); // Load array product->stock_warehouse
+
+    // Define value of products moved
+    $pricesrc = 0;
+    if (!empty($product->pmp)) {
+      $pricesrc = $product->pmp;
+    }
+    $pricedest = $pricesrc;
+
+    // Note: the code that describe the form ensure that we have productlot when needed.
+    //  We don't have to check anything. The presence of productlot is enougha as criteria
+    //  to use correct_stock_batch instead of correct_stock.
+    if (empty($productlot)) {
+      // Remove stock if source warehouse defined
+      if ($from_warehouse > 0) {
+        $result1 = $product->correct_stock(
+          $user,
+          $from_warehouse,
+          $qty,
+          1, // remove
+          $labelmovement,
+          $pricesrc,
+          $codemove
+        );
+        if ($result1 < 0) {
+          $error++;
+          setEventMessages($product->error, $product->errors, 'errors');
+        }
+      }
+
+      // Add stock
+      $result2 = $product->correct_stock(
+        $user,
+        $to_warehouse,
+        $qty,
+        0, // add
+        $labelmovement,
+        $pricedest,
+        $codemove
+      );
+      if ($result2 < 0) {
+        $error++;
+        setEventMessages($product->error, $product->errors, 'errors');
+      }
+    } else {
+      $batch = $productlot->batch;
+      $dlc = $productlot->eatby;
+      $dluo = $productlot->sellby;
+
+      // Remove stock
+      if ($from_warehouse > 0) {
+        $result1 = $product->correct_stock_batch(
+          $user,
+          $from_warehouse,
+          $qty,
+          1, // remove
+          $labelmovement,
+          $pricesrc,
+          $dlc,
+          $dluo,
+          $batch,
+          $codemove
+        );
+        if ($result1 < 0) {
+          $error++;
+          setEventMessages($product->error, $product->errors, 'errors');
+        }
+      }
+
+      // Add stock
+      $result2 = $product->correct_stock_batch(
+        $user,
+        $to_warehouse,
+        $qty,
+        0, // add
+        $labelmovement,
+        $pricedest,
+        $dlc,
+        $dluo,
+        $batch,
+        $codemove
+      );
+      if ($result2 < 0) {
+        $error++;
+        setEventMessages($product->error, $product->errors, 'errors');
+      }
+    }
+  }
+
+  if ($error) {
+    $db->rollback();
+		setEventMessages($langs->trans("Error"), null, 'errors');
+    return;
+  }
+
+  $db->commit();
+  setEventMessages($langs->trans("StockMovementRecorded"), null, 'mesgs');
+  // Redirecting on the movement_list page:
+  header("Location: ".DOL_URL_ROOT.'/product/stock/movement_list.php?search_inventorycode='.urlencode('^'.$codemove.'$'));
+  exit;
 }
 
 // End of page
