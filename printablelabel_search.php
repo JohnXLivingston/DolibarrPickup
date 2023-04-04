@@ -316,15 +316,18 @@ function print_transfer_form($transfer_form_description, $search) {
   print '</form>';
 }
 
-function get_transfer_form_line_suffix($product, $productlot = null) {
+function get_transfer_form_line_suffix($product, $productlot = null, $fk_entrepot = null) {
   $suffix = '_'.strval($product->id);
   if (!empty($productlot)) {
     $suffix.= '_'.strval($productlot->id);
   }
+  if (!empty($fk_entrepot)) {
+    $suffix.= '__'.strval($fk_entrepot);
+  }
   return $suffix;
 }
 
-function get_unique_transfer_form_line_suffix($product, $productlot = null) {
+function get_unique_transfer_form_line_suffix($product, $productlot = null, $fk_entrepot = null) {
   global $seen_transfer_form_line_suffix;
 
   $suffix = get_transfer_form_line_suffix($product, $productlot);
@@ -411,7 +414,7 @@ function get_transfer_form_description($search) {
           'name' => $from_field_name,
           'default_value' => $default_from_warehouse,
           'current_value' => GETPOSTISSET($from_field_name) ? GETPOST($from_field_name, 'int') : $default_from_warehouse,
-          'show_stock' => true // Here we want to show the current stock
+          'show_stock' => false
         ],
         'product' => $product,
         'productlot' => $productlot
@@ -419,7 +422,54 @@ function get_transfer_form_description($search) {
       continue;
     }
 
-    // TODO: display one line per product batch!
+    // Last case: display one line per product batch! (with stock > 0)
+    // Note: product->load_stock fills stock_warehouse[fk_entrepot]->detail_batch
+    //  with batch that are in stock. So it is the perfect data to rely on.
+    foreach ($product->stock_warehouse as $fk_entrepot => $detail) {
+      if (empty($detail->detail_batch) || !is_array($detail->detail_batch)) { continue; }
+      $detail_batch = $detail->detail_batch;
+      foreach ($detail_batch as $product_batch) {
+        if (empty($product_batch->qty)) { continue; } // should not happen, but just in case.
+
+        $pl = null;
+        if (!empty($product_batch->batch)) {
+          $pl = new Productlot($db);
+          $pl->fetch(0, $product->id, $product_batch->batch);
+        }
+        if (empty($pl->id)) {
+          // Note: when product was in stock before enabling status_batch, ProductLot can be unexisting.
+          // In such case, we add a line, but without productlot.
+          $pl = null;
+        }
+
+        // In this loop, we initialize qty to 0, as we don't know if there is other lines...
+        $number_to_move = 0;
+        $suffix = get_unique_transfer_form_line_suffix($product, $pl, $fk_entrepot);
+        if (empty($suffix)) {
+          continue;
+        }
+
+        $default_from_warehouse = $fk_entrepot;
+
+        $qty_field_name = 'qty'.$suffix;
+        $from_field_name = 'from_wh'.$suffix;
+        $line_description[] = [
+          'qty_field' => [
+            'name' => $qty_field_name,
+            'default_value' => $number_to_move,
+            'current_value' => GETPOSTISSET($qty_field_name) ? GETPOST($qty_field_name, 'int') : $number_to_move
+          ],
+          'from_warehouse_field' => [
+            'name' => $from_field_name,
+            'default_value' => $default_from_warehouse,
+            'current_value' => GETPOSTISSET($from_field_name) ? GETPOST($from_field_name, 'int') : $default_from_warehouse,
+            'show_stock' => true // Here we want to show the current stock
+          ],
+          'product' => $product,
+          'productlot' => $pl
+        ];
+      }
+    }
   }
 
   $to_field_name = 'to_wh';
