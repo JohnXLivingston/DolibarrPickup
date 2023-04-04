@@ -39,8 +39,10 @@ $langs->loadLangs(array("pickup@pickup", 'products', 'stocks', 'productbatch', "
 $action = GETPOST('action', 'aZ09') ?GETPOST('action', 'aZ09') : 'scan';
 $search = GETPOST('search', 'alphanohtml') ?? '';
 $do_mass_movement = !empty(GETPOST('do_mass_movement'));
+$confirm_mass_movement = !empty(GETPOST('confirm_mass_movement'));
 $transfer_form_description = null;
 $seen_transfer_form_line_suffix = [];
+$known_warehouses = [];
 
 if ($action === 'list' && $do_mass_movement) {
   $action = 'transfer';
@@ -52,8 +54,11 @@ if ($user->socid) {
 }
 $result = restrictedArea($user, 'produit|service', 0, 'product&product');
 
+if ($action === 'dotransfer' && !$confirm_mass_movement) {
+  $action = 'confirmtransfer';
+}
 
-if (($action === 'transfer' || $action === 'dotransfert') && empty($user->rights->stock->mouvement->creer)) {
+if (($action === 'transfer' || $action === 'confirmtransfer' || $action === 'dotransfert') && empty($user->rights->stock->mouvement->creer)) {
   $action = 'list';
 }
 
@@ -61,13 +66,20 @@ if (($action === 'transfer' || $action === 'dotransfert') && empty($user->rights
  * Actions
  */
 
-if ($action === 'transfer' || $action === 'dotransfer') {
+if ($action === 'transfer' || $action === 'confirmtransfer' || $action === 'dotransfer') {
   $transfer_form_description = get_transfer_form_description($search);
 }
 
-if ($action === 'dotransfer') {
-  // ...
-  $action = 'transfer';
+if ($action === 'confirmtransfer' || $action === 'dotransfer') {
+  $transfer_actions = transfer_form_valid($transfer_form_description);
+  if (false === $transfer_actions) {
+    $action = 'transfer';
+  } else {
+    if ($action === 'dotransfer') {
+      // TODO: do the actions.
+      $action = 'transfer';
+    }
+  }
 }
 
 /*
@@ -78,14 +90,29 @@ $helpurl='';
 $title = $langs->trans('PickupPrintableLabelSearchTitle');
 llxHeader("", $title, $helpurl);
 
+function _get_warehouse($fk_entrepot) {
+  global $known_warehouses, $db;
+
+  if (empty($fk_entrepot) || $fk_entrepot < 0) {
+    return null;
+  }
+
+  if (!array_key_exists($fk_entrepot, $known_warehouses)) {
+    $warehouse = new Entrepot($db);
+    $warehouse->fetch($fk_entrepot);
+    $known_warehouses[$fk_entrepot] = $warehouse;
+  }
+  return $known_warehouses[$fk_entrepot];
+}
+
 if ($action === 'scan') {
   print_scan_form($action, $search);
 } else if ($action === 'list') {
   print_scan_form($action, $search);
   print_list($search);
-} else if ($action === 'transfer') {
+} else if ($action === 'transfer' || $action === 'confirmtransfer') {
   print_scan_form($action, $search);
-  print_transfer_form($transfer_form_description, $search);
+  print_transfer_form($transfer_form_description, $search, $action === 'confirmtransfer' ? $transfer_actions : null);
 }
 
 function print_scan_form($action, $search) {
@@ -121,8 +148,6 @@ function print_list($search) {
   global $db, $langs;
   $values = preg_split('/\r\n|\r|\n/', $search);
   $result = search_printable_label($values);
-
-  $warehouses = [];
 
   print '<div class="div-table-responsive">';
   print '<table class="tagtable nobottomiftotal liste">';
@@ -178,13 +203,7 @@ function print_list($search) {
         $qty = $stock_info->real;
       }
 
-      if (array_key_exists($fk_entrepot, $warehouses)) {
-        $warehouse = $warehouses[$fk_entrepot];
-      } else {
-        $warehouse = new Entrepot($db);
-        $warehouse->fetch($fk_entrepot);
-        $warehouses[$fk_entrepot] = $warehouse;
-      }
+      $warehouse = _get_warehouse($fk_entrepot);
 
       print '<tr>';
       print '<td></td>';
@@ -217,7 +236,7 @@ function print_list($search) {
   print '</table>';
 }
 
-function print_transfer_form($transfer_form_description, $search) {
+function print_transfer_form(&$transfer_form_description, $search, $actions_to_confirm) {
   global $langs, $db;
 
   $now = dol_now();
@@ -235,6 +254,62 @@ function print_transfer_form($transfer_form_description, $search) {
   print '<input type="hidden" name="action" value="dotransfer">';
   print '<input type="hidden" name="search" value="'.htmlspecialchars($search).'">';
 
+  if (!empty($actions_to_confirm)) {
+    // We must confirm the current actions.
+    print '<table class="valid centpercent">';
+    print '<tr class="validtitre">';
+    print '<th class="validtitre" colspan="5">';
+    print $langs->trans('PrintableSearchTransferConfirm');
+    print '</th>';
+    print '</tr>';
+
+    print '<tr class="valid">';
+    print '<th class="valid">'.$langs->trans('WarehouseSource').'</th>';
+    print '<th class="valid">'.$langs->trans('WarehouseTarget').'</th>';
+    print '<th class="valid">'.$langs->trans('Ref').'</th>';
+    print '<th class="valid">'.$langs->trans('Batch').'</th>';
+    print '<th class="valid">'.$langs->trans('Qty').'</th>';
+    print '</tr>';
+
+    foreach ($actions_to_confirm as $action_to_confirm) {
+      print '<tr class="valid">';
+      print '<td class="valid">';
+      if (!empty($action_to_confirm['from_warehouse_object'])) {
+        print $action_to_confirm['from_warehouse_object']->getNomUrl(1);
+      }
+      print '</td>';
+      print '<td class="valid">';
+      if (!empty($action_to_confirm['to_warehouse_object'])) {
+        print $action_to_confirm['to_warehouse_object']->getNomUrl(1);
+      }
+      print '</td>';
+      print '<td class="valid">';
+      if (!empty($action_to_confirm['product'])) {
+        print $action_to_confirm['product']->getNomUrl(1);
+      }
+      print '</td>';
+      print '<td class="valid">';
+      if (!empty($action_to_confirm['productlot'])) {
+        print $action_to_confirm['productlot']->getNomUrl(1);
+      }
+      print '</td>';
+      print '<td class="valid right">';
+      print price2num($action_to_confirm['qty']);
+      print '</td>';
+      print '</tr>';
+    }
+
+    print '<tr class="valid">';
+    print '<td class="valid center" colspan="5">';
+    print '<a class="butActionDelete" ';
+    print ' onclick="$(this).closest(\'table\').remove();" ';
+    print '>'.$langs->trans('Cancel').'</a>';
+    print '<input type="submit" name="confirm_mass_movement" class="button" value="'.$langs->trans("Validate").'">';
+    print '</td>';
+    print '</tr>';
+    print '</table>';
+  }
+
   print '<div class="div-table-responsive-no-min">';
   print '<table class="liste centpercent">';
   print '<tr class="liste_titre">';
@@ -242,7 +317,7 @@ function print_transfer_form($transfer_form_description, $search) {
   print getTitleFieldOfList($langs->trans('Product'));
   print getTitleFieldOfList($langs->trans('Batch'));
   print getTitleFieldOfList($langs->trans('Qty'));
-  foreach ($transfer_form_description['lines'] as $form_line) {
+  foreach ($transfer_form_description['lines'] as &$form_line) {
     $product = $form_line['product'];
     $productlot = $form_line['productlot'] ?? null;
 
@@ -261,7 +336,7 @@ function print_transfer_form($transfer_form_description, $search) {
       $form_line['from_warehouse_field']['show_stock'] ? 1 : 0, // show stock count
       0, // force combo
       array(), // events to add to select2
-      'minwidth200imp maxwidth200' // morecss
+      'minwidth200imp maxwidth200'.($form_line['from_warehouse_field']['is_error'] ? ' error' : '') // morecss
     );
     print '</td>';
 
@@ -275,8 +350,13 @@ function print_transfer_form($transfer_form_description, $search) {
     }
     print '</td>';
 
-    print '<td class="rigth">';
-    print '<input type="text" class="flat maxwidth50 right" ';
+    print '<td class="right">';
+    print '<input type="text" ';
+    print 'class="flat maxwidth50 right ';
+    if ($form_line['qty_field']['is_error']) {
+      print 'error ';
+    }
+    print '"';
     print 'name="'.$form_line['qty_field']['name'].'" ';
     print 'value="'.price2num((int) $form_line['qty_field']['current_value'], 'MS').'" ';
     print '>';
@@ -301,7 +381,7 @@ function print_transfer_form($transfer_form_description, $search) {
     0, // show stock count
     0, // force combo
     array(), // events to add to select2
-    'minwidth200imp maxwidth200' // morecss
+    'minwidth200imp maxwidth200'.($transfer_form_description['to_warehouse_field']['is_error'] ? 'error' : '')  // morecss
   );
   print '</div>';
   print '<span class="fieldrequired">'.$langs->trans("InventoryCode").':</span> ';
@@ -379,13 +459,15 @@ function get_transfer_form_description($search) {
         'qty_field' => [
           'name' => $qty_field_name,
           'default_value' => $number_to_move,
-          'current_value' => GETPOSTISSET($qty_field_name) ? GETPOST($qty_field_name, 'int') : $number_to_move
+          'current_value' => GETPOSTISSET($qty_field_name) ? GETPOST($qty_field_name, 'int') : $number_to_move,
+          'is_error' => false
         ],
         'from_warehouse_field' => [
           'name' => $from_field_name,
           'default_value' => $default_from_warehouse,
           'current_value' => GETPOSTISSET($from_field_name) ? GETPOST($from_field_name, 'int') : $default_from_warehouse,
-          'show_stock' => false
+          'show_stock' => false,
+          'is_error' => false
         ],
         'product' => $product,
         'productlot' => $productlot
@@ -408,13 +490,15 @@ function get_transfer_form_description($search) {
         'qty_field' => [
           'name' => $qty_field_name,
           'default_value' => $number_to_move,
-          'current_value' => GETPOSTISSET($qty_field_name) ? GETPOST($qty_field_name, 'int') : $number_to_move
+          'current_value' => GETPOSTISSET($qty_field_name) ? GETPOST($qty_field_name, 'int') : $number_to_move,
+          'is_error' => false
         ],
         'from_warehouse_field' => [
           'name' => $from_field_name,
           'default_value' => $default_from_warehouse,
           'current_value' => GETPOSTISSET($from_field_name) ? GETPOST($from_field_name, 'int') : $default_from_warehouse,
-          'show_stock' => false
+          'show_stock' => false,
+          'is_error' => false
         ],
         'product' => $product,
         'productlot' => $productlot
@@ -457,13 +541,15 @@ function get_transfer_form_description($search) {
           'qty_field' => [
             'name' => $qty_field_name,
             'default_value' => $number_to_move,
-            'current_value' => GETPOSTISSET($qty_field_name) ? GETPOST($qty_field_name, 'int') : $number_to_move
+            'current_value' => GETPOSTISSET($qty_field_name) ? GETPOST($qty_field_name, 'int') : $number_to_move,
+            'is_error' => false
           ],
           'from_warehouse_field' => [
             'name' => $from_field_name,
             'default_value' => $default_from_warehouse,
             'current_value' => GETPOSTISSET($from_field_name) ? GETPOST($from_field_name, 'int') : $default_from_warehouse,
-            'show_stock' => true // Here we want to show the current stock
+            'show_stock' => true, // Here we want to show the current stock
+            'is_error' => false
           ],
           'product' => $product,
           'productlot' => $pl
@@ -479,9 +565,82 @@ function get_transfer_form_description($search) {
       'name' => $to_field_name,
       'default_value' => null,
       'current_value' => GETPOSTISSET($to_field_name) ? GETPOST($to_field_name, 'int') : null,
+      'is_error' => false
     ],
   ];
   return $transfer_form_description;
+}
+
+function transfer_form_valid(&$transfer_form_description) {
+  global $langs;
+  $langs->load("errors");
+
+  $form_lines = &$transfer_form_description['lines'];
+  
+  $error = 0;
+  $at_least_one_line = false;
+  $transfer_actions = [];
+  $wharehouse_by_id = [];
+
+  $to_warehouse = $transfer_form_description['to_warehouse_field']['current_value'];
+  if ($to_warehouse < 0) { $to_warehouse = 0; }
+  if (empty($to_warehouse)) {
+    $error++;
+		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("WarehouseTarget")), null, 'errors');
+    $transfer_form_description['to_warehouse_field']['is_error'] = true;
+  }
+
+  $codemove = GETPOST("codemove", 'alpha');
+  if (empty($codemove)) {
+    $error++;
+		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("MovementLabel")), null, 'errors');
+  }
+
+  foreach ($form_lines as &$form_line) {
+    $qty = price2num($form_line['qty_field']['current_value']);
+    $from_warehouse = $form_line['from_warehouse_field']['current_value'];
+    if ($from_warehouse < 0) { $from_warehouse = 0; }
+
+    if (empty($qty) || !is_numeric($qty)) {
+      continue;
+    }
+    $at_least_one_line = true;
+
+    // Now, we know qty>0, so the from_warehouse is mandatory
+    // TODO: allow correct stock from here, when from_warehouse is empty?
+    if (empty($from_warehouse)) {
+      $error++;
+      setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("WarehouseSource")), null, 'errors');
+      $form_line['from_warehouse_field']['is_error'] = true;
+      continue;
+    }
+
+    if ($from_warehouse > 0 && $from_warehouse == $to_warehouse) {
+      $error++;
+      setEventMessages($langs->trans("ErrorWarehouseMustDiffers"), null, 'errors');
+      $form_line['from_warehouse_field']['is_error'] = true;
+      continue;
+    }
+
+    $transfer_actions[] = [
+      'qty' => $qty,
+      'from_warehouse' => $from_warehouse,
+      'from_warehouse_object' => _get_warehouse($from_warehouse),
+      'to_warehouse' => $to_warehouse,
+      'to_warehouse_object' => _get_warehouse($to_warehouse),
+      'product' => $form_line['product'],
+      'productlot' => $form_line['productlot']
+    ];
+  }
+
+  if ($error) {
+    return false;
+  }
+  if (!$at_least_one_line) {
+    setEventMessages($langs->trans("PrintableSearchTransferMissingLines"), null, 'errors');
+    return false;
+  }
+  return $transfer_actions;
 }
 
 // End of page

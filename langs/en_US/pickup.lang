@@ -189,3 +189,5 @@ PickupLabelPrefix2 = N° Série:
 
 PickupPrintableLabelSearchTitle = Recherche par étiquette
 PickupPrintableLabelSearchHelp = Cette page est fournie par le module de Collecte, et vous permet de scanner les étiquettes imprimées pour retrouver les produits et lots associés. Vous pouvez scanner les codes-barres (1D et 2D) générés par le module de Collecte dans le champs ci-dessous, à raison d'un par ligne, puis lancer une recherche.
+PrintableSearchTransferMissingLines = Aucun mouvement
+PrintableSearchTransferConfirm = Confirmez-vous les opérations ci-dessous ?
