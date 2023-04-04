@@ -43,6 +43,7 @@ $confirm_mass_movement = !empty(GETPOST('confirm_mass_movement'));
 $transfer_form_description = null;
 $seen_transfer_form_line_suffix = [];
 $known_warehouses = [];
+$transfer_actions = null;
 
 if ($action === 'list' && $do_mass_movement) {
   $action = 'transfer';
@@ -54,11 +55,7 @@ if ($user->socid) {
 }
 $result = restrictedArea($user, 'produit|service', 0, 'product&product');
 
-if ($action === 'dotransfer' && !$confirm_mass_movement) {
-  $action = 'confirmtransfer';
-}
-
-if (($action === 'transfer' || $action === 'confirmtransfer' || $action === 'dotransfert') && empty($user->rights->stock->mouvement->creer)) {
+if (($action === 'transfer' || $action === 'dotransfert') && empty($user->rights->stock->mouvement->creer)) {
   $action = 'list';
 }
 
@@ -66,16 +63,20 @@ if (($action === 'transfer' || $action === 'confirmtransfer' || $action === 'dot
  * Actions
  */
 
-if ($action === 'transfer' || $action === 'confirmtransfer' || $action === 'dotransfer') {
+if ($action === 'transfer' || $action === 'dotransfer') {
   $transfer_form_description = get_transfer_form_description($search);
 }
 
-if ($action === 'confirmtransfer' || $action === 'dotransfer') {
+if ($action === 'dotransfer') {
   $transfer_actions = transfer_form_valid($transfer_form_description);
   if (false === $transfer_actions) {
     $action = 'transfer';
+    $transfer_actions = null;
   } else {
-    if ($action === 'dotransfer') {
+    if (empty($confirm_mass_movement)) {
+      // we must display the confirm block. This is done by displaying the form again.
+      $action = 'transfer';
+    } else {
       // TODO: do the actions.
       $action = 'transfer';
     }
@@ -110,9 +111,9 @@ if ($action === 'scan') {
 } else if ($action === 'list') {
   print_scan_form($action, $search);
   print_list($search);
-} else if ($action === 'transfer' || $action === 'confirmtransfer') {
+} else if ($action === 'transfer') {
   print_scan_form($action, $search);
-  print_transfer_form($transfer_form_description, $search, $action === 'confirmtransfer' ? $transfer_actions : null);
+  print_transfer_form($transfer_form_description, $search, $transfer_actions);
 }
 
 function print_scan_form($action, $search) {
