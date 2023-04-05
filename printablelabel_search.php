@@ -305,7 +305,11 @@ function print_transfer_form(&$transfer_form_description, $search, $actions_to_c
     print '<a class="butActionDelete" ';
     print ' onclick="$(this).closest(\'table\').remove();" ';
     print '>'.$langs->trans('Cancel').'</a>';
-    print '<input type="submit" name="confirm_mass_movement" class="button" value="'.$langs->trans("Validate").'">';
+    // Note: type="button" (+ hidden field) to prevent this button to be trigger on enter in a field from the form under it.
+    print '<input type="button" class="button" value="'.$langs->trans("Validate").'" ';
+    print ' onclick="$(this).closest(\'form\').find(\'input[name=confirm_mass_movement]\').val(1); $(this).closest(\'form\').submit();" ';
+    print '>';
+    print '<input type="hidden" name="confirm_mass_movement" class="button" value="">';
     print '</td>';
     print '</tr>';
     print '</table>';
