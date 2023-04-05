@@ -40,6 +40,8 @@ $action = GETPOST('action', 'aZ09') ?GETPOST('action', 'aZ09') : 'scan';
 $search = GETPOST('search', 'alphanohtml') ?? '';
 $do_mass_movement = !empty(GETPOST('do_mass_movement'));
 $confirm_mass_movement = !empty(GETPOST('confirm_mass_movement'));
+
+// Some global variables for later on.
 $transfer_form_description = null;
 $seen_transfer_form_line_suffix = [];
 $known_warehouses = [];
