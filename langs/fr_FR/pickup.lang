@@ -206,5 +206,6 @@ PrintableSearchTransferQtyMustBeOne = Le lot %s est unique, la quantité ne peut
 
 PickupCorrectDataHelp = Les écrans de cette section permettent de détecter des incohérences dans les données, et de les corriger. Par exemple quand les contraintes données par un tag produit ne sont pas respectées.
 
+PickupCorrectDataResponsibleCat = Catégorie en cause
 PickupCorrectDataWantedStatusBatch = Valeur attendue
 PickupCorrectDataCorrectStatusBatch = Corriger la valeur

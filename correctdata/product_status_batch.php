@@ -110,11 +110,18 @@ $arrayfields['p.tobatch'] = array(
 
 // categorie fields:
 $arrayfields['cat'] = array(
-  'label'=>"Categorie",
+  'label'=>'PickupCorrectDataResponsibleCat',
   'checked'=>1,
   'visible'=>1,
   'enabled'=>1,
   'position'=>80
+);
+$arrayfields['all_cats'] = array(
+  'label'=>'Categories',
+  'checked'=>1,
+  'visible'=>1,
+  'enabled'=>1,
+  'position'=>85
 );
 // $categorie = new Categorie($db);
 // foreach (['label'] as $key) {
@@ -327,6 +334,8 @@ while ($i < $imaxinloop) {
           print $label.' ';
         }
       }
+    } else if ($key === 'all_cats') {
+      print $form->showCategories($product->id, Categorie::TYPE_PRODUCT, 1);
     } else if ($key === 'wanted_status_batch') {
       print '<span class="warning">';
       switch ($batch_constraint) {
