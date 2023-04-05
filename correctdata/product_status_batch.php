@@ -31,7 +31,7 @@ if (! $res && file_exists("../../../main.inc.php")) $res=@include "../../../main
 if (! $res) die("Include of main fails");
 
 dol_include_once('/product/class/product.class.php');
-// dol_include_once('/core/class/html.form.class.php');
+dol_include_once('/core/class/html.form.class.php');
 // dol_include_once('/product/class/html.formproduct.class.php');
 dol_include_once('/core/class/extrafields.class.php');
 dol_include_once('/categories/class/categorie.class.php');
@@ -39,6 +39,8 @@ dol_include_once('/categories/class/categorie.class.php');
 $langs->loadLangs(array("pickup@pickup", 'products', 'productbatch', "other"));
 
 $action = GETPOST('action', 'aZ09') ?GETPOST('action', 'aZ09') : 'list';
+$massaction = GETPOST('massaction', 'alpha');
+$toselect = GETPOST('toselect', 'array');
 
 $sortfield = 'ref';
 $sortorder = 'ASC';
@@ -46,9 +48,9 @@ $sortorder = 'ASC';
 $page = 0;
 $limit = 0;
 $param = '';
-$massactionbutton = '';
 $nbtotalofrecords = '';
 $picto = 'product';
+$selectedfields = '';
 
 // Security check
 if ($user->socid) {
@@ -69,7 +71,7 @@ if (!$user->rights->pickup->correctdata) {
 $object = new Product($db);
 // $hookmanager->initHooks(array('productservicelist'));
 $extrafields = new ExtraFields($db);
-// $form = new Form($db);
+$form = new Form($db);
 // $formproduct = new FormProduct($db);
 
 // fetch optionals attributes and labels
@@ -138,11 +140,33 @@ $arrayfields['wanted_status_batch'] = array(
 $object->fields = dol_sort_array($object->fields, 'position');
 $arrayfields = dol_sort_array($arrayfields, 'position');
 
-
 /*
  * Actions
  */
 
+ if (GETPOST('cancel', 'alpha')) {
+	$action = 'list'; $massaction = '';
+}
+if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+	$massaction = '';
+}
+
+if ($massaction === 'correct_status_batch') {
+  // No extra permissions needed, having access to this screen is enough.
+  $product = new Product($db);
+  foreach ($toselect as $toselectid) {
+    $result = $product->fetch($toselectid);
+    if ($result > 0 && $product->id > 0) {
+      $correct_status_batch = GETPOST('correct_status_batch_'.$product->id, 'alpha') ?? '';
+      if (preg_match('/^batch_status_(\d+)$/', $correct_status_batch, $matches)) {
+        $product->status_batch = intval($matches[1]);
+        if ($product->update($product->id, $user) < 0) {
+          setEventMessages($product->error, $product->errors, 'errors');
+        }
+      }
+    }
+  }
+}
 
 /*
  * View
@@ -200,27 +224,50 @@ if (!$resql) {
 
 $num = $db->num_rows($resql);
 
+$arrayofselected = is_array($toselect) ? $toselect : array();
+
 $helpurl = '';
 llxHeader('', $title, $helpurl, '', 0, 0, array(), array(), '', '');
 
+// List of mass actions available
+$arrayofmassactions = array(
+	'correct_status_batch'=>img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans('PickupCorrectDataCorrectStatusBatch'),
+);
+$massactionbutton = $form->selectMassAction('', $arrayofmassactions);
+
+print '<form action="'.$_SERVER["PHP_SELF"].'" method="post" name="formulaire">';
+// if ($optioncss != '') {
+// 	print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
+// }
+print '<input type="hidden" name="token" value="'.newToken().'">';
+print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
+print '<input type="hidden" name="action" value="list">';
+print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
+print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
+
 print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, $picto, 0, '', '', $limit, 0, 0, 1);
 
+$selectedfields = '';
+// $selectedfields.= $form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage, getDolGlobalString('MAIN_CHECKBOX_LEFT_COLUMN', '')); // This also change content of $arrayfields
+if ($massactionbutton) {
+	$selectedfields .= $form->showCheckAddButtons('checkforselect', 1);
+}
 
 print '<div class="div-table-responsive">';
 print '<table class="tagtable liste'.($moreforfilter ? " listwithfilterbefore" : "").'">'."\n";
 
 print '<tr class="liste_titre">';
-// if (!empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
-// 	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');
-// }
+if (!empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
+	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');
+}
 foreach ($arrayfields as $key => $val) {
   if (!empty($arrayfields[$key]['checked'])) {
     print_liste_field_titre($val['label'], $_SERVER["PHP_SELF"], "p.rowid", "", $param, "", $sortfield, $sortorder);
   }
 }
-// if (empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
-// 	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');
-// }
+if (empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
+	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');
+}
 print "</tr>\n";
 
 $i = 0;
@@ -237,21 +284,21 @@ while ($i < $imaxinloop) {
 
   print '<tr class="oddeven">';
 
-  // // Action column
-  // if (!empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
-  //   print '<td class="nowrap center">';
-  //   if ($massactionbutton || $massaction) {   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
-  //     $selected = 0;
-  //     if (in_array($obj->rowid, $arrayofselected)) {
-  //       $selected = 1;
-  //     }
-  //     print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected ? ' checked="checked"' : '').'>';
-  //   }
-  //   print '</td>';
-  //   if (!$i) {
-  //     $totalarray['nbfield']++;
-  //   }
-  // }
+  // Action column
+  if (!empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
+    print '<td class="nowrap center">';
+    if ($massactionbutton || $massaction) {   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
+      $selected = 0;
+      if (in_array($obj->rowid, $arrayofselected)) {
+        $selected = 1;
+      }
+      print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected ? ' checked="checked"' : '').'>';
+    }
+    print '</td>';
+    if (!$i) {
+      $totalarray['nbfield']++;
+    }
+  }
 
   foreach ($arrayfields as $key => $val) {
     if (empty($val['checked'])) { continue; }
@@ -294,6 +341,9 @@ while ($i < $imaxinloop) {
           break;
       }
       print '</span>';
+
+      // also adding an hidden field for the correct_status_batch mass action.
+      print '<input type="hidden" name="correct_status_batch_'.htmlspecialchars($product->id).'" value="'.htmlspecialchars($batch_constraint).'">';
     } else if (preg_match('/^p\.(\w+)$/', $key, $matches)) {
       $product_field = $matches[1];
       print $product->showOutputField($val, $product_field, $product->$product_field, '');
@@ -302,21 +352,21 @@ while ($i < $imaxinloop) {
     print '</td>';
   }
 
-  // // Action column
-  // if (empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
-  //   print '<td class="nowrap center">';
-  //   if ($massactionbutton || $massaction) {   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
-  //     $selected = 0;
-  //     if (in_array($obj->rowid, $arrayofselected)) {
-  //       $selected = 1;
-  //     }
-  //     print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected ? ' checked="checked"' : '').'>';
-  //   }
-  //   print '</td>';
-  //   if (!$i) {
-  //     $totalarray['nbfield']++;
-  //   }
-  // }
+  // Action column
+  if (empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
+    print '<td class="nowrap center">';
+    if ($massactionbutton || $massaction) {   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
+      $selected = 0;
+      if (in_array($obj->rowid, $arrayofselected)) {
+        $selected = 1;
+      }
+      print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected ? ' checked="checked"' : '').'>';
+    }
+    print '</td>';
+    if (!$i) {
+      $totalarray['nbfield']++;
+    }
+  }
   print '</tr>';
 	$i++;
 }
@@ -325,7 +375,7 @@ $db->free($resql);
 
 // If no record found
 if ($num == 0) {
-	$colspan = 0; // TODO: set to 1 when massaction enabled.
+	$colspan = 1; // set to 1 because of massaction (select column).
 	foreach ($arrayfields as $key => $val) {
 		if (!empty($val['checked'])) {
 			$colspan++;
@@ -336,7 +386,7 @@ if ($num == 0) {
 
 print "</table>";
 print "</div>";
-// print '</form>';
+print '</form>';
 
 // End of page
 llxFooter();
