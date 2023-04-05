@@ -37,6 +37,10 @@ en préfixe des références produits (si elle n'est pas déjà en préfixe).
 * Ajout de boutons pour créer des numéros de série depuis les écrans de correction de stock.
 * Amélioration de l'ergonomie Dolibarr: quand on créé des mouvements de stocks sur des produits avec numéro unique, on initialise la quantité à 1.
 
+### Corrections et changements mineurs
+
+* Paramètres du module: l'édition se fait «bloc par bloc» pour plus de clarté, et minimiser le risque d'erreur.
+
 ## 1.5.0
 
 ### Nouvelles fonctionnalités

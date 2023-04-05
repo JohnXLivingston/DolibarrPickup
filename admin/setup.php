@@ -52,6 +52,7 @@ if (! $user->admin) accessforbidden();
 
 // Parameters
 $action = GETPOST('action', 'alpha');
+$edit_table = GETPOST('edit_table', 'alpha');
 $backtopage = GETPOST('backtopage', 'alpha');
 $confirm    = GETPOST('confirm', 'alpha');
 
@@ -137,6 +138,12 @@ foreach ($pickup_extrafields as $key => $val) {
 	$fetched_element_types[$val['elementype']] = true;
 }
 
+$list_of_tables = [
+	'main' => $langs->trans("PickupSetup"),
+	'units' => $langs->trans("PickupSetupUnits"),
+	'batch' => $langs->trans("PickupSetupBatch"),
+	'printable_label' => $langs->trans("PickupSetupPrintableLabel")
+];
 
 $arrayofparameters=array(
 	'PICKUP_USE_PICKUP_TYPE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
@@ -471,6 +478,7 @@ if ($action == 'update' && is_array($arrayofparameters))
 	$ok = true;
 	foreach ($arrayofparameters as $key => $val) {
 		if ($val['enabled'] != 1) { continue; }
+		if ($val['table'] !== $edit_table) { continue; }
 
 		if ($val['type'] === 'boolean') {
 			if (GETPOSTISSET($key.'_hidden')) {
@@ -640,6 +648,7 @@ if ($action == 'edit')
 	print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
 	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	print '<input type="hidden" name="action" value="update">';
+	print '<input type="hidden" name="edit_table" value="'.htmlspecialchars($edit_table).'">';
 
 	function draw_edit_table($table, $title) {
 		global $arrayofparameters, $entrepot, $form, $conf, $langs, $pickup_extrafields, $db;
@@ -689,10 +698,10 @@ if ($action == 'edit')
 		}
 		print '</table>';
 	}
-	draw_edit_table('main', $langs->trans("PickupSetup"));
-	draw_edit_table('units', $langs->trans("PickupSetupUnits"));
-	draw_edit_table('batch', $langs->trans("PickupSetupBatch"));
-	draw_edit_table('printable_label', $langs->trans("PickupSetupPrintableLabel"));
+
+	if (array_key_exists($edit_table, $list_of_tables)) {
+		draw_edit_table($edit_table, $list_of_tables[$edit_table]);
+	}
 
 	print '<br><div class="center">';
 	print '<input class="button" type="submit" value="'.$langs->trans("Save").'">';
@@ -705,10 +714,10 @@ else
 {
 	if (! empty($arrayofparameters)) {
 
-		function draw_modify_button() {
+		function draw_modify_button($table) {
 			global $langs;
 			print '<div class="tabsAction">';
-			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit">'.$langs->trans("Modify").'</a>';
+			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit&edit_table='.urlencode($table).'">'.$langs->trans("Modify").'</a>';
 			print '</div>';
 		}
 
@@ -795,13 +804,12 @@ else
 
 			print '</table>';
 
-			draw_modify_button();
+			draw_modify_button($table);
 		}
 
-		draw_view_table('main', $langs->trans("PickupSetup"));
-		draw_view_table('units', $langs->trans("PickupSetupUnits"));
-		draw_view_table('batch', $langs->trans("PickupSetupBatch"));
-		draw_view_table('printable_label', $langs->trans("PickupSetupPrintableLabel"));
+		foreach ($list_of_tables as $table_key => $table_title) {
+			draw_view_table($table_key, $table_title);
+		}
 	} else {
 		print '<br>'.$langs->trans("NothingToSetup");
 	}
