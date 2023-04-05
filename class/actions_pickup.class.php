@@ -466,6 +466,7 @@ class ActionsPickup
 			$inventorycode = $object->ref;
 
 			dol_include_once('/product/stock/class/productlot.class.php');
+			$pickup_note_added_on_pl = [];
 
 			foreach ($object->lines as $line) {
 				if (empty($line->fk_stock_movement)) {
@@ -505,13 +506,36 @@ class ActionsPickup
 						$nb_ok++;
 
 						// If needed, copy the pickupline description to Productlot.
-						if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION) && !empty($pbatches)) {
-							if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_UNIQUE_PL) && $product->status_batch == 2) {
-								foreach ($pbatches as $pbatch) {
-									$productlot = new Productlot($db);
-									if ($productlot->fetch(null, $pbatch->fk_product, $pbatch->batch_number) > 0) {
-										$productlot->array_options['options_pickup_note'] = $line->description;
-										$productlot->updateExtraField('pickup_note');
+						if (!empty($line->description)) {
+							if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION) && !empty($pbatches)) {
+								if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_UNIQUE_PL) && $product->status_batch == 2) {
+									foreach ($pbatches as $pbatch) {
+										$productlot = new Productlot($db);
+										if ($productlot->fetch(null, $pbatch->fk_product, $pbatch->batch_number) > 0) {
+											$productlot->array_options['options_pickup_note'] = $line->description;
+											$productlot->updateExtraField('pickup_note');
+										}
+									}
+								} else if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_PL) && $product->status_batch == 1) {
+									foreach ($pbatches as $pbatch) {
+										$pickup_note_added_on_pl_key = $pbatch->fk_product . '_____' . $pbatch->batch_number;
+										if (array_key_exists($pickup_note_added_on_pl_key, $pickup_note_added_on_pl) && $line->description === $pickup_note_added_on_pl[$pickup_note_added_on_pl_key]) {
+											continue;
+										}
+										$pickup_note_added_on_pl[$pickup_note_added_on_pl_key] = $line->description;
+
+										$productlot = new Productlot($db);
+										if ($productlot->fetch(null, $pbatch->fk_product, $pbatch->batch_number) > 0) {
+											// Here we append the pickup ref, and the note:
+											if (empty($productlot->array_options['options_pickup_note'])) {
+												$productlot->array_options['options_pickup_note'] = '';
+											} else {
+												$productlot->array_options['options_pickup_note'].= "\n\n";
+											}
+											$productlot->array_options['options_pickup_note'].= $object->ref . " :\n";
+											$productlot->array_options['options_pickup_note'].= $line->description;
+											$productlot->updateExtraField('pickup_note');
+										}
 									}
 								}
 							}

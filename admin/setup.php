@@ -238,6 +238,11 @@ $arrayofparameters=array(
 		'type' => 'boolean',
 		'extrafields' => array('pickup_note')
 	),
+	'PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_PL' => array(
+		'table' => 'pickupline_description',
+		'enabled' => !empty($conf->productbatch->enabled),
+		'type' => 'boolean',
+	),
 
 	'PICKUP_DEFAULT_HASBATCH' => array(
 		'table' => 'batch',
