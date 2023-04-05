@@ -353,7 +353,7 @@ function print_transfer_form(&$transfer_form_description, $search, $actions_to_c
     print '</td>';
 
     print '<td class="right">';
-    print '<input type="text" ';
+    print '<input type="number" min="0" step="1" ';
     print 'class="flat maxwidth50 right ';
     if ($form_line['qty_field']['is_error']) {
       print 'error ';
