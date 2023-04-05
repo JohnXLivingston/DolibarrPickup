@@ -51,6 +51,8 @@ PICKUP_USE_PBRAND = Use a «brand» field on products
 PICKUP_USE_PBRANDTooltip = Will add a brand field to products (deprecated).
 PICKUP_USE_PICKUPLINE_DESCRIPTION = Add a «description» field on pickup's lines. If you are still using this feature, please contact the plugin author.
 PICKUP_USE_PICKUPLINE_DESCRIPTION_IN_PDF = Afficher cette description dans les PDF.
+PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_UNIQUE_PL = Copier cette description sur les fiches «Lot» pour les produits avec numéro de série unique.
+PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_UNIQUE_PLTooltip = Activer cette option va ajouter un champ «Commentaire lors de la collecte» sur les fiches «Lot».
 PICKUP_NO_SIGN_STATUS = Disable «signed» state
 PICKUP_SEND_MAIL = Activate «Send Email» feature
 PICKUP_SEND_MAILTooltip = This will change the pickup receipt filenames (to be compatible with Dolibarr).
@@ -166,6 +168,8 @@ PickupProductLength = Length for 1 product
 PickupProductSurface = Surface for 1 product
 
 PBrand = Brand
+
+PickupNote = Notes lors de la collecte
 
 Permission469001 = View pickups
 Permission469002 = Create pickups, create third parties/product from the mobile application

@@ -127,6 +127,16 @@ $pickup_extrafields = array(
 			'migrate' => true,
 			'lrds_name' => 'marque'
 		)
+	),
+
+	// Extrafield on Productlot.
+	'pickup_note' => array (
+		'label' => 'PickupNote',
+		'type' => 'text',
+		'pos' => 110,
+		'elementype' => 'product_lot',
+		'always_editable' => 1,
+		'visibility' => '1'
 	)
 );
 
@@ -222,6 +232,12 @@ $arrayofparameters=array(
 
 	'PICKUP_USE_PICKUPLINE_DESCRIPTION' => array('table' => 'pickupline_description', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_PICKUPLINE_DESCRIPTION_IN_PDF' => array('table' => 'pickupline_description', 'enabled' => 1, 'type' => 'boolean'),
+	'PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_UNIQUE_PL' => array(
+		'table' => 'pickupline_description',
+		'enabled' => !empty($conf->productbatch->enabled),
+		'type' => 'boolean',
+		'extrafields' => array('pickup_note')
+	),
 
 	'PICKUP_DEFAULT_HASBATCH' => array(
 		'table' => 'batch',

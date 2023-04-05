@@ -465,6 +465,8 @@ class ActionsPickup
 			$movement_label = empty($object->label) ? $object->ref : $object->ref . ' - ' . $object->label;
 			$inventorycode = $object->ref;
 
+			dol_include_once('/product/stock/class/productlot.class.php');
+
 			foreach ($object->lines as $line) {
 				if (empty($line->fk_stock_movement)) {
 					require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
@@ -501,6 +503,19 @@ class ActionsPickup
 						setEventMessages($product->error, $product->errors, 'errors');
 					} else {
 						$nb_ok++;
+
+						// If needed, copy the pickupline description to Productlot.
+						if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION) && !empty($pbatches)) {
+							if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_UNIQUE_PL) && $product->status_batch == 2) {
+								foreach ($pbatches as $pbatch) {
+									$productlot = new Productlot($db);
+									if ($productlot->fetch(null, $pbatch->fk_product, $pbatch->batch_number) > 0) {
+										$productlot->array_options['options_pickup_note'] = $line->description;
+										$productlot->updateExtraField('pickup_note');
+									}
+								}
+							}
+						}
 
 						// Now we have to find the stock_movement.... because correct_stock does not return it.
 						require_once DOL_DOCUMENT_ROOT.'/product/stock/class/mouvementstock.class.php';

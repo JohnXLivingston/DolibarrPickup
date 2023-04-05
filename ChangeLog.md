@@ -49,6 +49,9 @@ celui-ci n'est plus automatiquement ajouté dans les PDF générés. Il faut all
 ### Corrections et changements mineurs
 
 * Paramètres du module: l'édition se fait «bloc par bloc» pour plus de clarté, et minimiser le risque d'erreur.
+* Champs «description» des lignes de collecte :
+  * devient un type «text», et non plus «html»
+  * peut être copié sur les fiches de lots sous forme d'un attribut supplémentaire
 
 ## 1.5.0
 

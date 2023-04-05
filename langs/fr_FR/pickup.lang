@@ -51,6 +51,8 @@ PICKUP_USE_PBRAND = Ajouter un champ «marque» à la fiche produit (fonctionnal
 PICKUP_USE_PBRANDTooltip = Ajouter un champ «marque» aux fiches produits. Attention, cette fonctionnalité est dépréciée. Si vous l'utilisez encore, merci de le signaler à l'auteur du module.
 PICKUP_USE_PICKUPLINE_DESCRIPTION = Ajouter un champ «Description» aux lignes de collecte.
 PICKUP_USE_PICKUPLINE_DESCRIPTION_IN_PDF = Afficher cette description dans les PDF.
+PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_UNIQUE_PL = Copier cette description sur les fiches «Lot» pour les produits avec numéro de série unique.
+PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_UNIQUE_PLTooltip = Activer cette option va ajouter un champ «Commentaire lors de la collecte» sur les fiches «Lot».
 PICKUP_NO_SIGN_STATUS = Désactiver le statut «Signée»
 PICKUP_SEND_MAIL = Activer la fonction «Envoyer Email»
 PICKUP_SEND_MAILTooltip = Si vous activez cette fonction, le nom des PDF généré changera de forme (c'est une contrainte de Dolibarr).
@@ -166,6 +168,8 @@ PickupProductLength = Longueur pour 1 article
 PickupProductSurface = Surface pour 1 article
 
 PBrand = Marque
+
+PickupNote = Notes lors de la collecte
 
 Permission469001 = Consulter les collectes
 Permission469002 = Créer des collectes, créer des tiers/produits depuis l'application mobile

@@ -99,7 +99,7 @@ class PickupLine extends CommonObjectLine
 			'type'=>'integer:Product:product/class/product.class.php:1:(fk_product_type=0)',
 			'label'=>'Product', 'enabled'=>'1', 'position'=>32, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'foreignkey'=>'product.rowid',
 		),
-		'description' => array('type'=>'html', 'label'=>'Description', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>-1,),
+		'description' => array('type'=>'text', 'label'=>'Description', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>-1,),
 		'qty' => array('type'=>'integer', 'label'=>'Quantité', 'enabled'=>'1', 'position'=>45, 'notnull'=>1, 'visible'=>1, 'default'=>'1', 'isameasure'=>'1', 'css'=>'maxwidth75imp',),
 		// 'batch' => array('type' => 'varchar(128)', 'label' => 'Batch', 'enabled' => '1', 'position' => 50, 'visible' => 1, 'notnull' => -1),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>140, 'notnull'=>1, 'visible'=>-1,),
