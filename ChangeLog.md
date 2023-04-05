@@ -2,7 +2,13 @@
 
 ## 2.0.0 (Not Released Yet)
 
-**Important** : cette mise à jour contient des modifications dans la gestion des hooks Dolibarr
+**Important** : Cette version contient de nombreuses nouveautés. Certaines fonctionnalités sont
+dépréciées, et d'autres demandent de vérifier les paramètres pour que le module fonctionne comme
+avant. Tout est indiqué dans le présent fichier, mais étant conscient que cela peut être
+compliqué, n'hésitez pas à [me contacter](https://johnxlivingston.github.io/DolibarrPickup/support/)
+pour vous faire accompagner (gratuitement) lors de la mise à jour.
+
+**Important** : Cette mise à jour contient des modifications dans la gestion des hooks Dolibarr
 et dans les définitions de base de donnée.
 Pour les appliquer, il faut désactiver puis réactiver le module.
 
@@ -14,6 +20,9 @@ Un bouton pour migrer les données vous sera proposé. Ce bouton ajoutera la mar
 en préfixe des références produits (si elle n'est pas déjà en préfixe).
 
 **Important** : La version Dolibarr minimum est désormais la version 14.
+
+**Important** : Si vous utilisez le champs «description» sur les lignes de collecte,
+celui-ci n'est plus automatiquement ajouté dans les PDF générés. Il faut aller activer l'option adéquate.
 
 ### Changements non rétro-compatibles
 

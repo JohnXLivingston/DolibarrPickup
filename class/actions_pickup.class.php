@@ -741,7 +741,7 @@ class ActionsPickup
 		}
 		$text.= $product->ref;
 
-		if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
+		if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION) && !empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION_IN_PDF)) {
 			$text.= '<br>';
 			$text.= dol_htmlentitiesbr($line->description);
 		}

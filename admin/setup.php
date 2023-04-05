@@ -139,10 +139,11 @@ foreach ($pickup_extrafields as $key => $val) {
 }
 
 $list_of_tables = [
-	'main' => $langs->trans("PickupSetup"),
-	'units' => $langs->trans("PickupSetupUnits"),
-	'batch' => $langs->trans("PickupSetupBatch"),
-	'printable_label' => $langs->trans("PickupSetupPrintableLabel")
+	'main' => $langs->trans('PickupSetup'),
+	'units' => $langs->trans('PickupSetupUnits'),
+	'pickupline_description' => $langs->trans('PickupSetupLineDescription'),
+	'batch' => $langs->trans('PickupSetupBatch'),
+	'printable_label' => $langs->trans('PickupSetupPrintableLabel')
 ];
 
 $arrayofparameters=array(
@@ -151,7 +152,6 @@ $arrayofparameters=array(
 	'PICKUP_ALLOW_FUTURE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_PCAT' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_DEEE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_deee', 'pickup_deee_type')),
-	'PICKUP_USE_PICKUPLINE_DESCRIPTION' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_NO_SIGN_STATUS' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_SEND_MAIL' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_PBRAND' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand')),
@@ -219,6 +219,9 @@ $arrayofparameters=array(
 			'pickupline' => $langs->trans('PICKUP_UNITS_EDIT_MODE_OPTIONS_pickupline')
 		)
 	),
+
+	'PICKUP_USE_PICKUPLINE_DESCRIPTION' => array('table' => 'pickupline_description', 'enabled' => 1, 'type' => 'boolean'),
+	'PICKUP_USE_PICKUPLINE_DESCRIPTION_IN_PDF' => array('table' => 'pickupline_description', 'enabled' => 1, 'type' => 'boolean'),
 
 	'PICKUP_DEFAULT_HASBATCH' => array(
 		'table' => 'batch',
