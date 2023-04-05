@@ -93,6 +93,8 @@ PickupMenuHelp = Help
 PickupNew = New pickup
 PickupMenuReports = Reports
 PickupMenuSocReports = Reports by third party
+PickupMenuCorrectData = Correction des données
+PickupMenuCorrectDataProductStatusBatch = Produits géré par Lot/Série
 
 PickupMenuLabelSearch = Par étiquette
 
@@ -182,6 +184,7 @@ Permission469006 = Set pickups to «in stock» state, create associated stock mo
 Permission469007 = Set pickups to «signed» state
 Permission469008 = Configure the pickup module
 Permission469009 = Access to reports
+Permission469010 = Accéder aux écrans de correction des données
 
 PickupMailTopic = Pickup receipt __REF__
 
@@ -200,3 +203,7 @@ PickupPrintableLabelSearchHelp = Cette page est fournie par le module de Collect
 PrintableSearchTransferMissingLines = Aucun mouvement
 PrintableSearchTransferConfirm = Confirmez-vous les opérations ci-dessous ?
 PrintableSearchTransferQtyMustBeOne = Le lot %s est unique, la quantité ne peut être supérieure à 1.
+
+PickupCorrectDataHelp = Les écrans de cette section permettent de détecter des incohérences dans les données, et de les corriger. Par exemple quand les contraintes données par un tag produit ne sont pas respectées.
+
+PickupCorrectDataWantedStatusBatch = Valeur attendue

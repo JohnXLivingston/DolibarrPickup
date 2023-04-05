@@ -45,6 +45,8 @@ celui-ci n'est plus automatiquement ajouté dans les PDF générés. Il faut all
 * Options pour la génération automatique de numéros de lot/série (uniques ou non) depuis l'application mobile.
 * Ajout de boutons pour créer des numéros de série depuis les écrans de correction de stock.
 * Amélioration de l'ergonomie Dolibarr: quand on créé des mouvements de stocks sur des produits avec numéro unique, on initialise la quantité à 1.
+* Écrans de «correction des données», pour traiter les incohérences :
+  * lister les produits dont le type de numéro de lot/série ne correspond pas au tag
 
 ### Corrections et changements mineurs
 
