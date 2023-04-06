@@ -471,6 +471,13 @@ function migrate_pbrand_to_ref() {
 			dol_syslog('migrate_pbrand_to_ref: object: '.$row->fk_object.' already begins with pbrand.', LOG_DEBUG);
 			continue;
 		}
+		if (strlen($pbrand) >= 4) {
+			// If the brand name is at least 4 chars, we will also look in the middle of the ref.
+			if (false !== mb_strpos(mb_strtoupper($product->ref), $pbrand)) {
+				dol_syslog('migrate_pbrand_to_ref: object: '.$row->fk_object.' already contains pbrand.', LOG_DEBUG);
+				continue;
+			}
+		}
 		$new_ref = $pbrand.$product->ref;
 		dol_syslog('migrate_pbrand_to_ref: object: '.$row->fk_object.' changing ref to: '.$new_ref, LOG_INFO);
 		$product->ref = $new_ref;
