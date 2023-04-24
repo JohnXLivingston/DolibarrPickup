@@ -6,9 +6,9 @@
     /* size: landscape; */
   }
 
-  body {
-    margin: 2mm;
-  }
+  // body {
+  //   margin: 2mm;
+  // }
 
   .page {
     // 1 label per page
@@ -21,59 +21,47 @@
     border: 1px solid red;
     width: 51mm;
     height: 25mm;
-    padding: 2mm; // simulates the 1mm margin of the dymo printers.
+    padding: 1mm; // simulates the 1mm margin of the dymo printers.
   }
+
+  // .block {
+  //   border: 1px solid blue;
+  // }
 }
 
 body {
-  font-size: 3mm;
+  font-size: 2.5mm;
 }
 
-.page {
-  display: flex;
-  flex-flow: column nowrap;
-  gap: 5mm;
-  justify-content: start;
-}
+table.blocks {
+  max-width: 51mm;
+  width: 100%;
+  border-spacing: 2mm;
 
-.blocks {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
+  td.block {
+    &:last-child {
+      text-align: right;
+    }
+
+    /* we must put first-child after last-child, to have precedence if only 1 column */
+    &:first-child {
+      text-align: left;
+    }
+
+    img,
+    svg {
+      max-width: 100%;
+      width: fit-content;
+    }
+  }
 }
 
 .footers {
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: start;
-}
-
-.block {
-  display: flex;
-  flex-flow: column nowrap;
-  gap: 1mm;
-  justify-content: center;
-  padding: 1px;
-
-  img,
-  svg {
-    max-width: 100%;
-    width: fit-content;
+  .footer {
+    display: block;
   }
 }
 
 label {
   white-space: nowrap;
-
-  &.center {
-    align-self: center;
-  }
-
-  &.left {
-    align-self: flex-start;
-  }
-
-  &.right {
-    align-self: flex-end;
-  }
 }

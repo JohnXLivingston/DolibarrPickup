@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## 2.0.1 (Not released yet)
+
+### Corrections et changements mineurs
+
+* Ajustement pour que l'impression des étiquettes fonctionne sur les imprimantes Zebra utilisées par LRDS.
+
 ## 2.0.0
 
 **Important** : Cette version contient de nombreuses nouveautés. Certaines fonctionnalités sont

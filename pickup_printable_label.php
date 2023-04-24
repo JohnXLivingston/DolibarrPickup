@@ -112,14 +112,14 @@ function print_barcode($barcode_type, $code) {
   }
   if ($barcodeGenerator->is2d) {
     // Following size was testes with 51mm*25mm labels.
-    print '<span style="display: inline-block;"><img style="width:75%;" src="data:image/png;base64,';
+    print '<img style="max-width:1.5cm;" src="data:image/png;base64,';
     print base64_encode($barcodeobj->getBarcodePNGData(2, 2));
-    print '"></span>';
+    print '">';
   } else {
     print $barcodeobj->getBarcodeSVGcode(1);
   }
   // print '<img src="data:image/png;base64,';
-  // print base64_encode($barcodeobj->getBarcodePNGData(1));
+  // print base64_encode($barcodeobj->getBarcodePNGData());
   // print '">';
 }
 
@@ -127,11 +127,11 @@ function print_labels($labels_info) {
   foreach ($labels_info as $label_info) {
     ?><div class="page"><?php
     if (!empty($label_info['blocks']) && is_array($label_info['blocks'])) {
-      ?><div class="blocks"><?php
+      ?><table class="blocks"><tr><?php
       foreach ($label_info['blocks'] as $block_info) {
         print_block($block_info);
       }
-      ?></div><?php
+      ?></tr></table><?php
     }
     if (!empty($label_info['footers']) && is_array($label_info['footers'])) {
       ?><div class="footers"><?php
@@ -149,12 +149,12 @@ function print_labels($labels_info) {
 function print_block($block_info) {
   if (empty($block_info)) { return; }
 
-  ?><span class="block"><?php
+  ?><td class="block"><?php
   if (!empty($block_info['barcode'])) {
     print_barcode($block_info['barcode']['barcode_type'], $block_info['barcode']['code']);
   }
   print_label($block_info);
-  ?></span><?php
+  ?></td><?php
 }
 
 function print_label($info) {
@@ -201,15 +201,15 @@ function get_test_infos() {
         [
           'barcode' => ['barcode_type' => $batch_barcode_type, 'code' => 'SN0123456789'],
           'label' => 'SN0123456789',
-          'label_align' => 'center'
+          // 'label_align' => 'center'
         ],
       ],
       'footers' => [[
         'label' => 'MARSHALL MX100',
-        'label_align' => 'left'
+        // 'label_align' => 'left'
       ], [
         'label' => 'ANOTHER LINE',
-        'label_align' => 'left'
+        // 'label_align' => 'left'
       ]]
     ],
     [
@@ -220,12 +220,12 @@ function get_test_infos() {
         [
           'barcode' => ['barcode_type' => 'C128', 'code' => 'SN0123456790'],
           'label' => 'SN0123456790',
-          'label_align' => 'center'
+          // 'label_align' => 'center'
         ]
       ],
       'footers' => [[
         'label' => 'UNE_REF_BIDON',
-        'label_align' => 'left'
+        // 'label_align' => 'left'
       ]]
     ],
     [
@@ -236,12 +236,12 @@ function get_test_infos() {
         [
           'barcode' => ['barcode_type' => 'C128', 'code' => 'SN0123456790'],
           'label' => 'SN0123456790',
-          'label_align' => 'center'
+          // 'label_align' => 'center'
         ]
       ],
       'footers' => [[
         'label' => 'UNE_REF_BIDON_MAIS_TRES_LONGUE_POUR_VOIR',
-        'label_align' => 'left'
+        // 'label_align' => 'left'
       ]]
     ],
     [
@@ -252,7 +252,7 @@ function get_test_infos() {
       ],
       'footers' => [[
         'label' => 'BARCODE_DEFAULT_TYPE',
-        'label_align' => 'left'
+        // 'label_align' => 'left'
       ]]
     ],
     [
@@ -263,7 +263,7 @@ function get_test_infos() {
       ],
       'footers' => [[
         'label' => 'BARCODE_NUMERIC',
-        'label_align' => 'left'
+        // 'label_align' => 'left'
       ]]
     ],
     [
@@ -274,7 +274,7 @@ function get_test_infos() {
       ],
       'footers' => [[
         'label' => 'EMPTY_BARCODE',
-        'label_align' => 'left'
+        // 'label_align' => 'left'
       ]]
     ],
     [
@@ -283,7 +283,7 @@ function get_test_infos() {
       ],
       'footers' => [[
         'label' => 'NULL_BLOCK',
-        'label_align' => 'left'
+        // 'label_align' => 'left'
       ]]
     ]
   ];
@@ -311,7 +311,10 @@ function product_block($product) {
 
 function product_footers($product) {
   return [
-    ['label' => $product->ref, 'label_align' => 'left']
+    [
+      'label' => $product->ref
+      // , 'label_align' => 'left'
+    ]
   ];
 }
 
@@ -342,7 +345,7 @@ function batch_block($batch_number, $product_status_batch) {
 
   $cache_pbatch_block[$cache_key] = [
     'label' => $label_prefix.$batch_number,
-    'label_align' => 'center',
+    // 'label_align' => 'center',
     'barcode' => $barcode
   ];
   return $cache_pbatch_block[$cache_key];
