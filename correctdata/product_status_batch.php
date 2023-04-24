@@ -45,8 +45,16 @@ $toselect = GETPOST('toselect', 'array');
 $sortfield = 'ref';
 $sortorder = 'ASC';
 
-$page = 0;
-$limit = 0;
+$page = GETPOSTISSET('pageplusone') ? (GETPOST('pageplusone') - 1) : GETPOST("page", 'int');
+if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+	// If $page is not defined, or '' or -1 or if we click on clear filters
+	$page = 0;
+}
+$limit = GETPOST('limit', 'int') ? GETPOST('limit', 'int') : $conf->liste_limit;
+$offset = $limit * $page;
+$pageprev = $page - 1;
+$pagenext = $page + 1;
+
 $param = '';
 $nbtotalofrecords = '';
 $picto = 'product';
@@ -216,9 +224,9 @@ $db->free($resql);
 
 // Complete request and execute it with limit
 $sql.= $db->order($sortfield, $sortorder);
-// if ($limit) {
-// 	$sql .= $db->plimit($limit + 1, $offset);
-// }
+if ($limit) {
+	$sql .= $db->plimit($limit + 1, $offset);
+}
 
 
 // $sql = 'SELECT '.implode(', ', array_keys($arrayfields)).' '.$sql;
@@ -242,6 +250,11 @@ $arrayofmassactions = array(
 );
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);
 
+$param = '';
+if ($limit > 0 && $limit != $conf->liste_limit) {
+	$param .= '&limit='.urlencode($limit);
+}
+
 print '<form action="'.$_SERVER["PHP_SELF"].'" method="post" name="formulaire">';
 // if ($optioncss != '') {
 // 	print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
@@ -251,6 +264,7 @@ print '<input type="hidden" name="formfilteraction" id="formfilteraction" value=
 print '<input type="hidden" name="action" value="list">';
 print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
 print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
+print '<input type="hidden" name="page" value="'.$page.'">';
 
 print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, $picto, 0, '', '', $limit, 0, 0, 1);
 
