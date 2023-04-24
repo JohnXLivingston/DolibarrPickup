@@ -112,7 +112,7 @@ function print_barcode($barcode_type, $code) {
   }
   if ($barcodeGenerator->is2d) {
     // Following size was testes with 51mm*25mm labels.
-    print '<img style="max-width:1.5cm;" src="data:image/png;base64,';
+    print '<img style="max-width:1.3cm;" src="data:image/png;base64,';
     print base64_encode($barcodeobj->getBarcodePNGData(2, 2));
     print '">';
   } else {
