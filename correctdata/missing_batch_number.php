@@ -429,6 +429,8 @@ while ($i < $imaxinloop) {
         print price2num($obj->stock_physique, 'MS');
         if ($obj->stock_physique < 0) { print '</span>'; }
       }
+    } else if ($key === 'p.ref') {
+      print $product->getNomUrl(1, 'stock');
     } else if (preg_match('/^p\.(\w+)$/', $key, $matches)) {
       $product_field = $matches[1];
       print $product->showOutputField($val, $product_field, $product->$product_field, '');
