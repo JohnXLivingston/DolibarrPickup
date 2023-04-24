@@ -357,15 +357,15 @@ print '</tr>';
 // --------------------------------------------------------------------
 print '<tr class="liste_titre">';
 if (!empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
-	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');
+	print_liste_field_titre($selectedfields, '', "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');
 }
 foreach ($arrayfields as $key => $val) {
   if (!empty($arrayfields[$key]['checked'])) {
-    print_liste_field_titre($val['label'], $_SERVER["PHP_SELF"], "p.rowid", "", $param, "", $sortfield, $sortorder);
+    print_liste_field_titre($val['label'], '', "", "", $param, "", $sortfield, $sortorder);
   }
 }
 if (empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
-	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');
+	print_liste_field_titre($selectedfields, '', "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');
 }
 print "</tr>\n";
 
