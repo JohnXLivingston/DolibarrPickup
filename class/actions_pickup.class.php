@@ -1043,18 +1043,20 @@ class ActionsPickup
 			return 0;
 		}
 		if (in_array($parameters['currentcontext'], ['stockproductcard'], true)) {
-			if ($user->rights->pickup->create || $user->rights->stock->mouvement->creer) {
-				$api_url = dol_buildpath('mobile_data.php', 1);
-				$unique = $object->status_batch == 2 ? 'true' : 'false';
-				// Adding javascript that will:
-				// - add «generate batch number» button
-				// - autofill qty to 1 if status_batch==2 and qty is empty
-				if ($action === 'correction' || $action === 'transfert') {
-					print '<script type="text/javascript">';
-					print '	jQuery(document).ready(function() { ';
-					print '		window.dolibarrPickup.enhanceStockTransferForm("$api_url", '.((int) $object->id).', '.$unique.');';
-					print '	});';
-					print '</script>';
+			if ($action === 'transfert' || $action === 'correction') {
+				if ($user->rights->pickup->create || $user->rights->stock->mouvement->creer) {
+					$api_url = dol_buildpath('mobile_data.php', 1);
+					$unique = $object->status_batch == 2 ? 'true' : 'false';
+					// Adding javascript that will:
+					// - add «generate batch number» button
+					// - autofill qty to 1 if status_batch==2 and qty is empty
+					if ($action === 'correction' || $action === 'transfert') {
+						print '<script type="text/javascript">';
+						print '	jQuery(document).ready(function() { ';
+						print '		window.dolibarrPickup.enhanceStockTransferForm("$api_url", '.((int) $object->id).', '.$unique.');';
+						print '	});';
+						print '</script>';
+					}
 				}
 			}
 			return 0;
