@@ -1043,7 +1043,7 @@ class ActionsPickup
 			return 0;
 		}
 		if (in_array($parameters['currentcontext'], ['stockproductcard'], true)) {
-			if ($user->rights->pickup->create) {
+			if ($user->rights->pickup->create || $user->rights->stock->mouvement->creer) {
 				$api_url = dol_buildpath('mobile_data.php', 1);
 				$unique = $object->status_batch == 2 ? 'true' : 'false';
 				// Adding javascript that will:

@@ -12,6 +12,7 @@
 * Écran de correction des produits: ajout de la pagination.
 * Écran de correction des produits: ajout d'une recherche par label et libellé.
 * Écran de correction: fix titres de colonnes qui étaient clickable alors que le tri n'est pas implémenté.
+* Correction droits pour le bouton «générer numéro de lot» dans l'onglet stock.
 
 ## 2.0.0
 
