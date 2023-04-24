@@ -100,6 +100,7 @@ foreach (['rowid', 'ref', 'label'] as $key) {
   // must prefix with 'p.', cf sql query
   $akey = 'p.'.$key;
   $arrayfields[$akey] = $object->fields[$key];
+  $arrayfields[$akey]['product_field_name'] = $key;
 
   $visible = $arrayfields[$akey]['visible'];
   if (!empty($visible)) {
@@ -155,6 +156,14 @@ $arrayfields['wanted_status_batch'] = array(
 $object->fields = dol_sort_array($object->fields, 'position');
 $arrayfields = dol_sort_array($arrayfields, 'position');
 
+$search = array();
+foreach ($arrayfields as $akey => $val) {
+  $key = array_key_exists('product_field_name', $val) ? $val['product_field_name'] : $akey;
+	if (GETPOST('search_'.$key, 'alpha') !== '') {
+		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	}
+}
+
 /*
  * Actions
  */
@@ -162,6 +171,20 @@ $arrayfields = dol_sort_array($arrayfields, 'position');
  if (GETPOST('cancel', 'alpha')) {
 	$action = 'list'; $massaction = '';
 }
+
+// Purge search criteria
+if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+  foreach ($search as $key => $criteria) {
+    unset($search[$key]);
+  }
+  $toselect = array();
+  // $search_array_options = array();
+}
+if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
+  || GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {
+  $massaction = ''; // Protection to avoid mass action if we force a new search during a mass action confirmation
+}
+
 if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
@@ -205,6 +228,13 @@ $sql.= ' AND (
   OR
   (mc.batch_constraint = "batch_status_2" AND p.tobatch != 2)
 )';
+
+foreach ($search as $key => $val) {
+  if ($key === 'label' || $key === 'ref') {
+    $sql.= natural_search("p.".$db->escape($key), $search[$key], 0);
+  }
+}
+
 // Now we can count the number of results
 $sqlforcount = 'SELECT COUNT(*) as nbtotalofrecords '.$sql;
 $resql = $db->query($sqlforcount);
@@ -254,6 +284,21 @@ $param = '';
 if ($limit > 0 && $limit != $conf->liste_limit) {
 	$param .= '&limit='.urlencode($limit);
 }
+foreach ($search as $key => $val) {
+	if (is_array($search[$key])) {
+		foreach ($search[$key] as $skey) {
+			if ($skey != '') {
+				$param .= '&search_'.$key.'[]='.urlencode($skey);
+			}
+		}
+	} elseif (preg_match('/(_dtstart|_dtend)$/', $key) && !empty($val)) {
+		$param .= '&search_'.$key.'month='.((int) GETPOST('search_'.$key.'month', 'int'));
+		$param .= '&search_'.$key.'day='.((int) GETPOST('search_'.$key.'day', 'int'));
+		$param .= '&search_'.$key.'year='.((int) GETPOST('search_'.$key.'year', 'int'));
+	} elseif ($search[$key] != '') {
+		$param .= '&search_'.$key.'='.urlencode($search[$key]);
+	}
+}
 
 print '<form action="'.$_SERVER["PHP_SELF"].'" method="post" name="formulaire">';
 // if ($optioncss != '') {
@@ -277,6 +322,39 @@ if ($massactionbutton) {
 print '<div class="div-table-responsive">';
 print '<table class="tagtable liste'.($moreforfilter ? " listwithfilterbefore" : "").'">'."\n";
 
+// Fields title search
+// --------------------------------------------------------------------
+print '<tr class="liste_titre">';
+if (!empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
+  print '<td class="liste_titre maxwidthsearch">';
+	$searchpicto = $form->showFilterButtons('left');
+	print $searchpicto;
+	print '</td>';
+}
+foreach ($arrayfields as $akey => $val) {
+  $key = array_key_exists('product_field_name', $val) ? $val['product_field_name'] : $akey;
+  $cssforfield = '';
+  if (empty($arrayfields[$akey]['checked'])) {
+    continue;
+  }
+  if ($key !== 'label' && $key !== 'ref') {
+    print '<td></td>';
+    continue;
+  }
+  print '<td>';
+  print $object->showInputField($val, $key, (isset($search[$key]) ? $search[$key] : ''), '', '', 'search_', $cssforfield.' maxwidth250', 1);
+  print '</td>';
+}
+if (empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
+  print '<td class="liste_titre maxwidthsearch">';
+	$searchpicto = $form->showFilterButtons();
+	print $searchpicto;
+	print '</td>';
+}
+print '</tr>';
+
+// Fields title label
+// --------------------------------------------------------------------
 print '<tr class="liste_titre">';
 if (!empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
 	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"], "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');

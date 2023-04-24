@@ -6,6 +6,7 @@
 
 * Ajustement pour que l'impression des étiquettes fonctionne sur les imprimantes Zebra utilisées par LRDS.
 * Écran de correction des produits: ajout de la pagination.
+* Écran de correction des produits: ajout d'une recherche par label et libellé.
 
 ## 2.0.0
 
