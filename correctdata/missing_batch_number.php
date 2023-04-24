@@ -195,7 +195,7 @@ $sql.= ' FROM '.MAIN_DB_PREFIX.'product as p';
 $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_stock as ps on p.rowid = ps.fk_product'; // Detail for each warehouse
 $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'entrepot as e on ps.fk_entrepot = e.rowid'; // Link on unique key
 $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_batch as pb on pb.fk_product_stock = ps.rowid'; // Detail for each lot on each warehouse
-$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_lot as pl on pl.fk_product = p.rowid AND pl.batch = pb.batch'; // Link on unique key
+// $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_lot as pl on pl.fk_product = p.rowid AND pl.batch = pb.batch'; // Link on unique key
 $sql.= " WHERE p.entity IN (".getEntity('product').") AND e.entity IN (".getEntity('stock').")";
 $sql.= " AND p.tobatch != 0 AND pb.batch = '000000' ";
 $sql.= " AND pb.qty > 0 ";
@@ -244,7 +244,8 @@ if ($limit) {
 
 
 // $sql = 'SELECT '.implode(', ', array_keys($arrayfields)).' '.$sql;
-$sql = 'SELECT p.rowid, fk_entrepot, e.ref as warehouse_ref, pb.batch, pl.rowid as lotid, pl.eatby, pl.sellby, pb.qty as stock_physique '.$sql; // product will be fetched one by one later on.
+$sql = 'SELECT p.rowid, fk_entrepot, e.ref as warehouse_ref, pb.batch, pb.qty as stock_physique '.$sql; // product will be fetched one by one later on.
+// I removed: pl.rowid as lotid, pl.eatby, pl.sellby
 $resql = $db->query($sql);
 if (!$resql) {
 	dol_print_error($db);
