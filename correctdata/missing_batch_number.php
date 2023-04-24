@@ -130,13 +130,13 @@ $arrayfields['e.ref'] = array(
   'enabled'=>1,
   'position'=>70
 );
-$arrayfields['batch'] = array(
-  'label'=>"Batch",
-  'checked'=>1,
-  'visible'=>1,
-  'enabled'=>1,
-  'position'=>80
-);
+// $arrayfields['batch'] = array(
+//   'label'=>"Batch",
+//   'checked'=>1,
+//   'visible'=>1,
+//   'enabled'=>1,
+//   'position'=>80
+// );
 $arrayfields['stock_physique'] = array(
   'label'=>"PhysicalStock",
   'checked'=>1,
@@ -198,6 +198,14 @@ $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_batch as pb on pb.fk_product_stock 
 $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_lot as pl on pl.fk_product = p.rowid AND pl.batch = pb.batch'; // Link on unique key
 $sql.= " WHERE p.entity IN (".getEntity('product').") AND e.entity IN (".getEntity('stock').")";
 $sql.= " AND p.tobatch != 0 AND pb.batch = '000000' ";
+$sql.= " AND pb.qty > 0 ";
+// $sql.= " GROUP BY p.rowid, p.ref, p.label, p.barcode, p.price, p.price_ttc, p.price_base_type, p.entity,";
+// $sql.= " p.fk_product_type, p.tms,";
+// $sql.= " p.duration, p.tosell, p.tobuy, p.seuil_stock_alerte, p.desiredstock, p.stock, p.tosell, p.tobuy, p.tobatch,";
+// $sql.= " ps.fk_entrepot, ps.reel,";
+// $sql.= " e.ref, e.lieu, e.fk_parent,";
+// $sql.= " pb.batch, pb.eatby, pb.sellby,";
+// $sql.= " pl.rowid, pl.eatby, pl.sellby";
 
 foreach ($search as $key => $val) {
   if ($key === 'label' || $key === 'ref') {
@@ -236,7 +244,7 @@ if ($limit) {
 
 
 // $sql = 'SELECT '.implode(', ', array_keys($arrayfields)).' '.$sql;
-$sql = 'SELECT p.rowid, fk_entrepot, e.ref as warehouse_ref, pb.batch, pl.rowid as lotid, pl.eatby, pl.sellby, SUM(pb.qty) as stock_physique '.$sql; // product will be fetched one by one later on.
+$sql = 'SELECT p.rowid, fk_entrepot, e.ref as warehouse_ref, pb.batch, pl.rowid as lotid, pl.eatby, pl.sellby, pb.qty as stock_physique '.$sql; // product will be fetched one by one later on.
 $resql = $db->query($sql);
 if (!$resql) {
 	dol_print_error($db);
@@ -252,7 +260,7 @@ llxHeader('', $title, $helpurl, '', 0, 0, array(), array(), '', '');
 
 // List of mass actions available
 $arrayofmassactions = array(
-	'correct_status_batch'=>img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans('PickupCorrectDataCorrectStatusBatch'),
+	// 'correct_status_batch'=>img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans('PickupCorrectDataCorrectStatusBatch'),
 );
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);
 
@@ -364,13 +372,11 @@ while ($i < $imaxinloop) {
   // $categorie = new Categorie($db);
   // $categorie->fetch($obj->cat_rowid);
 
-  $product_lot_static->batch = $obj->batch;
-	$product_lot_static->fk_product = $obj->rowid;
-	$product_lot_static->id = $obj->lotid;
-	$product_lot_static->eatby = $obj->eatby;
-	$product_lot_static->sellby = $obj->sellby;
-
-  $batch_constraint = $obj->batch_constraint;
+  // $product_lot_static->batch = $obj->batch;
+	// $product_lot_static->fk_product = $obj->rowid;
+	// $product_lot_static->id = $obj->lotid;
+	// $product_lot_static->eatby = $obj->eatby;
+	// $product_lot_static->sellby = $obj->sellby;
 
   print '<tr class="oddeven">';
 
@@ -413,10 +419,10 @@ while ($i < $imaxinloop) {
         $warehousetmp->fk_parent = $obj->warehouse_parent;
         print $warehousetmp->getNomUrl(1);
       }
-    } else if ($key === 'batch') {
-      if ($product_lot_static->batch) {
-        print $product_lot_static->getNomUrl(1);
-      }
+    // } else if ($key === 'batch') {
+    //   if ($product_lot_static->batch) {
+    //     print $product_lot_static->getNomUrl(1);
+    //   }
     } else if ($key === 'stock_physique') {
       if (!empty($obj->stock_physique)) {
         if ($obj->stock_physique < 0) { print '<span class="warning">'; }
