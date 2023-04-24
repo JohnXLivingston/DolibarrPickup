@@ -61,7 +61,7 @@ function printable_label_header() {
   print "<head>\n";
   print '<meta charset="UTF-8">'."\n";
   print '<meta name="robots" content="noindex'.($disablenofollow?'':',nofollow').'">'."\n";	// Do not index
-  print '<meta name="viewport" content="width=device-width, initial-scale=1">'."\n";
+  // print '<meta name="viewport" content="width=device-width, initial-scale=1">'."\n";
 
   $favicon = DOL_URL_ROOT.'/theme/dolibarr_256x256_color.png';
   if (!empty($conf->global->MAIN_FAVICON_URL)) $favicon = $conf->global->MAIN_FAVICON_URL;
@@ -110,10 +110,17 @@ function print_barcode($barcode_type, $code) {
     require_once TCPDF_PATH.'tcpdf_barcodes_1d.php';
     $barcodeobj = new TCPDFBarcode($code, $encoding);
   }
-  // print $barcodeobj->getBarcodeSVGcode();
-  print '<img src="data:image/png;base64,';
-  print base64_encode($barcodeobj->getBarcodePNGData());
-  print '">';
+  if ($barcodeGenerator->is2d) {
+    // Following size was testes with 51mm*25mm labels.
+    print '<span style="display: inline-block;"><img style="width:75%;" src="data:image/png;base64,';
+    print base64_encode($barcodeobj->getBarcodePNGData(2, 2));
+    print '"></span>';
+  } else {
+    print $barcodeobj->getBarcodeSVGcode(1);
+  }
+  // print '<img src="data:image/png;base64,';
+  // print base64_encode($barcodeobj->getBarcodePNGData(1));
+  // print '">';
 }
 
 function print_labels($labels_info) {

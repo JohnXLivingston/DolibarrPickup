@@ -2,20 +2,12 @@
   @page {
     /* this trick removes headers and footers that browsers are adding */
     margin: 0;
-    size: portrait;
-  }
-}
 
-@media print and (max-width: 14cm) {
-  // When page width < 14cm, we assume that we are printing on a label printer.
-  // This means 1 label per «page».
-
-  @page {
-    size: landscape;
+    /* size: landscape; */
   }
 
   body {
-    margin: 1mm;
+    margin: 2mm;
   }
 
   .page {
@@ -24,21 +16,12 @@
   }
 }
 
-@media print and (min-width: 14cm) {
-  .page {
-    break-inside: avoid;
-    margin: 1cm;
-    width: 89mm;
-    height: 36mm;
-  }
-}
-
 @media screen {
   .page {
-    border: 1px solid #aaa;
-    width: 89mm;
-    height: 36mm;
-    padding: 1mm; // simulates the 1mm margin of the dymo printers.
+    border: 1px solid red;
+    width: 51mm;
+    height: 25mm;
+    padding: 2mm; // simulates the 1mm margin of the dymo printers.
   }
 }
 
