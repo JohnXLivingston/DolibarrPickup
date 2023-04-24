@@ -2,6 +2,10 @@
 
 ## 2.0.1 (Not released yet)
 
+### Nouvelles fonctionnalités
+
+* Écran de génération des numéros de lot/série manquants.
+
 ### Corrections et changements mineurs
 
 * Ajustement pour que l'impression des étiquettes fonctionne sur les imprimantes Zebra utilisées par LRDS.

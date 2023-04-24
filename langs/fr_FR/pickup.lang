@@ -95,6 +95,7 @@ PickupMenuReports = Rapports
 PickupMenuSocReports = Rapports par Tiers
 PickupMenuCorrectData = Correction des données
 PickupMenuCorrectDataProductStatusBatch = Produits géré par Lot/Série
+PickupMenuCorrectDataBatchNumber = Numéros de Lot/Série manquants
 
 PickupMenuLabelSearch = Par étiquette
 
