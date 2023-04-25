@@ -1177,6 +1177,7 @@ class PBatch extends CommonObject
 		$pbatch->fk_product = $id_product;
 		$pbatch->fk_pickupline = null;
 		$pbatch->create($user);
+		return $batch_number;
 	}
 
 	public function getProductLot() {

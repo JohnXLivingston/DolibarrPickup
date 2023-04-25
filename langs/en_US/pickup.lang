@@ -210,3 +210,7 @@ PickupCorrectDataHelp = Les écrans de cette section permettent de détecter des
 PickupCorrectDataResponsibleCat = Catégorie en cause
 PickupCorrectDataWantedStatusBatch = Valeur attendue
 PickupCorrectDataCorrectStatusBatch = Corriger la valeur
+
+PickupCorrectDataGenerateMissingBatch = Générer les numéros de Lot/Série manquants
+PickupCorrectDataGenerateMissingBatchConfirm = Confirmez-vous les opérations ci-dessous ?
+PickupCorrectDataGenerateMissingBatchMovLabel = Correction numéro de lot/série.

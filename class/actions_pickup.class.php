@@ -1043,8 +1043,14 @@ class ActionsPickup
 			return 0;
 		}
 		if (in_array($parameters['currentcontext'], ['stockproductcard'], true)) {
-			if ($action === 'transfert' || $action === 'correction') {
-				if ($user->rights->stock->mouvement->creer) {
+			if ($user->rights->stock->mouvement->creer) {
+				if ($action === '') {
+					if ($user->rights->pickup->correctdata) {
+						// If there are missing batch numbers, we display a button to generate them.
+						$this->_ProductStockAddGenerateMissingBatchButton($parameters, $object, $action);
+					}
+				}
+				if ($action === 'transfert' || $action === 'correction') {
 					$api_url = dol_buildpath('mobile_data.php', 1);
 					$unique = $object->status_batch == 2 ? 'true' : 'false';
 					// Adding javascript that will:
@@ -1063,6 +1069,38 @@ class ActionsPickup
 		}
 
 		return 0;
+	}
+
+	protected function _ProductStockAddGenerateMissingBatchButton($parameters, &$object, &$action) {
+		global $db, $langs, $user;
+		if (empty($object->status_batch)) {
+			return;
+		}
+		$sql = 'SELECT count(*) as nb FROM ';
+		$sql.= ' '.MAIN_DB_PREFIX.'product as p ';
+		$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_stock as ps on p.rowid = ps.fk_product '; // Detail for each warehouse
+		$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_batch as pb on pb.fk_product_stock = ps.rowid '; // Detail for each lot on each warehouse
+		$sql.= " WHERE p.rowid = '".$db->escape($object->id)."' ";
+		$sql.= " AND pb.batch = '000000' ";
+		$resql = $db->query($sql);
+		if ($resql) {
+			$row = $db->fetch_object($resql);
+			if ($row->nb > 0) {
+				print "<div class=\"tabsAction\">\n";
+				print dolGetButtonAction(
+					'',
+					$langs->trans('PickupCorrectDataGenerateMissingBatch'),
+					'default',
+					$_SERVER['PHP_SELF'], // .'?id='.$object->id.'&action=processing&token='.newToken(),
+					'',
+					(
+						$user->rights->stock->mouvement->creer
+					)
+				);
+				print '</div>';
+			}
+		}
+		$db->free($resql);
 	}
 
 	public function formConfirm($parameters, &$object, &$action) {

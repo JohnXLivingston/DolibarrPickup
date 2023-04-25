@@ -36,6 +36,7 @@ dol_include_once('/product/stock/class/productlot.class.php');
 dol_include_once('/core/class/html.form.class.php');
 // dol_include_once('/product/class/html.formproduct.class.php');
 dol_include_once('/core/class/extrafields.class.php');
+dol_include_once('/pickup/lib/correctdata_missing_batch_number.lib.php');
 
 $langs->loadLangs(array("pickup@pickup", 'products', 'productbatch', 'stocks', "other"));
 
@@ -181,14 +182,28 @@ if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x'
 }
 
 if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
-	$massaction = '';
+  if ($massaction !== 'generate_missing_batch_number_input') {
+    $massaction = '';
+  }
+}
+
+$generate_missing_batch_number_result = null;
+if ($massaction === 'generate_missing_batch_number_input') {
+  // No extra permissions needed, having access to this screen is enough.
+  if ($action === 'do_generate_missing_batch_number') {
+    $generate_missing_batch_number_actions = read_generate_missing_batch_number_actions(is_array($toselect) ? $toselect : array());
+    $generate_missing_batch_number_result = do_generate_missing_batch_number_actions($generate_missing_batch_number_actions);
+    $action = 'list';
+    $massaction = '';
+    $toselect = array();
+  } // else, only display the form.
 }
 
 /*
  * View
  */
 
-$title =  $langs->trans("PickupMenuCorrectData") .'/'. $langs->trans("PickupMenuCorrectDataBatchNumber");
+$title =  $langs->trans("PickupMenuCorrectData") .' / '. $langs->trans("PickupMenuCorrectDataBatchNumber");
 
 $sql = ''; // we will set the SELECT later on, as we will need to make a count request
 $sql.= ' FROM '.MAIN_DB_PREFIX.'product as p';
@@ -244,7 +259,7 @@ if ($limit) {
 
 
 // $sql = 'SELECT '.implode(', ', array_keys($arrayfields)).' '.$sql;
-$sql = 'SELECT p.rowid, fk_entrepot, e.ref as warehouse_ref, pb.batch, pb.qty as stock_physique '.$sql; // product will be fetched one by one later on.
+$sql = 'SELECT p.rowid, fk_entrepot, e.ref as warehouse_ref, pb.rowid as pbid, pb.batch, pb.qty as stock_physique '.$sql; // product will be fetched one by one later on.
 // I removed: pl.rowid as lotid, pl.eatby, pl.sellby
 $resql = $db->query($sql);
 if (!$resql) {
@@ -260,10 +275,15 @@ $helpurl = '';
 llxHeader('', $title, $helpurl, '', 0, 0, array(), array(), '', '');
 
 // List of mass actions available
-$arrayofmassactions = array(
-	// 'correct_status_batch'=>img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans('PickupCorrectDataCorrectStatusBatch'),
-);
-$massactionbutton = $form->selectMassAction('', $arrayofmassactions);
+$arrayofmassactions = array();
+if (
+  $conf->global->PICKUP_DEFAULT_UNIQUE_BATCH === 'generate'
+  || $conf->global->PICKUP_DEFAULT_BATCH === 'generate'
+  || $conf->global->PICKUP_DEFAULT_BATCH === 'generate_per_product'
+) {
+	$arrayofmassactions['generate_missing_batch_number_input'] = img_picto('', 'edit', 'class="pictofixedwidth"').$langs->trans('PickupCorrectDataGenerateMissingBatch');
+};
+$massactionbutton = $form->selectMassAction($massaction === 'generate_missing_batch_number_input' ? $massaction : '', $arrayofmassactions);
 
 $param = '';
 if ($limit > 0 && $limit != $conf->liste_limit) {
@@ -310,6 +330,201 @@ if ($massactionbutton) {
 	$selectedfields .= $form->showCheckAddButtons('checkforselect', 1);
 }
 
+if ($massaction === 'generate_missing_batch_number_input') {
+  $generate_missing_batch_number_actions = read_generate_missing_batch_number_actions($arrayofselected);
+  if ($action === 'confirm_generate_missing_batch_number') {
+    // Confirm action to generate missing batch numbers.
+    print '<table class="valid centpercent">';
+    print '<tr class="validtitre">';
+    print '<th class="validtitre" colspan="5">';
+    print $langs->trans('PickupCorrectDataGenerateMissingBatchConfirm');
+    print '</th>';
+    print '</tr>';
+
+    print '<tr class="valid">';
+    print '<th class="valid">'.$langs->trans('Ref').'</th>';
+    print '<th class="valid">'.$langs->trans('Label').'</th>';
+    print '<th class="valid">'.$langs->trans('ManageLotSerial').'</th>';
+    print '<th class="valid">'.$langs->trans('Warehouse').'</th>';
+    print '<th class="valid">'.$langs->trans('Qty').'</th>';
+    print '</tr>';
+
+    foreach ($generate_missing_batch_number_actions as $gmbna) {
+      $p = $gmbna['product'];
+      $e = $gmbna['entrepot'];
+      print '<tr class="valid">';
+      print '<td class="valid">';
+      print $p->getNomUrl(1, 'stock');
+      print '</td>';
+      print '<td class="valid">';
+      print $p->showOutputField($p->fields['label'], 'label', $p->label, '');
+      print '</td>';
+      print '<td class="valid">';
+      switch ($p->status_batch) {
+        case 0:
+          print $langs->trans("ProductStatusNotOnBatch");
+          break;
+        case 1:
+          print $langs->trans("ProductStatusOnBatch");
+          break;
+        case 2:
+          print $langs->trans("ProductStatusOnSerial");
+          break;
+      }
+      print '</td>';
+      print '<td class="valid">';
+      print $e->getNomUrl(1);
+      print '</td>';
+      print '<td class="valid">';
+      print price2num($gmbna['qty'], 'MS');
+      print '</td>';
+      print '</tr>';
+    }
+
+    print '<tr class="valid">';
+    print '<td class="valid center" colspan="5">';
+    print '<a class="butActionDelete" ';
+    print ' onclick="$(this).closest(\'form\').find(\'[name=action]\').val(\'list\'); $(this).closest(\'form\').submit();" ';
+    print '>'.$langs->trans('Cancel').'</a>';
+    // Note: type="button" to prevent this button to be trigger on enter in a field from the form under it.
+    print '<input type="button" class="button" value="'.$langs->trans("Validate").'" ';
+    print ' onclick="$(this).closest(\'form\').find(\'input[name=action]\').val(\'do_generate_missing_batch_number\'); $(this).closest(\'form\').submit();" ';
+    print '>';
+    print '</td>';
+    print '</tr>';
+    print '</table>';
+    print '<br><br>';
+  } else {
+    print '<table class="valid centpercent">';
+    print '<tr class="validtitre">';
+    print '<th class="validtitre">';
+    print $langs->trans('PickupCorrectDataGenerateMissingBatchConfirm');
+    print '</th>';
+    print '</tr>';
+    print '<tr class="valid">';
+    print '<td class="valid">';
+    print '<a class="butActionDelete" ';
+    print ' onclick="$(this).closest(\'form\').find(\'[name=action]\').val(\'list\'); $(this).closest(\'form\').find(\'[name=massaction]\').val(\'\'); $(this).closest(\'form\').submit();" ';
+    print '>'.$langs->trans('Cancel').'</a>';
+    // Note: type="button" to prevent this button to be trigger on enter in a field from the form under it.
+    print '<input type="button" class="button" value="'.$langs->trans("Validate").'" ';
+    print ' onclick="$(this).closest(\'form\').find(\'input[name=action]\').val(\'confirm_generate_missing_batch_number\'); $(this).closest(\'form\').submit();" ';
+    print '>';
+    print '</td>';
+    print '</tr>';
+    print '</table>';
+    print '<br><br>';
+  }
+}
+if (!empty($generate_missing_batch_number_result)) {
+  $codemove = $generate_missing_batch_number_result['codemove'];
+  $labelmovement = $generate_missing_batch_number_result['labelmovement'];
+  print '<table class="valid centpercent">';
+  print '<tr class="valid">';
+  print '<th class="valid" colspan="6">';
+  print '<a target="_blank" href="'.htmlspecialchars(DOL_URL_ROOT.'/product/stock/movement_list.php?search_inventorycode='.urlencode('^'.$codemove.'$')).'">';
+  print htmlspecialchars($labelmovement);
+  print '</a>';
+  if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) {
+    $plids = [];
+    foreach ($generate_missing_batch_number_result['lines'] as $gmbnr) {
+      $pl = $gmbnr['productlot'];
+      if (!empty($pl)) {
+        $plids[] = "'".$pl->id."'";
+      }
+    }
+    $plids = implode(', ', $plids);
+    $printbutton = '<a class="button buttongen"';
+    $printbutton.= ' onclick="window.dolibarrPickup.printProductLotLabel(this, ['.htmlspecialchars($plids).']);"';
+    $printbutton.= ' title="'.$langs->trans('PickupPrintLabel').'"';
+    $printbutton.= ' style="min-width: 34px;"';
+    $printbutton.= '>';
+    $printbutton.= '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" fill="currentColor" viewBox="0 0 32 16">';
+    $printbutton.= '<g id="bars" fill="currentColor" stroke="none">';
+    $printbutton.= '	<rect x="0" y="0" width="4" height="30"></rect>';
+    $printbutton.= '	<rect x="6" y="0" width="2" height="30"></rect>';
+    $printbutton.= '	<rect x="12" y="0" width="2" height="30"></rect>';
+    $printbutton.= '	<rect x="22" y="0" width="4" height="30"></rect>';
+    $printbutton.= '	<rect x="28" y="0" width="6" height="30"></rect>';
+    $printbutton.= '</g>';
+    $printbutton.= '</svg>';
+    $printbutton.= '</a>';
+    print $printbutton;
+  }
+  print '</th>';
+  print '</tr>';
+
+  print '<tr class="valid">';
+  print '<th class="valid">'.$langs->trans('Ref').'</th>';
+  print '<th class="valid">'.$langs->trans('Label').'</th>';
+  print '<th class="valid">'.$langs->trans('ManageLotSerial').'</th>';
+  print '<th class="valid">'.$langs->trans('Warehouse').'</th>';
+  print '<th class="valid">'.$langs->trans('Qty').'</th>';
+  print '<th class="valid">'.$langs->trans('Batch').'</th>';
+  print '</tr>';
+
+  foreach ($generate_missing_batch_number_result['lines'] as $gmbnr) {
+    $p = $gmbnr['product'];
+    $e = $gmbnr['entrepot'];
+    $pl = $gmbnr['productlot'];
+    print '<tr class="valid">';
+    print '<td class="valid">';
+    print $p->getNomUrl(1, 'stock');
+    print '</td>';
+    print '<td class="valid">';
+    print $p->showOutputField($p->fields['label'], 'label', $p->label, '');
+    print '</td>';
+    print '<td class="valid">';
+    switch ($p->status_batch) {
+      case 0:
+        print $langs->trans("ProductStatusNotOnBatch");
+        break;
+      case 1:
+        print $langs->trans("ProductStatusOnBatch");
+        break;
+      case 2:
+        print $langs->trans("ProductStatusOnSerial");
+        break;
+    }
+    print '</td>';
+    print '<td class="valid">';
+    print $e->getNomUrl(1);
+    print '</td>';
+    print '<td class="valid">';
+    print price2num($gmbnr['qty'], 'MS');
+    print '</td>';
+    print '<td class="valid">';
+    if (empty($pl)) {
+      print htmlspecialchars($gmbnr['batch_number']);
+    } else {
+      print $pl->getNomUrl(1);
+      if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) {
+        $printbutton = '<a class="button buttongen"';
+        $printbutton.= ' onclick="window.dolibarrPickup.printProductLotLabel(this, \''.htmlspecialchars($pl->id).'\');"';
+        $printbutton.= ' title="'.$langs->trans('PickupPrintLabel').'"';
+        $printbutton.= ' style="min-width: 34px;"';
+        $printbutton.= '>';
+        $printbutton.= '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" fill="currentColor" viewBox="0 0 32 16">';
+        $printbutton.= '<g id="bars" fill="currentColor" stroke="none">';
+        $printbutton.= '	<rect x="0" y="0" width="4" height="30"></rect>';
+        $printbutton.= '	<rect x="6" y="0" width="2" height="30"></rect>';
+        $printbutton.= '	<rect x="12" y="0" width="2" height="30"></rect>';
+        $printbutton.= '	<rect x="22" y="0" width="4" height="30"></rect>';
+        $printbutton.= '	<rect x="28" y="0" width="6" height="30"></rect>';
+        $printbutton.= '</g>';
+        $printbutton.= '</svg>';
+        $printbutton.= '</a>';
+        print $printbutton;
+      }
+    }
+    print '</td>';
+    print '</tr>';
+  }
+
+  print '</table>';
+  print '<br><br>';
+}
+
 print '<div class="div-table-responsive">';
 print '<table class="tagtable liste'.($moreforfilter ? " listwithfilterbefore" : "").'">'."\n";
 
@@ -339,6 +554,9 @@ foreach ($arrayfields as $akey => $val) {
   }
   print '</td>';
 }
+if ($massaction === 'generate_missing_batch_number_input') {
+  print '<td></td>';
+}
 if (empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
   print '<td class="liste_titre maxwidthsearch">';
 	$searchpicto = $form->showFilterButtons();
@@ -358,6 +576,9 @@ foreach ($arrayfields as $key => $val) {
     print_liste_field_titre($val['label'], '', "", "", $param, "", $sortfield, $sortorder);
   }
 }
+if ($massaction === 'generate_missing_batch_number_input') {
+  print '<td></td>';
+}
 if (empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
 	print_liste_field_titre($selectedfields, '', "", '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ');
 }
@@ -369,6 +590,9 @@ while ($i < $imaxinloop) {
 	$obj = $db->fetch_object($resql);
   $product = new Product($db);
   $product->fetch($obj->rowid);
+
+  $toselect_val = $obj->pbid;
+  $is_line_selected = in_array($toselect_val, $arrayofselected);
 
   // $categorie = new Categorie($db);
   // $categorie->fetch($obj->cat_rowid);
@@ -385,16 +609,9 @@ while ($i < $imaxinloop) {
   if (!empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
     print '<td class="nowrap center">';
     if ($massactionbutton || $massaction) {   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
-      $selected = 0;
-      if (in_array($obj->rowid, $arrayofselected)) {
-        $selected = 1;
-      }
-      print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected ? ' checked="checked"' : '').'>';
+      print '<input id="cb'.$toselect_val.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$toselect_val.'"'.($is_line_selected ? ' checked="checked"' : '').'>';
     }
     print '</td>';
-    if (!$i) {
-      $totalarray['nbfield']++;
-    }
   }
 
   foreach ($arrayfields as $key => $val) {
@@ -440,20 +657,47 @@ while ($i < $imaxinloop) {
     print '</td>';
   }
 
+  if ($massaction === 'generate_missing_batch_number_input') {
+    print '<td>';
+    if ($is_line_selected) {
+      if (
+        ($product->status_batch == 2 && $conf->global->PICKUP_DEFAULT_UNIQUE_BATCH === 'generate')
+        || (
+          $product->status_batch == 1
+          && (
+            $conf->global->PICKUP_DEFAULT_BATCH === 'generate'
+            || $conf->global->PICKUP_DEFAULT_BATCH === 'generate_per_product'
+          )
+        )
+      ) {
+        $gmbni_field_name = 'generate_missing_batch_number_'.$toselect_val;
+        $autofill_onclick = "$('[name=".$gmbni_field_name."]').val('".$obj->stock_physique."')";
+        print img_picto("Auto fill", 'rightarrow', "class='AutoFillAmount' onclick=\"".$autofill_onclick.'"');
+        print '<input type="number" min="0" ';
+        $cur_val = GETPOST($gmbni_field_name, 'int');
+        if ($cur_val == '0' || !empty($cur_val)) {
+          print ' value="'.htmlspecialchars($cur_val).'" ';
+        } else if ($product->status_batch == 2) {
+          print ' value="1" ';
+        } else {
+          print ' value="'.$obj->stock_physique.'" ';
+        }
+        print ' max="'.$obj->stock_physique.'" ';
+        print ' name="'.$gmbni_field_name.'" ';
+        print ' id="'.$gmbni_field_name.'" ';
+        print '>';
+      }
+    }
+    print '</td>';
+  }
+
   // Action column
   if (empty($conf->global->MAIN_CHECKBOX_LEFT_COLUMN)) {
     print '<td class="nowrap center">';
     if ($massactionbutton || $massaction) {   // If we are in select mode (massactionbutton defined) or if we have already selected and sent an action ($massaction) defined
-      $selected = 0;
-      if (in_array($obj->rowid, $arrayofselected)) {
-        $selected = 1;
-      }
-      print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected ? ' checked="checked"' : '').'>';
+      print '<input id="cb'.$toselect_val.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$toselect_val.'"'.($is_line_selected ? ' checked="checked"' : '').'>';
     }
     print '</td>';
-    if (!$i) {
-      $totalarray['nbfield']++;
-    }
   }
   print '</tr>';
 	$i++;

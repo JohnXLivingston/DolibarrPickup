@@ -61,10 +61,15 @@ function printPickupLineLabels (dom: JQuery | HTMLElement, id: string): void {
   _print(dom, url.toString())
 }
 
-function printProductLotLabel (dom: JQuery | HTMLElement, id: string): void {
+function printProductLotLabel (dom: JQuery | HTMLElement, id: string | string[]): void {
   const url = new URL(printLabelUrl, window.location.origin)
   url.searchParams.set('what', 'product_lot')
-  url.searchParams.set('productlot_id[]', id)
+  if (Array.isArray(id)) {
+    url.searchParams.delete('productlot_id[]')
+    id.forEach(i => url.searchParams.append('productlot_id[]', i))
+  } else {
+    url.searchParams.set('productlot_id[]', id)
+  }
 
   _print(dom, url.toString())
 }

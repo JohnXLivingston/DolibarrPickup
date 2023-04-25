@@ -210,7 +210,7 @@ if ($massaction === 'correct_status_batch') {
  * View
  */
 
-$title =  $langs->trans("PickupMenuCorrectData") .'/'. $langs->trans("PickupMenuCorrectDataProductStatusBatch");
+$title =  $langs->trans("PickupMenuCorrectData") .' / '. $langs->trans("PickupMenuCorrectDataProductStatusBatch");
 
 $sql = ''; // we will set the SELECT later on, as we will need to make a count request
 $sql.= ' FROM '.MAIN_DB_PREFIX.'product as p';
@@ -394,9 +394,6 @@ while ($i < $imaxinloop) {
       print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected ? ' checked="checked"' : '').'>';
     }
     print '</td>';
-    if (!$i) {
-      $totalarray['nbfield']++;
-    }
   }
 
   foreach ($arrayfields as $key => $val) {
@@ -464,9 +461,6 @@ while ($i < $imaxinloop) {
       print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected ? ' checked="checked"' : '').'>';
     }
     print '</td>';
-    if (!$i) {
-      $totalarray['nbfield']++;
-    }
   }
   print '</tr>';
 	$i++;
