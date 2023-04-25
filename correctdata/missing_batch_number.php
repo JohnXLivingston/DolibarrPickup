@@ -696,7 +696,7 @@ while ($i < $imaxinloop) {
   }
 
   if ($massaction === 'generate_missing_batch_number_input') {
-    print '<td>';
+    print '<td class="nowrap">';
     if ($is_line_selected) {
       if (
         ($product->status_batch == 2 && $conf->global->PICKUP_DEFAULT_UNIQUE_BATCH === 'generate')
