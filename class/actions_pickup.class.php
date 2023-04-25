@@ -1091,7 +1091,7 @@ class ActionsPickup
 					'',
 					$langs->trans('PickupCorrectDataGenerateMissingBatch'),
 					'default',
-					$_SERVER['PHP_SELF'], // .'?id='.$object->id.'&action=processing&token='.newToken(),
+					dol_buildpath('/custom/pickup/correctdata/missing_batch_number.php', 1).'?product_id='.urlencode($object->id).'&token='.newToken(),
 					'',
 					(
 						$user->rights->stock->mouvement->creer

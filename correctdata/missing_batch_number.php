@@ -44,6 +44,7 @@ $action = GETPOST('action', 'aZ09') ?GETPOST('action', 'aZ09') : 'list';
 $massaction = GETPOST('massaction', 'alpha');
 $toselect = GETPOST('toselect', 'array');
 
+$search_product_id = GETPOST('product_id', 'int');
 $search_warehouse = GETPOST('search_warehouse', 'alpha');
 $search_tobatch = GETPOST('search_tobatch', 'int');
 
@@ -171,6 +172,7 @@ if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x'
   foreach ($search as $key => $criteria) {
     unset($search[$key]);
   }
+  $search_product_id = '';
   $search_warehouse = '';
   $search_tobatch = '';
   $toselect = array();
@@ -193,6 +195,7 @@ if ($massaction === 'generate_missing_batch_number_input') {
 
   // Resetting previous results.
   unset($_SESSION['dol_pickup_missing_batch_number_result']);
+  unset($_SESSION['dol_pickup_missing_batch_number_was_for_product']);
   if ($action === 'do_generate_missing_batch_number') {
     $generate_missing_batch_number_actions = read_generate_missing_batch_number_actions(is_array($toselect) ? $toselect : array());
     $generate_missing_batch_number_result = do_generate_missing_batch_number_actions($generate_missing_batch_number_actions);
@@ -308,6 +311,7 @@ if ($massaction === 'generate_missing_batch_number_input') {
       $result_text.= '<br><br>';
 
       $_SESSION['dol_pickup_missing_batch_number_result'] = $result_text;
+      $_SESSION['dol_pickup_missing_batch_number_was_for_product'] = $search_product_id;
       header('Location: '.$_SERVER["PHP_SELF"]);
       exit;
     }
@@ -322,6 +326,13 @@ if ($massaction === 'generate_missing_batch_number_input') {
  */
 
 $title =  $langs->trans("PickupMenuCorrectData") .' / '. $langs->trans("PickupMenuCorrectDataBatchNumber");
+$title_html = $title;
+if (!empty($search_product_id)) {
+  $producttmp = new Product($db);
+  if ($producttmp->fetch($search_product_id) > 0) {
+    $title_html.= ' / '.$producttmp->getNomUrl(1, 'stock');
+  }
+}
 
 $sql = ''; // we will set the SELECT later on, as we will need to make a count request
 $sql.= ' FROM '.MAIN_DB_PREFIX.'product as p';
@@ -350,6 +361,9 @@ if (!empty($search_warehouse)) {
 }
 if (!empty($search_tobatch)) {
  $sql.= " AND p.tobatch = '".$db->escape($search_tobatch)."'";
+}
+if (!empty($search_product_id)) {
+  $sql.= " AND p.rowid = '".$db->escape($search_product_id)."'";
 }
 
 // Now we can count the number of results
@@ -422,6 +436,9 @@ foreach ($search as $key => $val) {
 		$param .= '&search_'.$key.'='.urlencode($search[$key]);
 	}
 }
+if (!empty($search_product_id)) {
+  $param .= '&product_id='.urlencode($search_product_id);
+}
 if (!empty($search_warehouse)) {
   $param .= "&search_warehouse=".urlencode($search_warehouse);
 }
@@ -440,7 +457,7 @@ print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
 print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
 print '<input type="hidden" name="page" value="'.$page.'">';
 
-print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, $picto, 0, '', '', $limit, 0, 0, 1);
+print_barre_liste($title_html, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, $picto, 0, '', '', $limit, 0, 0, 1);
 
 $selectedfields = '';
 // $selectedfields.= $form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage, getDolGlobalString('MAIN_CHECKBOX_LEFT_COLUMN', '')); // This also change content of $arrayfields
@@ -536,9 +553,14 @@ if ($massaction === 'generate_missing_batch_number_input') {
 }
 
 if (!empty($_SESSION['dol_pickup_missing_batch_number_result'])) {
-  print $_SESSION['dol_pickup_missing_batch_number_result'];
-  // NB: no need to unset, so the user can see it event if he left the page accidently.
-  // We will unset on next submit.
+  if ($_SESSION['dol_pickup_missing_batch_number_was_for_product'] != $search_product_id) {
+    unset($_SESSION['dol_pickup_missing_batch_number_result']);
+    unset($_SESSION['dol_pickup_missing_batch_number_was_for_product']);
+  } else {
+    print $_SESSION['dol_pickup_missing_batch_number_result'];
+    // NB: no need to unset, so the user can see it event if he left the page accidently.
+    // We will unset on next submit.
+  }
 }
 
 print '<div class="div-table-responsive">';
