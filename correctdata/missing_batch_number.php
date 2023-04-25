@@ -190,9 +190,127 @@ if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massa
 $generate_missing_batch_number_result = null;
 if ($massaction === 'generate_missing_batch_number_input') {
   // No extra permissions needed, having access to this screen is enough.
+
+  // Resetting previous results.
+  unset($_SESSION['dol_pickup_missing_batch_number_result']);
   if ($action === 'do_generate_missing_batch_number') {
     $generate_missing_batch_number_actions = read_generate_missing_batch_number_actions(is_array($toselect) ? $toselect : array());
     $generate_missing_batch_number_result = do_generate_missing_batch_number_actions($generate_missing_batch_number_actions);
+    if (!empty($generate_missing_batch_number_result)) {
+      // To prevent submitting twice, when reloading the page,
+      // we will store the result text in session, then redirect, then display text.
+      $result_text = '';
+
+      $codemove = $generate_missing_batch_number_result['codemove'];
+      $labelmovement = $generate_missing_batch_number_result['labelmovement'];
+      $result_text.= '<table class="valid centpercent">';
+      $result_text.= '<tr class="valid">';
+      $result_text.= '<th class="valid" colspan="6">';
+      $result_text.= '<a target="_blank" href="'.htmlspecialchars(DOL_URL_ROOT.'/product/stock/movement_list.php?search_inventorycode='.urlencode('^'.$codemove.'$')).'">';
+      $result_text.= htmlspecialchars($labelmovement);
+      $result_text.= '</a>';
+      if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) {
+        $plids = [];
+        foreach ($generate_missing_batch_number_result['lines'] as $gmbnr) {
+          $pl = $gmbnr['productlot'];
+          if (!empty($pl)) {
+            $plids[] = "'".$pl->id."'";
+          }
+        }
+        $plids = implode(', ', $plids);
+        $printbutton = '<a class="button buttongen"';
+        $printbutton.= ' onclick="window.dolibarrPickup.printProductLotLabel(this, ['.htmlspecialchars($plids).']);"';
+        $printbutton.= ' title="'.$langs->trans('PickupPrintLabel').'"';
+        $printbutton.= ' style="min-width: 34px;"';
+        $printbutton.= '>';
+        $printbutton.= '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" fill="currentColor" viewBox="0 0 32 16">';
+        $printbutton.= '<g id="bars" fill="currentColor" stroke="none">';
+        $printbutton.= '	<rect x="0" y="0" width="4" height="30"></rect>';
+        $printbutton.= '	<rect x="6" y="0" width="2" height="30"></rect>';
+        $printbutton.= '	<rect x="12" y="0" width="2" height="30"></rect>';
+        $printbutton.= '	<rect x="22" y="0" width="4" height="30"></rect>';
+        $printbutton.= '	<rect x="28" y="0" width="6" height="30"></rect>';
+        $printbutton.= '</g>';
+        $printbutton.= '</svg>';
+        $printbutton.= '</a>';
+        $result_text.= $printbutton;
+      }
+      $result_text.= '</th>';
+      $result_text.= '</tr>';
+
+      $result_text.= '<tr class="valid">';
+      $result_text.= '<th class="valid">'.$langs->trans('Ref').'</th>';
+      $result_text.= '<th class="valid">'.$langs->trans('Label').'</th>';
+      $result_text.= '<th class="valid">'.$langs->trans('ManageLotSerial').'</th>';
+      $result_text.= '<th class="valid">'.$langs->trans('Warehouse').'</th>';
+      $result_text.= '<th class="valid">'.$langs->trans('Qty').'</th>';
+      $result_text.= '<th class="valid">'.$langs->trans('Batch').'</th>';
+      $result_text.= '</tr>';
+
+      foreach ($generate_missing_batch_number_result['lines'] as $gmbnr) {
+        $p = $gmbnr['product'];
+        $e = $gmbnr['entrepot'];
+        $pl = $gmbnr['productlot'];
+        $result_text.= '<tr class="valid">';
+        $result_text.= '<td class="valid">';
+        $result_text.= $p->getNomUrl(1, 'stock');
+        $result_text.= '</td>';
+        $result_text.= '<td class="valid">';
+        $result_text.= $p->showOutputField($p->fields['label'], 'label', $p->label, '');
+        $result_text.= '</td>';
+        $result_text.= '<td class="valid">';
+        switch ($p->status_batch) {
+          case 0:
+            $result_text.= $langs->trans("ProductStatusNotOnBatch");
+            break;
+          case 1:
+            $result_text.= $langs->trans("ProductStatusOnBatch");
+            break;
+          case 2:
+            $result_text.= $langs->trans("ProductStatusOnSerial");
+            break;
+        }
+        $result_text.= '</td>';
+        $result_text.= '<td class="valid">';
+        $result_text.= $e->getNomUrl(1);
+        $result_text.= '</td>';
+        $result_text.= '<td class="valid">';
+        $result_text.= price2num($gmbnr['qty'], 'MS');
+        $result_text.= '</td>';
+        $result_text.= '<td class="valid">';
+        if (empty($pl)) {
+          $result_text.= htmlspecialchars($gmbnr['batch_number']);
+        } else {
+          $result_text.= $pl->getNomUrl(1);
+          if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) {
+            $result_text.= '<a class="button buttongen"';
+            $result_text.= ' onclick="window.dolibarrPickup.printProductLotLabel(this, \''.htmlspecialchars($pl->id).'\');"';
+            $result_text.= ' title="'.$langs->trans('PickupPrintLabel').'"';
+            $result_text.= ' style="min-width: 34px;"';
+            $result_text.= '>';
+            $result_text.= '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" fill="currentColor" viewBox="0 0 32 16">';
+            $result_text.= '<g id="bars" fill="currentColor" stroke="none">';
+            $result_text.= '	<rect x="0" y="0" width="4" height="30"></rect>';
+            $result_text.= '	<rect x="6" y="0" width="2" height="30"></rect>';
+            $result_text.= '	<rect x="12" y="0" width="2" height="30"></rect>';
+            $result_text.= '	<rect x="22" y="0" width="4" height="30"></rect>';
+            $result_text.= '	<rect x="28" y="0" width="6" height="30"></rect>';
+            $result_text.= '</g>';
+            $result_text.= '</svg>';
+            $result_text.= '</a>';
+          }
+        }
+        $result_text.= '</td>';
+        $result_text.= '</tr>';
+      }
+
+      $result_text.= '</table>';
+      $result_text.= '<br><br>';
+
+      $_SESSION['dol_pickup_missing_batch_number_result'] = $result_text;
+      header('Location: '.$_SERVER["PHP_SELF"]);
+      exit;
+    }
     $action = 'list';
     $massaction = '';
     $toselect = array();
@@ -416,113 +534,11 @@ if ($massaction === 'generate_missing_batch_number_input') {
     print '<br><br>';
   }
 }
-if (!empty($generate_missing_batch_number_result)) {
-  $codemove = $generate_missing_batch_number_result['codemove'];
-  $labelmovement = $generate_missing_batch_number_result['labelmovement'];
-  print '<table class="valid centpercent">';
-  print '<tr class="valid">';
-  print '<th class="valid" colspan="6">';
-  print '<a target="_blank" href="'.htmlspecialchars(DOL_URL_ROOT.'/product/stock/movement_list.php?search_inventorycode='.urlencode('^'.$codemove.'$')).'">';
-  print htmlspecialchars($labelmovement);
-  print '</a>';
-  if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) {
-    $plids = [];
-    foreach ($generate_missing_batch_number_result['lines'] as $gmbnr) {
-      $pl = $gmbnr['productlot'];
-      if (!empty($pl)) {
-        $plids[] = "'".$pl->id."'";
-      }
-    }
-    $plids = implode(', ', $plids);
-    $printbutton = '<a class="button buttongen"';
-    $printbutton.= ' onclick="window.dolibarrPickup.printProductLotLabel(this, ['.htmlspecialchars($plids).']);"';
-    $printbutton.= ' title="'.$langs->trans('PickupPrintLabel').'"';
-    $printbutton.= ' style="min-width: 34px;"';
-    $printbutton.= '>';
-    $printbutton.= '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" fill="currentColor" viewBox="0 0 32 16">';
-    $printbutton.= '<g id="bars" fill="currentColor" stroke="none">';
-    $printbutton.= '	<rect x="0" y="0" width="4" height="30"></rect>';
-    $printbutton.= '	<rect x="6" y="0" width="2" height="30"></rect>';
-    $printbutton.= '	<rect x="12" y="0" width="2" height="30"></rect>';
-    $printbutton.= '	<rect x="22" y="0" width="4" height="30"></rect>';
-    $printbutton.= '	<rect x="28" y="0" width="6" height="30"></rect>';
-    $printbutton.= '</g>';
-    $printbutton.= '</svg>';
-    $printbutton.= '</a>';
-    print $printbutton;
-  }
-  print '</th>';
-  print '</tr>';
 
-  print '<tr class="valid">';
-  print '<th class="valid">'.$langs->trans('Ref').'</th>';
-  print '<th class="valid">'.$langs->trans('Label').'</th>';
-  print '<th class="valid">'.$langs->trans('ManageLotSerial').'</th>';
-  print '<th class="valid">'.$langs->trans('Warehouse').'</th>';
-  print '<th class="valid">'.$langs->trans('Qty').'</th>';
-  print '<th class="valid">'.$langs->trans('Batch').'</th>';
-  print '</tr>';
-
-  foreach ($generate_missing_batch_number_result['lines'] as $gmbnr) {
-    $p = $gmbnr['product'];
-    $e = $gmbnr['entrepot'];
-    $pl = $gmbnr['productlot'];
-    print '<tr class="valid">';
-    print '<td class="valid">';
-    print $p->getNomUrl(1, 'stock');
-    print '</td>';
-    print '<td class="valid">';
-    print $p->showOutputField($p->fields['label'], 'label', $p->label, '');
-    print '</td>';
-    print '<td class="valid">';
-    switch ($p->status_batch) {
-      case 0:
-        print $langs->trans("ProductStatusNotOnBatch");
-        break;
-      case 1:
-        print $langs->trans("ProductStatusOnBatch");
-        break;
-      case 2:
-        print $langs->trans("ProductStatusOnSerial");
-        break;
-    }
-    print '</td>';
-    print '<td class="valid">';
-    print $e->getNomUrl(1);
-    print '</td>';
-    print '<td class="valid">';
-    print price2num($gmbnr['qty'], 'MS');
-    print '</td>';
-    print '<td class="valid">';
-    if (empty($pl)) {
-      print htmlspecialchars($gmbnr['batch_number']);
-    } else {
-      print $pl->getNomUrl(1);
-      if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) {
-        $printbutton = '<a class="button buttongen"';
-        $printbutton.= ' onclick="window.dolibarrPickup.printProductLotLabel(this, \''.htmlspecialchars($pl->id).'\');"';
-        $printbutton.= ' title="'.$langs->trans('PickupPrintLabel').'"';
-        $printbutton.= ' style="min-width: 34px;"';
-        $printbutton.= '>';
-        $printbutton.= '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" fill="currentColor" viewBox="0 0 32 16">';
-        $printbutton.= '<g id="bars" fill="currentColor" stroke="none">';
-        $printbutton.= '	<rect x="0" y="0" width="4" height="30"></rect>';
-        $printbutton.= '	<rect x="6" y="0" width="2" height="30"></rect>';
-        $printbutton.= '	<rect x="12" y="0" width="2" height="30"></rect>';
-        $printbutton.= '	<rect x="22" y="0" width="4" height="30"></rect>';
-        $printbutton.= '	<rect x="28" y="0" width="6" height="30"></rect>';
-        $printbutton.= '</g>';
-        $printbutton.= '</svg>';
-        $printbutton.= '</a>';
-        print $printbutton;
-      }
-    }
-    print '</td>';
-    print '</tr>';
-  }
-
-  print '</table>';
-  print '<br><br>';
+if (!empty($_SESSION['dol_pickup_missing_batch_number_result'])) {
+  print $_SESSION['dol_pickup_missing_batch_number_result'];
+  // NB: no need to unset, so the user can see it event if he left the page accidently.
+  // We will unset on next submit.
 }
 
 print '<div class="div-table-responsive">';
