@@ -49,6 +49,7 @@ PICKUP_USE_DEEE = Utiliser les champs DEEE
 PICKUP_USE_DEEETooltip = Ajoute les champs DEEE et Type DEEE sur les fiches produits.
 PICKUP_USE_PBRAND = Ajouter un champ «marque» à la fiche produit (fonctionnalité dépréciée)
 PICKUP_USE_PBRANDTooltip = Ajouter un champ «marque» aux fiches produits. Attention, cette fonctionnalité est dépréciée. Si vous l'utilisez encore, merci de le signaler à l'auteur du module.
+PICKUP_PRODUCT_DEFAULT_TOSELL = Les produits crées depuis l'application mobile sont marqués en vente
 PICKUP_USE_PICKUPLINE_DESCRIPTION = Ajouter un champ «Description» aux lignes de collecte.
 PICKUP_USE_PICKUPLINE_DESCRIPTION_IN_PDF = Afficher cette description dans les PDF.
 PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_UNIQUE_PL = Copier cette description sur les fiches «Lot» pour les produits avec numéro de série unique.

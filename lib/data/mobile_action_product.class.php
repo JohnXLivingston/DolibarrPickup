@@ -229,6 +229,9 @@ class DataMobileActionProduct extends DataMobileAction {
         $product_label = GETPOST('product_ref');
       }
       $product->label = $product_label;
+      if (!empty($conf->global->PICKUP_PRODUCT_DEFAULT_TOSELL)) {
+        $product->status = 1; // to sell
+      }
 
       if (!empty($conf->global->PICKUP_USE_PBRAND)) {
         $product->array_options['options_pickup_pbrand'] = GETPOST('product_pbrand');

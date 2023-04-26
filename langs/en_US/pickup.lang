@@ -49,6 +49,7 @@ PICKUP_USE_DEEE = Use French DEEE fields
 PICKUP_USE_DEEETooltip = Will add DEEE and DEEE type files to products.
 PICKUP_USE_PBRAND = Use a «brand» field on products
 PICKUP_USE_PBRANDTooltip = Will add a brand field to products (deprecated).
+PICKUP_PRODUCT_DEFAULT_TOSELL = Les produits crées depuis l'application mobile sont marqués en vente
 PICKUP_USE_PICKUPLINE_DESCRIPTION = Add a «description» field on pickup's lines. If you are still using this feature, please contact the plugin author.
 PICKUP_USE_PICKUPLINE_DESCRIPTION_IN_PDF = Afficher cette description dans les PDF.
 PICKUP_USE_PICKUPLINE_DESCRIPTION_ON_UNIQUE_PL = Copier cette description sur les fiches «Lot» pour les produits avec numéro de série unique.

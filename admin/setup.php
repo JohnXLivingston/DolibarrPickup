@@ -150,6 +150,7 @@ foreach ($pickup_extrafields as $key => $val) {
 
 $list_of_tables = [
 	'main' => $langs->trans('PickupSetup'),
+	'product' => $langs->trans('Product'),
 	'units' => $langs->trans('PickupSetupUnits'),
 	'pickupline_description' => $langs->trans('PickupSetupLineDescription'),
 	'batch' => $langs->trans('PickupSetupBatch'),
@@ -164,7 +165,9 @@ $arrayofparameters=array(
 	'PICKUP_USE_DEEE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_deee', 'pickup_deee_type')),
 	'PICKUP_NO_SIGN_STATUS' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_SEND_MAIL' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
-	'PICKUP_USE_PBRAND' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand')),
+
+	'PICKUP_PRODUCT_DEFAULT_TOSELL' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean'),
+	'PICKUP_USE_PBRAND' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand')),
 
 	'PICKUP_UNITS_WEIGHT' => array(
 		'table' => 'units',

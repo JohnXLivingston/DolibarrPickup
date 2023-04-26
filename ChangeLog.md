@@ -1,5 +1,15 @@
 # DolibarrPickup
 
+## ??? (Not Released Yet)
+
+### Nouvelles fonctionnalités
+
+* Option pour que tous les produits créés soient marqués «en vente».
+
+### Corrections et changements mineurs
+
+* Paramètres du plugin: on sépare certains paramètres liés à la fiche produit.
+
 ## 2.1.0
 
 **Important** : si vous n'aviez pas installé la v2.0.0, merci de lire les remarques concernant cette version.
