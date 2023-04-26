@@ -30,16 +30,27 @@
 }
 
 body {
+  margin: 0;
   font-size: 2.5mm;
 }
 
+.page {
+  margin: 0;
+  padding: 2mm 4mm;
+}
+
 table.blocks {
+  /* 55mm - padding 2+2 */
+  border-collapse: collapse;
+  margin-bottom: 2mm;
   max-width: 51mm;
   width: 100%;
-  border-spacing: 2mm;
 
   td.block {
+    padding: 0 2mm 0 0;
+
     &:last-child {
+      padding-right: 0;
       text-align: right;
     }
 
