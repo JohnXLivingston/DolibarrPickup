@@ -165,6 +165,7 @@ $arrayofparameters=array(
 	'PICKUP_USE_DEEE' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_deee', 'pickup_deee_type')),
 	'PICKUP_NO_SIGN_STATUS' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_SEND_MAIL' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
+	'PICKUP_IMPORTEXPORT_ALL' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 
 	'PICKUP_PRODUCT_DEFAULT_TOSELL' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_PRODUCT_REF_AUTO' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean'),

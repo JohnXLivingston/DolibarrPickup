@@ -424,17 +424,11 @@ class PickupMobileCat extends CommonObject
 		$resql = $this->db->query($sql);
 		if ($resql) {
 			$num = $this->db->num_rows($resql);
-            $i = 0;
-			while ($i < min($limit, $num))
-			{
-			    $obj = $this->db->fetch_object($resql);
-
+			while ($obj = $this->db->fetch_object($resql)) {
 				$record = new self($this->db);
 				$record->setVarsFromFetchObj($obj);
 
 				$records[$record->id] = $record;
-
-				$i++;
 			}
 			$this->db->free($resql);
 

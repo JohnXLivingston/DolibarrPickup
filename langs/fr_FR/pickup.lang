@@ -47,6 +47,8 @@ PICKUP_USE_PCAT = Utiliser les tags produits
 PICKUP_USE_PCATTooltip = Si vous activez cette fonctionnalité, l'application mobile forcera l'usage de tags pour la création de fiches produit.
 PICKUP_USE_DEEE = Utiliser les champs DEEE
 PICKUP_USE_DEEETooltip = Ajoute les champs DEEE et Type DEEE sur les fiches produits.
+PICKUP_IMPORTEXPORT_ALL = Activer les imports/exports avancés
+PICKUP_IMPORTEXPORT_ALLTooltip = En activant cette option, le module permettra d'importer/exporter différents types de données, dont les fiches de produit. Cela ne devrait pas être activé sur un serveur de production, mais uniquement utilisé à des fins de test/démo, ou pour un import initial.
 PICKUP_USE_PBRAND = Ajouter un champ «marque» à la fiche produit (fonctionnalité dépréciée)
 PICKUP_USE_PBRANDTooltip = Ajouter un champ «marque» aux fiches produits. Attention, cette fonctionnalité est dépréciée. Si vous l'utilisez encore, merci de le signaler à l'auteur du module.
 PICKUP_PRODUCT_REF_AUTO = Les références des produits crées depuis l'application mobile sont générées automatiquement
@@ -99,6 +101,7 @@ PickupMenuSocReports = Rapports par Tiers
 PickupMenuCorrectData = Correction des données
 PickupMenuCorrectDataProductStatusBatch = Produits géré par Lot/Série
 PickupMenuCorrectDataBatchNumber = Numéros de Lot/Série manquants
+PickupMenuImportExport = Import / Export
 
 PickupMenuLabelSearch = Par étiquette
 
@@ -217,3 +220,7 @@ PickupCorrectDataCorrectStatusBatch = Corriger la valeur
 PickupCorrectDataGenerateMissingBatch = Générer les numéros de Lot/Série manquants
 PickupCorrectDataGenerateMissingBatchConfirm = Confirmez-vous les opérations ci-dessous ?
 PickupCorrectDataGenerateMissingBatchMovLabel = Correction numéro de lot/série.
+
+PickupImportExportTitle = Import / Export
+PickupImportExportHelp = Cet écran permet d'exporter/importer des données. À utiliser avec précautions.
+PickupExport = Exporter
