@@ -312,7 +312,7 @@ if ($massaction === 'generate_missing_batch_number_input') {
 
       $_SESSION['dol_pickup_missing_batch_number_result'] = $result_text;
       $_SESSION['dol_pickup_missing_batch_number_was_for_product'] = $search_product_id;
-      header('Location: '.$_SERVER["PHP_SELF"]);
+      header('Location: '.$_SERVER["PHP_SELF"].(!empty($search_product_id) ? '?product_id='.urlencode($search_product_id) : ''));
       exit;
     }
     $action = 'list';
@@ -456,6 +456,9 @@ print '<input type="hidden" name="action" value="list">';
 print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
 print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
 print '<input type="hidden" name="page" value="'.$page.'">';
+if ($search_product_id) {
+  print '<input type="hidden" name="product_id" value="'.htmlspecialchars($search_product_id).'">';
+}
 
 print_barre_liste($title_html, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, $picto, 0, '', '', $limit, 0, 0, 1);
 
