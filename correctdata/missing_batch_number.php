@@ -163,8 +163,13 @@ foreach ($arrayfields as $akey => $val) {
  * Actions
  */
 
- if (GETPOST('cancel', 'alpha')) {
+if (GETPOST('cancel', 'alpha')) {
 	$action = 'list'; $massaction = '';
+}
+
+if (GETPOST('remove_previous_result', 'alpha')) {
+  unset($_SESSION['dol_pickup_missing_batch_number_result']);
+  unset($_SESSION['dol_pickup_missing_batch_number_was_for_product']);
 }
 
 // Purge search criteria
@@ -208,7 +213,7 @@ if ($massaction === 'generate_missing_batch_number_input') {
       $labelmovement = $generate_missing_batch_number_result['labelmovement'];
       $result_text.= '<table class="valid centpercent">';
       $result_text.= '<tr class="valid">';
-      $result_text.= '<th class="valid" colspan="6">';
+      $result_text.= '<th class="valid" colspan="5">';
       $result_text.= '<a target="_blank" href="'.htmlspecialchars(DOL_URL_ROOT.'/product/stock/movement_list.php?search_inventorycode='.urlencode('^'.$codemove.'$')).'">';
       $result_text.= htmlspecialchars($labelmovement);
       $result_text.= '</a>';
@@ -238,6 +243,7 @@ if ($massaction === 'generate_missing_batch_number_input') {
         $printbutton.= '</a>';
         $result_text.= $printbutton;
       }
+      $result_text.= '<th><button type="submit" class="button_removefilter" name="remove_previous_result" value="x"><span class="fa fa-remove"></span></button></th>';
       $result_text.= '</th>';
       $result_text.= '</tr>';
 
