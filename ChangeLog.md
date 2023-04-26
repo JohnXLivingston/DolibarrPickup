@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## 2.1.0 (Not released yet)
+## 2.1.0
 
 **Important** : si vous n'aviez pas installé la v2.0.0, merci de lire les remarques concernant cette version.
 
