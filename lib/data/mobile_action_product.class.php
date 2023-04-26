@@ -223,12 +223,18 @@ class DataMobileActionProduct extends DataMobileAction {
       $save_product = true;
 
       $product->type = Product::TYPE_PRODUCT;
-      $product->ref = GETPOST('product_ref');
-      $product_label = GETPOST('product_label');
-      if (empty($product_label)) {
-        $product_label = GETPOST('product_ref');
+      if (!empty($conf->global->PICKUP_PRODUCT_REF_AUTO)) {
+        $product->ref = GETPOST('product_ref');
+        $product_label = GETPOST('product_label');
+        if (empty($product_label)) {
+          $product_label = GETPOST('product_ref');
+        }
+        $product->label = $product_label;
+      } else {
+        $product->ref = '';
+        $product_label = GETPOST('product_label');
+        $product->label = $product_label;
       }
-      $product->label = $product_label;
       if (!empty($conf->global->PICKUP_PRODUCT_DEFAULT_TOSELL)) {
         $product->status = 1; // to sell
       }

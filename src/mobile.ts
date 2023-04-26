@@ -30,6 +30,7 @@ $(function () {
   let entrepotId = container.attr('data-entrepot-id')
   if (entrepotId === '') { entrepotId = undefined }
   const usePCat = container.attr('data-use-pcat') === '1'
+  const productRefAuto = container.attr('data-product-ref-auto') === '1'
   const usePBrand = container.attr('data-use-pbrand') === '1'
   const useDEEE = container.attr('data-use-deee') === '1'
   const useBatch = container.attr('data-use-batch') === '1'
@@ -53,6 +54,7 @@ $(function () {
   let version = container.attr('data-modpickup-version') ?? '0'
   version += '_e' + (entrepotId ?? '0')
   version += '_c' + (usePCat ? '1' : '0')
+  version += '_pra' + (productRefAuto ? '1' : '0')
   version += '_b' + (usePBrand ? '1' : '0')
   version += '_pl' + (usePrintableLabel ? '1' : '0')
   version += '_d' + (useDEEE ? '1' : '0')
@@ -95,11 +97,11 @@ $(function () {
     saveUntilForProduct = 'categorie'
     definition.product = definitions.pickProduct(usePBrand, 'show_product', 'categorie')
     definition.categorie = definitions.pickPCat('create_product')
-    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'pcat')
+    definition.create_product = definitions.createProduct(usePCat, useDEEE, productRefAuto, usePBrand, askHasBatch, 'product_specifications', 'pcat')
   } else {
     saveUntilForProduct = 'create_product'
     definition.product = definitions.pickProduct(usePBrand, 'show_product', 'create_product')
-    definition.create_product = definitions.createProduct(usePCat, useDEEE, usePBrand, askHasBatch, 'product_specifications', 'pcat')
+    definition.create_product = definitions.createProduct(usePCat, useDEEE, productRefAuto, usePBrand, askHasBatch, 'product_specifications', 'pcat')
   }
   definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_product')
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)

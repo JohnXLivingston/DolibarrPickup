@@ -4,7 +4,9 @@
 
 ### Nouvelles fonctionnalités
 
-* Option pour que tous les produits créés soient marqués «en vente».
+* Options pour les produits créés par l'application mobile :
+  * automatiquement marqués «en vente»
+  * utilisent le modèle de numérotation des produits si configuré
 
 ### Corrections et changements mineurs
 

@@ -161,7 +161,7 @@ function getHasBatchField (pcatStackKey: string, usePCat: boolean): FormField {
   }
 }
 
-export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: boolean, askHasBatch: boolean, goto: string, pcatStackName: string): StateDefinition {
+export function createProduct (usePCat: boolean, useDEEE: boolean, productRefAuto: boolean, usePBrand: boolean, askHasBatch: boolean, goto: string, pcatStackName: string): StateDefinition {
   const fields: FormField[] = []
 
   let mustLoadPCat = false
@@ -181,17 +181,21 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, usePBrand: bo
     })
   }
 
+  if (!productRefAuto) {
+    fields.push({
+      type: 'varchar',
+      name: 'product_ref',
+      label: 'Référence',
+      mandatory: true,
+      maxLength: 128
+    })
+  }
+
   fields.push({
-    type: 'varchar',
-    name: 'product_ref',
-    label: 'Référence',
-    mandatory: true,
-    maxLength: 128
-  }, {
     type: 'varchar',
     name: 'product_label',
     label: 'Libellé',
-    mandatory: false,
+    mandatory: productRefAuto,
     maxLength: 255
   })
 

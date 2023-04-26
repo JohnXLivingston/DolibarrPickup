@@ -167,6 +167,7 @@ $arrayofparameters=array(
 	'PICKUP_SEND_MAIL' => array('table' => 'main', 'enabled' => 1, 'type' => 'boolean'),
 
 	'PICKUP_PRODUCT_DEFAULT_TOSELL' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean'),
+	'PICKUP_PRODUCT_REF_AUTO' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean'),
 	'PICKUP_USE_PBRAND' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand')),
 
 	'PICKUP_UNITS_WEIGHT' => array(
