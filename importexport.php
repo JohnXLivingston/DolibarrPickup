@@ -43,7 +43,9 @@ if (! $res) die("Include of main fails");
 // Load translation files required by the page
 $langs->loadLangs(array('pickup@pickup', 'products', 'categories'));
 
+dol_include_once('/core/lib/files.lib.php');
 dol_include_once('/pickup/lib/export.lib.php');
+dol_include_once('/pickup/lib/import.lib.php');
 
 
 // Security check
@@ -87,6 +89,17 @@ if ($action === 'export') {
   exit;
 }
 
+$import_result = null;
+if ($action === 'import') {
+  if (!empty($_FILES) && !empty($_FILES['userfile']) && !empty($_FILES['userfile']['tmp_name'])) {
+    $json = file_get_contents($_FILES['userfile']['tmp_name']);
+    dol_delete_file($_FILES['userfile']['tmp_name']);
+    $import_result = pickup_import($json, true, [
+      'cat' => $with_cat
+    ]);
+  }
+}
+
 /*
  * View
  */
@@ -96,6 +109,27 @@ llxHeader("", $langs->trans("PickupImportExportTitle"));
 print load_fiche_titre($langs->trans("PickupImportExportTitle"), '', 'pickup.png@pickup');
 
 print '<div class="info">' . $langs->trans('PickupImportExportHelp') . '</div>';
+
+if (!empty($import_result)) {
+  print '<table class="valid centpercent">';
+  print ' <tr class="valid">';
+  print '   <td class="valid">';
+  if ($import_result['status'] === 'ok') {
+    print "OK";
+  } else {
+    print "ERROR: ".($import_result['error'] ?? ' Unknown error');
+  }
+  print '   </td>';
+  print ' </tr>';
+  foreach ($import_result['actions'] as $ac) {
+    print ' <tr class="valid">';
+    print '   <td class="valid">';
+    print '     ' . htmlspecialchars($ac['message']);
+    print '   </td>';
+    print ' </tr>';
+  }
+  print '</table>';
+}
 
 print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">'."\n";
 print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
@@ -121,6 +155,40 @@ print ' </td>';
 print ' </tr>'."\n";
 print ' </table/>';
 print ' <div class="center"><input type="submit" class="button" name="submit" value="'.$langs->trans("PickupExport").'"></div>';
+
+print '</form>';
+
+
+print '<form method="POST" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'">'."\n";
+print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
+print '<input type="hidden" name="action" value="import">'."\n";
+
+print ' <table class="border tableforfield centpercent">'."\n";
+print ' <tr>';
+print ' <td width="110">'.$langs->trans('PickupImport').'</td>';
+print ' <td>';
+print '  <label>';
+print '    <input type="checkbox" checked="checked" name="cat" value="1">';
+print '    ' . $langs->trans('ProductsCategoryShort');
+print '  </label>';
+print '  </br>';
+if (!empty($conf->global->PICKUP_IMPORTEXPORT_ALL)) {
+  print '  <label>';
+  print '    <input type="checkbox" disabled="disabled" name="product" value="1">';
+  print '    ' . $langs->trans('Products');
+  print '  </label>';
+  print '  </br>';
+}
+print ' </td>';
+print ' </tr>'."\n";
+print ' <tr>';
+print ' <td></td>';
+print ' <td>';
+print '   <input type="file" name="userfile" accept="application/json">';
+print ' </td>';
+print ' </tr>'."\n";
+print ' </table/>';
+print ' <div class="center"><input type="submit" class="button" name="submit" value="'.$langs->trans("PickupImport").'"></div>';
 
 print '</form>';
 

@@ -224,3 +224,4 @@ PickupCorrectDataGenerateMissingBatchMovLabel = Correction numéro de lot/série
 PickupImportExportTitle = Import / Export
 PickupImportExportHelp = Cet écran permet d'exporter/importer des données. À utiliser avec précautions.
 PickupExport = Exporter
+PickupImport = Importer
