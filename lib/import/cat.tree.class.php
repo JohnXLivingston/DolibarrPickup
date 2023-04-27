@@ -20,15 +20,15 @@ dol_include_once('/pickup/class/mobilecat.class.php');
 
 class ImportCatTreeNode {
   public $parent;
-  public $data;
+  public $data = null;
   public $label = null; 
   private $categorie = null;
+  private $mobilecat = null;
   public $children = [];
 
-  function __construct($parent, $label, &$data = null) {
+  function __construct($parent, $label) {
     $this->parent = $parent;
     $this->label = $label;
-    $this->data = &$data;
   }
 
   public function ensureChild($label) {
@@ -38,6 +38,10 @@ class ImportCatTreeNode {
       return $child;
     }
     return $this->children[$label];
+  }
+
+  public function setData(&$data) {
+    $this->data = $data;
   }
 
   public function getCatId() {
@@ -105,34 +109,129 @@ class ImportCatTreeNode {
     $obj = $db->fetch_array($resql);
 
     $categorie = new Categorie($db);
-    if ($categorie->fetch($obj['rowid'], '' , 0) <= 0) {
+    // if ($categorie->fetch($obj['rowid'], '' , 0) <= 0) {
+    if ($categorie->fetch($obj['rowid']) <= 0) {
       return null;
     }
     $this->categorie = $categorie;
+
+    $mobilecat = new PickupMobileCat($db);
+	  if ($mobilecat->fetchByCategory($categorie->id) < 0) {
+      $this->mobilecat->fk_category = $categorie->id;
+      $this->mobilecat->active = 0;
+    }
+    $this->mobilecat = $mobilecat;
+
     return $categorie;
   }
 
   private function createCategorie(&$result, $simulate) {
-    global $db;
+    global $user, $db, $langs;
+
+    $categorie = new Categorie($db);
+    $categorie->fk_parent = $this->getParentCatId() ?? 0;
+    $categorie->type = 0; // product
+    $categorie->label = $this->label;
+    $this->categorie = $categorie;
+
+    $mobilecat = new PickupMobileCat($db);
+    $this->mobilecat = $mobilecat;
+
+    $modified_fields = $this->applyData($categorie, $mobilecat);
+
     $actions = [
-      'message' => 'Create ' . implode(' >> ', $this->getPath())
+      'object_type' =>  $langs->transnoentities('ProductsCategoryShort'),
+      'object' => implode(' >> ', $this->getPath()),
+      'action' => 'CREATE',
+      'message' => implode(', ', array_keys($modified_fields))
     ];
+
     $result['actions'][] = $actions;
     if ($simulate) {
       return;
     }
-    // TODO
+
+    if ($categorie->create($user) <= 0) {
+      throw new Error('Failed to create categorie.');
+    }
+
+    $mobilecat->fk_category = $categorie->id;
+    $mobilecat->create($user);
   }
 
   private function updateCategorie(&$result, $simulate) {
-    global $db;
+    global $user, $db, $langs;
+
+    $categorie = $this->categorie;
+    $mobilecat = $this->mobilecat;
+    $modified_fields = $this->applyData($categorie, $mobilecat);
+
     $actions = [
-      'message' => 'Update ' . implode(' >> ', $this->getPath())
+      'object_type' => $langs->transnoentities('ProductsCategoryShort'),
+      'object' => implode(' >> ', $this->getPath()),
+      'action' => 'UPDATE',
+      'message' => count($modified_fields) > 0 ? implode(', ', array_keys($modified_fields)) : '-'
     ];
     $result['actions'][] = $actions;
     if ($simulate) {
       return;
     }
-    // TODO
+
+    if (count($modified_fields) <= 0) {
+      return;
+    }
+
+    $categorie->update($user);
+    if ($mobilecat->id) {
+      $mobilecat->update($user);
+    } else {
+      if ($mobilecat->active) {
+        $mobilecat->create($user);
+      }
+    }
+  }
+
+  private function applyData($categorie, $mobilecat) {
+    global $db;
+
+    $modified_fields = [];
+    if (!$this->data) { return $modified_fields; }
+    /*
+    'label' => $cat->label,
+        'color' => $cat->color,
+        'description' => $cat->description,
+        'active' => $mobilecat->active,
+        'batch_constraint' => $mobilecat->batch_constraint,
+	      'deee_constraint' => $mobilecat->deee_constraint,
+        'path' => []*/
+    foreach (['color', 'description'] as $field) {
+      if (!property_exists($this->data, $field)) { continue; }
+      if ($categorie->$field != $this->data->$field) {
+        $categorie->$field = $this->data->$field;
+        $modified_fields[$field] = ($categorie->$field ?? '') . ' => ' . ($this->data->$field ?? '');
+      }
+    }
+
+    if (property_exists($this->data, 'active')) {
+      if ($this->data->active) {
+        if (!$mobilecat->active) {
+          $mobilecat->active = 1;
+          $modified_fields['active'] = '1';
+        }
+        foreach (['batch_constraint', 'deee_constraint'] as $field) {
+          if (!property_exists($this->data, $field)) { continue; }
+          if ($mobilecat->$field != $this->data->$field) {
+            $mobilecat->$field = $this->data->$field;
+            $modified_fields[$field] = ($mobilecat->$field ?? '') . ' => ' . ($this->data->$field ?? '');
+          }
+        }
+      } else {
+        if ($mobilecat->active) {
+          $mobilecat->active = 0;
+          $modified_fields['active'] = '0';
+        }
+      }
+    }
+    return $modified_fields;
   }
 }

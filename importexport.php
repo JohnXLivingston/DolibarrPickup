@@ -113,7 +113,24 @@ print '<div class="info">' . $langs->trans('PickupImportExportHelp') . '</div>';
 if (!empty($import_result)) {
   print '<table class="valid centpercent">';
   print ' <tr class="valid">';
-  print '   <td class="valid">';
+  print '   <th class="valid">OBJECT TYPE</th>';
+  print '   <th class="valid">OBJECT</th>';
+  print '   <th class="valid">ACTION</th>';
+  print '   <th class="valid">MESSAGE</th>';
+  print ' </tr>';
+
+  foreach ($import_result['actions'] as $ac) {
+    print ' <tr class="valid">';
+    foreach (['object_type', 'object', 'action', 'message'] as $field) {
+      print '   <td class="valid">';
+      if (!empty($ac[$field])) { print htmlspecialchars($ac[$field]); }
+      print '   </td>';
+    }
+    print ' </tr>';
+  }
+
+  print ' <tr class="valid">';
+  print '   <td class="valid" colspan="4">';
   if ($import_result['status'] === 'ok') {
     print "OK";
   } else {
@@ -121,13 +138,7 @@ if (!empty($import_result)) {
   }
   print '   </td>';
   print ' </tr>';
-  foreach ($import_result['actions'] as $ac) {
-    print ' <tr class="valid">';
-    print '   <td class="valid">';
-    print '     ' . htmlspecialchars($ac['message']);
-    print '   </td>';
-    print ' </tr>';
-  }
+
   print '</table>';
 }
 

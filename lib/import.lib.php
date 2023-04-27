@@ -57,12 +57,13 @@ function _pickup_import_cats(&$result, &$data, $simulate) {
   $tree = new ImportCatTreeNode(null, '');
   foreach ($lines as $line) {
     $path = $line->path;
+    if (count($path) == 0) { continue; }
     $node = $tree;
     foreach ($path as $label) {
       $node = $node->ensureChild($label);
     }
     // The last node has to get the data!
-    $node->data = &$line;
+    $node->setData($line);
   }
 
   // Now we must walk through the tree
