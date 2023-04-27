@@ -79,10 +79,10 @@ if (!empty($conf->global->PICKUP_IMPORTEXPORT_ALL)) {
     [
       'pickup_conf' => [
         'label' => $langs->transnoentities('PickupSetup'),
-      ],
-      'product' => [
-        'label' => $langs->transnoentities('Products')
       ]
+      // 'product' => [
+      //   'label' => $langs->transnoentities('Products')
+      // ]
     ]
   );
 }

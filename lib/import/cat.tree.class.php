@@ -177,18 +177,24 @@ class ImportCatTreeNode {
     $mobilecat = $this->mobilecat;
     $modified_fields = $this->applyData($categorie, $mobilecat);
 
+    if (count($modified_fields) <= 0) {
+      $result['actions'][] = [
+        'object_type' => $langs->transnoentities('ProductsCategoryShort'),
+        'object' => implode(' >> ', $this->getPath()),
+        'action' => '-',
+        'message' => ''
+      ];
+      return;
+    }
+
     $actions = [
       'object_type' => $langs->transnoentities('ProductsCategoryShort'),
       'object' => implode(' >> ', $this->getPath()),
       'action' => 'UPDATE',
-      'message' => count($modified_fields) > 0 ? implode(', ', array_keys($modified_fields)) : '-'
+      'message' => implode(', ', array_keys($modified_fields))
     ];
     $result['actions'][] = $actions;
     if ($simulate) {
-      return;
-    }
-
-    if (count($modified_fields) <= 0) {
       return;
     }
 
