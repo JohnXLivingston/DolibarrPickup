@@ -119,8 +119,8 @@ class ImportCatTreeNode {
 
     $mobilecat = new PickupMobileCat($db);
 	  if ($mobilecat->fetchByCategory($categorie->id) < 0) {
-      $this->mobilecat->fk_category = $categorie->id;
-      $this->mobilecat->active = 0;
+      $mobilecat->fk_category = $categorie->id;
+      $mobilecat->active = 0;
     }
     $this->mobilecat = $mobilecat;
 
@@ -137,6 +137,7 @@ class ImportCatTreeNode {
     $this->categorie = $categorie;
 
     $mobilecat = new PickupMobileCat($db);
+    $mobilecat->active = 0;
     $this->mobilecat = $mobilecat;
 
     if (!empty($this->data)) {
@@ -205,6 +206,7 @@ class ImportCatTreeNode {
       $actions['message'].= ' MobileCat updated.';
     } else {
       if ($mobilecat->active) {
+        $mobilecat->fk_category = $categorie->id;
         $mobilecat->create($user);
         $actions['message'].= ' MobileCat created.';
       }
