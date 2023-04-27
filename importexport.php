@@ -68,13 +68,17 @@ if (isset($user->societe_id) && $user->societe_id > 0)
 	$socid = $user->societe_id;
 }
 
-$action = GETPOST('action', 'aZ09') ?GETPOST('action', 'aZ09') : 'list';
+$action = GETPOST('action', 'aZ09') ?GETPOST('action', 'aZ09') : '';
 $with_cat = GETPOST('cat', 'int') ?? 0;
 $with_product = 0;
 // $with_stock = 0;
 if (!empty($conf->global->PICKUP_IMPORTEXPORT_ALL)) {
   $with_product = GETPOST('product', 'int') ?? 0;
   // $with_stock = GETPOST('cat', 'int') ?? 0;
+}
+
+if ($action === 'do_import' && empty($_SESSION['pickup_import_data'])) {
+  $action = '';
 }
 
 /*
@@ -94,10 +98,36 @@ if ($action === 'import') {
   if (!empty($_FILES) && !empty($_FILES['userfile']) && !empty($_FILES['userfile']['tmp_name'])) {
     $json = file_get_contents($_FILES['userfile']['tmp_name']);
     dol_delete_file($_FILES['userfile']['tmp_name']);
-    $import_result = pickup_import($json, true, [
+
+    $what = [
       'cat' => $with_cat
-    ]);
+    ];
+    $_SESSION['pickup_import_data'] = [
+      'json' => $json,
+      'what' => $what
+    ];
+
+    $import_result = pickup_import($json, true, $what);
   }
+} else if ($action === 'do_import') {
+  $import_result = pickup_import(
+    $_SESSION['pickup_import_data']['json'],
+    false,
+    $_SESSION['pickup_import_data']['what']
+  );
+  
+  unset($_SESSION['pickup_import_data']);
+
+  $_SESSION['pickup_import_result'] = $import_result;
+  header('Location: '.$_SERVER["PHP_SELF"]);
+  exit;
+} else {
+  unset($_SESSION['pickup_import_data']);
+}
+
+if ($action == '' && empty($import_result) && !empty($_SESSION['pickup_import_result'])) {
+  $import_result = $_SESSION['pickup_import_result'];
+  unset($_SESSION['pickup_import_result']);
 }
 
 /*
@@ -138,6 +168,27 @@ if (!empty($import_result)) {
   }
   print '   </td>';
   print ' </tr>';
+
+  if ($action === 'import') {
+    print '<tr class="valid">';
+    print '<td class="valid center" colspan="4">';
+
+    print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">'."\n";
+    print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
+    print '<input type="hidden" name="action" value="">'."\n";
+
+    print '<a class="butActionDelete" ';
+    print ' onclick="$(this).closest(\'form\').find(\'[name=action]\').val(\'\'); $(this).closest(\'form\').submit();" ';
+    print '>'.$langs->trans('Cancel').'</a>';
+    // Note: type="button" to prevent this button to be trigger on enter in a field from the form under it.
+    print '<input type="button" class="button" value="'.$langs->trans("Validate").'" ';
+    print ' onclick="$(this).closest(\'form\').find(\'input[name=action]\').val(\'do_import\'); $(this).closest(\'form\').submit();" ';
+    print '>';
+
+    print '</form>';
+    print '</td>';
+    print '</tr>';
+  }
 
   print '</table>';
 }

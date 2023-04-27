@@ -161,9 +161,12 @@ class ImportCatTreeNode {
       throw new Error('Failed to create categorie.');
     }
 
+    $actions['message'].= ' Category Saved.';
+
     if (!empty($data) && property_exists($this->data, 'active') && $this->data->active) {
       $mobilecat->fk_category = $categorie->id;
       $mobilecat->create($user);
+      $actions['message'].= ' MobileCat Created.';
     }
   }
 
@@ -190,11 +193,14 @@ class ImportCatTreeNode {
     }
 
     $categorie->update($user);
+    $actions['message'].= ' Category Updated.';
     if ($mobilecat->id) {
       $mobilecat->update($user);
+      $actions['message'].= ' MobileCat updated.';
     } else {
       if ($mobilecat->active) {
         $mobilecat->create($user);
+        $actions['message'].= ' MobileCat created.';
       }
     }
   }
@@ -204,14 +210,7 @@ class ImportCatTreeNode {
 
     $modified_fields = [];
     if (!$this->data) { return $modified_fields; }
-    /*
-    'label' => $cat->label,
-        'color' => $cat->color,
-        'description' => $cat->description,
-        'active' => $mobilecat->active,
-        'batch_constraint' => $mobilecat->batch_constraint,
-	      'deee_constraint' => $mobilecat->deee_constraint,
-        'path' => []*/
+
     foreach (['color', 'description'] as $field) {
       if (!property_exists($this->data, $field)) { continue; }
       if ($categorie->$field != $this->data->$field) {
