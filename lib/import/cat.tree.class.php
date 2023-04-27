@@ -71,10 +71,12 @@ class ImportCatTreeNode {
 
   public function doActions(&$result, $simulate) {
     $categorie = $this->getCategorie($simulate);
-    if (!empty($this->data)) {
-      if (!$categorie) {
+    if (!$categorie) {
+      if ($this->parent) { // dont create for the tree root
         $this->createCategorie($result, $simulate);
-      } else {
+      }
+    } else {
+      if (!empty($this->data)) {
         $this->updateCategorie($result, $simulate);
       }
     }
@@ -137,7 +139,11 @@ class ImportCatTreeNode {
     $mobilecat = new PickupMobileCat($db);
     $this->mobilecat = $mobilecat;
 
-    $modified_fields = $this->applyData($categorie, $mobilecat);
+    if (!empty($this->data)) {
+      $modified_fields = $this->applyData($categorie, $mobilecat);
+    } else {
+      $modified_fields = [];
+    }
 
     $actions = [
       'object_type' =>  $langs->transnoentities('ProductsCategoryShort'),
@@ -155,8 +161,10 @@ class ImportCatTreeNode {
       throw new Error('Failed to create categorie.');
     }
 
-    $mobilecat->fk_category = $categorie->id;
-    $mobilecat->create($user);
+    if (!empty($data) && property_exists($this->data, 'active') && $this->data->active) {
+      $mobilecat->fk_category = $categorie->id;
+      $mobilecat->create($user);
+    }
   }
 
   private function updateCategorie(&$result, $simulate) {
