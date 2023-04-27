@@ -40,11 +40,13 @@ function pickup_import(&$json, $simulate, $what) {
       throw new Error('Data version incompatible');
     }
 
-    if (!empty($what['cat'])) {
-      _pickup_import_cats($result, $data, $simulate);
-    }
+    // First parameters...
     if (!empty($what['pickup_conf'])) {
       _pickup_import_conf($result, $data, $simulate);
+    }
+    // Then data... (order is important, some data depends on others)
+    if (!empty($what['cat'])) {
+      _pickup_import_cats($result, $data, $simulate);
     }
 
     $result['status'] = 'ok';
