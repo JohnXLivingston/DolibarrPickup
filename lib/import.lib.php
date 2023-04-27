@@ -22,6 +22,7 @@
  */
 
 // Following include will fail if we are not in Dolibarr context
+dol_include_once('/core/lib/admin.lib.php');
 dol_include_once('/categories/class/categorie.class.php');
 dol_include_once('/pickup/class/mobilecat.class.php');
 dol_include_once('/product/class/product.class.php');
@@ -41,6 +42,9 @@ function pickup_import(&$json, $simulate, $what) {
 
     if (!empty($what['cat'])) {
       _pickup_import_cats($result, $data, $simulate);
+    }
+    if (!empty($what['pickup_conf'])) {
+      _pickup_import_conf($result, $data, $simulate);
     }
 
     $result['status'] = 'ok';
@@ -68,4 +72,54 @@ function _pickup_import_cats(&$result, &$data, $simulate) {
 
   // Now we must walk through the tree
   $tree->doActions($result, $simulate);
+}
+
+function _pickup_import_conf(&$result, &$data, $simulate) {
+  global $conf, $langs, $db;
+
+  $lines = empty($data->pickup_conf) || empty($data->pickup_conf->settings) ? [] : $data->pickup_conf->settings;
+
+  dol_include_once('/custom/pickup/lib/settings.php');
+  $settings = getPickupSettings();
+
+  foreach ($settings as $name => $setting) {
+    if (!$setting['enabled']) { continue; }
+    if (!property_exists($lines, $name)) { continue; }
+    
+    if (!property_exists($conf->global, $name) || $conf->global->$name !== $lines->$name) {
+      if ($lines->$name === null) {
+        $result['actions'][] = [
+          'object_type' =>  $langs->transnoentities('PickupSetup'),
+          'object' => $name,
+          'action' => 'DELETE',
+          'message' => ''
+        ];
+        if (!$simulate) {
+          dolibarr_del_const($db, 'PICKUP_DEFAULT_BATCH_PICKUP_REF', $conf->entity);
+        }
+      } else {
+        if ($setting['type'] === 'boolean') {
+          $setting_type = 'yesno';
+        } else {
+          $setting_type = 'chaine';
+        }
+        $result['actions'][] = [
+          'object_type' =>  $langs->transnoentities('PickupSetup'),
+          'object' => $name,
+          'action' => 'UPDATE',
+          'message' => ($conf->global->$name ?? '') . ' => ' . $lines->$name . ' (' . $setting_type . ')'
+        ];
+        if (!$simulate) {
+          dolibarr_set_const($db, $name, $lines->$name, $setting_type, 0, '', $conf->entity);
+        }
+      }
+    } else {
+      $result['actions'][] = [
+        'object_type' =>  $langs->transnoentities('PickupSetup'),
+        'object' => $name,
+        'action' => '-',
+        'message' => ''
+      ];
+    }
+  }
 }

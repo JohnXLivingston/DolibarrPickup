@@ -36,6 +36,10 @@ function print_pickup_export($what) {
     print_pickup_export_cats();
     print "]";
   }
+  if (!empty($what['pickup_conf'])) {
+    print ',"pickup_conf":';
+    print_pickup_export_conf();
+  }
   print '}';
 }
 
@@ -80,4 +84,19 @@ function print_pickup_export_cats() {
       print json_encode($json);
     }
   }
+}
+
+function print_pickup_export_conf() {
+  global $conf;
+  dol_include_once('/custom/pickup/lib/settings.php');
+  $settings = getPickupSettings();
+
+  $data = [];
+  foreach ($settings as $name => $setting) {
+    if (!$setting['enabled']) { continue; }
+    $data[$name] = property_exists($conf->global, $name) ? $conf->global->$name : null;
+  }
+  print json_encode([
+    'settings' => $data
+  ]);
 }

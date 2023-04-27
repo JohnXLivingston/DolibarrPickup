@@ -9,6 +9,7 @@
   * utilisent le modèle de numérotation des produits si configuré
 * Nouvelles fonctionnalités d'import/export:
   * pour les tags (ne prend en compte que les tags activés dans le module de collecte)
+  * pour les paramètres du module
   * les fiches produits (cette fonctionnalité doit s'activer dans les paramètres du module)
 
 ### Corrections et changements mineurs

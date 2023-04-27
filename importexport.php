@@ -68,14 +68,34 @@ if (isset($user->societe_id) && $user->societe_id > 0)
 	$socid = $user->societe_id;
 }
 
-$action = GETPOST('action', 'aZ09') ?GETPOST('action', 'aZ09') : '';
-$with_cat = GETPOST('cat', 'int') ?? 0;
-$with_product = 0;
-// $with_stock = 0;
+$conf_importexport_what = [
+  'cat' => [
+    'label' => $langs->transnoentities('ProductsCategoryShort'),
+    'default_checked' => true
+  ]
+];
 if (!empty($conf->global->PICKUP_IMPORTEXPORT_ALL)) {
-  $with_product = GETPOST('product', 'int') ?? 0;
-  // $with_stock = GETPOST('cat', 'int') ?? 0;
+  $conf_importexport_what = array_merge($conf_importexport_what,
+    [
+      'pickup_conf' => [
+        'label' => $langs->transnoentities('PickupSetup'),
+      ],
+      'product' => [
+        'label' => $langs->transnoentities('Products')
+      ]
+    ]
+  );
 }
+
+$action = GETPOST('action', 'aZ09') ?GETPOST('action', 'aZ09') : '';
+$importexport_what = [];
+$param_importexport_what = GETPOST('importexport_what', 'array');
+foreach ($conf_importexport_what as $what => $cw) {
+  if (in_array($what, $param_importexport_what)) {
+    $importexport_what[$what] = true;
+  }
+}
+unset($param_importexport_what);
 
 if ($action === 'do_import' && empty($_SESSION['pickup_import_data'])) {
   $action = '';
@@ -87,9 +107,7 @@ if ($action === 'do_import' && empty($_SESSION['pickup_import_data'])) {
 if ($action === 'export') {
   header('Content-disposition: attachment; filename=export.json');
   header('Content-type: application/json');
-  print_pickup_export([
-    'cat' => $with_cat
-  ]);
+  print_pickup_export($importexport_what);
   exit;
 }
 
@@ -99,15 +117,14 @@ if ($action === 'import') {
     $json = file_get_contents($_FILES['userfile']['tmp_name']);
     dol_delete_file($_FILES['userfile']['tmp_name']);
 
-    $what = [
-      'cat' => $with_cat
-    ];
     $_SESSION['pickup_import_data'] = [
       'json' => $json,
-      'what' => $what
+      'what' => $importexport_what
     ];
 
-    $import_result = pickup_import($json, true, $what);
+    $import_result = pickup_import($json, true, $importexport_what);
+  } else {
+    $action = '';
   }
 } else if ($action === 'do_import') {
   $import_result = pickup_import(
@@ -193,66 +210,58 @@ if (!empty($import_result)) {
   print '</table>';
 }
 
-print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">'."\n";
-print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
-print '<input type="hidden" name="action" value="export">'."\n";
-
-print ' <table class="border tableforfield centpercent">'."\n";
-print ' <tr>';
-print ' <td width="110">'.$langs->trans('PickupExport').'</td>';
-print ' <td>';
-print '  <label>';
-print '    <input type="checkbox" checked="checked" name="cat" value="1">';
-print '    ' . $langs->trans('ProductsCategoryShort');
-print '  </label>';
-print '  </br>';
-if (!empty($conf->global->PICKUP_IMPORTEXPORT_ALL)) {
-  print '  <label>';
-  print '    <input type="checkbox" disabled="disabled" name="product" value="1">';
-  print '    ' . $langs->trans('Products');
-  print '  </label>';
-  print '  </br>';
+if ($action !== 'import' && $action !== 'doimport') {
+  print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">'."\n";
+  print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
+  print '<input type="hidden" name="action" value="export">'."\n";
+  
+  print ' <table class="border tableforfield centpercent">'."\n";
+  print ' <tr>';
+  print ' <td width="110">'.$langs->trans('PickupExport').'</td>';
+  print ' <td>';
+  foreach ($conf_importexport_what as $what => $wc) {
+    print '  <label>';
+    print '    <input type="checkbox" '.($wc['default_checked'] ? 'checked="checked"' : '').' name="importexport_what[]" value="'.htmlspecialchars($what).'">';
+    print '    ' . htmlspecialchars($wc['label']);
+    print '  </label>';
+    print '  </br>';
+  }
+  print ' </td>';
+  print ' </tr>'."\n";
+  print ' </table/>';
+  print ' <div class="center"><input type="submit" class="button" name="submit" value="'.$langs->trans("PickupExport").'"></div>';
+  
+  print '</form>';
+  
+  
+  print '<form method="POST" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'">'."\n";
+  print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
+  print '<input type="hidden" name="action" value="import">'."\n";
+  
+  print ' <table class="border tableforfield centpercent">'."\n";
+  print ' <tr>';
+  print ' <td width="110">'.$langs->trans('PickupImport').'</td>';
+  print ' <td>';
+  foreach ($conf_importexport_what as $what => $wc) {
+    print '  <label>';
+    print '    <input type="checkbox" '.($wc['default_checked'] ? 'checked="checked"' : '').' name="importexport_what[]" value="'.htmlspecialchars($what).'">';
+    print '    ' . htmlspecialchars($wc['label']);
+    print '  </label>';
+    print '  </br>';
+  }
+  print ' </td>';
+  print ' </tr>'."\n";
+  print ' <tr>';
+  print ' <td></td>';
+  print ' <td>';
+  print '   <input type="file" name="userfile" accept="application/json">';
+  print ' </td>';
+  print ' </tr>'."\n";
+  print ' </table/>';
+  print ' <div class="center"><input type="submit" class="button" name="submit" value="'.$langs->trans("PickupImport").'"></div>';
+  
+  print '</form>';
 }
-print ' </td>';
-print ' </tr>'."\n";
-print ' </table/>';
-print ' <div class="center"><input type="submit" class="button" name="submit" value="'.$langs->trans("PickupExport").'"></div>';
-
-print '</form>';
-
-
-print '<form method="POST" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'">'."\n";
-print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
-print '<input type="hidden" name="action" value="import">'."\n";
-
-print ' <table class="border tableforfield centpercent">'."\n";
-print ' <tr>';
-print ' <td width="110">'.$langs->trans('PickupImport').'</td>';
-print ' <td>';
-print '  <label>';
-print '    <input type="checkbox" checked="checked" name="cat" value="1">';
-print '    ' . $langs->trans('ProductsCategoryShort');
-print '  </label>';
-print '  </br>';
-if (!empty($conf->global->PICKUP_IMPORTEXPORT_ALL)) {
-  print '  <label>';
-  print '    <input type="checkbox" disabled="disabled" name="product" value="1">';
-  print '    ' . $langs->trans('Products');
-  print '  </label>';
-  print '  </br>';
-}
-print ' </td>';
-print ' </tr>'."\n";
-print ' <tr>';
-print ' <td></td>';
-print ' <td>';
-print '   <input type="file" name="userfile" accept="application/json">';
-print ' </td>';
-print ' </tr>'."\n";
-print ' </table/>';
-print ' <div class="center"><input type="submit" class="button" name="submit" value="'.$langs->trans("PickupImport").'"></div>';
-
-print '</form>';
 
 // End of page
 llxFooter();
