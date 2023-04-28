@@ -23,6 +23,7 @@
 
 // Following include will fail if we are not in Dolibarr context
 dol_include_once('/categories/class/categorie.class.php');
+dol_include_once('/product/stock/class/entrepot.class.php');
 dol_include_once('/pickup/class/mobilecat.class.php');
 dol_include_once('/product/class/product.class.php');
 
@@ -87,14 +88,22 @@ function print_pickup_export_cats() {
 }
 
 function print_pickup_export_conf() {
-  global $conf;
+  global $conf, $db;
   dol_include_once('/custom/pickup/lib/settings.php');
   $settings = getPickupSettings();
 
   $data = [];
   foreach ($settings as $name => $setting) {
     if (!$setting['enabled']) { continue; }
-    $data[$name] = property_exists($conf->global, $name) ? $conf->global->$name : null;
+    if ($name === 'PICKUP_DEFAULT_STOCK' && !empty($conf->global->$name)) {
+      // Special case...
+      $entrepot = new Entrepot($db);
+      if ($entrepot->fetch($conf->global->$name) > 0) {
+        $data[$name] = $entrepot->ref;
+      }
+    } else {
+      $data[$name] = property_exists($conf->global, $name) ? $conf->global->$name : null;
+    }
   }
   print json_encode([
     'settings' => $data

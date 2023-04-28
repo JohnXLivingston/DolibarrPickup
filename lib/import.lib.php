@@ -27,6 +27,7 @@ dol_include_once('/categories/class/categorie.class.php');
 dol_include_once('/pickup/class/mobilecat.class.php');
 dol_include_once('/product/class/product.class.php');
 dol_include_once('/pickup/lib/import/cat.tree.class.php');
+dol_include_once('/product/stock/class/entrepot.class.php');
 
 function pickup_import(&$json, $simulate, $what) {
   $result = [
@@ -40,7 +41,9 @@ function pickup_import(&$json, $simulate, $what) {
       throw new Error('Data version incompatible');
     }
 
-    // First parameters...
+    // TODO First entrepots (needed for pickup_conf->PICKUP_DEFAULT_STOCK)
+
+    // Then parameters...
     if (!empty($what['pickup_conf'])) {
       _pickup_import_conf($result, $data, $simulate);
     }
@@ -87,9 +90,28 @@ function _pickup_import_conf(&$result, &$data, $simulate) {
   foreach ($settings as $name => $setting) {
     if (!$setting['enabled']) { continue; }
     if (!property_exists($lines, $name)) { continue; }
+
+    $old_value = property_exists($conf->global, $name) ? $conf->global->$name : null;
+    $new_value = $lines->$name;
+
+    if ($name === 'PICKUP_DEFAULT_STOCK' && !empty($new_value)) {
+      // Special case...
+      $entrepot = new Entrepot($db);
+      if ($entrepot->fetch(null, $new_value) > 0) {
+        $new_value = $entrepot->id;
+      } else {
+        $result['actions'][] = [
+          'object_type' =>  $langs->transnoentities('PickupSetup'),
+          'object' => $name,
+          'action' => 'FAILED',
+          'message' => 'Can\'t find entrepot '.$new_value
+        ];
+        continue;
+      }
+    }
     
-    if (!property_exists($conf->global, $name) || $conf->global->$name !== $lines->$name) {
-      if ($lines->$name === null) {
+    if (empty($old_value) || $old_value !== $new_value) {
+      if ($new_value === null) {
         $result['actions'][] = [
           'object_type' =>  $langs->transnoentities('PickupSetup'),
           'object' => $name,
@@ -109,10 +131,10 @@ function _pickup_import_conf(&$result, &$data, $simulate) {
           'object_type' =>  $langs->transnoentities('PickupSetup'),
           'object' => $name,
           'action' => 'UPDATE',
-          'message' => ($conf->global->$name ?? '') . ' => ' . $lines->$name . ' (' . $setting_type . ')'
+          'message' => ($old_value ?? '') . ' => ' . $new_value . ' (' . $setting_type . ')'
         ];
         if (!$simulate) {
-          dolibarr_set_const($db, $name, $lines->$name, $setting_type, 0, '', $conf->entity);
+          dolibarr_set_const($db, $name, $new_value, $setting_type, 0, '', $conf->entity);
         }
       }
     } else {
