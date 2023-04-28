@@ -41,6 +41,10 @@ function print_pickup_export($what) {
     print ',"pickup_conf":';
     print_pickup_export_conf();
   }
+  if (!empty($what['entrepot'])) {
+    print ',"entrepots":';
+    print_pickup_export_entrepots();
+  }
   print '}';
 }
 
@@ -108,4 +112,23 @@ function print_pickup_export_conf() {
   print json_encode([
     'settings' => $data
   ]);
+}
+
+function print_pickup_export_entrepots() {
+  global $db;
+  $entrepot = new Entrepot($db);
+  $entrepots = array_merge($entrepot->list_array(1), $entrepot->list_array(0));
+  $result = [];
+  foreach ($entrepots as $k => $label) {
+    $entrepot = new Entrepot($db);
+    if ($entrepot->fetch(null, $label) <= 0) { continue; }
+    $data = new stdClass();
+    foreach (['label', 'description', 'lieu', 'address', 'zip', 'town', 'phone', 'fax', 'statut'] as $field) {
+      if (property_exists($entrepot, $field)) {
+        $data->$field = $entrepot->$field;
+      }
+    }
+    $result[] = $data;
+  }
+  print json_encode($result);
 }

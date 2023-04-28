@@ -29,6 +29,8 @@ dol_include_once('/product/class/product.class.php');
 dol_include_once('/pickup/lib/import/cat.tree.class.php');
 dol_include_once('/product/stock/class/entrepot.class.php');
 
+$langs->loadLangs(array('pickup@pickup', 'products', 'categories', 'stocks'));
+
 function pickup_import(&$json, $simulate, $what) {
   $result = [
     'status' => 'ko',
@@ -41,8 +43,10 @@ function pickup_import(&$json, $simulate, $what) {
       throw new Error('Data version incompatible');
     }
 
-    // TODO First entrepots (needed for pickup_conf->PICKUP_DEFAULT_STOCK)
-
+    // First entrepots (needed for pickup_conf->PICKUP_DEFAULT_STOCK)
+    if (!empty($what['entrepot'])) {
+      _pickup_import_entrepots($result, $data, $simulate);
+    }
     // Then parameters...
     if (!empty($what['pickup_conf'])) {
       _pickup_import_conf($result, $data, $simulate);
@@ -57,6 +61,81 @@ function pickup_import(&$json, $simulate, $what) {
     $result['error'] = $e->getMessage();
   }
   return $result;
+}
+
+function _pickup_import_entrepots(&$result, &$data, $simulate) {
+  global $db, $langs, $user;
+  $lines = empty($data->entrepots) ? [] : $data->entrepots;
+
+  // Note: for now, we import entrepots «flatly» (no fk_parent)
+  foreach ($lines as $line) {
+    $label = $line->label;
+    if (empty($label)) { continue; }
+
+    $entrepot = new Entrepot($db);
+    $fields_list = [];
+    foreach (get_object_vars($line) as $field => $val) {
+      if (substr($field, 0, 3) === 'fk_') {
+        throw new Error('Seems the file to import contains foreign keys for entrepots, this is not supported');
+      }
+      if (array_key_exists($field, $entrepot->fields)) {
+        $fields_list[] = $field;
+      }
+    }
+    if (!in_array('label', $fields_list)) {
+      // In $entrepot->fields, 'label' is 'ref'...
+      $fields_list[] = 'label';
+    }
+
+    if ($entrepot->fetch(null, $label) <= 0) {
+      // New entrepot!
+      $result['actions'][] = [
+        'object_type' =>  $langs->transnoentities('Warehouse'),
+        'object' => $label,
+        'action' => 'CREATE',
+        'message' => implode(', ', $fields_list)
+      ];
+      if (!$simulate) {
+        $entrepot = new Entrepot($db);
+        foreach ($fields_list as $field) {
+          $entrepot->$field = $line->$field;
+        }
+        if ($entrepot->create($user) <= 0) {
+          throw new Error('Failed to create entrepot.');
+        }
+      }
+      continue;
+    }
+
+    // Update...
+    $modified_fields = [];
+    foreach ($fields_list as $field) {
+      if ($field === 'label') { continue; }
+      if ($entrepot->$field === $line->$field) { continue; }
+      $modified_fields[] = $field;
+    }
+    if (count($modified_fields) === 0) {
+      $result['actions'][] = [
+        'object_type' =>  $langs->transnoentities('Warehouse'),
+        'object' => $label,
+        'action' => '-',
+        'message' => ''
+      ];
+      continue;
+    }
+    $result['actions'][] = [
+      'object_type' =>  $langs->transnoentities('Warehouse'),
+      'object' => $label,
+      'action' => 'UPDATE',
+      'message' => implode(', ', $modified_fields)
+    ];
+    if (!$simulate) {
+      foreach ($modified_fields as $field) {
+        $entrepot->$field = $line->$field;
+      }
+      $entrepot->update($entrepot->id, $user);
+    }
+  }
 }
 
 function _pickup_import_cats(&$result, &$data, $simulate) {

@@ -41,7 +41,7 @@ if (! $res && file_exists("../../../main.inc.php")) $res=@include "../../../main
 if (! $res) die("Include of main fails");
 
 // Load translation files required by the page
-$langs->loadLangs(array('pickup@pickup', 'products', 'categories'));
+$langs->loadLangs(array('pickup@pickup', 'products', 'categories', 'stocks'));
 
 dol_include_once('/core/lib/files.lib.php');
 dol_include_once('/pickup/lib/export.lib.php');
@@ -78,7 +78,10 @@ if (!empty($conf->global->PICKUP_IMPORTEXPORT_ALL)) {
   $conf_importexport_what = array_merge($conf_importexport_what,
     [
       'pickup_conf' => [
-        'label' => $langs->transnoentities('PickupSetup'),
+        'label' => $langs->transnoentities('PickupSetup')
+      ],
+      'entrepot' => [
+        'label' => $langs->transnoentities('Warehouse')
       ]
       // 'product' => [
       //   'label' => $langs->transnoentities('Products')

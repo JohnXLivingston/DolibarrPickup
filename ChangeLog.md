@@ -11,6 +11,7 @@
   * pour les tags (ne prend en compte que les tags activés dans le module de collecte)
   * on peut activer les imports/exports d'autres données (surtout utile pour les imports initiaux ou les installations de test):
     * pour les paramètres du module de collecte
+    * la liste des entrepots. Notes: ne prend pas en compte leur hiérarchie, les imports «à plat». N'importe pas les pays ou départements.
     * les fiches produits (cette fonctionnalité doit s'activer dans les paramètres du module)
 
 ### Corrections et changements mineurs
