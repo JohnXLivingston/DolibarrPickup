@@ -10,7 +10,7 @@
 * Nouvelles fonctionnalités d'import/export:
   * pour les tags (ne prend en compte que les tags activés dans le module de collecte)
   * on peut activer les imports/exports d'autres données (surtout utile pour les imports initiaux ou les installations de test):
-    * pour les paramètres du module de collecte
+    * les paramètres du module de collecte (dictionnaire du type de collecte inclu)
     * la liste des entrepots. Notes: ne prend pas en compte leur hiérarchie, les imports «à plat». N'importe pas les pays ou départements.
     * les fiches produits
     * Attention: ces imports/exports sont partiels, et ne sont pas à considérer comme fiables pour un environnement de production.

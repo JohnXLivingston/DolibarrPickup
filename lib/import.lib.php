@@ -162,8 +162,12 @@ function _pickup_import_cats(&$result, &$data, $simulate) {
 }
 
 function _pickup_import_conf(&$result, &$data, $simulate) {
-  global $conf, $langs, $db;
+  _pickup_import_conf_settings($result, $data, $simulate);
+  _pickup_import_conf_pickup_types($result, $data, $simulate);
+}
 
+function _pickup_import_conf_settings(&$result, &$data, $simulate) {
+  global $conf, $langs, $db;
   $lines = empty($data->pickup_conf) || empty($data->pickup_conf->settings) ? [] : $data->pickup_conf->settings;
 
   dol_include_once('/custom/pickup/lib/settings.php');
@@ -192,7 +196,7 @@ function _pickup_import_conf(&$result, &$data, $simulate) {
       }
     }
 
-    if (empty($old_value) || $old_value !== $new_value) {
+    if ($old_value === null || $old_value !== $new_value) {
       if ($new_value === null) {
         $result['actions'][] = [
           'object_type' =>  $langs->transnoentities('PickupSetup'),
@@ -230,6 +234,62 @@ function _pickup_import_conf(&$result, &$data, $simulate) {
   }
 }
 
+function _pickup_import_conf_pickup_types(&$result, &$data, $simulate) {
+  global $conf, $langs, $db;
+  $lines = empty($data->pickup_conf) || empty($data->pickup_conf->pickup_types) ? [] : $data->pickup_conf->pickup_types;
+  if (count($lines) === 0) { return; }
+
+  foreach ($lines as $line) {
+    $label = $line->label;
+    $sql = "SELECT label, active ";
+    $sql .= " FROM ".MAIN_DB_PREFIX.'c_pickup_type ';
+    $sql .= " WHERE entity = '".$db->escape($conf->entity)."'";
+    $sql .= " AND label='".$db->escape($label)."'";
+    $resql = $db->query($sql);
+    if (!$resql) {
+      throw new Error('Failed to get pickup types');
+    }
+    $obj = $db->fetch_object($resql);
+    if ($obj) {
+      if ($obj->active === $line->active) {
+        $result['actions'][] = [
+          'object_type' =>  $langs->transnoentities('PickupType'),
+          'object' => $label,
+          'action' => '-',
+          'message' => ''
+        ];
+      } else {
+        $result['actions'][] = [
+          'object_type' =>  $langs->transnoentities('PickupType'),
+          'object' => $label,
+          'action' => 'UPDATE',
+          'message' => 'active'
+        ];
+        if (!$simulate) {
+          $sql = "UPDATE ".MAIN_DB_PREFIX.'c_pickup_type ';
+          $sql .= ' SET active = '.$db->escape((int) $line->active);
+          $sql .= " WHERE entity = '".$db->escape($conf->entity)."'";
+          $sql .= " AND label='".$db->escape($label)."'";
+          $db->query($sql);
+        }
+      }
+    } else {
+      $result['actions'][] = [
+        'object_type' =>  $langs->transnoentities('PickupType'),
+        'object' => $label,
+        'action' => 'CREATE',
+        'message' => ''
+      ];
+      if (!$simulate) {
+        $sql = "INSERT INTO ".MAIN_DB_PREFIX.'c_pickup_type ';
+        $sql .= ' (entity, label, active) VALUES ';
+        $sql .= " ('".$db->escape($conf->entity)."', '".$db->escape($line->label)."', '".$db->escape($line->active)."')";
+        $db->query($sql);
+      }
+    }
+    $db->free($resql);
+  }
+}
 
 function _pickup_import_products(&$result, &$data, $simulate) {
   global $db, $langs, $user;

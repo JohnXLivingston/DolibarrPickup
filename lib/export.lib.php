@@ -96,21 +96,41 @@ function pickup_export_conf() {
   dol_include_once('/custom/pickup/lib/settings.php');
   $settings = getPickupSettings();
 
-  $data = new stdClass();
+  $settings_data = new stdClass();
   foreach ($settings as $name => $setting) {
     if (!$setting['enabled']) { continue; }
     if ($name === 'PICKUP_DEFAULT_STOCK' && !empty($conf->global->$name)) {
       // Special case...
       $entrepot = new Entrepot($db);
       if ($entrepot->fetch($conf->global->$name) > 0) {
-        $data->$name = $entrepot->ref;
+        $settings_data->$name = $entrepot->ref;
       }
     } else {
-      $data->$name = property_exists($conf->global, $name) ? $conf->global->$name : null;
+      $settings_data->$name = property_exists($conf->global, $name) ? $conf->global->$name : null;
     }
   }
+
   $result = new stdClass();
-  $result->settings = $data;
+  $result->settings = $settings_data;
+
+  if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE)) {
+    $result->pickup_types = [];
+    $sql = "SELECT label, active ";
+    $sql .= " FROM ".MAIN_DB_PREFIX.'c_pickup_type ';
+    $sql .= " WHERE entity = '".$db->escape($conf->entity)."'";
+    $resql = $db->query($sql);
+    if (!$resql) {
+      throw new Error('Failed to get pickup types');
+    }
+    while ($obj = $db->fetch_object($resql)) {
+      $result->pickup_types[] = [
+        'label' => $obj->label,
+        'active' => $obj->active
+      ];
+    }
+    $db->free($resql);
+  }
+
   return $result;
 }
 
