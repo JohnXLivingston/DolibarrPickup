@@ -41,6 +41,9 @@ function print_pickup_export($what) {
   if (!empty($what['entrepot'])) {
     $data->entrepots = pickup_export_entrepots();
   }
+  if (!empty($what['product'])) {
+    $data->products = pickup_export_products();
+  }
 
   header('Content-disposition: attachment; filename=export.json');
   header('Content-type: application/json');
@@ -127,5 +130,57 @@ function pickup_export_entrepots() {
     }
     $result[] = $data;
   }
+  return $result;
+}
+
+function pickup_export_products() {
+  global $db;
+  $result = [];
+
+  $categorie_class = new Categorie($db);
+
+  $sql = 'SELECT rowid FROM '.MAIN_DB_PREFIX.'product as p';
+  $sql.= ' WHERE p.entity IN ('.getEntity('product').')';
+  $sql.= ' AND fk_product_type = 0'; // product only, not services
+  $sql.= $db->order('ref', 'ASC');
+  $resql = $db->query($sql);
+  if (!$resql) {
+    throw new Error('Failed getting product list');
+  }
+
+  while ($obj = $db->fetch_object($resql)) {
+    $id = $obj->rowid;
+    $product = new Product($db);
+    if ($product->fetch($id) <= 0) { continue; } // product deleted during the export?
+    $data = new stdClass();
+    foreach (['ref', 'label', 'barcode', 'fk_barcode_type', 'note', 'note_public'] as $field) {
+      if (array_key_exists($field, $product->fields)) {
+        $data->$field = $product->$field;
+      }
+    }
+
+    $data->categories = [];
+    $categories = $categorie_class->getListForItem($product->id, 'product');
+    if ($categories) {
+      foreach ($categories as $cat) {
+        $categorie = new Categorie($db);
+        if ($categorie->fetch($cat['id']) <=0) { continue; }
+        $all_ways = $categorie->get_all_ways();
+        foreach ($all_ways as $way) {
+          $cat_line = new stdClass();
+          $cat_line->label = $categorie->label;
+          $cat_line->path = [];
+          foreach ($way as $wcat) {
+            $cat_line->path[] = $wcat->label;
+          }
+          $data->categories[] = $cat_line;
+        }
+      }
+    }
+
+    $result[] = $data;
+  }
+  $db->free($resql);
+
   return $result;
 }

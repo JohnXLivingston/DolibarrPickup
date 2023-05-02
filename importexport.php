@@ -81,11 +81,11 @@ if (!empty($conf->global->PICKUP_IMPORTEXPORT_ALL)) {
         'label' => $langs->transnoentities('PickupSetup')
       ],
       'entrepot' => [
-        'label' => $langs->transnoentities('Warehouse')
+        'label' => $langs->transnoentities('Warehouses')
+      ],
+      'product' => [
+        'label' => $langs->transnoentities('Products')
       ]
-      // 'product' => [
-      //   'label' => $langs->transnoentities('Products')
-      // ]
     ]
   );
 }

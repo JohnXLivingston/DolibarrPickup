@@ -12,7 +12,8 @@
   * on peut activer les imports/exports d'autres données (surtout utile pour les imports initiaux ou les installations de test):
     * pour les paramètres du module de collecte
     * la liste des entrepots. Notes: ne prend pas en compte leur hiérarchie, les imports «à plat». N'importe pas les pays ou départements.
-    * les fiches produits (cette fonctionnalité doit s'activer dans les paramètres du module)
+    * les fiches produits
+    * Attention: ces imports/exports sont partiels, et ne sont pas à considérer comme fiables pour un environnement de production.
 
 ### Corrections et changements mineurs
 
