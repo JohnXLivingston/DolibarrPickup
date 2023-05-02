@@ -29,26 +29,25 @@ dol_include_once('/product/class/product.class.php');
 
 
 function print_pickup_export($what) {
-  // to avoid memory limit hit, we will print JSON object by object.
-  print '{';
-  print '"version": "1"';
+  $data = new stdClass();
+  $data->version = '1';
+
   if (!empty($what['cat'])) {
-    print ',"categories":[';
-    print_pickup_export_cats();
-    print "]";
+    $data->categories = pickup_export_cats();
   }
   if (!empty($what['pickup_conf'])) {
-    print ',"pickup_conf":';
-    print_pickup_export_conf();
+    $data->pickup_conf = pickup_export_conf();
   }
   if (!empty($what['entrepot'])) {
-    print ',"entrepots":';
-    print_pickup_export_entrepots();
+    $data->entrepots = pickup_export_entrepots();
   }
-  print '}';
+
+  header('Content-disposition: attachment; filename=export.json');
+  header('Content-type: application/json');
+  print json_encode($data);
 }
 
-function print_pickup_export_cats() {
+function pickup_export_cats() {
   global $db;
   // We will export tags having active mobilecat
 
@@ -58,7 +57,8 @@ function print_pickup_export_cats() {
     throw new Error('Failed to fetch categories.');
   }
 
-  $first = true;
+  $result = [];
+
   foreach ($mobilecats as $mobilecat) {
     $catid = $mobilecat->fk_category;
     $cat = new Categorie($db);
@@ -81,40 +81,37 @@ function print_pickup_export_cats() {
       foreach ($way as $wcat) {
         $json['path'][] = $wcat->label;
       }
-      if (!$first) {
-        print ',';
-      } else {
-        $first = false;
-      }
-      print json_encode($json);
+      $result[] = $json;
     }
   }
+
+  return $result;
 }
 
-function print_pickup_export_conf() {
+function pickup_export_conf() {
   global $conf, $db;
   dol_include_once('/custom/pickup/lib/settings.php');
   $settings = getPickupSettings();
 
-  $data = [];
+  $data = new stdClass();
   foreach ($settings as $name => $setting) {
     if (!$setting['enabled']) { continue; }
     if ($name === 'PICKUP_DEFAULT_STOCK' && !empty($conf->global->$name)) {
       // Special case...
       $entrepot = new Entrepot($db);
       if ($entrepot->fetch($conf->global->$name) > 0) {
-        $data[$name] = $entrepot->ref;
+        $data->$name = $entrepot->ref;
       }
     } else {
-      $data[$name] = property_exists($conf->global, $name) ? $conf->global->$name : null;
+      $data->$name = property_exists($conf->global, $name) ? $conf->global->$name : null;
     }
   }
-  print json_encode([
-    'settings' => $data
-  ]);
+  $result = new stdClass();
+  $result->settings = $data;
+  return $result;
 }
 
-function print_pickup_export_entrepots() {
+function pickup_export_entrepots() {
   global $db;
   $entrepot = new Entrepot($db);
   $entrepots = array_merge($entrepot->list_array(1), $entrepot->list_array(0));
@@ -130,5 +127,5 @@ function print_pickup_export_entrepots() {
     }
     $result[] = $data;
   }
-  print json_encode($result);
+  return $result;
 }

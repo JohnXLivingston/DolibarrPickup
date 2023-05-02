@@ -108,8 +108,6 @@ if ($action === 'do_import' && empty($_SESSION['pickup_import_data'])) {
  * Actions
  */
 if ($action === 'export') {
-  header('Content-disposition: attachment; filename=export.json');
-  header('Content-type: application/json');
   print_pickup_export($importexport_what);
   exit;
 }
