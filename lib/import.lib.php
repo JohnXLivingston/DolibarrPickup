@@ -55,6 +55,9 @@ function pickup_import(&$json, $simulate, $what) {
     if (!empty($what['cat'])) {
       _pickup_import_cats($result, $data, $simulate);
     }
+    if (!empty($what['product'])) {
+      _pickup_import_products($result, $data, $simulate);
+    }
 
     $result['status'] = 'ok';
   } catch (Throwable $e) {
@@ -78,7 +81,7 @@ function _pickup_import_entrepots(&$result, &$data, $simulate) {
       if (substr($field, 0, 3) === 'fk_') {
         throw new Error('Seems the file to import contains foreign keys for entrepots, this is not supported');
       }
-      if (array_key_exists($field, $entrepot->fields)) {
+      if (property_exists($entrepot, $field)) {
         $fields_list[] = $field;
       }
     }
@@ -188,7 +191,7 @@ function _pickup_import_conf(&$result, &$data, $simulate) {
         continue;
       }
     }
-    
+
     if (empty($old_value) || $old_value !== $new_value) {
       if ($new_value === null) {
         $result['actions'][] = [
@@ -225,4 +228,151 @@ function _pickup_import_conf(&$result, &$data, $simulate) {
       ];
     }
   }
+}
+
+
+function _pickup_import_products(&$result, &$data, $simulate) {
+  global $db, $langs, $user;
+  $lines = empty($data->products) ? [] : $data->products;
+
+  $categorie_class = new Categorie($db);
+
+  foreach ($lines as $line) {
+    $ref = $line->ref;
+    if (empty($ref)) { continue; }
+
+    $product = new Product($db);
+    $fields_list = [];
+    foreach (get_object_vars($line) as $field => $val) {
+      if (substr($field, 0, 3) === 'fk_') {
+        throw new Error('Seems the file to import contains foreign keys for products, this is not supported');
+      }
+      if ($field === 'categories') { continue; } // will be done later.
+      if (array_key_exists($field, $product->fields)) {
+        $fields_list[] = $field;
+      }
+    }
+
+    $product_id = null;
+    if ($product->fetch(null, $ref) <= 0) {
+      // New product!
+      $result['actions'][] = [
+        'object_type' =>  $langs->transnoentities('Product'),
+        'object' => $ref,
+        'action' => 'CREATE',
+        'message' => implode(', ', $fields_list)
+      ];
+      if (!$simulate) {
+        $product = new Product($db);
+        foreach ($fields_list as $field) {
+          $product->$field = $line->$field;
+        }
+        if ($product->create($user) <= 0) {
+          throw new Error('Failed to create product.');
+        }
+        $product_id = $product->id;
+      }
+    } else {
+      // Update...
+      $product_id = $product->id;
+      $modified_fields = [];
+      foreach ($fields_list as $field) {
+        if ($field === 'ref') { continue; }
+        if ($product->$field === $line->$field) { continue; }
+        $modified_fields[] = $field;
+      }
+      if (count($modified_fields) === 0) {
+        $result['actions'][] = [
+          'object_type' =>  $langs->transnoentities('Product'),
+          'object' => $ref,
+          'action' => '-',
+          'message' => ''
+        ];
+      } else {
+        $result['actions'][] = [
+          'object_type' =>  $langs->transnoentities('Product'),
+          'object' => $ref,
+          'action' => 'UPDATE',
+          'message' => implode(', ', $modified_fields)
+        ];
+        if (!$simulate) {
+          foreach ($modified_fields as $field) {
+            $product->$field = $line->$field;
+          }
+          $product->update($product->id, $user);
+        }
+      }
+    }
+
+    // And now, product tags!
+    if (!property_exists($line, 'categories') || count($line->categories) === 0) { continue; }
+    $current_tags = empty($product_id) ? [] : $categorie_class->getListForItem($product_id, 'product');
+    $current_tags_ids = [];
+    if (is_array($current_tags)) {
+      foreach ($current_tags as $current_tag) {
+        $current_tags_ids[$current_tag['id']] = true;
+      }
+    }
+    foreach ($line->categories as $cat) {
+      $categorie = _fetch_categorie_from_path($cat->path);
+      if (!$categorie) {
+        $result['actions'][] = [
+          'object_type' =>  $langs->transnoentities('Product') .'/'. $langs->transnoentities('ProductsCategory'),
+          'object' => $ref,
+          'action' => 'FAILED',
+          'message' => 'Missing category '.implode('>', $cat->path),
+        ];
+      } else {
+        if (array_key_exists($categorie->id, $current_tags_ids)) {
+          $result['actions'][] = [
+            'object_type' =>  $langs->transnoentities('Product') .'/'. $langs->transnoentities('ProductsCategory'),
+            'object' => $ref,
+            'action' => '-',
+            'message' => implode('>', $cat->path),
+          ];
+        } else {
+          $result['actions'][] = [
+            'object_type' =>  $langs->transnoentities('Product') .'/'. $langs->transnoentities('ProductsCategory'),
+            'object' => $ref,
+            'action' => 'ADD',
+            'message' => implode('>', $cat->path)
+          ];
+          if (!$simulate) {
+            $categorie->add_type($product, 'product');
+          }
+        }
+      }
+    }
+
+  }
+}
+
+function _fetch_categorie_from_path($path) {
+  global $db;
+
+  $categorie_id = 0;
+
+  while ($cur_label = array_shift($path)) {
+    $sql = "SELECT c.rowid";
+    $sql.= " FROM ".MAIN_DB_PREFIX."categorie as c ";
+    $sql.= " WHERE c.entity IN (".getEntity('category').")";
+    $sql.= " AND c.type = 0"; // product
+    $sql.= " AND c.fk_parent = ".((int) $categorie_id);
+    $sql.= " AND c.label = '".$db->escape($cur_label)."'";
+
+    $resql = $db->query($sql);
+    if (!$resql || $db->num_rows($resql) <= 0) {
+      return null;
+    }
+    $obj = $db->fetch_object($resql);
+    $categorie_id = $obj->rowid;
+  }
+
+  if (empty($categorie_id)) { return null; }
+  $categorie = new Categorie($db);
+  if ($categorie->fetch($categorie_id) <= 0) {
+    return null;
+  }
+
+  return $categorie;
 }

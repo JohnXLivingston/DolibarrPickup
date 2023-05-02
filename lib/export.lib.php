@@ -153,8 +153,21 @@ function pickup_export_products() {
     $product = new Product($db);
     if ($product->fetch($id) <= 0) { continue; } // product deleted during the export?
     $data = new stdClass();
-    foreach (['ref', 'label', 'barcode', 'fk_barcode_type', 'note', 'note_public'] as $field) {
-      if (array_key_exists($field, $product->fields)) {
+    foreach ([
+      'ref', 'label', 'barcode', 'note', 'note_public',
+      'description',
+      // 'price', 'price_ttc', 'price_min', 'price_min_ttc', 'price_base_type',
+      'net_measure', 'net_measure_units',
+      'status', 'status_buy', 'status_batch',
+      'weight', 'weight_units',
+      'length', 'length_units',
+      'width', 'width_units',
+      'height', 'height_units',
+      'surface', 'surface_units',
+      'volume', 'volume_units',
+      'url', 'cost_price'
+    ] as $field) {
+      if (property_exists($product, $field)) {
         $data->$field = $product->$field;
       }
     }
