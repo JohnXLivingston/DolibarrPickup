@@ -169,6 +169,7 @@ function _pickup_import_conf(&$result, &$data, $simulate) {
 function _pickup_import_conf_settings(&$result, &$data, $simulate) {
   global $conf, $langs, $db;
   $lines = empty($data->pickup_conf) || empty($data->pickup_conf->settings) ? [] : $data->pickup_conf->settings;
+  if (empty($lines)) { return; }
 
   dol_include_once('/custom/pickup/lib/settings.php');
   $settings = getPickupSettings();
