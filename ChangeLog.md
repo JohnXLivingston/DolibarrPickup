@@ -20,6 +20,7 @@
 ### Corrections et changements mineurs
 
 * Paramètres du plugin: on sépare certains paramètres liés à la fiche produit.
+* Fix: l'action de suppression en masse de collectes ne fonctionnait pas.
 
 ## 2.1.0
 
