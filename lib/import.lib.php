@@ -452,7 +452,7 @@ function _fetch_categorie_from_path($path) {
  * Note: $classname must have a fetch method that accept a 2nd arg corresponding to the unique key to use.
  * Moreover, create and update methods must accept respectively 1 and 2 parameters.
  */
-function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $keyfield, $object_label, $create_only, $fields, $fk_fetch_methods = []) {
+function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $keyfield, $object_label, $create_only, $fields, $fk_fetch_methods = [], $lines_import = null) {
   global $db, $langs, $user;
   $lines = empty($datalist) ? [] : $datalist;
 
@@ -475,6 +475,7 @@ function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $ke
     $object = new $classname($db);
     $effective_fields_list = [];
     foreach (get_object_vars($line) as $field => $val) {
+      if (!in_array($field, $fields)) { continue; }
       if (substr($field, 0, 3) === 'fk_') {
         if (empty($fk_fetch_methods) || empty($fk_fetch_methods[$field])) {
           throw new Error('Seems the file to import contains foreign keys for entrepots, this is not supported');
@@ -510,14 +511,32 @@ function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $ke
       //     $ensure_value($field, $line->$field);
       //   }
       }
+      if (!empty($lines_import) && property_exists($line, 'lines')) {
+        _pickup_import_generic_lines(
+          $result,
+          $line->lines,
+          $simulate,
+          $object,
+          $lines_import->classname,
+          $lines_import->parent_fk_field,
+          $lines_import->object_label,
+          $create_only,
+          $lines_import->fields,
+          $lines_import->fk_fetch_methods
+        );
+      }
       continue;
+    }
+
+    if (!empty($lines_import)) {
+      throw new Error('Line import is only supported for create_only mode');
     }
 
     // Update...
     $modified_fields = [];
     foreach ($effective_fields_list as $field) {
       if ($field === $keyfield) { continue; } // never change the primary key
-      if ($ensure_value($field, $object->$field) === $ensure_value($field, $line->$field)) { continue; }
+      if ($ensure_value($field, $object->$field) == $ensure_value($field, $line->$field)) { continue; }
       $modified_fields[] = $field;
     }
     if (count($modified_fields) === 0) {
@@ -549,6 +568,65 @@ function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $ke
   }
 }
 
+function _pickup_import_generic_lines(&$result, &$datalist, $simulate, &$parent_object, $classname, $parent_fk_field, $object_label, $create_only, $fields, $fk_fetch_methods = []) {
+  if (!$create_only) {
+    throw new Error('Line import is only supported for create_only mode');
+  }
+  global $db, $langs, $user;
+  $lines = empty($datalist) ? [] : $datalist;
+
+  $ensure_value = function ($field, $val) use ($fk_fetch_methods) {
+    if (!array_key_exists($field, $fk_fetch_methods)) {
+      return $val;
+    }
+    if (empty($val)) { return null; }
+    $new_val = $fk_fetch_methods[$field]($val);
+    if (empty($new_val)) {
+      throw new Error('Cant find '.$field.' for '.$val);
+    }
+    return $new_val;
+  };
+
+  foreach ($lines as $line) {
+    $object = new $classname($db);
+    $effective_fields_list = [];
+    foreach (get_object_vars($line) as $field => $val) {
+      if (!in_array($field, $fields)) { continue; }
+      if (substr($field, 0, 3) === 'fk_') {
+        if (empty($fk_fetch_methods) || empty($fk_fetch_methods[$field])) {
+          throw new Error('Seems the file to import contains foreign keys for entrepots, this is not supported');
+        }
+      }
+      if (property_exists($object, $field)) {
+        $effective_fields_list[] = $field;
+      }
+    }
+
+    // New object!
+    $result['actions'][] = [
+      'object_type' =>  $object_label,
+      'object' => $ref,
+      'action' => 'CREATE',
+      'message' => implode(', ', $effective_fields_list)
+    ];
+    if (!$simulate) {
+      $object = new $classname($db);
+      $object->$parent_fk_field = $parent_object->id;
+      foreach ($effective_fields_list as $field) {
+        $object->$field = $ensure_value($field, $line->$field);
+      }
+      if ($object->create($user) <= 0) {
+        throw new Error('Failed to create '.$classname.'.');
+      }
+    }
+    // } else {
+    //   // just test $ensure_value to be sure everything is ok
+    //   foreach ($effective_fields_list as $field) {
+    //     $ensure_value($field, $line->$field);
+    //   }
+  }
+}
+
 function _pickup_import_socs(&$result, &$data, $simulate) {
   global $langs;
   return _pickup_import_generic(
@@ -575,7 +653,35 @@ function _pickup_import_socs(&$result, &$data, $simulate) {
 }
 
 function _pickup_import_pickups(&$result, &$data, $simulate) {
-  global $langs;
+  global $langs, $db;
+  $import_pickupline_infos = new stdClass();
+  $import_pickupline_infos->classname = 'PickupLine';
+  $import_pickupline_infos->parent_fk_field = 'fk_pickup';
+  $import_pickupline_infos->object_label = $langs->transnoentities('Pickup').' (line)';
+  $import_pickupline_infos->fields = [
+    'fk_product',
+		'description',
+		'qty',
+		'weight',
+		'weight_units',
+		'length',
+		'length_units',
+		'surface',
+		'surface_units',
+		'volume',
+		'volume_units',
+		'deee',
+		'deee_type',
+  ];
+  $import_pickupline_infos->fk_fetch_methods = [
+    'fk_product' => function ($ref) {
+      global $db;
+      $product = new Product($db);
+      if ($product->fetch(null, $ref) <= 0) { return null; }
+      return $product->id;
+    }
+  ];
+
   return _pickup_import_generic(
     $result, $data->pickups, $simulate,
     'Pickup', 'ref',
@@ -621,6 +727,7 @@ function _pickup_import_pickups(&$result, &$data, $simulate) {
         if (!$obj) { return null; }
         return $obj->rowid;
       }
-    ]
+    ],
+    $import_pickupline_infos
   );
 }
