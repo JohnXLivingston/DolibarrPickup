@@ -318,7 +318,7 @@ function _pickup_import_products(&$result, &$data, $simulate) {
         throw new Error('Seems the file to import contains foreign keys for products, this is not supported');
       }
       if ($field === 'categories') { continue; } // will be done later.
-      if (array_key_exists($field, $product->fields)) {
+      if (property_exists($product, $field)) {
         $fields_list[] = $field;
       }
     }
@@ -338,7 +338,7 @@ function _pickup_import_products(&$result, &$data, $simulate) {
           $product->$field = $line->$field;
         }
         if ($product->create($user) <= 0) {
-          throw new Error('Failed to create product.');
+          throw new Error('Failed to create product. '.implode('.', $product->errors ?? [ $product->error ]));
         }
         $product_id = $product->id;
       }
