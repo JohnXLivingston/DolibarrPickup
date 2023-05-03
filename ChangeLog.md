@@ -14,6 +14,7 @@
     * la liste des entrepots. Notes: ne prend pas en compte leur hiérarchie, les imports «à plat». N'importe pas les pays ou départements.
     * les fiches produits
     * les tiers clients
+    * les collectes (import uniquement)
     * Attention: ces imports/exports sont partiels, et ne sont pas à considérer comme fiables pour un environnement de production.
 
 ### Corrections et changements mineurs

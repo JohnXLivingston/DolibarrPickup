@@ -29,6 +29,8 @@ dol_include_once('/product/class/product.class.php');
 dol_include_once('/pickup/lib/import/cat.tree.class.php');
 dol_include_once('/product/stock/class/entrepot.class.php');
 dol_include_once('/societe/class/societe.class.php');
+dol_include_once('/pickup/class/pickup.class.php');
+dol_include_once('/pickup/class/pickupline.class.php');
 
 $langs->loadLangs(array('pickup@pickup', 'products', 'categories', 'stocks'));
 
@@ -61,6 +63,9 @@ function pickup_import(&$json, $simulate, $what) {
     }
     if (!empty($what['product'])) {
       _pickup_import_products($result, $data, $simulate);
+    }
+    if (!empty($what['pickup'])) {
+      _pickup_import_pickups($result, $data, $simulate);
     }
 
     $result['status'] = 'ok';
@@ -447,19 +452,33 @@ function _fetch_categorie_from_path($path) {
  * Note: $classname must have a fetch method that accept a 2nd arg corresponding to the unique key to use.
  * Moreover, create and update methods must accept respectively 1 and 2 parameters.
  */
-function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $keyfield, $object_label, $fields) {
+function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $keyfield, $object_label, $create_only, $fields, $fk_fetch_methods = []) {
   global $db, $langs, $user;
   $lines = empty($datalist) ? [] : $datalist;
 
+  $ensure_value = function ($field, $val) use ($fk_fetch_methods) {
+    if (!array_key_exists($field, $fk_fetch_methods)) {
+      return $val;
+    }
+    if (empty($val)) { return null; }
+    $new_val = $fk_fetch_methods[$field]($val);
+    if (empty($new_val)) {
+      throw new Error('Cant find '.$field.' for '.$val);
+    }
+    return $new_val;
+  };
+
   foreach ($lines as $line) {
     $ref = $line->$keyfield;
-    if (empty($ref)) { continue; }
+    if (!$create_only && empty($ref)) { continue; }
 
     $object = new $classname($db);
     $effective_fields_list = [];
     foreach (get_object_vars($line) as $field => $val) {
       if (substr($field, 0, 3) === 'fk_') {
-        throw new Error('Seems the file to import contains foreign keys for entrepots, this is not supported');
+        if (empty($fk_fetch_methods) || empty($fk_fetch_methods[$field])) {
+          throw new Error('Seems the file to import contains foreign keys for entrepots, this is not supported');
+        }
       }
       if (property_exists($object, $field)) {
         $effective_fields_list[] = $field;
@@ -469,7 +488,7 @@ function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $ke
       $effective_fields_list[] = $keyfield;
     }
 
-    if ($object->fetch(null, $ref) <= 0) {
+    if ($create_only || $object->fetch(null, $ref) <= 0) {
       // New object!
       $result['actions'][] = [
         'object_type' =>  $object_label,
@@ -480,11 +499,16 @@ function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $ke
       if (!$simulate) {
         $object = new $classname($db);
         foreach ($effective_fields_list as $field) {
-          $object->$field = $line->$field;
+          $object->$field = $ensure_value($field, $line->$field);
         }
         if ($object->create($user) <= 0) {
           throw new Error('Failed to create '.$classname.'.');
         }
+      // } else {
+      //   // just test $ensure_value to be sure everything is ok
+      //   foreach ($effective_fields_list as $field) {
+      //     $ensure_value($field, $line->$field);
+      //   }
       }
       continue;
     }
@@ -492,8 +516,8 @@ function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $ke
     // Update...
     $modified_fields = [];
     foreach ($effective_fields_list as $field) {
-      if ($field === $keyfield) { continue; }
-      if ($object->$field === $line->$field) { continue; }
+      if ($field === $keyfield) { continue; } // never change the primary key
+      if ($ensure_value($field, $object->$field) === $ensure_value($field, $line->$field)) { continue; }
       $modified_fields[] = $field;
     }
     if (count($modified_fields) === 0) {
@@ -513,9 +537,14 @@ function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $ke
     ];
     if (!$simulate) {
       foreach ($modified_fields as $field) {
-        $object->$field = $line->$field;
+        $object->$field = $ensure_value($field, $line->$field);
       }
       $object->update($object->id, $user);
+    // } else {
+      // // just test $ensure_value to be sure everything is ok
+      // foreach ($modified_fields as $field) {
+      //   $ensure_value($field, $line->$field);
+      // }
     }
   }
 }
@@ -526,6 +555,7 @@ function _pickup_import_socs(&$result, &$data, $simulate) {
     $result, $data->societes, $simulate,
     'Societe', 'name',
     $langs->transnoentities('Client'),
+    false,
     [
       'name',
       'name_alias',
@@ -540,6 +570,57 @@ function _pickup_import_socs(&$result, &$data, $simulate) {
       'forme_juridique_code',
       'typent_id',
       'fournisseur',
+    ]
+  );
+}
+
+function _pickup_import_pickups(&$result, &$data, $simulate) {
+  global $langs;
+  return _pickup_import_generic(
+    $result, $data->pickups, $simulate,
+    'Pickup', 'ref',
+    $langs->transnoentities('Pickup'),
+    true,
+    [
+      'ref',
+      'label',
+      'fk_soc',
+      'date_pickup',
+      'fk_pickup_type',
+      'description',
+      'date_creation',
+      'status',
+      'fk_entrepot',
+      'note_public',
+      'note_private'
+    ],
+    [
+      'fk_soc' => function ($ref) {
+        global $db;
+        $soc = new Societe($db);
+        if ($soc->fetch(null, $ref) <= 0) { return null; }
+        return $soc->id;
+      },
+      'fk_entrepot' => function ($ref) {
+        global $db;
+        $entrepot = new Entrepot($db);
+        if ($entrepot->fetch(null, $ref) <= 0) { return null; }
+        return $entrepot->id;
+      },
+      'fk_pickup_type' => function ($label) {
+        global $db, $conf;
+        $sql = "SELECT rowid ";
+        $sql .= " FROM ".MAIN_DB_PREFIX.'c_pickup_type ';
+        $sql .= " WHERE entity = '".$db->escape($conf->entity)."'";
+        $sql .= " AND label='".$db->escape($label)."'";
+        $resql = $db->query($sql);
+        if (!$resql) {
+          throw new Error('Failed to get pickup types');
+        }
+        $obj = $db->fetch_object($resql);
+        if (!$obj) { return null; }
+        return $obj->rowid;
+      }
     ]
   );
 }

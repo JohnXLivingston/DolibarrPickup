@@ -88,6 +88,10 @@ if (!empty($conf->global->PICKUP_IMPORTEXPORT_ALL)) {
       ],
       'product' => [
         'label' => $langs->transnoentities('Products')
+      ],
+      'pickup' => [
+        'label' => $langs->transnoentities('Pickups'),
+        'export' => false
       ]
     ]
   );
@@ -96,7 +100,12 @@ if (!empty($conf->global->PICKUP_IMPORTEXPORT_ALL)) {
 $action = GETPOST('action', 'aZ09') ?GETPOST('action', 'aZ09') : '';
 $importexport_what = [];
 $param_importexport_what = GETPOST('importexport_what', 'array');
-foreach ($conf_importexport_what as $what => $cw) {
+foreach ($conf_importexport_what as $what => $wc) {
+  if ($action === 'export') {
+    if (array_key_exists('export', $wc) && !$wc['export']) { continue; }
+  } elseif ($action === 'import' || $action === 'doimport') {
+    if (array_key_exists('import', $wc) && !$wc['import']) { continue; }
+  }
   if (in_array($what, $param_importexport_what)) {
     $importexport_what[$what] = true;
   }
@@ -224,6 +233,7 @@ if ($action !== 'import' && $action !== 'doimport') {
   print ' <td width="110">'.$langs->trans('PickupExport').'</td>';
   print ' <td>';
   foreach ($conf_importexport_what as $what => $wc) {
+    if (array_key_exists('export', $wc) && !$wc['export']) { continue; }
     print '  <label>';
     print '    <input type="checkbox" '.($wc['default_checked'] ? 'checked="checked"' : '').' name="importexport_what[]" value="'.htmlspecialchars($what).'">';
     print '    ' . htmlspecialchars($wc['label']);
@@ -247,6 +257,7 @@ if ($action !== 'import' && $action !== 'doimport') {
   print ' <td width="110">'.$langs->trans('PickupImport').'</td>';
   print ' <td>';
   foreach ($conf_importexport_what as $what => $wc) {
+    if (array_key_exists('import', $wc) && !$wc['import']) { continue; }
     print '  <label>';
     print '    <input type="checkbox" '.($wc['default_checked'] ? 'checked="checked"' : '').' name="importexport_what[]" value="'.htmlspecialchars($what).'">';
     print '    ' . htmlspecialchars($wc['label']);
