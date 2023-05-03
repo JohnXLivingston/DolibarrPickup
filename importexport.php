@@ -83,6 +83,9 @@ if (!empty($conf->global->PICKUP_IMPORTEXPORT_ALL)) {
       'entrepot' => [
         'label' => $langs->transnoentities('Warehouses')
       ],
+      'societe' => [
+        'label' => $langs->transnoentities('Clients')
+      ],
       'product' => [
         'label' => $langs->transnoentities('Products')
       ]

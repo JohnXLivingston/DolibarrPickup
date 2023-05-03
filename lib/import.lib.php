@@ -28,6 +28,7 @@ dol_include_once('/pickup/class/mobilecat.class.php');
 dol_include_once('/product/class/product.class.php');
 dol_include_once('/pickup/lib/import/cat.tree.class.php');
 dol_include_once('/product/stock/class/entrepot.class.php');
+dol_include_once('/societe/class/societe.class.php');
 
 $langs->loadLangs(array('pickup@pickup', 'products', 'categories', 'stocks'));
 
@@ -54,6 +55,9 @@ function pickup_import(&$json, $simulate, $what) {
     // Then data... (order is important, some data depends on others)
     if (!empty($what['cat'])) {
       _pickup_import_cats($result, $data, $simulate);
+    }
+    if (!empty($what['societe'])) {
+      _pickup_import_socs($result, $data, $simulate);
     }
     if (!empty($what['product'])) {
       _pickup_import_products($result, $data, $simulate);
@@ -436,4 +440,106 @@ function _fetch_categorie_from_path($path) {
   }
 
   return $categorie;
+}
+
+/**
+ * Import generic objects.
+ * Note: $classname must have a fetch method that accept a 2nd arg corresponding to the unique key to use.
+ * Moreover, create and update methods must accept respectively 1 and 2 parameters.
+ */
+function _pickup_import_generic(&$result, &$datalist, $simulate, $classname, $keyfield, $object_label, $fields) {
+  global $db, $langs, $user;
+  $lines = empty($datalist) ? [] : $datalist;
+
+  foreach ($lines as $line) {
+    $ref = $line->$keyfield;
+    if (empty($ref)) { continue; }
+
+    $object = new $classname($db);
+    $effective_fields_list = [];
+    foreach (get_object_vars($line) as $field => $val) {
+      if (substr($field, 0, 3) === 'fk_') {
+        throw new Error('Seems the file to import contains foreign keys for entrepots, this is not supported');
+      }
+      if (property_exists($object, $field)) {
+        $effective_fields_list[] = $field;
+      }
+    }
+    if (!in_array($keyfield, $effective_fields_list)) {
+      $effective_fields_list[] = $keyfield;
+    }
+
+    if ($object->fetch(null, $ref) <= 0) {
+      // New object!
+      $result['actions'][] = [
+        'object_type' =>  $object_label,
+        'object' => $ref,
+        'action' => 'CREATE',
+        'message' => implode(', ', $effective_fields_list)
+      ];
+      if (!$simulate) {
+        $object = new $classname($db);
+        foreach ($effective_fields_list as $field) {
+          $object->$field = $line->$field;
+        }
+        if ($object->create($user) <= 0) {
+          throw new Error('Failed to create '.$classname.'.');
+        }
+      }
+      continue;
+    }
+
+    // Update...
+    $modified_fields = [];
+    foreach ($effective_fields_list as $field) {
+      if ($field === $keyfield) { continue; }
+      if ($object->$field === $line->$field) { continue; }
+      $modified_fields[] = $field;
+    }
+    if (count($modified_fields) === 0) {
+      $result['actions'][] = [
+        'object_type' =>  $object_label,
+        'object' => $ref,
+        'action' => '-',
+        'message' => ''
+      ];
+      continue;
+    }
+    $result['actions'][] = [
+      'object_type' =>  $object_label,
+      'object' => $ref,
+      'action' => 'UPDATE',
+      'message' => implode(', ', $modified_fields)
+    ];
+    if (!$simulate) {
+      foreach ($modified_fields as $field) {
+        $object->$field = $line->$field;
+      }
+      $object->update($object->id, $user);
+    }
+  }
+}
+
+function _pickup_import_socs(&$result, &$data, $simulate) {
+  global $langs;
+  return _pickup_import_generic(
+    $result, $data->societes, $simulate,
+    'Societe', 'name',
+    $langs->transnoentities('Client'),
+    [
+      'name',
+      'name_alias',
+      'country_id',
+      'address',
+      'zip',
+      'town',
+      'email',
+      'phone',
+      'client',
+      'code_client',
+      'forme_juridique_code',
+      'typent_id',
+      'fournisseur',
+    ]
+  );
 }

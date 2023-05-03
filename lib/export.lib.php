@@ -26,6 +26,7 @@ dol_include_once('/categories/class/categorie.class.php');
 dol_include_once('/product/stock/class/entrepot.class.php');
 dol_include_once('/pickup/class/mobilecat.class.php');
 dol_include_once('/product/class/product.class.php');
+dol_include_once('/societe/class/societe.class.php');
 
 
 function print_pickup_export($what) {
@@ -41,6 +42,9 @@ function print_pickup_export($what) {
   if (!empty($what['entrepot'])) {
     $data->entrepots = pickup_export_entrepots();
   }
+  if (!empty($what['societe'])) {
+    $data->societes = pickup_export_socs();
+  }
   if (!empty($what['product'])) {
     $data->products = pickup_export_products();
   }
@@ -48,6 +52,36 @@ function print_pickup_export($what) {
   header('Content-disposition: attachment; filename=export.json');
   header('Content-type: application/json');
   print json_encode($data);
+}
+
+/**
+ * Export generic objects.
+ * Note: the fetch method must accept an ID as unique parameter.
+ * And the sql statement must have a "rowid" column.
+ */
+function pickup_export_generic($classname, $sql, $fields) {
+  global $db;
+  $object = new $classname($db);
+
+  $result = [];
+
+  $resql = $db->query($sql);
+  if (!$resql) {
+    throw new Error('Failed getting '.$classname.' list: '.$db->lasterror());
+  }
+
+  while ($obj = $db->fetch_object($resql)) {
+    $object = new $classname($db);
+    if ($object->fetch($obj->rowid) <= 0) { continue; }
+    $data = new stdClass();
+    foreach ($fields as $field) {
+      if (property_exists($object, $field)) {
+        $data->$field = $object->$field;
+      }
+    }
+    $result[] = $data;
+  }
+  return $result;
 }
 
 function pickup_export_cats() {
@@ -151,6 +185,33 @@ function pickup_export_entrepots() {
     $result[] = $data;
   }
   return $result;
+}
+
+function pickup_export_socs() {
+  global $db;
+
+  $result = [];
+
+  $sql = 'SELECT rowid FROM '.MAIN_DB_PREFIX.'societe as p';
+  $sql.= ' WHERE p.entity IN ('.getEntity('societe').')';
+  $sql.= ' AND client IN (1,3)'; // client or client/prospect
+  $sql.= $db->order('rowid', 'ASC');
+
+  return pickup_export_generic('Societe', $sql, [
+    'name',
+    'name_alias',
+    'country_id',
+    'address',
+    'zip',
+    'town',
+    'email',
+    'phone',
+    'client',
+    'code_client',
+    'forme_juridique_code',
+    'typent_id',
+    'fournisseur'
+  ]);
 }
 
 function pickup_export_products() {
