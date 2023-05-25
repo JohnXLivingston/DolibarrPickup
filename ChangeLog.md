@@ -1,5 +1,9 @@
 # DolibarrPickup
 
+## 2.2.1
+
+* Fix création de produits depuis l'application mobile.
+
 ## 2.2.0
 
 ### Nouvelles fonctionnalités

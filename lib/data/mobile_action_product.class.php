@@ -223,7 +223,7 @@ class DataMobileActionProduct extends DataMobileAction {
       $save_product = true;
 
       $product->type = Product::TYPE_PRODUCT;
-      if (!empty($conf->global->PICKUP_PRODUCT_REF_AUTO)) {
+      if (empty($conf->global->PICKUP_PRODUCT_REF_AUTO)) {
         $product->ref = GETPOST('product_ref');
         $product_label = GETPOST('product_label');
         if (empty($product_label)) {
