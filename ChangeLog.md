@@ -1,5 +1,9 @@
 # DolibarrPickup
 
+## 2.2.2
+
+* Fix dolibarr >= 17: sélection des produits pour les collectes et les pbatch.
+
 ## 2.2.1
 
 * Fix création de produits depuis l'application mobile.
