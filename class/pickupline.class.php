@@ -27,6 +27,14 @@ require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
 dol_include_once('/pickup/class/pickup.class.php');
 dol_include_once('/pickup/class/pbatch.class.php');
 
+// Note: starting with Dolibarr 17, there was a syntax change...
+// Has it is used in a static attribute declaration, we can't use variables... This is why we use a constant:
+define('_DOLIPICKUP_HACK_PICKUPLINE_PRODUCT_TYPE',
+	(defined('DOL_VERSION') && intval(DOL_VERSION) >= 17)
+	? 'integer:Product:product/class/product.class.php:1:(fk_product_type:=:0)'
+	: 'integer:Product:product/class/product.class.php:1:(fk_product_type=0)'
+);
+
 /**
  * Class for PickupLine
  */
@@ -96,7 +104,8 @@ class PickupLine extends CommonObjectLine
 		'fk_pickup' => array('type'=>'integer:Pickup:custom/pickup/class/pickup.class.php', 'label'=>'Pickup', 'enabled'=>'1', 'position'=>15, 'notnull'=>1, 'visible'=>-1, 'index'=>1, 'foreignkey'=>'pickup_pickup.rowid',),
 		'fk_product' => array(
 			// FIXME: seems that filters do not work (dolibarr 12.0.4)
-			'type'=>'integer:Product:product/class/product.class.php:1:(fk_product_type=0)',
+			// Note: starting with Dolibarr 17, the syntax changed...
+			'type'=> _DOLIPICKUP_HACK_PICKUPLINE_PRODUCT_TYPE,
 			'label'=>'Product', 'enabled'=>'1', 'position'=>32, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'foreignkey'=>'product.rowid',
 		),
 		'description' => array('type'=>'text', 'label'=>'Description', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>-1,),

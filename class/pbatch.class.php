@@ -28,6 +28,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
 //require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
 //require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
 
+// Note: starting with Dolibarr 17, there was a syntax change...
+// Has it is used in a static attribute declaration, we can't use variables... This is why we use a constant:
+define('_DOLIPICKUP_HACK_PBATCH_PRODUCT_TYPE',
+	(defined('DOL_VERSION') && intval(DOL_VERSION) >= 17)
+	? 'integer:Product:product/class/product.class.php:1:(fk_product_type:=:0)'
+	: 'integer:Product:product/class/product.class.php:1:(fk_product_type=0)'
+);
+
+
 /**
  * Class for PBatch: Pickup Batch numbering system.
  * This table is used to generate unique (or not) batch number.
@@ -117,7 +126,7 @@ class PBatch extends CommonObject
 		'rowid'         => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>1, 'visible'=>-2, 'noteditable'=>1, 'notnull'=> 1, 'index'=>1, 'position'=>1, 'comment'=>'Id', 'css'=>'left'),
 		'fk_product' => array(
 			// FIXME: seems that filters do not work (dolibarr 12.0.4)
-			'type'=>'integer:Product:product/class/product.class.php:1:(fk_product_type=0)',
+			'type'=>_DOLIPICKUP_HACK_PBATCH_PRODUCT_TYPE,
 			'label'=>'Product', 'enabled'=>'1', 'position'=>2, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'foreignkey'=>'product.rowid',
 		),
 		'fk_pickupline' => array(
