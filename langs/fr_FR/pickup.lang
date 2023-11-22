@@ -158,6 +158,8 @@ PickupIncludeInStockMovementNotFoundError = Une erreur a eu lieu, le mouvement n
 PickupIncludeInStockWrongBatchNumberNumber = Le nombre de numéros de lot/série ne correspond pas à la quantité
 PickupActionSign = Valider signature
 ConfirmPickupActionSign = Êtes-vous sûr de vouloir passer cette collecte en statut «Signée» ?
+
+PickupActionScanLabels = Scanner des étiquettes
 #
 
 PickupUnitValue = Unitaire
@@ -225,3 +227,5 @@ PickupImportExportTitle = Import / Export
 PickupImportExportHelp = Cet écran permet d'exporter/importer des données. À utiliser avec précautions.
 PickupExport = Exporter
 PickupImport = Importer
+
+PickupScanLabelsLineAdded = Lignes ajoutées

@@ -2,6 +2,11 @@
 
 ## 2.3.0 (Not Released Yet)
 
+### Nouvelles fonctionnalités
+
+* Ajout de bouton «scanner les étiquettes» sur certaines objets (#90):
+  * ...
+
 ### Corrections et changements mineurs
 
 * Fix: la suppression d'une collecte doit supprimer les "pbatch" liés aux lignes (Fix #101).

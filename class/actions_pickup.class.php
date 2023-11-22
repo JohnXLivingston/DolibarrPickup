@@ -94,6 +94,34 @@ class ActionsPickup
 	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
 	 */
 	public function doActions($parameters, &$object, &$action, $hookmanager) {
+		if ($action === 'pickupscanlabels_exec') {
+			if (!empty(GETPOST('cancel', 'alpha'))) {
+				$action = '';
+				return 0;
+			}
+			// On est dans un formulaire quelconque (propal, facture, ...) qui gère le bouton "scanner les étiquettes".
+			dol_include_once('/pickup/lib/scan_labels_action.lib.php');
+			if (scan_labels_rights_ok($object, empty($parameters) ? null : $parameters['currentcontext'])) {
+				// On remplace l'écran par défaut par le formulaire pour scanner les étiquettes.
+				$result = print_scan_labels_exec_action($object);
+				if ($result === true) {
+					// save ok, we return to card.
+					header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+					exit;
+				}
+				if ($result !== true) {
+					if (is_array($result)) {
+						$this->errors = array_merge($this->errors, $result);
+					} else {
+						$this->errors[] = $result;
+					}
+					// We must also change the action to display the form again.
+					$action = 'pickupscanlabels';
+					return -1;
+				}
+			}
+			return 0;
+		}
 		if ($object->table_element != 'pickup_pickup') {
 			return 0;
 		}
@@ -933,6 +961,15 @@ class ActionsPickup
 	}
 
 	public function formAddObjectLine($parameters, &$object, &$action) {
+		if ($action === 'pickupscanlabels') {
+			// On est dans un formulaire quelconque (propal, facture, ...) qui gère le bouton "scanner les étiquettes".
+			dol_include_once('/pickup/lib/scan_labels_action.lib.php');
+			if (scan_labels_rights_ok($object, empty($parameters) ? null : $parameters['currentcontext'])) {
+				// On remplace l'écran par défaut par le formulaire pour scanner les étiquettes.
+				print_scan_labels_add_object_line($object);
+				return 1;
+			}
+		}
 		if ($parameters['table_element_line'] != 'pickup_pickupline') {
 			return 0;
 		}
@@ -949,6 +986,12 @@ class ActionsPickup
 
 	public function addMoreActionsButtons($parameters, &$object, &$action) {
 		global $langs, $conf;
+
+		// Bouton "scanner les étiquettes": il apparait sur plusieurs fiches.
+		// On appelle _PickupPrintScanLabelsButton qui fera le tri.
+		if ($this->_PickupPrintScanLabelsButton($parameters, $object, $action) > 0) {
+			return 1;
+		}
 
 		if ($object->table_element === 'pickup_pickup') {
 			return $this->_PickupAddMoreActionsButtons($parameters, $object, $action);
@@ -1101,6 +1144,27 @@ class ActionsPickup
 			}
 		}
 		$db->free($resql);
+	}
+
+	protected function _PickupPrintScanLabelsButton($parameters, &$object, &$action) {
+		global $langs;
+
+		dol_include_once('/pickup/lib/scan_labels_action.lib.php');
+		if (!scan_labels_rights_ok($object, empty($parameters) ? null : $parameters['currentcontext'])) {
+			return;
+		}
+
+		if ($action === 'pickupscanlabels') {
+			// on enlève les autres boutons.
+			return 1;
+		}
+
+		print dolGetButtonAction(
+			'',
+			$langs->trans('PickupActionScanLabels'),
+			'default',
+			$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=pickupscanlabels&token='.newToken()
+		);
 	}
 
 	public function formConfirm($parameters, &$object, &$action) {
