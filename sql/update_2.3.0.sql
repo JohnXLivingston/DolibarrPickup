@@ -11,13 +11,10 @@
 -- GNU Affero General Public License for more details.
 --
 -- You should have received a copy of the GNU Affero General Public License
--- along with this program.  If not, see http://www.gnu.org/licenses/.
+-- along with this program.  If not, see https://www.gnu.org/licenses/.
 
-ALTER TABLE llx_pickup_batch ADD INDEX idx_pickup_batch_rowid (rowid);
-ALTER TABLE llx_pickup_batch ADD INDEX idx_pickup_batch_batch_number (batch_number);
-ALTER TABLE llx_pickup_batch ADD INDEX idx_pickup_batch_product_pickupline (fk_product, fk_pickupline);
 
-ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
-ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_user_modif FOREIGN KEY (fk_user_modif) REFERENCES llx_user(rowid);
-ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_product FOREIGN KEY (fk_product) REFERENCES llx_product(rowid);
+-- We must add a 'ON DELETE SET NULL' on llx_pickup_batch_fk_pickupline constraint.
+-- Unfortunately, to do this we must first drop, then recreate.
+ALTER TABLE llx_pickup_batch DROP CONSTRAINT llx_pickup_batch_fk_pickupline;
 ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_pickupline FOREIGN KEY (fk_pickupline) REFERENCES llx_pickup_pickupline(rowid) ON DELETE SET NULL;

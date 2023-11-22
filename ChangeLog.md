@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## 2.3.0 (Not Released Yet)
+
+### Corrections et changements mineurs
+
+* Fix: la suppression d'une colecte doit détacher les "pbatch" liés aux lignes (Fix #101).
+
 ## 2.2.2
 
 * Fix dolibarr >= 17: sélection des produits pour les collectes et les pbatch.

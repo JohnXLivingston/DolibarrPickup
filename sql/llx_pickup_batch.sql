@@ -20,8 +20,9 @@
 CREATE TABLE llx_pickup_batch(
 	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
 	fk_product integer NOT NULL,
-  -- the pickupline attached to this batch number (could be null when the number was not generated from a pickup)
-	-- fk_pickupline == NULL can be used when generating a non-unique batch_number per product
+  -- the pickupline attached to this batch number (could be null when the number was not generated from a pickup).
+	-- fk_pickupline == NULL can be used when generating a non-unique batch_number per product.
+	-- fk_pickupline can also be null when the pickupline was deleted (constraint 'ON DELETE SET NULL').
 	fk_pickupline integer DEFAULT NULL,
 	batch_number varchar(30) NOT NULL,
 	tms timestamp NOT NULL, 
