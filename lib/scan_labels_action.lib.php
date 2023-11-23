@@ -123,13 +123,19 @@ function print_scan_labels_exec_action(&$object) {
 
     // Qty: if product has unique batch number => just one. Else scan_count.
     $qty = $product->hasbatch() && $product->status_batch == 2 ? 1 : $scan_count;
+    // line label: product label + batch number, if batch_status=unique!
+    $line_label = ''; // default case: dolibarr will handle
+    if ($productlot && $product->hasbatch() && $product->status_batch == 2) {
+      $line_label = $product->label . ' ' . $productlot->batch;
+    }
 
     switch ($object->table_element) {
       case 'propal':
         // FIXME: use location price when the object is a location.
         $price = $product->getSellPrice($mysoc, $object->thirdparty);
+
         $object->addline(
-          '', // desc
+          '',
           $price['pu_ht'],
           $qty,
           $price['tva_tx'],
@@ -146,7 +152,7 @@ function print_scan_labels_exec_action(&$object) {
           0, // fk_parent_line
           0, // $fk_fournprice = 0
           0, // $pa_ht
-          '', // $label
+          $line_label, // $label
           '', // start date
           '', // end date
           0, // array_options		extrafields array
