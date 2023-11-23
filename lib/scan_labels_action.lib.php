@@ -37,7 +37,8 @@ function scan_labels_rights_ok($object, $currentcontext) {
   $table_element = null;
   $context = null;
   foreach ([
-    'propalcard' => 'propal'
+    'propalcard' => 'propal',
+    'ordercard' => 'commande'
   ] as $tmp_context => $tmp_table_element) {
     if (
       empty($currentcontext)
@@ -58,10 +59,19 @@ function scan_labels_rights_ok($object, $currentcontext) {
   switch ($object->table_element) {
     case 'propal':
       dol_include_once('/comm/propal/class/propal.class.php');
-      if ($object->status !== Propal::STATUS_DRAFT) {
+      if ($object->status != Propal::STATUS_DRAFT) {
         return false;
       }
       if (!$user->hasRight('propal', 'creer')) {
+        return false;
+      }
+      break;
+    case 'commande':
+      dol_include_once('/commande/class/commande.class.php');
+      if ($object->status != Commande::STATUS_DRAFT) { // attention, status=string, STATUS_DRAFT=integer
+        return false;
+      }
+      if (!$user->hasRight('commande', 'creer')) {
         return false;
       }
       break;
@@ -158,6 +168,37 @@ function print_scan_labels_exec_action(&$object) {
           0, // array_options		extrafields array
           $object->fk_unit // fk_unit 			Code of the unit to use. Null to use the default one
           // ... $origin = '', $origin_id = 0, $pu_ht_devise = 0, $fk_remise_except = 0, $noupdateafterinsertline = 0
+        );
+        break;
+      case 'commande':
+        // FIXME: use location price when the object is a location.
+        $price = $product->getSellPrice($mysoc, $object->thirdparty);
+
+        $object->addline(
+          '',
+          $price['pu_ht'],
+          $qty,
+          $price['tva_tx'],
+          null, // $txlocaltax1 Local tax 1 rate (deprecated, use instead txtva with code inside)
+          null, // $txlocaltax2
+          $product->id,
+          0, // remise_percent
+          0, // $info_bits
+          0, // fk_remise_except
+          $price['price_base_type'], // $price_base_type	HT or TTC
+          $price['pu_ttc'],
+          '', // start date
+          '', // end date
+          0, // type (product = 0)
+          -1, // rang (position of line)
+          0, // special_code
+          0, // fk_parent_line
+          null, // $fk_fournprice = null
+          0, // $pa_ht
+          $line_label, // $label
+          0, // array_options		extrafields array
+          $object->fk_unit // fk_unit 			Code of the unit to use. Null to use the default one
+          // ... $origin_id = 0, $pu_ht_devise = 0, $ref_ext = '', $noupdateafterinsertline = 0)
         );
         break;
       default:

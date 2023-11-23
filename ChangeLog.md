@@ -5,7 +5,8 @@
 ### Nouvelles fonctionnalités
 
 * Ajout de bouton «scanner les étiquettes» sur certaines objets (#90):
-  * ...
+  * propositions commerciales
+  * commandes
 
 ### Corrections et changements mineurs
 
