@@ -7,6 +7,7 @@
 * Ajout de bouton «scanner les étiquettes» sur certaines objets (#90):
   * propositions commerciales
   * commandes
+  * factures
 
 ### Corrections et changements mineurs
 

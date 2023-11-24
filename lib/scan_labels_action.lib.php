@@ -38,7 +38,8 @@ function scan_labels_rights_ok($object, $currentcontext) {
   $context = null;
   foreach ([
     'propalcard' => 'propal',
-    'ordercard' => 'commande'
+    'ordercard' => 'commande',
+    'invoicecard' => 'facture'
   ] as $tmp_context => $tmp_table_element) {
     if (
       empty($currentcontext)
@@ -72,6 +73,15 @@ function scan_labels_rights_ok($object, $currentcontext) {
         return false;
       }
       if (!$user->hasRight('commande', 'creer')) {
+        return false;
+      }
+      break;
+    case 'facture':
+      dol_include_once('/compta/facture/facture.class.php');
+      if ($object->status != Facture::STATUS_DRAFT) {
+        return false;
+      }
+      if (!$user->hasRight('facture', 'creer')) {
         return false;
       }
       break;
@@ -122,6 +132,14 @@ function print_scan_labels_exec_action(&$object) {
   $values = preg_split('/\r\n|\r|\n/', $search);
   $search_infos = search_printable_label($values);
 
+  if (
+    property_exists($object, 'thirdparty')
+    && empty($object->thirdparty)
+    && method_exists($object, 'fetch_thirdparty')
+  ) {
+    $object->fetch_thirdparty();
+  }
+
   $errors = [];
 
   $db->begin();
@@ -145,7 +163,7 @@ function print_scan_labels_exec_action(&$object) {
         $price = $product->getSellPrice($mysoc, $object->thirdparty);
 
         $object->addline(
-          '',
+          '', // desc
           $price['pu_ht'],
           $qty,
           $price['tva_tx'],
@@ -175,7 +193,7 @@ function print_scan_labels_exec_action(&$object) {
         $price = $product->getSellPrice($mysoc, $object->thirdparty);
 
         $object->addline(
-          '',
+          '', // desc
           $price['pu_ht'],
           $qty,
           $price['tva_tx'],
@@ -199,6 +217,39 @@ function print_scan_labels_exec_action(&$object) {
           0, // array_options		extrafields array
           $object->fk_unit // fk_unit 			Code of the unit to use. Null to use the default one
           // ... $origin_id = 0, $pu_ht_devise = 0, $ref_ext = '', $noupdateafterinsertline = 0)
+        );
+        break;
+      case 'facture':
+        // FIXME: use location price when the object is a location.
+        $price = $product->getSellPrice($mysoc, $object->thirdparty);
+        // FIXME: 'label' parameter is deprecated...
+
+        $object->addline(
+          '', // desc
+          $price['pu_ht'],
+          $qty,
+          $price['tva_tx'],
+          0, // $txlocaltax1 Local tax 1 rate (deprecated, use instead txtva with code inside)
+          0, // $txlocaltax2
+          $product->id,
+          0, // remise_percent
+          '', // start date
+          '', // end date
+          0, // $ventil Code of dispatching into accountancy
+          0, // $info_bits
+          0, // fk_remise_except
+          $price['price_base_type'], // $price_base_type	HT or TTC
+          $price['pu_ttc'],
+          0, // type (product = 0)
+          -1, // rang (position of line)
+          0, // special_code
+          '', // $origin = '',
+          0, // $origin_id = 0,
+          0, // $fk_parent_line = 0,
+          null, // $fk_fournprice = null,
+          0, // $pa_ht = 0,
+          $line_label, // label
+          // .. $array_options = 0, $situation_percent = 100, $fk_prev_id = 0, $fk_unit = null, $pu_ht_devise = 0, $ref_ext = '', $noupdateafterinsertline = 0
         );
         break;
       default:
