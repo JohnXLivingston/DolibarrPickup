@@ -94,6 +94,34 @@ class ActionsPickup
 	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
 	 */
 	public function doActions($parameters, &$object, &$action, $hookmanager) {
+		if ($action === 'pickupscanlabels_exec') {
+			if (!empty(GETPOST('cancel', 'alpha'))) {
+				$action = '';
+				return 0;
+			}
+			// On est dans un formulaire quelconque (propal, facture, ...) qui gère le bouton "scanner les étiquettes".
+			dol_include_once('/pickup/lib/scan_labels_action.lib.php');
+			if (scan_labels_rights_ok($object, empty($parameters) ? null : $parameters['currentcontext'])) {
+				// On remplace l'écran par défaut par le formulaire pour scanner les étiquettes.
+				$result = print_scan_labels_exec_action($object);
+				if ($result === true) {
+					// save ok, we return to card.
+					header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+					exit;
+				}
+				if ($result !== true) {
+					if (is_array($result)) {
+						$this->errors = array_merge($this->errors, $result);
+					} else {
+						$this->errors[] = $result;
+					}
+					// We must also change the action to display the form again.
+					$action = 'pickupscanlabels';
+					return -1;
+				}
+			}
+			return 0;
+		}
 		if ($object->table_element != 'pickup_pickup') {
 			return 0;
 		}
@@ -878,6 +906,68 @@ class ActionsPickup
 	}
 
 	public function printObjectLine($parameters, &$object, &$action) {
+		global $db;
+
+		// Cas particulier: Pour les expéditions en cours de création, on ajoute du code Front-End
+		$current_context = empty($parameters) ? null : $parameters['currentcontext'];
+		if ($current_context === 'expeditioncard' && $action === 'create') {
+			// Chose ennuyeuse: on n'a pas de hook pour ajouter le formulaire au bon endroit...
+			// On va faire tout ça par Javascript.
+			// Ce hook est appelé pour chaque ligne.
+			// J'ai besoin de différencier le premier appel des autres.
+			global $pickup_hack_expedition_first_line_done;
+			if ($pickup_hack_expedition_first_line_done !== true) {
+				$pickup_hack_expedition_first_line_done = true;
+				dol_include_once('/pickup/lib/scan_labels_action.lib.php');
+				if (front_end_scan_labels_rights_ok($object, $current_context, $action)) {
+					?><script>
+						window.dolibarrPickup.addScanLabelsToExpeditionForm('#qtyasked<?php echo $parameters['i'] ?>');
+					</script><?php
+				} else {
+					return 0;
+				}
+			}
+
+			// Pour chaque ligne, on cherche les product_batch, et on rempli une variable JSON.
+			// Le but est que le frontend puisse, à partir d'un numéro de lot, retrouver la ligne à affecter.
+			// Note: on remonte tout, peu importe l'entrepot. Le front-end fera le tri.
+			$data = [];
+			$line = $parameters['line'];
+			if (!empty($line) && $line->fk_product > 0) {
+				$prefix = property_exists($db, 'prefix') ? $db->prefix : MAIN_DB_PREFIX;
+				$sql = "SELECT PRODUCT.tobatch as status_batch, BATCH.batch as batch, BATCH.rowid as batch_rowid";
+				$sql.= " FROM ".$prefix."product AS PRODUCT";
+				$sql.= " LEFT JOIN ".$prefix."product_stock AS STOCK ";
+				$sql.= " ON PRODUCT.rowid = STOCK.fk_product ";
+				$sql.= " LEFT JOIN ".$prefix."product_batch AS BATCH ";
+				$sql.= " ON STOCK.rowid = BATCH.fk_product_stock ";
+				$sql.= " WHERE PRODUCT.rowid = '".$db->sanitize($db->escape($line->fk_product))."' ";
+				$sql.= " AND BATCH.qty > 0 ";
+				$resql = $db->query($sql);
+				if ($resql) {
+					for ($i = 0; $i < $db->num_rows($resql); $i++) {
+						$obj = $db->fetch_object($resql);
+						if (empty($obj->batch)) { continue; }
+
+						// Note: un même lot peut être dans plusieurs entrepots !
+						$b = ''.$obj->batch;
+						if (!array_key_exists($b, $data)) {
+							$data[$b] = [
+								'productBatchId' => [],
+								'statusBatch' => ''.$obj->status_batch
+							];
+						}
+						$data[$b]['productBatchId'][] = 0+$obj->batch_rowid;
+					}
+				}
+			}
+
+			?><script>
+				window.dolibarrPickup.fillBatchInfos(<?php echo json_encode($data) ?>);
+			</script><?php
+			return 0;
+		}
+
 		if ($parameters['table_element_line'] != 'pickup_pickupline') {
 			return 0;
 		}
@@ -933,6 +1023,15 @@ class ActionsPickup
 	}
 
 	public function formAddObjectLine($parameters, &$object, &$action) {
+		if ($action === 'pickupscanlabels') {
+			// On est dans un formulaire quelconque (propal, facture, ...) qui gère le bouton "scanner les étiquettes".
+			dol_include_once('/pickup/lib/scan_labels_action.lib.php');
+			if (scan_labels_rights_ok($object, empty($parameters) ? null : $parameters['currentcontext'])) {
+				// On remplace l'écran par défaut par le formulaire pour scanner les étiquettes.
+				print_scan_labels_add_object_line($object);
+				return 1;
+			}
+		}
 		if ($parameters['table_element_line'] != 'pickup_pickupline') {
 			return 0;
 		}
@@ -949,6 +1048,12 @@ class ActionsPickup
 
 	public function addMoreActionsButtons($parameters, &$object, &$action) {
 		global $langs, $conf;
+
+		// Bouton "scanner les étiquettes": il apparait sur plusieurs fiches.
+		// On appelle _PickupPrintScanLabelsButton qui fera le tri.
+		if ($this->_PickupPrintScanLabelsButton($parameters, $object, $action) > 0) {
+			return 1;
+		}
 
 		if ($object->table_element === 'pickup_pickup') {
 			return $this->_PickupAddMoreActionsButtons($parameters, $object, $action);
@@ -1101,6 +1206,33 @@ class ActionsPickup
 			}
 		}
 		$db->free($resql);
+	}
+
+	protected function _PickupPrintScanLabelsButton($parameters, &$object, &$action) {
+		global $langs;
+
+		dol_include_once('/pickup/lib/scan_labels_action.lib.php');
+		$current_context = empty($parameters) ? null : $parameters['currentcontext'];
+		if (!scan_labels_rights_ok($object, $current_context)) {
+			return 0;
+		}
+
+		if ($action === 'pickupscanlabels') {
+			// on enlève les autres boutons.
+			return 1;
+		}
+
+		// Cas particulier: Pour les expéditions en cours de création, il y a du code frontend ajouté ailleurs.
+		if ($object->table_element === 'expedition') {
+			return 0;
+		}
+
+		print dolGetButtonAction(
+			'',
+			$langs->trans('PickupActionScanLabels'),
+			'default',
+			$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=pickupscanlabels&token='.newToken()
+		);
 	}
 
 	public function formConfirm($parameters, &$object, &$action) {

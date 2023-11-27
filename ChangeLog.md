@@ -1,10 +1,20 @@
 # DolibarrPickup
 
-## 2.3.0 (Not Released Yet)
+## 2.3.0
+
+### Nouvelles fonctionnalités
+
+* Ajout de bouton «scanner les étiquettes» sur certaines objets, ajoutant des lignes (#90):
+  * propositions commerciales
+  * commandes
+  * factures
+  * Note: pour l'instant, si c'est un objet de location (module Dolirent), les lignes ne seront pas correctement initialisées.
+* Ajout d'une fonction «scanner les étiquettes» purement front-end sur:
+  * la création d'expédition
 
 ### Corrections et changements mineurs
 
-* Fix: la suppression d'une colecte doit supprimer les "pbatch" liés aux lignes (Fix #101).
+* Fix: la suppression d'une collecte doit supprimer les "pbatch" liés aux lignes (Fix #101).
 
 ## 2.2.2
 
