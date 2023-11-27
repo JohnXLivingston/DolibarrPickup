@@ -168,7 +168,7 @@ function print_scan_labels_exec_action(&$object) {
 
     switch ($object->table_element) {
       case 'propal':
-        // FIXME: use location price when the object is a location.
+        // FIXME: use rental price when the object is a rental.
         $price = $product->getSellPrice($mysoc, $object->thirdparty);
 
         $object->addline(
@@ -198,7 +198,7 @@ function print_scan_labels_exec_action(&$object) {
         );
         break;
       case 'commande':
-        // FIXME: use location price when the object is a location.
+        // FIXME: use rental price when the object is a rental.
         $price = $product->getSellPrice($mysoc, $object->thirdparty);
 
         $object->addline(
@@ -229,7 +229,7 @@ function print_scan_labels_exec_action(&$object) {
         );
         break;
       case 'facture':
-        // FIXME: use location price when the object is a location.
+        // FIXME: use rental price when the object is a rental.
         $price = $product->getSellPrice($mysoc, $object->thirdparty);
         // FIXME: 'label' parameter is deprecated...
 
