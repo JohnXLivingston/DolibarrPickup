@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## 2.3.0 (Not Released Yet)
+## 2.3.0
 
 ### Nouvelles fonctionnalités
 
@@ -8,6 +8,7 @@
   * propositions commerciales
   * commandes
   * factures
+  * Note: pour l'instant, si c'est un objet de location (module Dolirent), les lignes ne seront pas correctement initialisées.
 * Ajout d'une fonction «scanner les étiquettes» purement front-end sur:
   * la création d'expédition
 
