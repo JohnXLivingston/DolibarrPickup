@@ -1,6 +1,7 @@
 import { printPickupLabels, printPickupLineLabels, printProductLabel, printProductLotLabel } from './shared/printlabel'
 import { enhanceStockTransferForm } from './dolibarr/stock'
 import { setBaseUrl } from './dolibarr/utils'
+import { addScanLabelsToExpeditionForm, fillBatchInfos } from './dolibarr/expedition'
 
 declare global {
   interface Window {
@@ -11,6 +12,8 @@ declare global {
       printPickupLineLabels: typeof printPickupLineLabels
       printProductLotLabel: typeof printProductLotLabel
       enhanceStockTransferForm: typeof enhanceStockTransferForm
+      addScanLabelsToExpeditionForm: typeof addScanLabelsToExpeditionForm
+      fillBatchInfos: typeof fillBatchInfos
     }
   }
 }
@@ -21,5 +24,7 @@ window.dolibarrPickup = {
   printPickupLabels,
   printPickupLineLabels,
   printProductLotLabel,
-  enhanceStockTransferForm
+  enhanceStockTransferForm,
+  addScanLabelsToExpeditionForm,
+  fillBatchInfos
 }

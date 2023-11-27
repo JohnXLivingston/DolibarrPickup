@@ -4,10 +4,12 @@
 
 ### Nouvelles fonctionnalités
 
-* Ajout de bouton «scanner les étiquettes» sur certaines objets (#90):
+* Ajout de bouton «scanner les étiquettes» sur certaines objets, ajoutant des lignes (#90):
   * propositions commerciales
   * commandes
   * factures
+* Ajout d'une fonction «scanner les étiquettes» purement front-end sur:
+  * la création d'expédition
 
 ### Corrections et changements mineurs
 

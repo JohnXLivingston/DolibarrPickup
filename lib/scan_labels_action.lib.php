@@ -85,6 +85,15 @@ function scan_labels_rights_ok($object, $currentcontext) {
         return false;
       }
       break;
+    // case 'expedition':
+    //   dol_include_once('/expedition/expedition.class.php');
+    //   if ($object->status != Expedition::STATUS_DRAFT) {
+    //     return false;
+    //   }
+    //   if (!$user->hasRight('expedition', 'creer')) {
+    //     return false;
+    //   }
+    //   break;
     default:
       return false;
   }
@@ -267,5 +276,29 @@ function print_scan_labels_exec_action(&$object) {
 
   $db->commit();
   setEventMessages($langs->trans("PickupScanLabelsLineAdded"), null, 'mesgs');
+  return true;
+}
+
+function front_end_scan_labels_rights_ok($object, $currentcontext, $action) {
+  global $user, $conf;
+  if (
+    !$conf->pickup->enabled
+    || empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)
+  ) {
+    return false;
+  }
+
+  if ($currentcontext !== 'expeditioncard') {
+    return false;
+  }
+
+  if ($action !== 'create') {
+    return false;
+  }
+
+  if (!$user->hasRight('expedition', 'creer')) {
+    return false;
+  }
+
   return true;
 }
