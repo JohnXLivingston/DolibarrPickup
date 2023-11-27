@@ -20,4 +20,4 @@ ALTER TABLE llx_pickup_batch ADD INDEX idx_pickup_batch_product_pickupline (fk_p
 ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_user_creat FOREIGN KEY (fk_user_creat) REFERENCES llx_user(rowid);
 ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_user_modif FOREIGN KEY (fk_user_modif) REFERENCES llx_user(rowid);
 ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_product FOREIGN KEY (fk_product) REFERENCES llx_product(rowid);
-ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_pickupline FOREIGN KEY (fk_pickupline) REFERENCES llx_pickup_pickupline(rowid) ON DELETE SET NULL;
+ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_pickupline FOREIGN KEY (fk_pickupline) REFERENCES llx_pickup_pickupline(rowid) ON DELETE CASCADE;

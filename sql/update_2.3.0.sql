@@ -16,5 +16,5 @@
 
 -- We must add a 'ON DELETE SET NULL' on llx_pickup_batch_fk_pickupline constraint.
 -- Unfortunately, to do this we must first drop, then recreate.
-ALTER TABLE llx_pickup_batch DROP CONSTRAINT llx_pickup_batch_fk_pickupline;
-ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_pickupline FOREIGN KEY (fk_pickupline) REFERENCES llx_pickup_pickupline(rowid) ON DELETE SET NULL;
+ALTER TABLE llx_pickup_batch DROP CONSTRAINT IF EXISTS llx_pickup_batch_fk_pickupline;
+ALTER TABLE llx_pickup_batch ADD CONSTRAINT llx_pickup_batch_fk_pickupline FOREIGN KEY (fk_pickupline) REFERENCES llx_pickup_pickupline(rowid) ON DELETE CASCADE;

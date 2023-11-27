@@ -4,7 +4,7 @@
 
 ### Corrections et changements mineurs
 
-* Fix: la suppression d'une colecte doit détacher les "pbatch" liés aux lignes (Fix #101).
+* Fix: la suppression d'une colecte doit supprimer les "pbatch" liés aux lignes (Fix #101).
 
 ## 2.2.2
 
