@@ -15,6 +15,7 @@
 ### Corrections et changements mineurs
 
 * Fix: la suppression d'une collecte doit supprimer les "pbatch" liés aux lignes (Fix #101).
+* Maj des dépendances NPM (npm audit fix)
 
 ## 2.2.2
 
