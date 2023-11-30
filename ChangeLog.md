@@ -1,5 +1,11 @@
 # DolibarrPickup
 
+## ??? (Not Releasted Yet)
+
+### Corrections et changements mineurs
+
+* Ajout d'un script non documenté `correctdata/fix_pbatch`, pour corriger des problèmes de numéro de lot pour LRDS.
+
 ## 2.3.0
 
 ### Nouvelles fonctionnalités
