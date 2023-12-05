@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## 2.3.1 (Not Released Yet)
+## 2.3.1
 
 ### Corrections et changements mineurs
 
