@@ -1,5 +1,9 @@
 # DolibarrPickup
 
+## 2.3.2
+
+* Application mobile: les poids peuvent avoir 3 chiffres après la virgule. (#105)
+
 ## 2.3.1
 
 ### Corrections et changements mineurs

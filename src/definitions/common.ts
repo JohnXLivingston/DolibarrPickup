@@ -10,7 +10,7 @@ function pushUnitFields (fields: FormField[], fieldNamePrefix: string, fieldEdit
       mandatory: useUnitWeight === 'mandatory',
       min: 0,
       max: 1000,
-      step: 0.1,
+      step: 0.001,
       edit: {
         getDataFromSourceKey: fieldEditNamePrefix + 'weight'
       }
