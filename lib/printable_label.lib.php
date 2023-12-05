@@ -26,7 +26,12 @@ dol_include_once('/product/class/product.class.php');
 dol_include_once('/product/stock/class/productlot.class.php');
 dol_include_once('/pickup/class/pbatch.class.php');
 
-function search_printable_label($values) {
+/**
+ * Takes some values scaned from labels, and returns product infos.
+ * @param array $values scanned values (can be batch number or product url)
+ * @param bool $group_by_product if true, ignores 'productlot' and groups by product (even if unique batch numbers)
+ */
+function search_printable_label($values, $group_by_product = false) {
   global $db;
 
   dol_syslog('Calling search_printable_label', LOG_DEBUG);
@@ -112,5 +117,25 @@ function search_printable_label($values) {
     $db->free($resql);
   }
 
-  return array_values($result); // to reindex from 0.
+  if (!$group_by_product) {
+    return array_values($result); // to reindex from 0.
+  }
+
+  dol_syslog('search_printable_label: grouping by product', LOG_DEBUG);
+  $new_result = [];
+  foreach ($result as $line) {
+    if (empty($line['product'])) { continue; }
+    $id = $line['product']->id;
+    if (array_key_exists($id, $new_result)) {
+      $new_result[$id]['scan_count']+= $line['scan_count'];
+      continue;
+    }
+
+    $new_result[$id] = [
+      'product' => $line['product'],
+      'productlot' => null,
+      'scan_count' => $line['scan_count']
+    ];
+  }
+  return array_values($new_result); // to reindex from 0.
 }

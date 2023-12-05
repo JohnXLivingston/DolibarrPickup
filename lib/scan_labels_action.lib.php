@@ -139,7 +139,7 @@ function print_scan_labels_exec_action(&$object) {
   dol_include_once('/pickup/lib/printable_label.lib.php');
   $search = GETPOST('search', 'alphanohtml') ?? '';
   $values = preg_split('/\r\n|\r|\n/', $search);
-  $search_infos = search_printable_label($values);
+  $search_infos = search_printable_label($values, true);
 
   if (
     property_exists($object, 'thirdparty')
@@ -155,16 +155,17 @@ function print_scan_labels_exec_action(&$object) {
 
   foreach ($search_infos as $search_infos_line) {
     $product = $search_infos_line['product'];
-    $productlot = $search_infos_line['productlot'];
+    // $productlot = $search_infos_line['productlot'];
     $scan_count = $search_infos_line['scan_count'];
 
-    // Qty: if product has unique batch number => just one. Else scan_count.
-    $qty = $product->hasbatch() && $product->status_batch == 2 ? 1 : $scan_count;
+    $qty = $scan_count;
+    // // Qty: if product has unique batch number => just one. Else scan_count.
+    // $qty = $product->hasbatch() && $product->status_batch == 2 ? 1 : $scan_count;
     // line label: product label + batch number, if batch_status=unique!
     $line_label = ''; // default case: dolibarr will handle
-    if ($productlot && $product->hasbatch() && $product->status_batch == 2) {
-      $line_label = $product->label . ' ' . $productlot->batch;
-    }
+    // if ($productlot && $product->hasbatch() && $product->status_batch == 2) {
+    //   $line_label = $product->label . ' ' . $productlot->batch;
+    // }
 
     switch ($object->table_element) {
       case 'propal':

@@ -1,9 +1,12 @@
 # DolibarrPickup
 
-## ??? (Not Releasted Yet)
+## 2.3.1 (Not Released Yet)
 
 ### Corrections et changements mineurs
 
+* Bouton "scanner des étiquettes" sur les objets:
+  * on n'ajoute plus le numéro de série unique dans le libellé
+  * on regroupe les quantités, même pour les objets avec numéro uniques
 * Ajout d'un script non documenté `correctdata/fix_pbatch`, pour corriger des problèmes de numéro de lot pour LRDS.
 
 ## 2.3.0
