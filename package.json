@@ -1,6 +1,6 @@
 {
   "name": "dolibarrpickup",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "## This is the javascript for the DolibarrPickup mobile application...",
   "scripts": {
     "lint:tsc": "eslint --ext .ts ./src",
