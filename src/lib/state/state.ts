@@ -10,6 +10,7 @@ interface StateDefinitionLoadData {
   retrievedDataKey?: string // optional: name to use for setting retrieved data
   requestType: string
   requestParams?: GetDataParams
+  requestParamsFunc?: (stack: Stack) => GetDataParams
 }
 
 interface StateDefinitionBase {
@@ -30,13 +31,18 @@ abstract class State {
     this.loadData = definition.loadData
   }
 
-  retrieveData (_stack: Stack, force: boolean): StateRetrievedData {
+  retrieveData (stack: Stack, force: boolean): StateRetrievedData {
     const r = new Map<string, ResultData>()
     if (!this.loadData) {
       return r
     }
     for (const load of this.loadData) {
-      r.set(load.retrievedDataKey ?? load.dataKey, getData(load.dataKey, load.requestType, force, load.requestParams))
+      let requestParams: GetDataParams = {}
+      if (load.requestParams) { requestParams = Object.assign(requestParams, load.requestParams) }
+      if (load.requestParamsFunc) {
+        requestParams = Object.assign(requestParams, load.requestParamsFunc(stack))
+      }
+      r.set(load.retrievedDataKey ?? load.dataKey, getData(load.dataKey, load.requestType, force, requestParams))
     }
     return r
   }

@@ -1,5 +1,9 @@
 import { StateDefinition, FormField, PickFields, ShowFields, StateDefinitionLoadData, FormFieldSelectFilterOptions } from '../lib/state/index'
 import type { UnitsEditMode, UseUnit } from '../lib/utils/units'
+import type { SpecificMode } from '../lib/utils/types'
+import type { Stack } from '../lib/stack'
+import type { StateRetrievedData } from '../lib/state/index'
+import type { GetDataParams } from '../lib/data'
 import { pushUnitFields } from './common'
 
 export function pickProduct (usePBrand: boolean, goto: string, creationGoto: string): StateDefinition {
@@ -161,7 +165,16 @@ function getHasBatchField (pcatStackKey: string, usePCat: boolean): FormField {
   }
 }
 
-export function createProduct (usePCat: boolean, useDEEE: boolean, productRefAuto: boolean, usePBrand: boolean, askHasBatch: boolean, goto: string, pcatStackName: string): StateDefinition {
+export function createProduct (
+  usePCat: boolean,
+  useDEEE: boolean,
+  productRefAuto: boolean,
+  usePBrand: boolean,
+  askHasBatch: boolean,
+  goto: string,
+  pcatStackName: string,
+  specificMode: SpecificMode
+): StateDefinition {
   const fields: FormField[] = []
 
   let mustLoadPCat = false
@@ -186,6 +199,50 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, productRefAut
       type: 'varchar',
       name: 'product_ref',
       label: 'Référence',
+      defaultFunc: specificMode !== 'ressourcerie_cinema'
+        ? undefined
+        : (stack: Stack, retrievedData: StateRetrievedData) => {
+            const tag = stack.searchValue('label') ?? ''
+            if (!tag) { return '' }
+            const m = tag.match(/>>\s*(\d\d\d\d+)/)
+            if (!m) { return '' }
+            const nomenclature = m[1]
+
+            const pickupLabel = stack.searchValue('display') ?? '' // FIXME: rename this field?
+            const mPL = pickupLabel.match(/P2\d(\d{2})\d{2}-(\d+)/) // P202308-0001 => get 23 and 0001
+            if (!mPL) { return '' }
+            const year = mPL[1]
+            let pickupNumber = mPL[2]
+            while (pickupNumber.length > 3 && pickupNumber.startsWith('0')) {
+              pickupNumber = pickupNumber.substring(1)
+            }
+
+            const pickup = retrievedData.get('pickup')
+            if (!pickup) { return '' }
+            if (pickup.status !== 'resolved') { return '' }
+            const lines = pickup.data.lines
+            if (!lines) { return '' }
+
+            const middlePart = '-' + year + pickupNumber + '-'
+            let cpt = Math.max(1, lines.length)
+            // We will also check if there is already a ref with a higher number
+            for (const line of lines) {
+              if (!line.name.toString().includes(middlePart)) { continue }
+              const c = parseInt(line.name.split(/-/g).pop())
+              if (c >= cpt) {
+                cpt = c + 1
+              }
+            }
+            let sCpt = cpt.toString()
+            while (sCpt.length < 4) { sCpt = '0' + sCpt }
+
+            // On doit générer un numéro sous la forme:
+            // NNNN-CCCCC-DDDD avec:
+            // NNNN: nomenclature, les 4 chiffres du tag
+            // CCCCC: 2 chiffres pour l'année, puis un compteur de collecte (on va le déduire du numéro de collecte)
+            // DDDD: un compteur sur 4 chiffre, du nombre de produit sur la collecte.
+            return nomenclature + middlePart + sCpt
+          },
       mandatory: true,
       maxLength: 128
     })
@@ -233,6 +290,17 @@ export function createProduct (usePCat: boolean, useDEEE: boolean, productRefAut
       dataKey: 'pcat',
       retrievedDataKey: 'all_pcats',
       requestType: 'list'
+    })
+  }
+  if (specificMode === 'ressourcerie_cinema') {
+    loadData.push({
+      dataKey: 'pickup',
+      requestType: 'get',
+      requestParamsFunc: (stack: Stack): GetDataParams => {
+        return {
+          id: stack.searchValue('pickup') ?? ''
+        }
+      }
     })
   }
 

@@ -25,7 +25,8 @@ function getPickupSettingsTables() {
     'units' => $langs->trans('PickupSetupUnits'),
     'pickupline_description' => $langs->trans('PickupSetupLineDescription'),
     'batch' => $langs->trans('PickupSetupBatch'),
-    'printable_label' => $langs->trans('PickupSetupPrintableLabel')
+    'printable_label' => $langs->trans('PickupSetupPrintableLabel'),
+    'specific_mode' => $langs->trans('PickupSpecificMode')
   ];
 }
 
@@ -211,5 +212,15 @@ function getPickupSettings() {
         'QRCODE' => 'QRCODE',
       ]
     ),
+
+    'PICKUP_SPECIFIC_MODE' => array(
+      'table' => 'specific_mode',
+      'enabled' => true,
+      'type' => 'select',
+      'options' => [
+        '0' => '',
+        'ressourcerie_cinema' => 'La ressourcerie du cinéma',
+      ]
+    )
   );
 }

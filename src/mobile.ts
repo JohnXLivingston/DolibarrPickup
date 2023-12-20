@@ -1,4 +1,5 @@
 import type { StateDefinition } from './lib/state/index'
+import type { SpecificMode } from './lib/utils/types'
 import { initLang } from './lib/translate'
 import { initHistory } from './lib/history'
 import { initNunjucks } from './lib/nunjucks'
@@ -46,6 +47,7 @@ $(function () {
   const printableLabelUrl = container.attr('data-printable-label-url')
   const usePrintableLabel = !!printableLabelUrl
   const dolibarrUrl = container.attr('data-dolibarr-url') ?? undefined
+  const specificMode: SpecificMode = (container.attr('data-specific-mode') ?? '') as SpecificMode
 
   if (printableLabelUrl) { setPrintLabelUrl(printableLabelUrl) }
 
@@ -68,6 +70,7 @@ $(function () {
   version += '_pt' + (usePickupType ? '1' : '0')
   version += '_pld' + (usePickuplineDescription ? '1' : '0')
   version += '_eum' + unitsEditMode
+  if (specificMode) { version += '_sm' } // no need to add the specific value, should never change
 
   const definition: {[key: string]: StateDefinition} = {}
 
@@ -97,11 +100,11 @@ $(function () {
     saveUntilForProduct = 'categorie'
     definition.product = definitions.pickProduct(usePBrand, 'show_product', 'categorie')
     definition.categorie = definitions.pickPCat('create_product')
-    definition.create_product = definitions.createProduct(usePCat, useDEEE, productRefAuto, usePBrand, askHasBatch, 'product_specifications', 'pcat')
+    definition.create_product = definitions.createProduct(usePCat, useDEEE, productRefAuto, usePBrand, askHasBatch, 'product_specifications', 'pcat', specificMode)
   } else {
     saveUntilForProduct = 'create_product'
     definition.product = definitions.pickProduct(usePBrand, 'show_product', 'create_product')
-    definition.create_product = definitions.createProduct(usePCat, useDEEE, productRefAuto, usePBrand, askHasBatch, 'product_specifications', 'pcat')
+    definition.create_product = definitions.createProduct(usePCat, useDEEE, productRefAuto, usePBrand, askHasBatch, 'product_specifications', 'pcat', specificMode)
   }
   definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume, 'save_product')
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)

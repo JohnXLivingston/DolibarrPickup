@@ -1,5 +1,10 @@
 # DolibarrPickup
 
+## ??? (Not Released Yet)
+
+* Application mobile: ajout d'un mode spécifique à La Ressourcerie Du Cinéma, avec:
+  * une génération automatique des références produit, en fonction d'une règle spécifique.
+
 ## 2.3.2
 
 * Application mobile: les poids peuvent avoir 3 chiffres après la virgule. (#105)

@@ -34,6 +34,7 @@ interface FormFieldBase {
   label: string
   mandatory: boolean
   default?: string
+  defaultFunc?: (stack: Stack, retrievedData: StateRetrievedData) => string
   maxLength?: number
   notes?: FormFieldNotes
   edit?: FormFieldEditInfo
@@ -151,7 +152,8 @@ class StateForm extends State {
   }
 
   _renderVars (stack: Stack, retrievedData: StateRetrievedData, h: NunjucksVars): void {
-    this.initDateDefaults()
+    this.initDateFields()
+    this.initFieldsDefaults(stack, retrievedData)
     h.useDefaultValues = !stack.isAnyValue()
     h.filteredOptions = {}
     for (const field of this.fields) {
@@ -306,7 +308,7 @@ class StateForm extends State {
     return r
   }
 
-  private initDateDefaults (): void {
+  private initDateFields (): void {
     for (let i = 0; i < this.fields.length; i++) {
       const field = this.fields[i]
       if (field.type !== 'date') {
@@ -318,6 +320,18 @@ class StateForm extends State {
       if (field.maxToToday) {
         field.max = todayString()
       }
+    }
+  }
+
+  private initFieldsDefaults (stack: Stack, retrievedData: StateRetrievedData): void {
+    for (let i = 0; i < this.fields.length; i++) {
+      const field = this.fields[i]
+      if (field.type === 'date' && field.defaultToToday) {
+        field.default = todayString()
+        continue
+      }
+      if (!field.defaultFunc) { continue }
+      field.default = field.defaultFunc(stack, retrievedData)
     }
   }
 

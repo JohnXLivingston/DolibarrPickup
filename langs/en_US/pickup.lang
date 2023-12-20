@@ -229,3 +229,7 @@ PickupExport = Exporter
 PickupImport = Importer
 
 PickupScanLabelsLineAdded = Lignes ajoutées
+
+PickupSpecificMode = Modes spécifiques
+PICKUP_SPECIFIC_MODE = Mode
+PICKUP_SPECIFIC_MODETooltip = Cette option permet d'activer différents modes spécifiques développés pour certaines ressourceries. Laissez vide si vous n'êtes pas concerné.
