@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## ??? (Not Released Yet)
+## 2.4.0
 
 * Application mobile: ajout d'un mode spécifique à La Ressourcerie Du Cinéma, avec:
   * une génération automatique des références produit et du libellé, en fonction d'une règle spécifique.
