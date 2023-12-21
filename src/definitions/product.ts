@@ -253,7 +253,16 @@ export function createProduct (
     name: 'product_label',
     label: 'Libellé',
     mandatory: productRefAuto,
-    maxLength: 255
+    maxLength: 255,
+    defaultFunc: specificMode !== 'ressourcerie_cinema'
+      ? undefined
+      : (stack: Stack) => {
+          const tag = stack.searchValue('label') ?? ''
+          if (!tag) { return '' }
+          const m = tag.match(/^\s*\d+.*>>\s*\d\d\d\d+\s*(.*)$/)
+          if (!m) { return '' }
+          return m[1]
+        }
   })
 
   if (askHasBatch) {
