@@ -89,6 +89,10 @@ PICKUP_USE_PRINTABLE_LABELTooltip = En activant cette option, le module de colle
 PICKUP_PRINTABLE_LABEL_PRODUCTCARD_LINK = Lien vers la fiche produit
 PICKUP_PRINTABLE_LABEL_BATCH = Numéro de lot/série
 
+
+PICKUP_UNITS_WIDTHTooltip = Attention, ne fonctionne que si vous choisissez que la saisie des valeurs se fait sur la fiche produit.
+PICKUP_UNITS_HEIGHTTooltip = Attention, ne fonctionne que si vous choisissez que la saisie des valeurs se fait sur la fiche produit.
+
 #
 # Menus
 #

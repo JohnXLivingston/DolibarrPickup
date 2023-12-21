@@ -6,7 +6,7 @@ import { pushUnitFields } from './common'
 export function createPickupLine (
   editMode: boolean,
   unitsEditMode: UnitsEditMode,
-  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitWidth: UseUnit, useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   usePickuplineDescription: boolean, goto: string
 ): StateDefinition {
   const fields: FormField[] = [
@@ -25,7 +25,7 @@ export function createPickupLine (
   ]
 
   if (unitsEditMode === 'pickupline') {
-    pushUnitFields(fields, 'line_', 'line_', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
+    pushUnitFields(fields, 'line_', 'line_', useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume)
   }
 
   if (usePickuplineDescription) {

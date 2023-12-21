@@ -100,6 +100,8 @@ mobile_header();
     <?php if (!empty($conf->productbatch->enabled) && $conf->global->PICKUP_DEFAULT_HASBATCH === 'ask') { print ' data-ask-hasbatch="1" '; } ?>
     data-units-weight="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_WEIGHT ?? '0'); ?>"
     data-units-length="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_LENGTH ?? '0'); ?>"
+    data-units-width="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_WIDTH ?? '0'); ?>"
+    data-units-height="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_HEIGHT ?? '0'); ?>"
     data-units-surface="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_SURFACE ?? '0'); ?>"
     data-units-volume="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_VOLUME ?? '0'); ?>"
     <?php if (!empty($processing_status)) { print 'data-processing-status="'.$processing_status.'"'; } ?>

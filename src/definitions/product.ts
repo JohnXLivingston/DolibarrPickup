@@ -325,7 +325,7 @@ export function createProduct (
 export function editProduct (
   usePCat: boolean, useDEEE: boolean, usePBrand: boolean, askHasBatch: boolean,
   unitsEditMode: UnitsEditMode,
-  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitWidth: UseUnit, useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   goto: string,
   pcatStackName: string,
   specificMode: SpecificMode
@@ -345,7 +345,7 @@ export function editProduct (
   }
 
   if (unitsEditMode === 'product') {
-    pushUnitFields(fields, '', '', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
+    pushUnitFields(fields, '', '', useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume)
   }
 
   let descriptionNotes
@@ -396,7 +396,7 @@ export function editProduct (
 
 export function createProductSpecifications (
   unitsEditMode: UnitsEditMode,
-  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitWidth: UseUnit, useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   goto: string,
   specificMode: SpecificMode
 ): StateDefinition {
@@ -408,7 +408,7 @@ export function createProductSpecifications (
   }
 
   if (unitsEditMode === 'product') {
-    pushUnitFields(r.fields, '', '', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
+    pushUnitFields(r.fields, '', '', useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume)
   }
 
   if (specificMode === 'ressourcerie_cinema') {
@@ -457,7 +457,7 @@ export function showProduct (
   usePCat: boolean, useDEEE: boolean, usePBrand: boolean,
   useBatch: boolean,
   _unitsEditMode: UnitsEditMode,
-  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitWidth: UseUnit, useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   okGoto: string | undefined,
   editGoto: string | undefined,
   editCatGoto: string | undefined,
@@ -586,6 +586,20 @@ export function showProduct (
       type: 'varchar',
       name: 'length_txt',
       label: 'Longueur'
+    })
+  }
+  if (useUnitWidth !== '0') {
+    fields.push({
+      type: 'varchar',
+      name: 'width_txt',
+      label: 'Largeur'
+    })
+  }
+  if (useUnitHeight !== '0') {
+    fields.push({
+      type: 'varchar',
+      name: 'height_txt',
+      label: 'Hauteur'
     })
   }
 

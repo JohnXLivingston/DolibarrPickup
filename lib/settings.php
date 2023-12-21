@@ -68,6 +68,29 @@ function getPickupSettings() {
         'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('Mandatory')
       )
     ),
+    'PICKUP_UNITS_WIDTH' => array(
+      'table' => 'units',
+      'enabled' => 1,
+      'type' => 'select',
+      'label' => $langs->trans('Width'),
+      'options' => array(
+        '0' => $langs->trans('Disabled'),
+        'optional' =>  $langs->trans('Enabled'),
+        'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('Mandatory')
+      )
+    ),
+    'PICKUP_UNITS_HEIGHT' => array(
+      'table' => 'units',
+      'enabled' => 1,
+      'type' => 'select',
+      'label' => $langs->trans('Height'),
+      'options' => array(
+        '0' => $langs->trans('Disabled'),
+        'optional' =>  $langs->trans('Enabled'),
+        'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('Mandatory')
+      )
+    ),
+
     'PICKUP_UNITS_SURFACE' => array(
       'table' => 'units',
       'enabled' => 1,

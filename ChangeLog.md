@@ -5,6 +5,8 @@
 * Application mobile: ajout d'un mode spécifique à La Ressourcerie Du Cinéma, avec:
   * une génération automatique des références produit et du libellé, en fonction d'une règle spécifique.
   * l'ajout de certains attributs supplémentaires spécifiques dans l'appli mobile.
+* Nouveaux champs activables dans l'application mobile:
+  * largeur, hauteur
 
 ## 2.3.2
 

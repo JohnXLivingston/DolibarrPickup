@@ -115,6 +115,10 @@ class DataMobileActionProduct extends DataMobileAction {
     if (!empty($weight)) { $weight.= ' ' . measuringUnitString(0, "weight", $object->weight_units); }
     $length = $object->length;
     if (!empty($length)) { $length.= ' ' . measuringUnitString(0, 'size', $object->length_units); }
+    $width = $object->width;
+    if (!empty($width)) { $width.= ' ' . measuringUnitString(0, 'size', $object->width_units); }
+    $height = $object->height;
+    if (!empty($height)) { $height.= ' ' . measuringUnitString(0, 'size', $object->height_units); }
     $surface = $object->surface;
     if (!empty($surface)) { $surface.= ' ' . measuringUnitString(0, 'surface', $object->surface_units); }
     $volume = $object->volume;
@@ -132,11 +136,15 @@ class DataMobileActionProduct extends DataMobileAction {
       // FIXME: should be weight + weight_units (and so on...)... But it is simplier like that for now
       'weight_txt' => $weight,
       'length_txt' => $length,
+      'width_txt' => $width,
+      'height_txt' => $height,
       'surface_txt' => $surface,
       'volume_txt' => $volume,
       // Numeric values for weight, length, ... : only if the unit is the good one (required for edit mode)
       'weight' => $object->weight_units == 0 ? $object->weight : null,
       'length' => $object->length_units == 0 ? $object->length : null,
+      'width' => $object->width_units == 0 ? $object->width : null,
+      'height' => $object->height_units == 0 ? $object->height : null,
       'surface' => $object->surface_units == 0 ? $object->surface : null,
       'volume' => $object->volume_units == -3 ? $object->volume : null
     );
@@ -264,6 +272,14 @@ class DataMobileActionProduct extends DataMobileAction {
         if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
           $product->length = GETPOST('length', 'int'); // yes... for dolibarr floats are 'int'
           $product->length_units = 0;
+        }
+        if (!empty($conf->global->PICKUP_UNITS_WIDTH)) {
+          $product->width = GETPOST('width', 'int'); // yes... for dolibarr floats are 'int'
+          $product->width_units = 0;
+        }
+        if (!empty($conf->global->PICKUP_UNITS_HEIGHT)) {
+          $product->height = GETPOST('height', 'int'); // yes... for dolibarr floats are 'int'
+          $product->height_units = 0;
         }
         if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
           $product->surface = GETPOST('surface', 'int'); // yes... for dolibarr floats are 'int'

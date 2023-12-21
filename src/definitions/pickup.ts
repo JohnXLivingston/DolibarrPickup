@@ -77,7 +77,7 @@ export function showPickup (
   useDEEE: boolean,
   usePBrand: boolean,
   usePrintableLabel: boolean,
-  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  useUnitWeight: UseUnit, useUnitLength: UseUnit, _useUnitWidth: UseUnit, _useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   addGoto: string,
   lineProductGoto: string | undefined,
   editLineGoto: string,
