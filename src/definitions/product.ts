@@ -323,7 +323,10 @@ export function createProduct (
 }
 
 export function editProduct (
-  usePCat: boolean, useDEEE: boolean, usePBrand: boolean, askHasBatch: boolean,
+  usePCat: boolean,
+  useSellPrice: boolean,
+  useRentalPrice: boolean,
+  useDEEE: boolean, usePBrand: boolean, askHasBatch: boolean,
   unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitWidth: UseUnit, useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   goto: string,
@@ -347,6 +350,8 @@ export function editProduct (
   if (unitsEditMode === 'product') {
     pushUnitFields(fields, '', '', useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume)
   }
+
+  pushPriceFields(fields, useSellPrice, useRentalPrice)
 
   let descriptionNotes
   if (usePCat) {
@@ -396,6 +401,8 @@ export function editProduct (
 
 export function createProductSpecifications (
   unitsEditMode: UnitsEditMode,
+  useSellPrice: boolean,
+  useRentalPrice: boolean,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitWidth: UseUnit, useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   goto: string,
   specificMode: SpecificMode
@@ -410,6 +417,8 @@ export function createProductSpecifications (
   if (unitsEditMode === 'product') {
     pushUnitFields(r.fields, '', '', useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume)
   }
+
+  pushPriceFields(r.fields, useSellPrice, useRentalPrice)
 
   if (specificMode === 'ressourcerie_cinema') {
     // Champs spécifiques pour La Ressourcerie Du Cinéma.
@@ -454,7 +463,9 @@ export function saveEditProduct (goto: string, saveUntil: string, removeUntil: s
 }
 
 export function showProduct (
-  usePCat: boolean, useDEEE: boolean, usePBrand: boolean,
+  usePCat: boolean,
+  useSellPrice: boolean, useRentalPrice: boolean,
+  useDEEE: boolean, usePBrand: boolean,
   useBatch: boolean,
   _unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitWidth: UseUnit, useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
@@ -625,6 +636,8 @@ export function showProduct (
     label: 'Description de la fiche produit'
   })
 
+  pushPriceFields(fields, useSellPrice, useRentalPrice)
+
   if (specificMode === 'ressourcerie_cinema') {
     pushLRDCFields(fields)
   }
@@ -703,4 +716,39 @@ function pushLRDCFields (fields: FormField[] | ShowFields): void {
       getDataFromSourceKey: 'lrdc_style'
     }
   })
+}
+
+function pushPriceFields (
+  fields: FormField[] | ShowFields,
+  useSellPrice: boolean,
+  useRentalPrice: boolean
+): void {
+  if (useSellPrice) {
+    fields.push({
+      type: 'float',
+      label: 'Prix de vente',
+      name: 'sellprice',
+      mandatory: false,
+      edit: {
+        getDataFromSourceKey: 'sellprice'
+      },
+      min: 0,
+      max: 100000,
+      step: 0.01
+    })
+  }
+  if (useRentalPrice) {
+    fields.push({
+      type: 'float',
+      label: 'Prix de location',
+      name: 'rentalprice',
+      mandatory: false,
+      edit: {
+        getDataFromSourceKey: 'rentalprice'
+      },
+      min: 0,
+      max: 100000,
+      step: 0.01
+    })
+  }
 }

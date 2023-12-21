@@ -93,6 +93,9 @@ PICKUP_PRINTABLE_LABEL_BATCH = Numéro de lot/série
 PICKUP_UNITS_WIDTHTooltip = Attention, ne fonctionne que si vous choisissez que la saisie des valeurs se fait sur la fiche produit.
 PICKUP_UNITS_HEIGHTTooltip = Attention, ne fonctionne que si vous choisissez que la saisie des valeurs se fait sur la fiche produit.
 
+PICKUP_PRODUCT_SELLPRICE = Ajouter un champ "prix de vente" dans l'application mobile.
+PICKUP_PRODUCT_RENTALPRICE = Ajouter un champs "prix de location" dans l'application mobile.
+
 #
 # Menus
 #

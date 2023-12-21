@@ -94,6 +94,8 @@ mobile_header();
     <?php if (!empty($conf->global->PICKUP_USE_PCAT)) { print ' data-use-pcat="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_PRODUCT_REF_AUTO)) { print ' data-product-ref-auto="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PBRAND)) { print ' data-use-pbrand="1" '; } ?>
+    <?php if (!empty($conf->global->PICKUP_PRODUCT_SELLPRICE)) { print ' data-use-sellprice="1" '; } ?>
+    <?php if (!empty($conf->global->PICKUP_PRODUCT_RENTALPRICE) && !empty($conf->rental->enabled)) { print ' data-use-rentalprice="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PRINTABLE_LABEL)) { print ' data-printable-label-url="'.htmlspecialchars(DOL_URL_ROOT.'/custom/pickup/pickup_printable_label.php').'" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_DEEE)) { print ' data-use-deee="1" '; } ?>
     <?php if (!empty($conf->productbatch->enabled)) { print ' data-use-batch="1" '; } ?>

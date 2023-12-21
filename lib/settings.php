@@ -45,7 +45,13 @@ function getPickupSettings() {
     'PICKUP_PRODUCT_DEFAULT_TOSELL' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean'),
     'PICKUP_PRODUCT_REF_AUTO' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean'),
     'PICKUP_USE_PBRAND' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean', 'extrafields' => array('pickup_pbrand')),
-  
+    'PICKUP_PRODUCT_SELLPRICE' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean'),
+    'PICKUP_PRODUCT_RENTALPRICE' => array(
+      'table' => 'product',
+      'enabled' => $conf->rental->enabled, // nécessite le module 'rental' (dolirent)
+      'type' => 'boolean'
+    ),
+
     'PICKUP_UNITS_WEIGHT' => array(
       'table' => 'units',
       'enabled' => 1,

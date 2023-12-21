@@ -146,10 +146,14 @@ class DataMobileActionProduct extends DataMobileAction {
       'width' => $object->width_units == 0 ? $object->width : null,
       'height' => $object->height_units == 0 ? $object->height : null,
       'surface' => $object->surface_units == 0 ? $object->surface : null,
-      'volume' => $object->volume_units == -3 ? $object->volume : null
+      'volume' => $object->volume_units == -3 ? $object->volume : null,
+      'sellprice' => $object->price
     );
     if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $result['pbrand'] = $object->array_options['options_pickup_pbrand'];
+    }
+    if (!empty($conf->rental->enabled)) {
+      $result['rentalprice'] = $object->array_options['options_rental_price'];
     }
     if (!empty($conf->global->PICKUP_SPECIFIC_MODE) && $conf->global->PICKUP_SPECIFIC_MODE === 'ressourcerie_cinema') {
       // Champs spécifiques La Ressourcerie Du Cinéma
@@ -201,6 +205,9 @@ class DataMobileActionProduct extends DataMobileAction {
     $save_product = false;
     $refresh_pickup_line = false;
 
+    $old_sellprice = null;
+    $new_sellprice = null;
+
     $subaction = GETPOST('subaction');
     if (!empty($subaction)) {
       $is_creation = false;
@@ -210,6 +217,8 @@ class DataMobileActionProduct extends DataMobileAction {
         $this->_log_object_errors(__METHOD__, $product);
         return 0;
       }
+
+      $old_sellprice = $product->price;
 
       if ($subaction === 'edit_product_attrs' || $subaction === 'edit_product_attrs_from_pickup') {
         $save_common_attributes = true;
@@ -316,6 +325,16 @@ class DataMobileActionProduct extends DataMobileAction {
         }
       }
 
+      if (!empty($conf->global->PICKUP_PRODUCT_SELLPRICE)) {
+        $new_sellprice = GETPOST('sellprice', 'int'); // yes... for dolibarr floats are 'int'
+        if ($is_creation && $new_sellprice > 0) {
+          $product->price = $new_sellprice;
+        }
+      }
+      if (!empty($conf->global->PICKUP_PRODUCT_RENTALPRICE) && $conf->rental->enabled) {
+        $product->array_options['options_rental_price'] = GETPOST('rentalprice', 'int'); // yes... for dolibarr floats are 'int'
+      }
+
       if (!empty($conf->global->PICKUP_SPECIFIC_MODE) && $conf->global->PICKUP_SPECIFIC_MODE === 'ressourcerie_cinema') {
         // Champs spécifiques La Ressourcerie Du Cinéma
         $product->array_options['options_diametre'] = GETPOST('lrdc_diametre');
@@ -343,6 +362,13 @@ class DataMobileActionProduct extends DataMobileAction {
         if ($result <= 0) {
           $this->_log_object_errors(__METHOD__, $product);
           return 0;
+        }
+
+        // On met à jour le prix si nécessaire
+        if (!empty($conf->global->PICKUP_PRODUCT_SELLPRICE)) {
+          if ($old_sellprice != $new_sellprice && $new_sellprice > 0) {
+            $product->updatePrice($new_sellprice, $product->price_base_type, $user);
+          }
         }
       }
     }
@@ -397,15 +423,6 @@ class DataMobileActionProduct extends DataMobileAction {
     $result = array("rowid" => $product_id, "ref" => $product->ref);
     if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $result['pbrand'] = $product->array_options['options_pickup_pbrand'];
-    }
-    if (!empty($conf->global->PICKUP_SPECIFIC_MODE) && $conf->global->PICKUP_SPECIFIC_MODE === 'ressourcerie_cinema') {
-      // Champs spécifiques La Ressourcerie Du Cinéma
-      $result['lrdc_diametre'] = $product->array_options['options_diametre'] ?? '';
-      $result['lrdc_epaisseur'] = $product->array_options['options_epaisseur'] ?? '';
-      $result['lrdc_matiereproduit'] = $product->array_options['options_matiereproduit'] ?? '';
-      $result['lrdc_pxcommerce'] = $product->array_options['options_pxcommerce'] ?? '';
-      $result['lrdc_couleur'] = $product->array_options['options_couleur'] ?? '';
-      $result['lrdc_style'] = $product->array_options['options_style'] ?? '';
     }
 
     return $result;

@@ -7,6 +7,8 @@
   * l'ajout de certains attributs supplémentaires spécifiques dans l'appli mobile.
 * Nouveaux champs activables dans l'application mobile:
   * largeur, hauteur
+  * prix de vente
+  * prix de location (si Dolirent activé)
 
 ## 2.3.2
 

@@ -33,6 +33,8 @@ $(function () {
   const usePCat = container.attr('data-use-pcat') === '1'
   const productRefAuto = container.attr('data-product-ref-auto') === '1'
   const usePBrand = container.attr('data-use-pbrand') === '1'
+  const useSellPrice = container.attr('data-use-sellprice') === '1'
+  const useRentalPrice = container.attr('data-use-rentalprice') === '1'
   const useDEEE = container.attr('data-use-deee') === '1'
   const useBatch = container.attr('data-use-batch') === '1'
   const askHasBatch = container.attr('data-ask-hasbatch') === '1'
@@ -60,6 +62,8 @@ $(function () {
   version += '_c' + (usePCat ? '1' : '0')
   version += '_pra' + (productRefAuto ? '1' : '0')
   version += '_b' + (usePBrand ? '1' : '0')
+  version += '_sp' + (useSellPrice ? '1' : '0')
+  version += '_rp' + (useRentalPrice ? '1' : '0')
   version += '_pl' + (usePrintableLabel ? '1' : '0')
   version += '_d' + (useDEEE ? '1' : '0')
   version += '_ba' + (useBatch ? '1' : '0')
@@ -110,12 +114,12 @@ $(function () {
     definition.product = definitions.pickProduct(usePBrand, 'show_product', 'create_product')
     definition.create_product = definitions.createProduct(usePCat, useDEEE, productRefAuto, usePBrand, askHasBatch, 'product_specifications', 'pcat', specificMode)
   }
-  definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, 'save_product', specificMode)
+  definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useSellPrice, useRentalPrice, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, 'save_product', specificMode)
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)
-  definition.show_product = definitions.showProduct(usePCat, useDEEE, usePBrand, useBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, 'qty', undefined, undefined, specificMode)
+  definition.show_product = definitions.showProduct(usePCat, useSellPrice, useRentalPrice, useDEEE, usePBrand, useBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, 'qty', undefined, undefined, specificMode)
 
-  definition.show_product_from_pickup = definitions.showProduct(usePCat, useDEEE, usePBrand, useBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, undefined, 'edit_product', 'edit_product_cat', specificMode)
-  definition.edit_product = definitions.editProduct(usePCat, useDEEE, usePBrand, askHasBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, 'save_edit_product', 'reference_pcat_id', specificMode)
+  definition.show_product_from_pickup = definitions.showProduct(usePCat, useSellPrice, useRentalPrice, useDEEE, usePBrand, useBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, undefined, 'edit_product', 'edit_product_cat', specificMode)
+  definition.edit_product = definitions.editProduct(usePCat, useSellPrice, useRentalPrice, useDEEE, usePBrand, askHasBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, 'save_edit_product', 'reference_pcat_id', specificMode)
   definition.save_edit_product = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
 
   definition.edit_product_cat = definitions.pickPCat('save_edit_product_cat')
