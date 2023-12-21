@@ -1,6 +1,6 @@
 <div class="pickupmobile-scrollzone">
   {% macro printFieldContent(field, data) %}
-    {% if field.type === 'varchar' or field.type === 'integer'%}
+    {% if field.type === 'varchar' or field.type === 'integer' or field.type === 'float' %}
       {% if field.goto %}
         <a
           pickupmobile-show-goto="{{ field.goto }}"

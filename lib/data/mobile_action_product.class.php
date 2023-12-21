@@ -143,6 +143,15 @@ class DataMobileActionProduct extends DataMobileAction {
     if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $result['pbrand'] = $object->array_options['options_pickup_pbrand'];
     }
+    if (!empty($conf->global->PICKUP_SPECIFIC_MODE) && $conf->global->PICKUP_SPECIFIC_MODE === 'ressourcerie_cinema') {
+      // Champs spécifiques La Ressourcerie Du Cinéma
+      $result['lrdc_diametre'] = $object->array_options['options_diametre'] ?? '';
+      $result['lrdc_epaisseur'] = $object->array_options['options_epaisseur'] ?? '';
+      $result['lrdc_matiereproduit'] = $object->array_options['options_matiereproduit'] ?? '';
+      $result['lrdc_pxcommerce'] = $object->array_options['options_pxcommerce'] ?? '';
+      $result['lrdc_couleur'] = $object->array_options['options_couleur'] ?? '';
+      $result['lrdc_style'] = $object->array_options['options_style'] ?? '';
+    }
     if (!empty($conf->global->PICKUP_USE_DEEE)) {
       require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
       $extrafields = new ExtraFields($db);
@@ -290,6 +299,16 @@ class DataMobileActionProduct extends DataMobileAction {
           $product->status_batch = 0;
         }
       }
+
+      if (!empty($conf->global->PICKUP_SPECIFIC_MODE) && $conf->global->PICKUP_SPECIFIC_MODE === 'ressourcerie_cinema') {
+        // Champs spécifiques La Ressourcerie Du Cinéma
+        $product->array_options['options_diametre'] = GETPOST('lrdc_diametre');
+        $product->array_options['options_epaisseur'] = GETPOST('lrdc_epaisseur');
+        $product->array_options['options_matiereproduit'] = GETPOST('lrdc_matiereproduit');
+        $product->array_options['options_pxcommerce'] = GETPOST('lrdc_pxcommerce');
+        $product->array_options['options_couleur'] = GETPOST('lrdc_couleur');
+        $product->array_options['options_style'] = GETPOST('lrdc_style');
+      }
     }
 
     if ($save_product) {
@@ -363,6 +382,16 @@ class DataMobileActionProduct extends DataMobileAction {
     if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $result['pbrand'] = $product->array_options['options_pickup_pbrand'];
     }
+    if (!empty($conf->global->PICKUP_SPECIFIC_MODE) && $conf->global->PICKUP_SPECIFIC_MODE === 'ressourcerie_cinema') {
+      // Champs spécifiques La Ressourcerie Du Cinéma
+      $result['lrdc_diametre'] = $product->array_options['options_diametre'] ?? '';
+      $result['lrdc_epaisseur'] = $product->array_options['options_epaisseur'] ?? '';
+      $result['lrdc_matiereproduit'] = $product->array_options['options_matiereproduit'] ?? '';
+      $result['lrdc_pxcommerce'] = $product->array_options['options_pxcommerce'] ?? '';
+      $result['lrdc_couleur'] = $product->array_options['options_couleur'] ?? '';
+      $result['lrdc_style'] = $product->array_options['options_style'] ?? '';
+    }
+
     return $result;
   }
 }

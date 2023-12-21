@@ -327,7 +327,8 @@ export function editProduct (
   unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   goto: string,
-  pcatStackName: string
+  pcatStackName: string,
+  specificMode: SpecificMode
 ): StateDefinition {
   const fields: FormField[] = []
 
@@ -367,6 +368,10 @@ export function editProduct (
     }
   })
 
+  if (specificMode === 'ressourcerie_cinema') {
+    pushLRDCFields(fields)
+  }
+
   const loadData: StateDefinitionLoadData[] = []
   if (mustLoadPCat && usePCat && pcatStackName) {
     loadData.push({
@@ -392,7 +397,8 @@ export function editProduct (
 export function createProductSpecifications (
   unitsEditMode: UnitsEditMode,
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
-  goto: string
+  goto: string,
+  specificMode: SpecificMode
 ): StateDefinition {
   const r: StateDefinition = {
     type: 'form',
@@ -403,6 +409,11 @@ export function createProductSpecifications (
 
   if (unitsEditMode === 'product') {
     pushUnitFields(r.fields, '', '', useUnitWeight, useUnitLength, useUnitSurface, useUnitVolume)
+  }
+
+  if (specificMode === 'ressourcerie_cinema') {
+    // Champs spécifiques pour La Ressourcerie Du Cinéma.
+    pushLRDCFields(r.fields)
   }
 
   if (r.fields.length === 0) {
@@ -449,7 +460,8 @@ export function showProduct (
   useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
   okGoto: string | undefined,
   editGoto: string | undefined,
-  editCatGoto: string | undefined
+  editCatGoto: string | undefined,
+  specificMode: SpecificMode
 ): StateDefinition {
   const fields: ShowFields = []
 
@@ -599,6 +611,10 @@ export function showProduct (
     label: 'Description de la fiche produit'
   })
 
+  if (specificMode === 'ressourcerie_cinema') {
+    pushLRDCFields(fields)
+  }
+
   return {
     type: 'show',
     label: 'Produit',
@@ -607,4 +623,70 @@ export function showProduct (
     okGoto,
     fields
   }
+}
+
+/**
+ * Ajout de champs spécifiques La Ressourcerie Du Cinéma sur les formulaires.
+ */
+function pushLRDCFields (fields: FormField[] | ShowFields): void {
+  fields.push({
+    type: 'float',
+    label: 'Diamètre',
+    name: 'lrdc_diametre',
+    mandatory: false,
+    min: 0,
+    max: 1000,
+    step: 0.001,
+    edit: {
+      getDataFromSourceKey: 'lrdc_diametre'
+    }
+  })
+  fields.push({
+    type: 'float',
+    label: 'Épaisseur',
+    name: 'lrdc_epaisseur',
+    mandatory: false,
+    min: 0,
+    max: 1000,
+    step: 0.001,
+    edit: {
+      getDataFromSourceKey: 'lrdc_epaisseur'
+    }
+  })
+  fields.push({
+    type: 'varchar',
+    label: 'Matière produit',
+    name: 'lrdc_matiereproduit',
+    mandatory: false,
+    edit: {
+      getDataFromSourceKey: 'lrdc_matiereproduit'
+    }
+  })
+  fields.push({
+    type: 'varchar',
+    label: 'Prix commerce',
+    name: 'lrdc_pxcommerce',
+    mandatory: false,
+    edit: {
+      getDataFromSourceKey: 'lrdc_pxcommerce'
+    }
+  })
+  fields.push({
+    type: 'varchar',
+    label: 'Couleur',
+    name: 'lrdc_couleur',
+    mandatory: false,
+    edit: {
+      getDataFromSourceKey: 'lrdc_couleur'
+    }
+  })
+  fields.push({
+    type: 'varchar',
+    label: 'Style - genre',
+    name: 'lrdc_style',
+    mandatory: false,
+    edit: {
+      getDataFromSourceKey: 'lrdc_style'
+    }
+  })
 }

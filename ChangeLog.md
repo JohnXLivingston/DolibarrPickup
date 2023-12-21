@@ -3,7 +3,8 @@
 ## ??? (Not Released Yet)
 
 * Application mobile: ajout d'un mode spécifique à La Ressourcerie Du Cinéma, avec:
-  * une génération automatique des références produit, en fonction d'une règle spécifique.
+  * une génération automatique des références produit et du libellé, en fonction d'une règle spécifique.
+  * l'ajout de certains attributs supplémentaires spécifiques dans l'appli mobile.
 
 ## 2.3.2
 

@@ -28,6 +28,9 @@ interface ShowFieldInteger extends ShowFieldBase {
   type: 'integer'
   total?: boolean
 }
+interface ShowFieldFloat extends ShowFieldBase {
+  type: 'float'
+}
 interface ShowFieldIntegerWithGoto extends ShowFieldInteger {
   goto: string
   pushToStack: ShowPushToStack[]
@@ -77,7 +80,7 @@ interface ShowFieldAction extends ShowFieldBase {
 
 type ShowField = ShowFieldVarchar | ShowFieldVarcharWithGoto
 | ShowFieldText | ShowFieldBoolean | ShowFieldLines
-| ShowFieldInteger | ShowFieldIntegerWithGoto | ShowFieldEdit
+| ShowFieldInteger | ShowFieldIntegerWithGoto | ShowFieldFloat | ShowFieldEdit
 | ShowFieldAction
 | ShowFieldConcatenate
 
