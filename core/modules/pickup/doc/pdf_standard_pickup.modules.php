@@ -699,7 +699,7 @@ class pdf_standard_pickup extends ModelePDFPickup
 						if (!empty($currentLine->surface) && !empty($currentLine->qty)) {
 							$surface = ($currentLine->surface * $currentLine->qty) . ' ' . measuringUnitString(0, "surface", $currentLine->surface_units);
 						}
-						$this->printStdColumnContent($pdf, $curY, 'line_surface', $weight);
+						$this->printStdColumnContent($pdf, $curY, 'line_surface', $surface);
 						$nexY = max($pdf->GetY(), $nexY);
 					}
 

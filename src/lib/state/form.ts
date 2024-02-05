@@ -40,6 +40,10 @@ interface FormFieldBase {
   edit?: FormFieldEditInfo
 }
 
+interface FormFieldHidden extends FormFieldBase {
+  type: 'hidden'
+}
+
 interface FormFieldVarchar extends FormFieldBase {
   type: 'varchar'
   suggestions?: string[]
@@ -115,7 +119,7 @@ interface FormFieldDate extends FormFieldBase {
   max?: string
 }
 
-type FormField = FormFieldSelect | FormFieldVarchar | FormFieldText | FormFieldInteger | FormFieldFloat | FormFieldBoolean | FormFieldRadio | FormFieldDate
+type FormField = FormFieldSelect | FormFieldHidden | FormFieldVarchar | FormFieldText | FormFieldInteger | FormFieldFloat | FormFieldBoolean | FormFieldRadio | FormFieldDate
 
 interface StateFormEditDefinition {
   stackKey: string
@@ -357,19 +361,19 @@ class StateForm extends State {
       }
       if (field.type === 'boolean') {
         sv.display = value === '1' ? 'Yes' : 'No'
-      }
-      if (field.type === 'select') {
+      } else if (field.type === 'select') {
         // FIXME: if the field has a filterOptions attribute, it is not taken into account here.
         const option = field.options.find(o => o.value === sv.value)
         if (option) {
           sv.display = option.label
         }
-      }
-      if (field.type === 'radio') {
+      } else if (field.type === 'radio') {
         const option = field.options.find(o => o.value === sv.value)
         if (option) {
           sv.display = option.label
         }
+      } else if (field.type === 'hidden') {
+        sv.invisible = true
       }
       sva.push(sv)
 

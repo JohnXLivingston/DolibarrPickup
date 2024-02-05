@@ -17,6 +17,35 @@
 
 $langs->loadLangs(array("pickup@pickup", "products", "productbatch", "other"));
 
+function getUnitOptions ($name, $measuring_style) {
+  global $db, $langs;
+  require_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
+  $measuringUnits = new CUnits($db);
+
+  $filter = array();
+  $filter['t.active'] = 1;
+  if ($measuring_style) {
+    $filter['t.unit_type'] = $measuring_style;
+  }
+
+  $result = $measuringUnits->fetchAll(
+    '',
+    '',
+    0,
+    0,
+    $filter
+  );
+  if ($result < 0) {
+    dol_print_error($db);
+    return [];
+  }
+  $results = [];
+  foreach ($measuringUnits->records as $line) {
+    $results[$line->scale] = $langs->trans($line->label);
+  }
+  return $results;
+}
+
 function getPickupSettingsTables() {
   global $langs;
   return [
@@ -63,6 +92,7 @@ function getPickupSettings() {
         'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('Mandatory')
       )
     ),
+
     'PICKUP_UNITS_LENGTH' => array(
       'table' => 'units',
       'enabled' => 1,
@@ -108,6 +138,7 @@ function getPickupSettings() {
         'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('Mandatory')
       )
     ),
+
     'PICKUP_UNITS_VOLUME' => array(
       'table' => 'units',
       'enabled' => 1,
@@ -119,6 +150,7 @@ function getPickupSettings() {
         'mandatory' => $langs->trans('Enabled') . ' / ' . $langs->trans('Mandatory')
       )
     ),
+
     'PICKUP_UNITS_PIECE' => array(
       'table' => 'units',
       'enabled' => 1,
@@ -129,6 +161,36 @@ function getPickupSettings() {
         '1' =>  $langs->trans('Enabled'),
       )
     ),
+
+    'PICKUP_WEIGHT_UNIT' => array(
+      'table' => 'units',
+      'enabled' => 1,
+      'type' => 'select',
+      'label' => $langs->trans('WeightUnits'),
+      'options' => getUnitOptions("weight_units", "weight")
+    ),
+    'PICKUP_SIZE_UNIT' => array(
+      'table' => 'units',
+      'enabled' => 1,
+      'type' => 'select',
+      'label' => $langs->trans('SizeUnits'),
+      'options' => getUnitOptions("size_units", "size")
+    ),
+    'PICKUP_SURFACE_UNIT' => array(
+      'table' => 'units',
+      'enabled' => 1,
+      'type' => 'select',
+      'label' => $langs->trans('SurfaceUnits'),
+      'options' => getUnitOptions("surface_units", "surface")
+    ),
+    'PICKUP_VOLUME_UNIT' => array(
+      'table' => 'units',
+      'enabled' => 1,
+      'type' => 'select',
+      'label' => $langs->trans('VolumeUnits'),
+      'options' => getUnitOptions("volume_units", "volume")
+    ),
+
     'PICKUP_UNITS_EDIT_MODE' => array(
       'table' => 'units',
       'enabled' => 1,

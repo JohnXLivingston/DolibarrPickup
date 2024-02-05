@@ -1,13 +1,13 @@
 // import type { StackValue } from '../lib/stack'
 import { StateDefinition, FormField } from '../lib/state/index'
-import { UnitsEditMode, UseUnit } from '../lib/utils/units'
+import { UnitsOptions } from '../lib/utils/units'
 import { pushUnitFields } from './common'
 
 export function createPickupLine (
   editMode: boolean,
-  unitsEditMode: UnitsEditMode,
-  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitWidth: UseUnit, useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
-  usePickuplineDescription: boolean, goto: string
+  unitsOptions: UnitsOptions,
+  usePickuplineDescription: boolean,
+  goto: string
 ): StateDefinition {
   const fields: FormField[] = [
     {
@@ -24,8 +24,8 @@ export function createPickupLine (
     }
   ]
 
-  if (unitsEditMode === 'pickupline') {
-    pushUnitFields(fields, 'line_', 'line_', useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume)
+  if (unitsOptions.editMode === 'pickupline') {
+    pushUnitFields(fields, 'line_', 'line_', unitsOptions)
   }
 
   if (usePickuplineDescription) {

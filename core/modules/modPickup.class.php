@@ -610,6 +610,20 @@ class modPickup extends DolibarrModules
             dolibarr_del_const($db, 'PICKUP_DEFAULT_BATCH_PICKUP_REF', $conf->entity);
         }
 
+        // v2.5.0: ajout du choix des unités pour l'appli mobile
+        if ('' === dolibarr_get_const($db, 'PICKUP_WEIGHT_UNIT', $conf->entity)) {
+            dolibarr_set_const($db, 'PICKUP_WEIGHT_UNIT', '0', 'chaine', 0, '', $conf->entity);
+        }
+        if ('' === dolibarr_get_const($db, 'PICKUP_SIZE_UNIT', $conf->entity)) {
+            dolibarr_set_const($db, 'PICKUP_SIZE_UNIT', '0', 'chaine', 0, '', $conf->entity);
+        }
+        if ('' === dolibarr_get_const($db, 'PICKUP_SURFACE_UNIT', $conf->entity)) {
+            dolibarr_set_const($db, 'PICKUP_SURFACE_UNIT', '0', 'chaine', 0, '', $conf->entity);
+        }
+        if ('' === dolibarr_get_const($db, 'PICKUP_VOLUME_UNIT', $conf->entity)) {
+            dolibarr_set_const($db, 'PICKUP_VOLUME_UNIT', '-3', 'chaine', 0, '', $conf->entity); // -3 = L
+        }
+
         return $this->_init($sql, $options);
     }
 

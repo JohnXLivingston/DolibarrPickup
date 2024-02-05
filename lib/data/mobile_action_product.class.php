@@ -141,12 +141,12 @@ class DataMobileActionProduct extends DataMobileAction {
       'surface_txt' => $surface,
       'volume_txt' => $volume,
       // Numeric values for weight, length, ... : only if the unit is the good one (required for edit mode)
-      'weight' => $object->weight_units == 0 ? $object->weight : null,
-      'length' => $object->length_units == 0 ? $object->length : null,
-      'width' => $object->width_units == 0 ? $object->width : null,
-      'height' => $object->height_units == 0 ? $object->height : null,
-      'surface' => $object->surface_units == 0 ? $object->surface : null,
-      'volume' => $object->volume_units == -3 ? $object->volume : null,
+      'weight' => $object->weight_units == $conf->global->PICKUP_WEIGHT_UNIT ? $object->weight : null,
+      'length' => $object->length_units == $conf->global->PICKUP_SIZE_UNIT ? $object->length : null,
+      'width' => $object->width_units == $conf->global->PICKUP_SIZE_UNIT ? $object->width : null,
+      'height' => $object->height_units == $conf->global->PICKUP_SIZE_UNIT ? $object->height : null,
+      'surface' => $object->surface_units == $conf->global->PICKUP_SURFACE_UNIT ? $object->surface : null,
+      'volume' => $object->volume_units == $conf->global->PICKUP_VOLUME_UNIT ? $object->volume : null,
       'sellprice' => $object->price
     );
     if (!empty($conf->global->PICKUP_USE_PBRAND)) {
@@ -276,27 +276,27 @@ class DataMobileActionProduct extends DataMobileAction {
       if ($conf->global->PICKUP_UNITS_EDIT_MODE !== 'pickupline') {
         if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
           $product->weight = GETPOST('weight', 'int'); // yes... for dolibarr floats are 'int'
-          $product->weight_units = 0;
+          $product->weight_units = GETPOST('weight_unit', 'alpha');
         }
         if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
           $product->length = GETPOST('length', 'int'); // yes... for dolibarr floats are 'int'
-          $product->length_units = 0;
+          $product->length_units = GETPOST('length_unit', 'alpha');;
         }
         if (!empty($conf->global->PICKUP_UNITS_WIDTH)) {
           $product->width = GETPOST('width', 'int'); // yes... for dolibarr floats are 'int'
-          $product->width_units = 0;
+          $product->width_units = GETPOST('width_unit', 'alpha');;
         }
         if (!empty($conf->global->PICKUP_UNITS_HEIGHT)) {
           $product->height = GETPOST('height', 'int'); // yes... for dolibarr floats are 'int'
-          $product->height_units = 0;
+          $product->height_units = GETPOST('height_unit', 'alpha');;
         }
         if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
           $product->surface = GETPOST('surface', 'int'); // yes... for dolibarr floats are 'int'
-          $product->surface_units = 0;
+          $product->surface_units = GETPOST('surface_unit', 'alpha');;
         }
         if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
           $product->volume = GETPOST('volume', 'int'); // yes... for dolibarr floats are 'int'
-          $product->volume_units = -3; // L
+          $product->volume_units = GETPOST('volume_unit', 'alpha'); // -3 = L
         }
       }
 

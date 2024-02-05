@@ -956,21 +956,21 @@ class Pickup extends CommonObject
 		// NB: we compute deee_xxx even if !PICKUP_USE_DEEE to simplify code. It will be ignored later on.
 		$result = array(
 			'qty' => 0,
-			'weights' => array(
-				0 => 0 // 0 = kg
-			),
-			'lengths' => array(
-				0 => 0
-			),
-			'surfaces' => array(
-				0 => 0
-			),
-			'volumes' => array(
-				-3 => 0 // -3 = L
-			),
+			'weights' => array(),
+			'lengths' => array(),
+			'surfaces' => array(),
+			'volumes' => array(),
 			'deee_type_weights' => array(), // deee_type label => array(unit => value)
-			'deee_weights' => array(0 => 0)
+			'deee_weights' => array()
 		);
+
+		// Settings 0 for all default units:
+		$result['weights'][$conf->global->PICKUP_WEIGHT_UNIT] = 0;
+		$result['lengths'][$conf->global->PICKUP_SIZE_UNIT] = 0;
+		$result['surfaces'][$conf->global->PICKUP_SURFACE_UNIT] = 0;
+		$result['volumes'][$conf->global->PICKUP_VOLUME_UNIT] = 0; // -3 = L
+		$result['deee_weights'][$conf->global->PICKUP_WEIGHT_UNIT] = 0;
+
 		if (empty($this->id)) {
 			return $result;
 		}

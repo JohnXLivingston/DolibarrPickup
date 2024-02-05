@@ -1,5 +1,5 @@
 import { StateDefinition, FormField, PickFields, ShowFields, StateDefinitionLoadData, FormFieldSelectFilterOptions } from '../lib/state/index'
-import type { UnitsEditMode, UseUnit } from '../lib/utils/units'
+import type { UnitsOptions } from '../lib/utils/units'
 import type { SpecificMode } from '../lib/utils/types'
 import type { Stack } from '../lib/stack'
 import type { StateRetrievedData } from '../lib/state/index'
@@ -327,8 +327,7 @@ export function editProduct (
   useSellPrice: boolean,
   useRentalPrice: boolean,
   useDEEE: boolean, usePBrand: boolean, askHasBatch: boolean,
-  unitsEditMode: UnitsEditMode,
-  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitWidth: UseUnit, useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  unitsOptions: UnitsOptions,
   goto: string,
   pcatStackName: string,
   specificMode: SpecificMode
@@ -347,8 +346,8 @@ export function editProduct (
     fields.push(deeeField)
   }
 
-  if (unitsEditMode === 'product') {
-    pushUnitFields(fields, '', '', useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume)
+  if (unitsOptions.editMode === 'product') {
+    pushUnitFields(fields, '', '', unitsOptions)
   }
 
   pushPriceFields(fields, useSellPrice, useRentalPrice)
@@ -400,10 +399,9 @@ export function editProduct (
 }
 
 export function createProductSpecifications (
-  unitsEditMode: UnitsEditMode,
   useSellPrice: boolean,
   useRentalPrice: boolean,
-  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitWidth: UseUnit, useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  unitsOptions: UnitsOptions,
   goto: string,
   specificMode: SpecificMode
 ): StateDefinition {
@@ -414,8 +412,8 @@ export function createProductSpecifications (
     fields: []
   }
 
-  if (unitsEditMode === 'product') {
-    pushUnitFields(r.fields, '', '', useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume)
+  if (unitsOptions.editMode === 'product') {
+    pushUnitFields(r.fields, '', '', unitsOptions)
   }
 
   pushPriceFields(r.fields, useSellPrice, useRentalPrice)
@@ -467,8 +465,7 @@ export function showProduct (
   useSellPrice: boolean, useRentalPrice: boolean,
   useDEEE: boolean, usePBrand: boolean,
   useBatch: boolean,
-  _unitsEditMode: UnitsEditMode,
-  useUnitWeight: UseUnit, useUnitLength: UseUnit, useUnitWidth: UseUnit, useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  unitsOptions: UnitsOptions,
   okGoto: string | undefined,
   editGoto: string | undefined,
   editCatGoto: string | undefined,
@@ -584,7 +581,7 @@ export function showProduct (
     })
   }
 
-  if (useUnitWeight !== '0') {
+  if (unitsOptions.useUnitWeight !== '0') {
     fields.push({
       type: 'varchar',
       name: 'weight_txt',
@@ -592,21 +589,21 @@ export function showProduct (
     })
   }
 
-  if (useUnitLength !== '0') {
+  if (unitsOptions.useUnitLength !== '0') {
     fields.push({
       type: 'varchar',
       name: 'length_txt',
       label: 'Longueur'
     })
   }
-  if (useUnitWidth !== '0') {
+  if (unitsOptions.useUnitWidth !== '0') {
     fields.push({
       type: 'varchar',
       name: 'width_txt',
       label: 'Largeur'
     })
   }
-  if (useUnitHeight !== '0') {
+  if (unitsOptions.useUnitHeight !== '0') {
     fields.push({
       type: 'varchar',
       name: 'height_txt',
@@ -614,7 +611,7 @@ export function showProduct (
     })
   }
 
-  if (useUnitSurface !== '0') {
+  if (unitsOptions.useUnitSurface !== '0') {
     fields.push({
       type: 'varchar',
       name: 'surface_txt',
@@ -622,7 +619,7 @@ export function showProduct (
     })
   }
 
-  if (useUnitVolume !== '0') {
+  if (unitsOptions.useUnitVolume !== '0') {
     fields.push({
       type: 'varchar',
       name: 'volume_txt',

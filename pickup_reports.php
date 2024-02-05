@@ -264,6 +264,7 @@ function deee_types() {
 $deee_types = deee_types();
 
 function init_values_array($unit = 0) {
+  $unit = intval($unit);
   return array($unit => 0.0);
 }
 function sort_pickup_report_lines($a, $b) {
@@ -307,11 +308,11 @@ function retrieve_data() {
   $data_total = array(
     'qty' => 0,
     'per_deee_type' => array(),
-    'deee_total' => init_values_array(),
-    'weight_total' => init_values_array(),
-    'length_total' => init_values_array(),
-    'surface_total' => init_values_array(),
-    'volume_total' => init_values_array(-3) // -3 = L
+    'deee_total' => init_values_array($conf->global->PICKUP_WEIGHT_UNIT),
+    'weight_total' => init_values_array($conf->global->PICKUP_WEIGHT_UNIT),
+    'length_total' => init_values_array($conf->global->PICKUP_SIZE_UNIT),
+    'surface_total' => init_values_array($conf->global->PICKUP_SURFACE_UNIT),
+    'volume_total' => init_values_array($conf->global->PICKUP_VOLUME_UNIT) // -3 = L
   );
   $resql = $db->query($sql);
   if ($resql) {
@@ -327,16 +328,16 @@ function retrieve_data() {
           'soc' => $soc,
           'qty' => 0,
           'per_deee_type' => array(),
-          'deee_total' => init_values_array(),
-          'weight_total' => init_values_array(),
-          'length_total' => init_values_array(),
-          'surface_total' => init_values_array(),
-          'volume_total' => init_values_array(-3) // -3 = L
+          'deee_total' => init_values_array($conf->global->PICKUP_WEIGHT_UNIT),
+          'weight_total' => init_values_array($conf->global->PICKUP_WEIGHT_UNIT),
+          'length_total' => init_values_array($conf->global->PICKUP_SIZE_UNIT),
+          'surface_total' => init_values_array($conf->global->PICKUP_SURFACE_UNIT),
+          'volume_total' => init_values_array($conf->global->PICKUP_VOLUME_UNIT) // -3 = L
         );
         foreach ($deee_types as $deee_type_key => $label) {
-          $data[$fk_soc]['per_deee_type'][$deee_type_key] = init_values_array();
+          $data[$fk_soc]['per_deee_type'][$deee_type_key] = init_values_array($conf->global->PICKUP_WEIGHT_UNIT);
           if (!array_key_exists($deee_type_key, $data_total['per_deee_type'])) {
-            $data_total['per_deee_type'][$deee_type_key] = init_values_array();
+            $data_total['per_deee_type'][$deee_type_key] = init_values_array($conf->global->PICKUP_WEIGHT_UNIT);
           }
         }
       }
@@ -364,7 +365,7 @@ function retrieve_data() {
         $data[$fk_soc]['deee_total'][$weight_units] += $weight;
 
         if (!array_key_exists($deee_type, $data[$fk_soc]['per_deee_type'])) {
-          $data[$fk_soc]['per_deee_type'][$deee_type] = init_values_array();
+          $data[$fk_soc]['per_deee_type'][$deee_type] = init_values_array($conf->global->PICKUP_WEIGHT_UNIT);
         }
 
         if (!array_key_exists($weight_units, $data[$fk_soc]['per_deee_type'][$deee_type])) {
@@ -379,7 +380,7 @@ function retrieve_data() {
         $data_total['deee_total'][$weight_units] += $weight;
 
         if (!array_key_exists($deee_type, $data_total['per_deee_type'])) {
-          $data_total['per_deee_type'][$deee_type] = init_values_array();
+          $data_total['per_deee_type'][$deee_type] = init_values_array($conf->global->PICKUP_WEIGHT_UNIT);
         }
 
         if (!array_key_exists($weight_units, $data_total['per_deee_type'][$deee_type])) {

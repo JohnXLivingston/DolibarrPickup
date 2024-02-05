@@ -1,5 +1,5 @@
 import type { StateDefinition, ShowFields, FormField } from '../lib/state/index'
-import { UseUnit } from '../lib/utils/units'
+import type { UnitsOptions } from '../lib/utils/units'
 import { printLabelIconSVG, printPickupLabels, printPickupLineLabels } from '../shared/printlabel'
 
 export function choosePickup (goto: string, creationGoto: string): StateDefinition {
@@ -77,7 +77,7 @@ export function showPickup (
   useDEEE: boolean,
   usePBrand: boolean,
   usePrintableLabel: boolean,
-  useUnitWeight: UseUnit, useUnitLength: UseUnit, _useUnitWidth: UseUnit, _useUnitHeight: UseUnit, useUnitSurface: UseUnit, useUnitVolume: UseUnit,
+  unitOptions: UnitsOptions,
   addGoto: string,
   lineProductGoto: string | undefined,
   editLineGoto: string,
@@ -181,7 +181,12 @@ export function showPickup (
     goto: editLineGoto
   })
 
-  if (useUnitWeight || useUnitLength || useUnitSurface || useUnitVolume) {
+  if (
+    unitOptions.useUnitWeight ||
+    unitOptions.useUnitLength ||
+    unitOptions.useUnitSurface ||
+    unitOptions.useUnitVolume
+  ) {
     lineCols.push({
       type: 'text',
       name: 'line_unitary_html',

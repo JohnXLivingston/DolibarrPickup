@@ -1,6 +1,24 @@
 type UnitsEditMode = 'product' | 'pickupline'
 type UseUnit = '0' | 'optional' | 'mandatory'
 
+interface UnitsOptions {
+  useUnitWeight: UseUnit
+  useUnitLength: UseUnit
+  useUnitWidth: UseUnit
+  useUnitHeight: UseUnit
+  useUnitSurface: UseUnit
+  useUnitVolume: UseUnit
+  weightUnit: string
+  weightUnitLabel: string
+  sizeUnit: string
+  sizeUnitLabel: string
+  surfaceUnit: string
+  surfaceUnitLabel: string
+  volumeUnit: string
+  volumeUnitLabel: string
+  editMode: UnitsEditMode
+}
+
 function readUnitsEditMode (s: string | undefined): UnitsEditMode {
   if (s === 'pickupline') {
     return s
@@ -15,6 +33,7 @@ function readUseUnit (s: string | undefined): UseUnit {
 
 export {
   UnitsEditMode,
+  UnitsOptions,
   UseUnit,
   readUnitsEditMode,
   readUseUnit

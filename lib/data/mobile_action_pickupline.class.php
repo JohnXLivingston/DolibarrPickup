@@ -23,10 +23,10 @@ class DataMobileActionPickupline extends DataMobileAction {
       'qty' => $pickupline->qty,
       'product_rowid' => $product->id,
       // For weight/length/..., we only add the value if the unit is the standard one.
-      'line_weight' => $pickupline->weight_units == 0 ? $pickupline->weight : null,
-      'line_length' => $pickupline->length_units == 0 ? $pickupline->length : null,
-      'line_surface' => $pickupline->surface_units == 0 ? $pickupline->surface : null,
-      'line_volume' => $pickupline->volume_units == -3 ? $pickupline->volume : null
+      'line_weight' => $pickupline->weight_units == $conf->global->PICKUP_WEIGHT_UNIT ? $pickupline->weight : null,
+      'line_length' => $pickupline->length_units == $conf->global->PICKUP_SIZE_UNIT ? $pickupline->length : null,
+      'line_surface' => $pickupline->surface_units == $conf->global->PICKUP_SURFACE_UNIT ? $pickupline->surface : null,
+      'line_volume' => $pickupline->volume_units == $conf->global->PICKUP_VOLUME_UNIT ? $pickupline->volume : null // -3 = L
     );
     if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) {
       $r['line_description'] = dol_htmlentitiesbr($pickupline->description);
@@ -105,19 +105,19 @@ class DataMobileActionPickupline extends DataMobileAction {
 
     if (!empty($conf->global->PICKUP_UNITS_WEIGHT)) {
       $pickupline->weight = GETPOST('line_weight', 'int'); // yes... for dolibarr floats are 'int'
-      $pickupline->weight_units = 0;
+      $pickupline->weight_units = GETPOST('line_weight_unit', 'alpha');
     }
     if (!empty($conf->global->PICKUP_UNITS_LENGTH)) {
       $pickupline->length = GETPOST('line_length', 'int'); // yes... for dolibarr floats are 'int'
-      $pickupline->length_units = 0;
+      $pickupline->length_units = GETPOST('line_length_unit', 'alpha');
     }
     if (!empty($conf->global->PICKUP_UNITS_SURFACE)) {
       $pickupline->surface = GETPOST('line_surface', 'int'); // yes... for dolibarr floats are 'int'
-      $pickupline->surface_units = 0;
+      $pickupline->surface_units = GETPOST('line_surface_unit', 'alpha');
     }
     if (!empty($conf->global->PICKUP_UNITS_VOLUME)) {
       $pickupline->volume = GETPOST('line_volume', 'int'); // yes... for dolibarr floats are 'int'
-      $pickupline->volume_units = -3; // L
+      $pickupline->volume_units = GETPOST('line_volume_unit', 'alpha');
     }
   }
 }

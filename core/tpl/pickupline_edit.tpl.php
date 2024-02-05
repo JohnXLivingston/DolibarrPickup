@@ -130,7 +130,7 @@ $coldisplay = 0;
 
 				require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 				$formproduct = new FormProduct($db);
-				print $formproduct->selectMeasuringUnits('volume_units', 'volume', GETPOSTISSET('volume_units') ? GETPOST('volume_units', 'int') : $line->volume_units, 0, 2);
+				print $formproduct->selectMeasuringUnits('volume_units', 'volume', GETPOSTISSET('volume_units') ? GETPOST('volume_units', 'int') : $line->volume_units, 0, 2); // -3 = L
 			?>
 		</td>
 	<?php } ?>

@@ -68,7 +68,7 @@ $coldisplay = 0;
 
 					require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 					$formproduct = new FormProduct($db);
-					print $formproduct->selectMeasuringUnits('weight_units', 'weight', GETPOSTISSET('weight_units') ? GETPOST('weight_units', 'int') : 0, 0, 2);
+					print $formproduct->selectMeasuringUnits('weight_units', 'weight', GETPOSTISSET('weight_units') ? GETPOST('weight_units', 'int') : $conf->global->PICKUP_WEIGHT_UNIT, 0, 2);
 				?>
 			</td>
 		<?php } ?>
@@ -80,7 +80,7 @@ $coldisplay = 0;
 
 					require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 					$formproduct = new FormProduct($db);
-					print $formproduct->selectMeasuringUnits('length_units', 'size', GETPOSTISSET('length_units') ? GETPOST('length_units', 'int') : 0, 0, 2);
+					print $formproduct->selectMeasuringUnits('length_units', 'size', GETPOSTISSET('length_units') ? GETPOST('length_units', 'int') : $conf->global->PICKUP_SIZE_UNIT, 0, 2);
 				?>
 			</td>
 		<?php } ?>
@@ -92,7 +92,7 @@ $coldisplay = 0;
 
 					require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 					$formproduct = new FormProduct($db);
-					print $formproduct->selectMeasuringUnits('surface_units', 'surface', GETPOSTISSET('surface_units') ? GETPOST('surface_units', 'int') : 0, 0, 2);
+					print $formproduct->selectMeasuringUnits('surface_units', 'surface', GETPOSTISSET('surface_units') ? GETPOST('surface_units', 'int') : $conf->global->PICKUP_SURFACE_UNIT, 0, 2);
 				?>
 			</td>
 		<?php } ?>
@@ -104,7 +104,7 @@ $coldisplay = 0;
 
 					require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 					$formproduct = new FormProduct($db);
-					print $formproduct->selectMeasuringUnits('volume_units', 'volume', GETPOSTISSET('volume_units') ? GETPOST('volume_units', 'int') : -3, 0, 2);
+					print $formproduct->selectMeasuringUnits('volume_units', 'volume', GETPOSTISSET('volume_units') ? GETPOST('volume_units', 'int') : $conf->global->PICKUP_VOLUME_UNIT, 0, 2); // -3 = L
 				?>
 			</td>
 		<?php } ?>

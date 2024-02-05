@@ -5,7 +5,7 @@ import { initHistory } from './lib/history'
 import { initNunjucks } from './lib/nunjucks'
 import { Machine } from './lib/machine'
 import * as definitions from './definitions/index'
-import { readUnitsEditMode, readUseUnit } from './lib/utils/units'
+import { readUnitsEditMode, readUseUnit, UnitsOptions } from './lib/utils/units'
 import { setPrintLabelUrl } from './shared/printlabel'
 
 // FIXME: only pick needed files.
@@ -45,6 +45,16 @@ $(function () {
   const useUnitHeight = unitsEditMode !== 'product' ? '0' : readUseUnit(container.attr('data-units-height'))
   const useUnitSurface = readUseUnit(container.attr('data-units-surface'))
   const useUnitVolume = readUseUnit(container.attr('data-units-volume'))
+
+  const weightUnit = container.attr('data-weight-unit') as string
+  const weightUnitLabel = container.attr('data-weight-unit-label') as string
+  const sizeUnit = container.attr('data-size-unit') as string
+  const sizeUnitLabel = container.attr('data-size-unit-label') as string
+  const surfaceUnit = container.attr('data-surface-unit') as string
+  const surfaceUnitLabel = container.attr('data-surface-unit-label') as string
+  const volumeUnit = container.attr('data-volume-unit') as string
+  const volumeUnitLabel = container.attr('data-volume-unit-label') as string
+
   const processingStatus = container.attr('data-processing-status') ?? null
   const usePickupType = container.attr('data-use-pickup-type') === '1'
   const usePickuplineDescription = container.attr('data-use-pickupline-description') === '1'
@@ -78,7 +88,29 @@ $(function () {
   version += '_pt' + (usePickupType ? '1' : '0')
   version += '_pld' + (usePickuplineDescription ? '1' : '0')
   version += '_eum' + unitsEditMode
+  version += '_wg' + weightUnit
+  version += '_su' + sizeUnit
+  version += '_su' + surfaceUnit
+  version += '_vu' + volumeUnit
   if (specificMode) { version += '_sm' } // no need to add the specific value, should never change
+
+  const unitsOptions: UnitsOptions = {
+    useUnitWeight,
+    useUnitLength,
+    useUnitWidth,
+    useUnitHeight,
+    useUnitSurface,
+    useUnitVolume,
+    weightUnit,
+    weightUnitLabel,
+    sizeUnit,
+    sizeUnitLabel,
+    surfaceUnit,
+    surfaceUnitLabel,
+    volumeUnit,
+    volumeUnitLabel,
+    editMode: unitsEditMode
+  }
 
   const definition: {[key: string]: StateDefinition} = {}
 
@@ -97,7 +129,7 @@ $(function () {
     useDEEE,
     usePBrand,
     usePrintableLabel,
-    useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume,
+    unitsOptions,
     'product', 'show_product_from_pickup', 'qty_edit',
     processingStatus ? { goto: 'save_pickup_status', processingStatus: processingStatus } : null,
     usePickupType
@@ -114,19 +146,19 @@ $(function () {
     definition.product = definitions.pickProduct(usePBrand, 'show_product', 'create_product')
     definition.create_product = definitions.createProduct(usePCat, useDEEE, productRefAuto, usePBrand, askHasBatch, 'product_specifications', 'pcat', specificMode)
   }
-  definition.product_specifications = definitions.createProductSpecifications(unitsEditMode, useSellPrice, useRentalPrice, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, 'save_product', specificMode)
+  definition.product_specifications = definitions.createProductSpecifications(useSellPrice, useRentalPrice, unitsOptions, 'save_product', specificMode)
   definition.save_product = definitions.saveProduct('show_product', saveUntilForProduct)
-  definition.show_product = definitions.showProduct(usePCat, useSellPrice, useRentalPrice, useDEEE, usePBrand, useBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, 'qty', undefined, undefined, specificMode)
+  definition.show_product = definitions.showProduct(usePCat, useSellPrice, useRentalPrice, useDEEE, usePBrand, useBatch, unitsOptions, 'qty', undefined, undefined, specificMode)
 
-  definition.show_product_from_pickup = definitions.showProduct(usePCat, useSellPrice, useRentalPrice, useDEEE, usePBrand, useBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, undefined, 'edit_product', 'edit_product_cat', specificMode)
-  definition.edit_product = definitions.editProduct(usePCat, useSellPrice, useRentalPrice, useDEEE, usePBrand, askHasBatch, unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, 'save_edit_product', 'reference_pcat_id', specificMode)
+  definition.show_product_from_pickup = definitions.showProduct(usePCat, useSellPrice, useRentalPrice, useDEEE, usePBrand, useBatch, unitsOptions, undefined, 'edit_product', 'edit_product_cat', specificMode)
+  definition.edit_product = definitions.editProduct(usePCat, useSellPrice, useRentalPrice, useDEEE, usePBrand, askHasBatch, unitsOptions, 'save_edit_product', 'reference_pcat_id', specificMode)
   definition.save_edit_product = definitions.saveEditProduct('show_pickup', 'init', 'show_pickup', true)
 
   definition.edit_product_cat = definitions.pickPCat('save_edit_product_cat')
   definition.save_edit_product_cat = definitions.saveEditProduct('show_product_from_pickup', 'init', 'show_product_from_pickup', true)
 
-  definition.qty = definitions.createPickupLine(false, unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')
-  definition.qty_edit = definitions.createPickupLine(true, unitsEditMode, useUnitWeight, useUnitLength, useUnitWidth, useUnitHeight, useUnitSurface, useUnitVolume, usePickuplineDescription, 'save_pickupline')
+  definition.qty = definitions.createPickupLine(false, unitsOptions, usePickuplineDescription, 'save_pickupline')
+  definition.qty_edit = definitions.createPickupLine(true, unitsOptions, usePickuplineDescription, 'save_pickupline')
   definition.save_pickupline = definitions.savePickupLine('show_pickup', 'init', 'show_pickup', true)
 
   if (processingStatus) {

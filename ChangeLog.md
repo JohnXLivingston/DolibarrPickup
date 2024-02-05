@@ -1,5 +1,17 @@
 # DolibarrPickup
 
+## 2.5.0 (Not Released Yet)
+
+**Important** : Cette mise à jour contient de nouveaux paramètres. Pour les initialiser, il faut désactiver puis réactiver le module. Si vous ne le faites pas, l'application pourrait être buguée (utilisation de mauvaises unités de mesure, avec des résultats imprédictibles).
+
+### Nouvelles fonctionnalités
+
+* Possibilité de changer les unités utilisées par défaut (mètres vs centimètres, ...).
+
+### Corrections et changements mineurs
+
+* Fix: dans les PDF les valeurs de surface étaient erronés.
+
 ## 2.4.0
 
 * Application mobile: ajout d'un mode spécifique à La Ressourcerie Du Cinéma, avec:

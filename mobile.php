@@ -35,7 +35,7 @@ if (! $res && file_exists("../../../main.inc.php")) $res=@include "../../../main
 if (! $res) die("Include of main fails");
 
 // Load translation files required by the page
-$langs->loadLangs(array("pickup@pickup"));
+$langs->loadLangs(array("pickup@pickup", "other"));
 
 // Securite acces client
 if (!$user->rights->pickup->create) accessforbidden();
@@ -49,6 +49,7 @@ dol_include_once('/pickup/class/pickup.class.php');
 $objectPickup = new Pickup($db);
 $processing_status = $objectPickup->getRights()->workflow->processing ? $objectPickup::STATUS_PROCESSING : false;
 
+dol_include_once('/core/lib/product.lib.php'); // for measuringUnitString
 
 function mobile_header () {
   global $langs, $conf;
@@ -106,6 +107,16 @@ mobile_header();
     data-units-height="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_HEIGHT ?? '0'); ?>"
     data-units-surface="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_SURFACE ?? '0'); ?>"
     data-units-volume="<?php print htmlspecialchars($conf->global->PICKUP_UNITS_VOLUME ?? '0'); ?>"
+
+    data-weight-unit="<?php print htmlspecialchars($conf->global->PICKUP_WEIGHT_UNIT ?? '0'); ?>"
+    data-weight-unit-label="<?php print htmlspecialchars(measuringUnitString(0, "weight", $conf->global->PICKUP_WEIGHT_UNIT ?? '0')); ?>"
+    data-size-unit="<?php print htmlspecialchars($conf->global->PICKUP_SIZE_UNIT ?? '0'); ?>"
+    data-size-unit-label="<?php print htmlspecialchars(measuringUnitString(0, "size", $conf->global->PICKUP_SIZE_UNIT ?? '0')); ?>"
+    data-surface-unit="<?php print htmlspecialchars($conf->global->PICKUP_SURFACE_UNIT ?? '0'); ?>"
+    data-surface-unit-label="<?php print htmlspecialchars(measuringUnitString(0, "surface", $conf->global->PICKUP_SURFACE_UNIT ?? '0')); ?>"
+    data-volume-unit="<?php print htmlspecialchars($conf->global->PICKUP_VOLUME_UNIT ?? '0'); ?>"
+    data-volume-unit-label="<?php print htmlspecialchars(measuringUnitString(0, "volume", $conf->global->PICKUP_VOLUME_UNIT ?? '-3')); ?>"
+
     <?php if (!empty($processing_status)) { print 'data-processing-status="'.$processing_status.'"'; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PICKUP_TYPE)) { print ' data-use-pickup-type="1" '; } ?>
     <?php if (!empty($conf->global->PICKUP_USE_PICKUPLINE_DESCRIPTION)) { print ' data-use-pickupline-description="1" '; } ?>
