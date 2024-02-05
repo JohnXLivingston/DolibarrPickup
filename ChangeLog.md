@@ -11,6 +11,7 @@
 ### Corrections et changements mineurs
 
 * Fix: dans les PDF les valeurs de surface étaient erronés.
+* Mode spécifique La Ressourcerie Du Cinéma: ajout du champs conditionnement.
 
 ## 2.4.0
 

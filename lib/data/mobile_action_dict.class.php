@@ -55,6 +55,25 @@ class DataMobileActionDict extends DataMobileAction {
         ));
       }
       return $result;
+    } else if ($what === 'lrdc_conditionnement' && $conf->global->PICKUP_SPECIFIC_MODE === 'ressourcerie_cinema') {
+      // This is an extrafield...
+      require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+      $extrafields = new ExtraFields($db);
+      $extrafields->fetch_name_optionals_label('product');
+
+      $options = $extrafields->attributes['product']['param']['conditionnement']['options'];
+      $result = array();
+      array_push($result, [
+        'value' => '',
+        'label' => '-'
+      ]);
+      foreach ($options as $key => $val) {
+        array_push($result, array(
+          'value' => strval($key),
+          'label' => $val
+        ));
+      }
+      return $result;
     } else {
       dol_syslog(__METHOD__." Unknown what=$what", LOG_ERR);
       return 0;

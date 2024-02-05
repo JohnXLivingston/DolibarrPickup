@@ -373,7 +373,7 @@ export function editProduct (
   })
 
   if (specificMode === 'ressourcerie_cinema') {
-    pushLRDCFields(fields)
+    pushLRDCFields(true, fields)
   }
 
   const loadData: StateDefinitionLoadData[] = []
@@ -420,7 +420,7 @@ export function createProductSpecifications (
 
   if (specificMode === 'ressourcerie_cinema') {
     // Champs spécifiques pour La Ressourcerie Du Cinéma.
-    pushLRDCFields(r.fields)
+    pushLRDCFields(true, r.fields)
   }
 
   if (r.fields.length === 0) {
@@ -636,7 +636,7 @@ export function showProduct (
   pushPriceFields(fields, useSellPrice, useRentalPrice)
 
   if (specificMode === 'ressourcerie_cinema') {
-    pushLRDCFields(fields)
+    pushLRDCFields(false, fields)
   }
 
   return {
@@ -652,7 +652,9 @@ export function showProduct (
 /**
  * Ajout de champs spécifiques La Ressourcerie Du Cinéma sur les formulaires.
  */
-function pushLRDCFields (fields: FormField[] | ShowFields): void {
+function pushLRDCFields (isForm: true, fields: FormField[]): void
+function pushLRDCFields (isForm: false, fields: ShowFields): void
+function pushLRDCFields (isForm: boolean, fields: FormField[] | ShowFields): void {
   fields.push({
     type: 'float',
     label: 'Diamètre',
@@ -713,6 +715,32 @@ function pushLRDCFields (fields: FormField[] | ShowFields): void {
       getDataFromSourceKey: 'lrdc_style'
     }
   })
+  if (isForm) {
+    (fields as FormField[]).push({
+      type: 'select',
+      label: 'Conditionnement',
+      name: 'lrdc_conditionnement',
+      mandatory: false,
+      edit: {
+        getDataFromSourceKey: 'lrdc_conditionnement'
+      },
+      load: 'dict',
+      loadParams: {
+        what: 'lrdc_conditionnement'
+      },
+      map: {
+        value: 'value',
+        label: 'label'
+      },
+      options: []
+    })
+  } else {
+    (fields as ShowFields).push({
+      type: 'varchar',
+      label: 'Conditionnement',
+      name: 'lrdc_conditionnement_txt'
+    })
+  }
 }
 
 function pushPriceFields (

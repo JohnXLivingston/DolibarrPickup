@@ -48,6 +48,10 @@ class DataMobileActionProduct extends DataMobileAction {
     global $object; // has to be this... LRDS has a weird module that needs this to fetch without error...
     $object = new Product($db);
 
+    require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+    $product_extrafields = new ExtraFields($db);
+    $product_extrafields->fetch_name_optionals_label('product');
+
     $id = GETPOST('id', 'int');
     if ($object->fetch($id) <= 0) {
       return 0;
@@ -163,13 +167,12 @@ class DataMobileActionProduct extends DataMobileAction {
       $result['lrdc_pxcommerce'] = $object->array_options['options_pxcommerce'] ?? '';
       $result['lrdc_couleur'] = $object->array_options['options_couleur'] ?? '';
       $result['lrdc_style'] = $object->array_options['options_style'] ?? '';
+      $result['lrdc_conditionnement'] = $object->array_options['options_conditionnement'] ?? '';
+      $result['lrdc_conditionnement_txt'] = $product_extrafields->showOutputField('conditionnement', $object->array_options['options_conditionnement'], '', $object->table_element);
     }
     if (!empty($conf->global->PICKUP_USE_DEEE)) {
-      require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-      $extrafields = new ExtraFields($db);
-      $extrafields->fetch_name_optionals_label('product');
       $result['deee_type'] = $object->array_options['options_pickup_deee_type'];
-      $result['deee_type_txt'] = $extrafields->showOutputField('pickup_deee_type', $object->array_options['options_pickup_deee_type'], '', $object->table_element);
+      $result['deee_type_txt'] = $product_extrafields->showOutputField('pickup_deee_type', $object->array_options['options_pickup_deee_type'], '', $object->table_element);
     }
     if (!empty($conf->productbatch->enabled)) {
       $langs->loadLangs(array('productbatch'));
@@ -343,6 +346,7 @@ class DataMobileActionProduct extends DataMobileAction {
         $product->array_options['options_pxcommerce'] = GETPOST('lrdc_pxcommerce');
         $product->array_options['options_couleur'] = GETPOST('lrdc_couleur');
         $product->array_options['options_style'] = GETPOST('lrdc_style');
+        $product->array_options['options_conditionnement'] = GETPOST('lrdc_conditionnement');
       }
     }
 
