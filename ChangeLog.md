@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## 2.5.0 (Not Released Yet)
+## 2.5.0
 
 **Important** : Cette mise à jour contient de nouveaux paramètres. Pour les initialiser, il faut désactiver puis réactiver le module. Si vous ne le faites pas, l'application pourrait être buguée (utilisation de mauvaises unités de mesure, avec des résultats imprédictibles).
 
