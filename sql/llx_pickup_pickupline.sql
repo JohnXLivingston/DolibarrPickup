@@ -32,7 +32,7 @@ CREATE TABLE llx_pickup_pickupline(
 	deee_type varchar(255) DEFAULT NULL,
 	qty integer DEFAULT 1 NOT NULL,
 	-- DEPRECATED 2023-03-13: batch varchar(128) DEFAULT NULL,
-	tms timestamp NOT NULL, 
+	tms timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	fk_user_creat integer NOT NULL, 
 	fk_user_modif integer, 
 	position integer NOT NULL,
