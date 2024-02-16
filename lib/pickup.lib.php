@@ -29,6 +29,7 @@
 function pickupAdminPrepareHead()
 {
 	global $langs, $conf;
+	$object = null;
 
 	$langs->load("pickup@pickup");
 

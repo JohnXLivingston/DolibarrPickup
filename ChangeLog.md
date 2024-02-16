@@ -1,5 +1,9 @@
 # DolibarrPickup
 
+## ??? (Not Released Yet)
+
+* Fix de quelques "warnings" PHP.
+
 ## 2.5.1
 
 * Compatibilité Dolibarr v18: valeur par défaut et "on update" pour le champs llx_pickup_pickupline.tms.

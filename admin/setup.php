@@ -143,7 +143,7 @@ $pickup_extrafields = array(
 $extrafields = new ExtraFields($db);
 $fetched_element_types = array();
 foreach ($pickup_extrafields as $key => $val) {
-	if ($fetched_element_types[$val['elementype']]) { continue; }
+	if (array_key_exists($val['elementtype'], $fetched_element_types)) { continue; }
 	$extrafields->fetch_name_optionals_label($val['elementype']);
 	$fetched_element_types[$val['elementype']] = true;
 }
@@ -600,7 +600,7 @@ else
 						print $entrepot->getNomUrl(1);
 					}
 				} else if ($val['type'] === 'boolean') {
-					print '<input type="checkbox" disabled name="'.$key.'"  class="flat '.(empty($val['css'])?'':$val['css']).'" ' . ($conf->global->$key ? 'checked':'') . '>';
+					print '<input type="checkbox" disabled name="'.$key.'"  class="flat '.(empty($val['css'])?'':$val['css']).'" ' . (property_exists($conf->global, $key) && $conf->global->$key ? 'checked':'') . '>';
 
 					if (!empty($val['extrafields']) && $conf->global->$key) {
 						print '&nbsp;<form style="display:inline" method="POST" action="'.$_SERVER["PHP_SELF"].'">';

@@ -156,7 +156,7 @@ class DataMobileActionProduct extends DataMobileAction {
     if (!empty($conf->global->PICKUP_USE_PBRAND)) {
       $result['pbrand'] = $object->array_options['options_pickup_pbrand'];
     }
-    if (!empty($conf->rental->enabled)) {
+    if (property_exists($conf, 'rental') && !empty($conf->rental->enabled)) {
       $result['rentalprice'] = $object->array_options['options_rental_price'];
     }
     if (!empty($conf->global->PICKUP_SPECIFIC_MODE) && $conf->global->PICKUP_SPECIFIC_MODE === 'ressourcerie_cinema') {
@@ -334,7 +334,7 @@ class DataMobileActionProduct extends DataMobileAction {
           $product->price = $new_sellprice;
         }
       }
-      if (!empty($conf->global->PICKUP_PRODUCT_RENTALPRICE) && $conf->rental->enabled) {
+      if (!empty($conf->global->PICKUP_PRODUCT_RENTALPRICE) && property_exists($conf, 'rental') && $conf->rental->enabled) {
         $product->array_options['options_rental_price'] = GETPOST('rentalprice', 'int'); // yes... for dolibarr floats are 'int'
       }
 

@@ -77,7 +77,7 @@ function getPickupSettings() {
     'PICKUP_PRODUCT_SELLPRICE' => array('table' => 'product', 'enabled' => 1, 'type' => 'boolean'),
     'PICKUP_PRODUCT_RENTALPRICE' => array(
       'table' => 'product',
-      'enabled' => $conf->rental->enabled, // nécessite le module 'rental' (dolirent)
+      'enabled' => property_exists($conf, 'rental') && $conf->rental->enabled, // nécessite le module 'rental' (dolirent)
       'type' => 'boolean'
     ),
 
