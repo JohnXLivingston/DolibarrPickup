@@ -1,8 +1,8 @@
 {% macro printFieldContent(field, data) %}
   {# This is a trick so we can safely print data, and replace \n with <br> #}
 {% endmacro %}
-<div class="alert alert-info">
-  {{ translate('Please confirm the data you want to save:') }}
+<div class="alert alert-{{ alertMessageLevel }}">
+  {{ alertMessageText }}
 </div>
 <div class="pickupmobile-scrollzone">
   <table class="table table-striped table-bordered">

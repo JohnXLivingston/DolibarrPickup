@@ -294,6 +294,8 @@ export function savePickupStatus (goto: string, saveUntil: string): StateDefinit
     primaryKey: 'rowid', // FIXME: to check.
     labelKey: 'Collecte',
     saveUntil,
-    goto
+    goto,
+    alertMessageLevel: 'warning',
+    alertMessageText: 'En validant, vous ne pourrez plus modifier cette collecte.'
   }
 }

@@ -18,6 +18,8 @@ interface StateSaveDefinition extends StateDefinitionBase {
   goto: string
   dependingCacheKey?: string
   errorLabels?: Map<string, string>
+  alertMessageLevel?: 'info' | 'warning'
+  alertMessageText?: string
 }
 
 class StateSave extends State {
@@ -30,6 +32,8 @@ class StateSave extends State {
   private readonly goto: string
   private readonly dependingCacheKey?: string
   private readonly errorLabels: Map<string, string>
+  private readonly alertMessageLevel: 'info' | 'warning'
+  private readonly alertMessageText: string
 
   constructor (definition: StateSaveDefinition) {
     super('save', definition)
@@ -42,12 +46,16 @@ class StateSave extends State {
     this.goto = definition.goto
     this.dependingCacheKey = definition.dependingCacheKey
     this.errorLabels = definition.errorLabels ?? new Map<string, string>()
+    this.alertMessageLevel = definition.alertMessageLevel ?? 'info'
+    this.alertMessageText = definition.alertMessageText ?? translate('Please confirm the data you want to save:')
   }
 
   _renderVars (stack: Stack, retrievedData: StateRetrievedData, h: NunjucksVars): void {
     h.stackValues = stack.previous?.getStackValuesUntil(this.saveUntil)
     h.displayStackValue = Stack.displayStackValue
     h.getDisplayStackValue = Stack.getDisplayStackValue
+    h.alertMessageLevel = this.alertMessageLevel
+    h.alertMessageText = this.alertMessageText
   }
 
   renderVeto1 (reason: RenderReason, stack: Stack): Veto | undefined {
