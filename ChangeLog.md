@@ -3,6 +3,8 @@
 ## ??? (Not Released Yet)
 
 * Fix de quelques "warnings" PHP.
+* La saisie d'un prix de vente implique en vente.
+* La saisie d'un prix de location implique en location.
 
 ## 2.5.1
 

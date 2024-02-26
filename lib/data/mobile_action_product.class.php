@@ -266,6 +266,7 @@ class DataMobileActionProduct extends DataMobileAction {
       }
       if (!empty($conf->global->PICKUP_PRODUCT_DEFAULT_TOSELL)) {
         $product->status = 1; // to sell
+        // Note: have defined a sell price (see bellow) could also set status to 1.
       }
 
       if (!empty($conf->global->PICKUP_USE_PBRAND)) {
@@ -330,12 +331,20 @@ class DataMobileActionProduct extends DataMobileAction {
 
       if (!empty($conf->global->PICKUP_PRODUCT_SELLPRICE)) {
         $new_sellprice = GETPOST('sellprice', 'int'); // yes... for dolibarr floats are 'int'
-        if ($is_creation && $new_sellprice > 0) {
-          $product->price = $new_sellprice;
+        if ($new_sellprice > 0) {
+          if ($is_creation) {
+            // When !is_creation, we will use updatePrice to update the price (see later on).
+            $product->price = $new_sellprice;
+          }
+          $product->status = 1; // to sell
         }
       }
       if (!empty($conf->global->PICKUP_PRODUCT_RENTALPRICE) && property_exists($conf, 'rental') && $conf->rental->enabled) {
-        $product->array_options['options_rental_price'] = GETPOST('rentalprice', 'int'); // yes... for dolibarr floats are 'int'
+        $rental_price = GETPOST('rentalprice', 'int'); // yes... for dolibarr floats are 'int'
+        $product->array_options['options_rental_price'] = $rental_price;
+        if ($rental_price > 0) {
+          $product->array_options['options_rental_product'] = 1;
+        }
       }
 
       if (!empty($conf->global->PICKUP_SPECIFIC_MODE) && $conf->global->PICKUP_SPECIFIC_MODE === 'ressourcerie_cinema') {
