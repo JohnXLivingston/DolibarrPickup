@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## ??? (Not Released Yet)
+## 2.6.0
 
 * Fix de quelques "warnings" PHP.
 * La saisie d'un prix de vente implique en vente.
