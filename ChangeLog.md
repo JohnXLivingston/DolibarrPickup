@@ -6,6 +6,7 @@
 * La saisie d'un prix de vente implique en vente.
 * La saisie d'un prix de location implique en location.
 * Application mobile: avertissement sur le bouton "fin de saisie".
+* Mode spécifique La Ressourcerie Du Cinéma: changement de l'ordre des champs.
 
 ## 2.5.1
 

@@ -1,4 +1,4 @@
-import { StateDefinition, FormField, PickFields, ShowFields, StateDefinitionLoadData, FormFieldSelectFilterOptions } from '../lib/state/index'
+import { StateDefinition, FormField, PickFields, ShowField, ShowFields, StateDefinitionLoadData, FormFieldSelectFilterOptions } from '../lib/state/index'
 import type { UnitsOptions } from '../lib/utils/units'
 import type { SpecificMode } from '../lib/utils/types'
 import type { Stack } from '../lib/stack'
@@ -655,6 +655,24 @@ export function showProduct (
 function pushLRDCFields (isForm: true, fields: FormField[]): void
 function pushLRDCFields (isForm: false, fields: ShowFields): void
 function pushLRDCFields (isForm: boolean, fields: FormField[] | ShowFields): void {
+  // Pour le champs "prix commerce", on veut le placer juste avant le prix de vente.
+  const lrdcCommercePrice: FormField | ShowField = {
+    type: 'varchar',
+    label: 'Prix commerce',
+    name: 'lrdc_pxcommerce',
+    mandatory: false,
+    edit: {
+      getDataFromSourceKey: 'lrdc_pxcommerce'
+    }
+  }
+
+  const idxSellPrice = fields.findIndex(f => f.name === 'sellprice')
+  if (idxSellPrice >= 0) {
+    fields.splice(idxSellPrice, 0, lrdcCommercePrice)
+  } else {
+    fields.push(lrdcCommercePrice)
+  }
+
   fields.push({
     type: 'float',
     label: 'Diamètre',
@@ -686,15 +704,6 @@ function pushLRDCFields (isForm: boolean, fields: FormField[] | ShowFields): voi
     mandatory: false,
     edit: {
       getDataFromSourceKey: 'lrdc_matiereproduit'
-    }
-  })
-  fields.push({
-    type: 'varchar',
-    label: 'Prix commerce',
-    name: 'lrdc_pxcommerce',
-    mandatory: false,
-    edit: {
-      getDataFromSourceKey: 'lrdc_pxcommerce'
     }
   })
   fields.push({
