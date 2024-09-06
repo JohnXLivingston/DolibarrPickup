@@ -1,5 +1,9 @@
 # DolibarrPickup
 
+## 2.6.1
+
+* Fix: sur Dolibarr >=v17, la protection CSRF empêchait de supprimer une ligne de collecte.
+
 ## 2.6.0
 
 * Fix de quelques "warnings" PHP.

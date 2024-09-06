@@ -324,7 +324,7 @@ $coldisplay = 0; ?>
       <?php $coldisplay++; ?>
       <?php if (empty($disableremove)) { ?>
         <a class="reposition"
-          href="<?php print $_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=deleteline&amp;lineid='.$line->id; ?>"
+          href="<?php print $_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=deleteline&amp;lineid='.$line->id.'&amp;token='.newToken(); ?>"
         >
           <?php print img_delete(); ?>
         </a>
