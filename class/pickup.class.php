@@ -25,6 +25,15 @@
 require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
 dol_include_once('/pickup/class/pickupline.class.php');
 
+// Note: starting with Dolibarr ~19, there was a syntax change...
+// Dolibarr 20 fixes the retro compatibilitly, but not Dolibarr 19.
+// As it is used in a static attribute declaration, we can't use variables... This is why we use a constant:
+define('_DOLIPICKUP_HACK_PICKUP_TYPE',
+	(defined('DOL_VERSION') && intval(DOL_VERSION) >= 19)
+		? 'sellist:c_pickup_type:label:rowid::(active:=:1)'
+		: 'sellist:c_pickup_type:label:rowid::active=1'
+);
+
 /**
  * Class for Pickup
  */
@@ -97,7 +106,7 @@ class Pickup extends CommonObject
 		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php:1', 'label'=>'ThirdParty', 'enabled'=>'1', 'position'=>50, 'notnull'=>1, 'visible'=>1, 'index'=>1,),
 		'date_pickup' => array('type'=>'date', 'label'=>'PickupDate', 'enabled'=>'1', 'position'=>55, 'notnull'=>1, 'visible'=>1, 'index'=>1,),
 		'fk_pickup_type' => array(
-			'type' => 'sellist:c_pickup_type:label:rowid::active=1',
+			'type' => _DOLIPICKUP_HACK_PICKUP_TYPE,
 			'label' => 'PickupType',
 			'enabled' => '$conf->global->PICKUP_USE_PICKUP_TYPE',
 			'position'=>57,
@@ -220,6 +229,8 @@ class Pickup extends CommonObject
 				}
 			}
 		}
+
+
 	}
 
 	/**

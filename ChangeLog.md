@@ -1,5 +1,9 @@
 # DolibarrPickup
 
+## 2.6.2 (Not Released Yet)
+
+* Fix: compatibilité Dolibarr 19 et 20.
+
 ## 2.6.1
 
 * Fix: sur Dolibarr >=v17, la protection CSRF empêchait de supprimer une ligne de collecte.

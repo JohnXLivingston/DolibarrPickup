@@ -28,7 +28,7 @@ dol_include_once('/pickup/class/pickup.class.php');
 dol_include_once('/pickup/class/pbatch.class.php');
 
 // Note: starting with Dolibarr 17, there was a syntax change...
-// Has it is used in a static attribute declaration, we can't use variables... This is why we use a constant:
+// As it is used in a static attribute declaration, we can't use variables... This is why we use a constant:
 define('_DOLIPICKUP_HACK_PICKUPLINE_PRODUCT_TYPE',
 	(defined('DOL_VERSION') && intval(DOL_VERSION) >= 17)
 	? 'integer:Product:product/class/product.class.php:1:(fk_product_type:=:0)'
@@ -260,11 +260,11 @@ class PickupLine extends CommonObjectLine
 	 * @param  string      $sortfield    Sort field
 	 * @param  int         $limit        limit
 	 * @param  int         $offset       Offset
-	 * @param  array       $filter       Filter array. Example array('field'=>'valueforlike', 'customurl'=>...)
+	 * @param  string|array			       $filter       Filter array. Example array('field'=>'valueforlike', 'customurl'=>...)
 	 * @param  string      $filtermode   Filter mode (AND or OR)
 	 * @return array|int                 int <0 if KO, array of pages if OK
 	 */
-	public function fetchAll($sortorder = '', $sortfield = '', $limit = 0, $offset = 0, array $filter = array(), $filtermode = 'AND')
+	public function fetchAll($sortorder = '', $sortfield = '', $limit = 0, $offset = 0, $filter = array(), $filtermode = 'AND')
 	{
 		global $conf;
 
@@ -279,7 +279,7 @@ class PickupLine extends CommonObjectLine
 		else $sql .= ' WHERE 1 = 1';
 		// Manage filter
 		$sqlwhere = array();
-		if (count($filter) > 0) {
+		if (is_array($filter) && count($filter) > 0) {
 			foreach ($filter as $key => $value) {
 				if ($key == 't.rowid') {
 					$sqlwhere[] = $key.'='.$value;
