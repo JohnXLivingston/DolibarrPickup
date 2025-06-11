@@ -1,6 +1,6 @@
 # DolibarrPickup
 
-## 2.6.2 (Not Released Yet)
+## 2.6.2
 
 * Fix: compatibilité Dolibarr 19 et 20.
 * Mise à jour des dépendances.
