@@ -3,6 +3,7 @@
 ## 2.6.2 (Not Released Yet)
 
 * Fix: compatibilité Dolibarr 19 et 20.
+* Mise à jour des dépendances.
 
 ## 2.6.1
 
