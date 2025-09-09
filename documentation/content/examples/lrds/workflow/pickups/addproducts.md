@@ -38,7 +38,7 @@ le processus de collecte).
 
 On peut également assigner à chaque tag les informations suivantes:
 
-* forcer ou limiter le type de DEEE (voir [le contexte](../context/))
+* forcer ou limiter le type de DEEE (voir [le contexte](../../context/))
 * ajouter des notes qui seront affichées dans l'application mobile, pour indiquer quelles informations saisir
 * *forcer le type de suivi (voir plus loin)*. **NB: ceci n'est pas encore implémenté - voir si nécessaire**.
 
