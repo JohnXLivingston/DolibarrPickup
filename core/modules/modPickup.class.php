@@ -242,7 +242,7 @@ class modPickup extends DolibarrModules
 			// Name of columns with primary key (try to always name it 'rowid')
 			'tabrowid'=>array("rowid"),
 			// Condition to show each dictionary
-			'tabcond'=>array($conf->pickup->enabled && $conf->global->PICKUP_USE_PICKUP_TYPE)
+			'tabcond'=>array($conf->pickup->enabled && !empty($conf->global->PICKUP_USE_PICKUP_TYPE))
 		);
 
         // Boxes/Widgets
@@ -462,7 +462,7 @@ class modPickup extends DolibarrModules
             'url'=>'/pickup/correctdata/product_status_batch.php',
             'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
             'position'=>1100+$r,
-            'enabled'=>'$conf->pickup->enabled && $conf->productbatch->enabled && $conf->global->PICKUP_USE_PCAT',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+            'enabled'=>'$conf->pickup->enabled && $conf->productbatch->enabled && !empty($conf->global->PICKUP_USE_PCAT)',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
             'perms'=>'$user->rights->pickup->correctdata',               // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
             'target'=>'',
             'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
@@ -503,7 +503,7 @@ class modPickup extends DolibarrModules
             'langs'=>'pickup@pickup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
             'position'=>1100+$r,
             'enabled'=>'$conf->pickup->enabled',  // Define condition to show or hide menu entry. Use '$conf->pickup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-            // 'perms'=>'$user->rights->pickup->read',               // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
+            'perms'=>'$user->rights->pickup->read',               // Use 'perms'=>'$user->rights->pickup->level1->level2' if you want your menu with a permission rules
             'target'=>'',
             'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
         /* END LEFTMENU PICKUP */
