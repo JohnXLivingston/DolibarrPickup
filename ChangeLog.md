@@ -1,5 +1,9 @@
 # DolibarrPickup
 
+## 2.6.3
+
+* Fix undefined array key and undefined property warnings in PHP 8.2+
+
 ## 2.6.2
 
 * Fix: compatibilité Dolibarr 19 et 20.
