@@ -546,11 +546,11 @@ while ($i < min($num, $limit))
 			elseif (in_array($val['type'], array('date','datetime','timestamp'))) print $object->showOutputField($val, $key, $db->jdate($obj->$key), '');
 			else print $object->showOutputField($val, $key, $obj->$key, '');
 			print '</td>';
-			if (! $i) $totalarray['nbfield']++;
+			if (! $i) $totalarray['nbfield'] = ($totalarray['nbfield'] ?? 0) + 1;
 			if (! empty($val['isameasure']))
 			{
 				if (! $i) $totalarray['pos'][$totalarray['nbfield']]='t.'.$key;
-				$totalarray['val']['t.'.$key] += $obj->$key;
+				$totalarray['val']['t.'.$key] = ($totalarray['val']['t.'.$key] ?? 0) + $obj->$key;
 			}
 		}
 	}
@@ -578,7 +578,7 @@ while ($i < min($num, $limit))
 		print '<input id="cb'.$obj->rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->rowid.'"'.($selected?' checked="checked"':'').'>';
 	}
 	print '</td>';
-	if (! $i) $totalarray['nbfield']++;
+	if (! $i) $totalarray['nbfield'] = ($totalarray['nbfield'] ?? 0) + 1;
 
 	print '</tr>';
 
