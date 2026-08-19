@@ -143,7 +143,7 @@ $pickup_extrafields = array(
 $extrafields = new ExtraFields($db);
 $fetched_element_types = array();
 foreach ($pickup_extrafields as $key => $val) {
-	if (array_key_exists($val['elementtype'], $fetched_element_types)) { continue; }
+	if (array_key_exists($val['elementype'], $fetched_element_types)) { continue; }
 	$extrafields->fetch_name_optionals_label($val['elementype']);
 	$fetched_element_types[$val['elementype']] = true;
 }

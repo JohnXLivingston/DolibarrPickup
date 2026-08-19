@@ -122,7 +122,7 @@ class ActionsPickup
 			}
 			return 0;
 		}
-		if ($object->table_element != 'pickup_pickup') {
+		if (!is_object($object) || empty($object->table_element) || $object->table_element != 'pickup_pickup') {
 			return 0;
 		}
 		global $db, $conf, $user, $langs;
@@ -1032,7 +1032,7 @@ class ActionsPickup
 				return 1;
 			}
 		}
-		if ($parameters['table_element_line'] != 'pickup_pickupline') {
+		if (empty($parameters['table_element_line']) || $parameters['table_element_line'] != 'pickup_pickupline') {
 			return 0;
 		}
 		global $conf, $user, $langs, $hookmanager, $extrafields;
