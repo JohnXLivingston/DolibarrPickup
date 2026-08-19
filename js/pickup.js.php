@@ -59,7 +59,7 @@ else header('Cache-Control: no-cache');
 
 /* Javascript library of module Pickup */
 
-if (window.dolibarrPickup) {
+if (window.dolibarrPickup && window.dolibarrPickup.setBaseUrl) {
   window.dolibarrPickup.setBaseUrl('<?php print dol_buildpath('/custom/pickup/', 1) ?>')
 } else if ($) {
   $(function() {
