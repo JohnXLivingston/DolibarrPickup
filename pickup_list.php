@@ -132,7 +132,7 @@ foreach($object->fields as $key => $val)
 $fieldstosearchall = array();
 foreach($object->fields as $key => $val)
 {
-	if ($val['searchall']) $fieldstosearchall['t.'.$key]=$val['label'];
+	if (!empty($val['searchall'])) $fieldstosearchall['t.'.$key]=$val['label'];
 }
 
 // Definition of fields for list
@@ -143,7 +143,7 @@ foreach($object->fields as $key => $val)
 	if (! empty($val['visible'])) $arrayfields['t.'.$key]=array('label'=>$val['label'], 'checked'=>(($val['visible']<0)?0:1), 'enabled'=>($val['enabled'] && ($val['visible'] != 3)), 'position'=>$val['position']);
 }
 // Extra fields
-if (is_array($extrafields->attributes[$object->table_element]['label']) && count($extrafields->attributes[$object->table_element]['label']) > 0)
+if (!empty($extrafields->attributes[$object->table_element]['label']) && is_array($extrafields->attributes[$object->table_element]['label']) && count($extrafields->attributes[$object->table_element]['label']) > 0)
 {
 	foreach($extrafields->attributes[$object->table_element]['label'] as $key => $val)
 	{
@@ -249,24 +249,24 @@ $sql.=preg_replace('/^,/', '', $hookmanager->resPrint);
 $sql =preg_replace('/,\s*$/', '', $sql);
 $sql.= " FROM ".MAIN_DB_PREFIX.$object->table_element." as t";
 foreach ($label_searches as $key => $val) {
-	if ($search[$key] != '') {
+	if (($search[$key] ?? '') !== '') {
 		$sql.= " LEFT JOIN ".$val['join'];
 	}
 }
-if (is_array($extrafields->attributes[$object->table_element]['label']) && count($extrafields->attributes[$object->table_element]['label'])) $sql.= " LEFT JOIN ".MAIN_DB_PREFIX.$object->table_element."_extrafields as ef on (t.rowid = ef.fk_object)";
+if (!empty($extrafields->attributes[$object->table_element]['label']) && is_array($extrafields->attributes[$object->table_element]['label']) && count($extrafields->attributes[$object->table_element]['label'])) $sql.= " LEFT JOIN ".MAIN_DB_PREFIX.$object->table_element."_extrafields as ef on (t.rowid = ef.fk_object)";
 if ($object->ismultientitymanaged == 1) $sql.= " WHERE t.entity IN (".getEntity($object->element).")";
 else $sql.=" WHERE 1 = 1";
 foreach($search as $key => $val)
 {
 	if ($key == 'status' && $search[$key] == -1) continue;
 	if (array_key_exists($key, $label_searches)) {
-		if ($search[$key] != '') $sql.=natural_search($label_searches[$key]['key'], $search[$key], 0);
+		if (($search[$key] ?? '') !== '') $sql.=natural_search($label_searches[$key]['key'], $search[$key], 0);
 		continue;
 	}
 	$mode_search=(($object->isInt($object->fields[$key]) || $object->isFloat($object->fields[$key])) ? 1 : 0);
-	if ($search[$key] != '') $sql.=natural_search($key, $search[$key], (($key == 'status')?2:$mode_search));
+	if (($search[$key] ?? '') !== '') $sql.=natural_search($key, $search[$key], (($key == 'status')?2:$mode_search));
 }
-if ($search_all) $sql.= natural_search(array_keys($fieldstosearchall), $search_all);
+if (!empty($search_all)) $sql.= natural_search(array_keys($fieldstosearchall), $search_all);
 // Add where from extra fields
 include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
 // Add where from hooks
@@ -324,7 +324,7 @@ else
 }
 
 // Direct jump if only one record found
-if ($num == 1 && ! empty($conf->global->MAIN_SEARCH_DIRECT_OPEN_IF_ONLY_ONE) && $search_all)
+if ($num == 1 && ! empty($conf->global->MAIN_SEARCH_DIRECT_OPEN_IF_ONLY_ONE) && !empty($search_all))
 {
 	$obj = $db->fetch_object($resql);
 	$id = $obj->rowid;
@@ -401,7 +401,7 @@ $objecttmp=new Pickup($db);
 $trackid='xxxx'.$object->id;
 include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
 
-if ($search_all)
+if (!empty($search_all))
 {
 	foreach($fieldstosearchall as $key => $val) $fieldstosearchall[$key]=$langs->trans($val);
 	print '<div class="divsearchfieldfilter">'.$langs->trans("FilterOnInto", $search_all) . join(', ', $fieldstosearchall).'</div>';
@@ -445,8 +445,8 @@ foreach($object->fields as $key => $val)
 	if (! empty($arrayfields['t.'.$key]['checked']))
 	{
 		print '<td class="liste_titre'.($cssforfield?' '.$cssforfield:'').'">';
-		if (is_array($val['arrayofkeyval'])) print $form->selectarray('search_'.$key, $val['arrayofkeyval'], $search[$key], $val['notnull'], 0, 0, '', 0, 0, 0, '', 'maxwidth75');
-		else print '<input type="text" class="flat maxwidth75" name="search_'.$key.'" value="'.dol_escape_htmltag($search[$key]).'">';
+		if (isset($val['arrayofkeyval']) && is_array($val['arrayofkeyval'])) print $form->selectarray('search_'.$key, $val['arrayofkeyval'], ($search[$key] ?? ''), ($val['notnull'] ?? 0), 0, 0, '', 0, 0, 0, '', 'maxwidth75');
+		else print '<input type="text" class="flat maxwidth75" name="search_'.$key.'" value="'.dol_escape_htmltag($search[$key] ?? '').'">';
 		print '</td>';
 	}
 }
@@ -501,7 +501,7 @@ print '</tr>'."\n";
 
 // Detect if we need a fetch on each output line
 $needToFetchEachLine=0;
-if (is_array($extrafields->attributes[$object->table_element]['computed']) && count($extrafields->attributes[$object->table_element]['computed']) > 0)
+if (!empty($extrafields->attributes[$object->table_element]['computed']) && is_array($extrafields->attributes[$object->table_element]['computed']) && count($extrafields->attributes[$object->table_element]['computed']) > 0)
 {
 	foreach ($extrafields->attributes[$object->table_element]['computed'] as $key => $val)
 	{
