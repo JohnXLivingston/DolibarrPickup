@@ -143,7 +143,7 @@ $pickup_extrafields = array(
 $extrafields = new ExtraFields($db);
 $fetched_element_types = array();
 foreach ($pickup_extrafields as $key => $val) {
-	if (array_key_exists($val['elementtype'], $fetched_element_types)) { continue; }
+	if (array_key_exists($val['elementype'], $fetched_element_types)) { continue; }
 	$extrafields->fetch_name_optionals_label($val['elementype']);
 	$fetched_element_types[$val['elementype']] = true;
 }
@@ -524,10 +524,10 @@ if ($action == 'edit')
 			if ($key == 'PICKUP_DEFAULT_STOCK') {
 				dol_include_once('/pickup/class/pickup.class.php');
 				$pickup = new Pickup($db);
-				print $pickup->showInputField($pickup->fields['fk_entrepot'], 'fk_entrepot', $conf->global->$key);
+				print $pickup->showInputField($pickup->fields['fk_entrepot'], 'fk_entrepot', ($conf->global->$key ?? ''));
 			} else if ($val['type'] === 'boolean') {
 				print '<input type="hidden" name="'.$key.'_hidden" value="1">';
-				print '<input type="checkbox" name="'.$key.'"  class="flat '.(empty($val['css'])?'':$val['css']).'" value="1" ' . ($conf->global->$key ? 'checked':'') . '>';
+				print '<input type="checkbox" name="'.$key.'"  class="flat '.(empty($val['css'])?'':$val['css']).'" value="1" ' . (!empty($conf->global->$key) ? 'checked':'') . '>';
 			} else if ($val['type'] === 'select') {
 				print '<select name="'.$key.'">';
 				foreach ($val['options'] as $ok => $ov) {
@@ -539,7 +539,7 @@ if ($action == 'edit')
 				}
 				print '</select>';
 			} else {
-				print '<input name="'.$key.'"  class="flat '.(empty($val['css'])?'minwidth200':$val['css']).'" value="' . $conf->global->$key . '">';
+				print '<input name="'.$key.'"  class="flat '.(empty($val['css'])?'minwidth200':$val['css']).'" value="' . ($conf->global->$key ?? '') . '">';
 			}
 			print '</td></tr>';
 		}
@@ -602,7 +602,7 @@ else
 				} else if ($val['type'] === 'boolean') {
 					print '<input type="checkbox" disabled name="'.$key.'"  class="flat '.(empty($val['css'])?'':$val['css']).'" ' . (property_exists($conf->global, $key) && $conf->global->$key ? 'checked':'') . '>';
 
-					if (!empty($val['extrafields']) && $conf->global->$key) {
+					if (!empty($val['extrafields']) && !empty($conf->global->$key)) {
 						print '&nbsp;<form style="display:inline" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
 						print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 						print '<input type="hidden" name="action" value="updateExtraFields">';
@@ -628,7 +628,7 @@ else
 					}
 
 					// PBrand is deprecated. Special case to migrate this info back to the Product Ref field.
-					if ($key === 'PICKUP_USE_PBRAND' && !$conf->global->$key) {
+					if ($key === 'PICKUP_USE_PBRAND' && empty($conf->global->$key)) {
 						if (can_migrate_pbrand_to_Ref()) {
 							print ' <form style="display:inline" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
 							print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
@@ -644,7 +644,7 @@ else
 						print $val['options'][$conf->global->$key ?? '0'];
 					}
 				} else {
-					print $conf->global->$key;
+					print ($conf->global->$key ?? '');
 				}
 				print '</td></tr>';
 			}
