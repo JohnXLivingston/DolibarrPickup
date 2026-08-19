@@ -63,7 +63,7 @@ if (window.dolibarrPickup) {
   window.dolibarrPickup.setBaseUrl('<?php print dol_buildpath('/custom/pickup/', 1) ?>')
 } else if ($) {
   $(function() {
-    if (window.dolibarrPickup.setBaseUrl) {
+    if (window.dolibarrPickup && window.dolibarrPickup.setBaseUrl) {
       window.dolibarrPickup.setBaseUrl('<?php print dol_buildpath('/custom/pickup/', 1) ?>')
     }
   })
